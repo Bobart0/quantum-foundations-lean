@@ -119,9 +119,20 @@ theorem dilProj_orthogonal {i j : Fin m} (h : i ≠ j) :
   simp only [if_neg h, LinearMap.comp_apply, LinearMap.zero_apply] at heq
   rw [heq, map_zero]
 
-/-- `(dilProj i)_{i<m}` forme une mesure de projection : elle somme à l'identité. -/
+/-- `(dilProj i)_{i<m}` forme une mesure de projection : elle somme à l'identité
+(reconstruction de `w` depuis ses blocs, `Finset.sum_ite_eq` sur la première
+coordonnée de `Fin m × Fin n`). -/
 theorem dilProj_sum_eq_one : (∑ i, dilProj n m i) = LinearMap.id := by
-  sorry
+  apply LinearMap.ext
+  intro w
+  rw [WithLp.ext_iff]
+  funext p
+  obtain ⟨a, b⟩ := p
+  show ((∑ i, dilProj n m i) w).ofLp (a, b) = w.ofLp (a, b)
+  rw [LinearMap.sum_apply, WithLp.ofLp_sum, Finset.sum_apply]
+  simp only [dilProj, LinearMap.comp_apply, singleL, coordL, LinearMap.coe_mk, AddHom.coe_mk,
+    WithLp.ofLp_toLp]
+  rw [Finset.sum_ite_eq Finset.univ a (fun i => w.ofLp (i, b)), if_pos (Finset.mem_univ a)]
 
 end
 end QuantumFoundations
