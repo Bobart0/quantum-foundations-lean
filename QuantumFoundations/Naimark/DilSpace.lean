@@ -53,10 +53,21 @@ theorem inner_singleL (i : Fin m) (x : H n) (w : DilSpace n m) :
   · intro h; exact absurd (Finset.mem_univ i) h
 
 /-- Version opératorielle de `inner_singleL` : `coordL i` est LE `LinearMap.adjoint`
-de `singleL i`. -/
+de `singleL i` (caractérisation par le produit scalaire, `LinearMap.eq_adjoint_iff`,
+valable entre deux espaces distincts de dimension finie). -/
 theorem adjoint_singleL (i : Fin m) :
     LinearMap.adjoint (singleL n m i) = coordL n m i := by
-  sorry
+  symm
+  rw [LinearMap.eq_adjoint_iff]
+  intro x y
+  rw [← inner_conj_symm (coordL n m i x) y, ← inner_singleL i y x,
+    inner_conj_symm x (singleL n m i y)]
+
+/-- Réciproque de `adjoint_singleL`, via `LinearMap.adjoint_adjoint` (pas gratuite :
+appliquer `adjoint` aux deux membres de `adjoint_singleL` et involution de l'adjoint). -/
+theorem adjoint_coordL (i : Fin m) :
+    LinearMap.adjoint (coordL n m i) = singleL n m i := by
+  rw [← adjoint_singleL i, LinearMap.adjoint_adjoint]
 
 /-- Les blocs sont deux à deux orthonormés : `coordL i ∘ singleL j = δᵢⱼ • id`. -/
 theorem coordL_singleL (i j : Fin m) :
