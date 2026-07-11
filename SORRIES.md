@@ -28,13 +28,22 @@ Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0.
 - [x] 11 sorry restants, `lake build` vert, `guard.sh` : 0 axiome
 
 ## N2 — Briques de l'espace dilaté `K`
-- [ ] `inner_singleL : ⟪singleL i x, w⟫ = ⟪x, coordL i w⟫`
-- [ ] `adjoint_singleL : adjoint (singleL i) = coordL i`
-- [ ] `coordL_singleL : coordL i ∘ₗ singleL j = if i = j then id else 0`
-- [ ] `dilProj_isSymmetric`
-- [ ] `dilProj_idempotent`
-- [ ] `dilProj_orthogonal : i ≠ j → dilProj i ∘ₗ dilProj j = 0`
-- [ ] `dilProj_sum_eq_one : ∑ i, dilProj i = 1`
+- [x] Étape 0 validée : `LinearMap.adjoint` existe entre deux espaces de Hilbert
+      distincts de dimension finie (`E →ₗ[𝕜] F`, `[FiniteDimensional 𝕜 E]` et
+      `[FiniteDimensional 𝕜 F]` séparément) — confirmé en stdin, aucune restriction
+      aux endomorphismes côté Mathlib (seul `IsSymmetric` de gleason est
+      endomorphisme-only, mais inutile ici sauf pour `dilProj`).
+- [x] `inner_singleL : ⟪singleL i x, w⟫ = ⟪x, coordL i w⟫`
+- [x] `adjoint_singleL : adjoint (singleL i) = coordL i` (via `LinearMap.eq_adjoint_iff`)
+- [x] `adjoint_coordL : adjoint (coordL i) = singleL i` (lemme auxiliaire ajouté,
+      prouvé via `LinearMap.adjoint_adjoint`, pas supposé gratuit)
+- [x] `coordL_singleL : coordL i ∘ₗ singleL j = if i = j then id else 0`
+- [x] `dilProj_isSymmetric`
+- [x] `dilProj_idempotent`
+- [x] `dilProj_orthogonal : i ≠ j → dilProj i ∘ₗ dilProj j = 0`
+- [x] `dilProj_sum_eq_one : ∑ i, dilProj i = 1` (résolution de l'identité via
+      `Finset.sum_ite_eq`, aucun lemme de reconstruction Pi/PiLp dédié nécessaire)
+- [x] 4 sorry restants (N3 seul), `lake build` vert, `guard.sh` : 0 axiome
 
 ## N3 — La dilation (Watrous Thm 2.42)
 - [ ] `dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id`
