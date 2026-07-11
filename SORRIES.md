@@ -5,7 +5,8 @@ vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 (cœur), Paris §3.2 Thm 4 (contexte physique, N5 optionnel).
 
 Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
-restant depuis la clôture de N3.
+restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
+(optionnel) le 2026-07-11.
 
 ---
 
@@ -68,11 +69,13 @@ restant depuis la clôture de N3.
       mention explicite de l'assistance IA
 - [x] `git tag v1.0-naimark`, push --tags
 
-## N5 — OPTIONNEL : version unitaire/ancilla (Paris Thm 4 / Watrous Cor. 2.43)
-Nécessite un lemme non trivial et absent à ce jour : extension d'une isométrie
+## N5 — OPTIONNEL : version unitaire/ancilla (Paris Thm 4 / Watrous Cor. 2.43) — ✅ CLOS
+Nécessitait un lemme non trivial et absent à ce jour : extension d'une isométrie
 partielle `H n →ₗ K` en un unitaire global de `K`. L'esquisse de Paris
-("identité sur l'orthogonal de ω_B") est insuffisante telle quelle — voir
-CLAUDE.md. Bon candidat Mathlib si prouvé proprement.
+("identité sur l'orthogonal de ω_B") était insuffisante telle quelle — voir
+CLAUDE.md. Résolu à la tentative 3 (ci-dessous) par une route n'utilisant aucun
+`Submodule`, différente de l'esquisse de Paris comme du plan initial des
+tentatives 1/2.
 
 **Tentative du 2026-07-11 (budget 30 min, non concluante — arrêtée par prudence,
 PAS de sorry ajouté, rien commité sur N5).** Recherche des briques Mathlib :
@@ -144,8 +147,47 @@ minimum de structure de sous-espace (pour appliquer `Orthonormal.equiv`), donc l
 route « 100% opérateurs, zéro submodule » n'est pas complètement praticable telle
 quelle — mais limiter l'usage des submodules à CE seul endroit (au lieu de toute
 l'architecture A/B) est la piste à explorer en premier lors d'une prochaine tentative.
-- [ ] `exists_unitary_extension` (lemme général, isométries partielles dim finie)
-- [ ] `naimark_projective_form` (Px, unitaire U, %B — la forme "ancilla" complète)
+
+**Tentative 3 du 2026-07-11 (budget 2h, RÉUSSIE — N5 clos, 0 sorry).**
+Architecture définitive, radicalement différente des deux précédentes : ZÉRO
+`Submodule`/`↥A` de bout en bout. Au lieu de décomposer l'espace en sous-espace +
+orthogonal, on travaille avec deux **familles orthonormées de `K` tout entier**,
+indexées par `Fin m × Fin n` (l'indice canonique de `DilSpace n m`) :
+- `v p := singleL i₀ (eₚ.₂)` et `w p := dilV P (eₚ.₂)` (`e` = base standard de `H n`),
+  chacune orthonormée sur le bloc `sSlice i₀ := {p | p.1 = i₀}` (immédiat depuis
+  `inner_singleL`/`coordL_singleL`/`dilV_isometry`, aucune structure de sous-espace).
+- `Orthonormal.exists_orthonormalBasis_extension_of_card_eq` (nouveau, pas identifié
+  aux tentatives précédentes) complète CHAQUE famille partielle en une base
+  orthonormée COMPLÈTE de `K` (`finrank K = Fintype.card (Fin m × Fin n)` via
+  `finrank_euclideanSpace`, version générique — pas besoin du suffixe `_fin`).
+- `Orthonormal.equiv` recolle les deux bases complètes en un unique
+  `U : K ≃ₗᵢ[ℂ] K`, avec `e := Equiv.refl (Fin m × Fin n)` (même indice des deux
+  côtés) ⟹ `U (singleL i₀ (eₖ)) = dilV P (eₖ)` pour tout `k`.
+- Conclusion par extensionnalité sur la base standard de `H n` (`Basis.ext`) :
+  `U.toLinearMap ∘ₗ singleL i₀ = dilV P`.
+
+**Cause exacte du timeout des tentatives 1/2, confirmée indépendante de
+`Submodule`** : composer `(orthonormal_family ...).exists_orthonormalBasis_extension_of_card_eq
+...` **inline** dans un `obtain` déclenche le MÊME timeout déterministe au `whnf`
+que les tentatives précédentes (vérifié en isolant le phénomène : le premier
+`obtain` seul passe, le second — avec `dilV P`, un terme bien plus profond — retimeout).
+Le correctif : isoler l'énoncé combiné dans un lemme `private` séparé
+(`orthonormalBasisExtension`), appelé ensuite par simple application de fonction aux
+deux cas concrets (`singleL n m i₀` et `dilV P`). La leçon générale : quand un
+`obtain`/`refine` composant plusieurs lemmes avec métavariables timeout au `whnf`
+malgré une preuve mathématiquement immédiate, ne pas insister sur l'inlining —
+extraire un lemme intermédiaire à énoncé entièrement explicite (règle 7 CLAUDE.md,
+généralisée au-delà des sommes indexées).
+
+- [x] `exists_unitary_extension (P) (i₀) : ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m,
+      U.toLinearMap ∘ₗ singleL n m i₀ = dilV P`
+- [x] `naimark_projective_form (P) (i₀) : ∃ U, ∀ i x, ⟪x, P.E i x⟫ =
+      ⟪U (singleL i₀ x), dilProj i (U (singleL i₀ x))⟫` (forme "ancilla" complète :
+      préparation dans le bloc `i₀` + unitaire global + mesure projective)
+- [x] `QuantumFoundations/Naimark/Unitary.lean` créé, importé, `lake build` vert
+- [x] `#print axioms` : `exists_unitary_extension` et `naimark_projective_form`
+      dépendent de `[propext, Classical.choice, Quot.sound]` uniquement
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry (Naimark v1 + N5)
 
 ---
 

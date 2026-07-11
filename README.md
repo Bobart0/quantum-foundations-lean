@@ -29,6 +29,19 @@ theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
 `DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n)` et `dilProj i` est la projection
 orthogonale sur le `i`-ème bloc.
 
+**N5 (optionnel, clos)** : `dilV` s'étend en un vrai unitaire de `DilSpace n m` (pas
+seulement une isométrie), pour tout indice ancilla `i₀` fixé (Watrous Cor. 2.43 /
+Paris §3.2 Thm 4) :
+
+```lean
+theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
+    ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, U.toLinearMap ∘ₗ singleL n m i₀ = dilV P
+
+theorem naimark_projective_form (P : POVM n m) (i₀ : Fin m) :
+    ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, ∀ (i : Fin m) (x : H n),
+      ⟪x, P.E i x⟫_ℂ = ⟪U (singleL n m i₀ x), dilProj n m i (U (singleL n m i₀ x))⟫_ℂ
+```
+
 ## Écart documenté vs Watrous
 
 Watrous dilate dans un produit tensoriel `X ⊗ ℂ^Σ`. Nous dilatons dans la **somme
@@ -63,14 +76,16 @@ jalon par jalon.
 
 ```bash
 lake build                    # doit terminer vert
-./scripts/guard.sh            # 0 axiome, 0 native_decide, 0 sorry (Naimark v1)
+./scripts/guard.sh            # 0 axiome, 0 native_decide, 0 sorry (Naimark v1 + N5)
 ```
 
-`#print axioms` sur les deux théorèmes livrés :
+`#print axioms` sur les quatre théorèmes livrés :
 
 ```
 'QuantumFoundations.naimark' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.naimark_born' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.exists_unitary_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.naimark_projective_form' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 Ce sont les trois axiomes standards acceptés par Lean/Mathlib lui-même (extensionnalité
@@ -84,6 +99,7 @@ QuantumFoundations/Naimark/Defs.lean       POVM n m (réutilise Gleason.IsPositi
 QuantumFoundations/Naimark/SqrtOp.lean     Racine carrée positive (construction spectrale)
 QuantumFoundations/Naimark/DilSpace.lean   Espace de dilatation K, singleL/coordL/dilProj
 QuantumFoundations/Naimark/Main.lean       dilV, isométrie, théorème de Naimark, corollaire de Born
+QuantumFoundations/Naimark/Unitary.lean    N5 (optionnel) : extension unitaire, forme ancilla
 QuantumFoundations/Nonvacuity.lean         Test d'inhabitation obligatoire (POVM uniforme n=2, m=2)
 CLAUDE.md                                  Règles pour l'agent IA (à lire au démarrage)
 SORRIES.md                                 Suivi détaillé des jalons N0–N5
@@ -98,7 +114,7 @@ SORRIES.md                                 Suivi détaillé des jalons N0–N5
 | N2    | Briques de l'espace dilaté (`singleL`/`coordL`/`dilProj`) | ✅ |
 | N3    | Dilation (`dilV`, `naimark`, `naimark_born`) | ✅ |
 | N4    | Clôture (README, `#print axioms`, tag)       | ✅ |
-| N5    | *Optionnel* : version unitaire/ancilla       | voir `SORRIES.md` |
+| N5    | *Optionnel* : version unitaire/ancilla       | ✅ |
 
 ## Règles
 
