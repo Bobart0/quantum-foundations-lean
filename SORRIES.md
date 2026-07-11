@@ -73,6 +73,37 @@ Nécessite un lemme non trivial et absent à ce jour : extension d'une isométri
 partielle `H n →ₗ K` en un unitaire global de `K`. L'esquisse de Paris
 ("identité sur l'orthogonal de ω_B") est insuffisante telle quelle — voir
 CLAUDE.md. Bon candidat Mathlib si prouvé proprement.
+
+**Tentative du 2026-07-11 (budget 30 min, non concluante — arrêtée par prudence,
+PAS de sorry ajouté, rien commité sur N5).** Recherche des briques Mathlib :
+aucun lemme direct « extend isometry to unitary » trouvé, mais la route de
+construction est claire et repose sur des briques qui EXISTENT :
+- `Submodule.orthogonalDecomposition (K : Submodule 𝕜 E) [K.HasOrthogonalProjection] :
+  E ≃ₗᵢ[𝕜] WithLp 2 (K × Kᗮ)` (`Mathlib.Analysis.InnerProductSpace.ProdL2`) — décompose
+  l'espace ambiant en produit L² du sous-espace et de son orthogonal.
+- `Orthonormal.equiv {v : Basis ι 𝕜 E} (hv) {v' : Basis ι' 𝕜 E'} (hv') (e : ι ≃ ι') :
+  E ≃ₗᵢ[𝕜] E'` (`Mathlib.Analysis.InnerProductSpace.Orthonormal`) — construit une
+  isométrie linéaire entre deux espaces à partir de deux bases orthonormées indexées
+  par des types équivalents.
+- `stdOrthonormalBasis 𝕜 A : OrthonormalBasis (Fin (finrank 𝕜 A)) 𝕜 A` — donne une
+  base orthonormée canonique indexée par `Fin k`, pour n'importe quel sous-espace.
+
+Plan de preuve (non implémenté) : soit `A ≤ K` le sous-espace domaine (`A ≅ H n` via
+`singleL 0` par ex.) et `B := range V₀` son image isométrique. `dim A = dim B`
+(isométrie) ⟹ `dim Aᗮ = dim K - dim A = dim K - dim B = dim Bᗮ` ⟹ via
+`stdOrthonormalBasis` + `Orthonormal.equiv` (avec `e := Equiv.refl (Fin k)`), une
+isométrie `Aᗮ ≃ₗᵢ Bᗮ`. Recoller `V₀ : A ≃ₗᵢ B` et cette isométrie via
+`orthogonalDecomposition A` et `orthogonalDecomposition B` (les deux `≃ₗᵢ WithLp 2 (_ × _ᗮ)`)
+donne l'unitaire cherché sur `K`.
+
+**Pourquoi arrêté ici** : l'assemblage (corestriction de `V₀` à son image en
+`LinearIsometryEquiv`, navigation dans `WithLp 2 (_ × _)`, recollement final) est un
+morceau de preuve substantiel en soi — la friction `WithLp`/`.ofLp` déjà rencontrée
+sur N0–N3 pour des énoncés bien plus simples laisse penser que la fermeture réelle
+dépasserait largement les 30 minutes allouées. Prochaine tentative : budgéter une
+session dédiée, commencer par prouver isolément le lemme de recollement générique
+(`A ≃ₗᵢ B → Aᗮ ≃ₗᵢ Bᗮ → E ≃ₗᵢ E` pour `A, B ≤ E` de même dimension) en `stdin` avant
+de l'attaquer dans le fichier.
 - [ ] `exists_unitary_extension` (lemme général, isométries partielles dim finie)
 - [ ] `naimark_projective_form` (Px, unitaire U, %B — la forme "ancilla" complète)
 
