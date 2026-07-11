@@ -86,7 +86,24 @@ private theorem eigenvalues_nonneg {T : H n →ₗ[ℂ] H n} (hP : IsPositiveOp 
 /-- `sqrtOp T` est positif dès que `T` l'est. -/
 theorem sqrtOp_isPositive {T : H n →ₗ[ℂ] H n} (hT : IsPositiveOp T) :
     IsPositiveOp (sqrtOp T) := by
-  sorry
+  obtain ⟨hSym, hPos⟩ := hT
+  set b := hSym.eigenvectorBasis finrank_euclideanSpace_fin
+  set lam := hSym.eigenvalues finrank_euclideanSpace_fin
+  constructor
+  · intro x y
+    simp only [sqrtOp_apply hSym x, sqrtOp_apply hSym y, sum_inner, inner_sum,
+      inner_smul_left, inner_smul_right, Complex.conj_ofReal]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [inner_conj_symm x (b i)]
+    ring
+  · intro x
+    simp only [sqrtOp_apply hSym x, sum_inner, inner_smul_left, Complex.conj_ofReal,
+      Complex.re_sum]
+    apply Finset.sum_nonneg
+    intro i _
+    rw [mul_comm ((starRingEnd ℂ) ⟪b i, x⟫_ℂ) ⟪b i, x⟫_ℂ, Complex.mul_conj, Complex.re_ofReal_mul]
+    exact mul_nonneg (Real.sqrt_nonneg _) (Complex.normSq_nonneg _)
 
 /-- `sqrtOp T` est bien une racine carrée de `T` au sens opératoriel : `√T ∘ √T = T`.
 (Unicité de la racine carrée positive : hors scope de ce jalon.) -/
