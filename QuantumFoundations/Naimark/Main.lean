@@ -99,8 +99,8 @@ theorem naimark_dilation (P : POVM n m) (i : Fin m) :
 /-- **Théorème de dilation de Naimark** (dimension finie, somme directe). -/
 theorem naimark (P : POVM n m) :
     ∃ V : H n →ₗ[ℂ] DilSpace n m, LinearMap.adjoint V ∘ₗ V = LinearMap.id ∧
-      ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i := by
-  sorry
+      ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i :=
+  ⟨dilV P, dilV_isometry P, naimark_dilation P⟩
 
 /-- Corollaire statistique : les probabilités de Born coïncident sous la dilatation. -/
 theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
