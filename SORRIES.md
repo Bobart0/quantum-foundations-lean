@@ -64,7 +64,7 @@ restant depuis la clôture de N3.
 - [x] SORRIES.md à jour, `#print axioms` vérifié :
       `QuantumFoundations.naimark` et `QuantumFoundations.naimark_born` dépendent
       de `[propext, Classical.choice, Quot.sound]` uniquement
-- [ ] README : énoncé, écart documenté vs Watrous (somme directe vs ⊗),
+- [x] README : énoncé, écart documenté vs Watrous (somme directe vs ⊗),
       mention explicite de l'assistance IA
 - [x] `git tag v1.0-naimark`, push --tags
 
