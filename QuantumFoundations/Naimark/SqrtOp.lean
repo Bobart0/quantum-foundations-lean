@@ -106,10 +106,18 @@ theorem sqrtOp_isPositive {T : H n →ₗ[ℂ] H n} (hT : IsPositiveOp T) :
     exact mul_nonneg (Real.sqrt_nonneg _) (Complex.normSq_nonneg _)
 
 /-- `sqrtOp T` est bien une racine carrée de `T` au sens opératoriel : `√T ∘ √T = T`.
+Par extensionnalité sur la base propre (`Basis.ext`), pas de double somme.
 (Unicité de la racine carrée positive : hors scope de ce jalon.) -/
 theorem sqrtOp_mul_self {T : H n →ₗ[ℂ] H n} (hT : IsPositiveOp T) :
     sqrtOp T ∘ₗ sqrtOp T = T := by
-  sorry
+  apply (hT.1.eigenvectorBasis finrank_euclideanSpace_fin).toBasis.ext
+  intro j
+  rw [show (hT.1.eigenvectorBasis finrank_euclideanSpace_fin).toBasis j
+      = hT.1.eigenvectorBasis finrank_euclideanSpace_fin j from rfl]
+  show sqrtOp T (sqrtOp T (hT.1.eigenvectorBasis finrank_euclideanSpace_fin j)) = _
+  rw [sqrtOp_apply_basis hT.1, map_smul, sqrtOp_apply_basis hT.1, smul_smul,
+    ← Complex.ofReal_mul, Real.mul_self_sqrt (eigenvalues_nonneg hT j)]
+  exact (hT.1.apply_eigenvectorBasis finrank_euclideanSpace_fin j).symm
 
 end
 end QuantumFoundations
