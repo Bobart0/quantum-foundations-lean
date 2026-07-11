@@ -105,7 +105,10 @@ theorem naimark (P : POVM n m) :
 /-- Corollaire statistique : les probabilités de Born coïncident sous la dilatation. -/
 theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
     ⟪x, P.E i x⟫_ℂ = ⟪dilV P x, dilProj n m i (dilV P x)⟫_ℂ := by
-  sorry
+  rw [← LinearMap.adjoint_inner_right (dilV P) x (dilProj n m i (dilV P x))]
+  have h := LinearMap.congr_fun (naimark_dilation P i) x
+  rw [LinearMap.comp_apply, LinearMap.comp_apply] at h
+  rw [h]
 
 end
 end QuantumFoundations
