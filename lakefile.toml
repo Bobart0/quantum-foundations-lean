@@ -1,0 +1,15 @@
+name = "quantum_foundations"
+defaultTargets = ["QuantumFoundations"]
+
+[[require]]
+name = "gleason"
+git = "https://github.com/Bobart0/gleason-theorem-lean.git"
+rev = "v1.0-gleason"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"
+
+[[lean_lib]]
+name = "QuantumFoundations"

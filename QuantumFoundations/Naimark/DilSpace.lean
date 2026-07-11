@@ -1,0 +1,77 @@
+import QuantumFoundations.Naimark.Defs
+import Mathlib.Analysis.InnerProductSpace.Adjoint
+
+/-!
+# Espace de dilatation `K := ⊕_{i<m} H n`
+
+Choix d'étape 0 : `K₂ := EuclideanSpace ℂ (Fin m × Fin n)` (version plate), retenu sur
+`K₁ := PiLp 2 (fun _ : Fin m => H n)` (nested) à friction de preuve égale, pour son
+index unique `Fin m × Fin n` (moins de couches `WithLp`/`.ofLp` à traverser dans N3).
+Écart documenté vs Watrous : somme directe hilbertienne, pas produit tensoriel
+(cf. CLAUDE.md, § « Écart documenté »).
+-/
+
+namespace QuantumFoundations
+
+open scoped InnerProductSpace
+open Gleason
+
+noncomputable section
+
+variable {n m : ℕ}
+
+/-- Espace de dilatation : somme directe hilbertienne de `m` copies de `H n`,
+réalisée à plat comme `EuclideanSpace ℂ (Fin m × Fin n)`. -/
+abbrev DilSpace (n m : ℕ) := EuclideanSpace ℂ (Fin m × Fin n)
+
+/-- Injection de `H n` dans le `i`-ème bloc de `DilSpace n m`. -/
+def singleL (n m : ℕ) (i : Fin m) : H n →ₗ[ℂ] DilSpace n m where
+  toFun x := WithLp.toLp 2 (fun p : Fin m × Fin n => if p.1 = i then x p.2 else 0)
+  map_add' x y := by
+    rw [← WithLp.toLp_add]; congr 1; funext p; by_cases h : p.1 = i <;> simp [h]
+  map_smul' c x := by
+    rw [← WithLp.toLp_smul]; congr 1; funext p; by_cases h : p.1 = i <;> simp [h]
+
+/-- Projection de `DilSpace n m` sur son `i`-ème bloc, à valeurs dans `H n`. -/
+def coordL (n m : ℕ) (i : Fin m) : DilSpace n m →ₗ[ℂ] H n where
+  toFun w := WithLp.toLp 2 (fun k : Fin n => w (i, k))
+  map_add' w w' := by rw [← WithLp.toLp_add]; congr 1
+  map_smul' c w := by rw [← WithLp.toLp_smul]; congr 1
+
+/-- `coordL i` est l'adjoint formel de `singleL i` (produit scalaire). -/
+theorem inner_singleL (i : Fin m) (x : H n) (w : DilSpace n m) :
+    ⟪singleL n m i x, w⟫_ℂ = ⟪x, coordL n m i w⟫_ℂ := by
+  sorry
+
+/-- Version opératorielle de `inner_singleL` : `coordL i` est LE `LinearMap.adjoint`
+de `singleL i`. -/
+theorem adjoint_singleL (i : Fin m) :
+    LinearMap.adjoint (singleL n m i) = coordL n m i := by
+  sorry
+
+/-- Les blocs sont deux à deux orthonormés : `coordL i ∘ singleL j = δᵢⱼ • id`. -/
+theorem coordL_singleL (i j : Fin m) :
+    coordL n m i ∘ₗ singleL n m j = if i = j then LinearMap.id else 0 := by
+  sorry
+
+/-- Projection orthogonale sur le `i`-ème bloc de `DilSpace n m`. -/
+noncomputable def dilProj (n m : ℕ) (i : Fin m) : DilSpace n m →ₗ[ℂ] DilSpace n m :=
+  singleL n m i ∘ₗ coordL n m i
+
+theorem dilProj_isSymmetric (i : Fin m) : LinearMap.IsSymmetric (dilProj n m i) := by
+  sorry
+
+theorem dilProj_idempotent (i : Fin m) :
+    dilProj n m i ∘ₗ dilProj n m i = dilProj n m i := by
+  sorry
+
+theorem dilProj_orthogonal {i j : Fin m} (h : i ≠ j) :
+    dilProj n m i ∘ₗ dilProj n m j = 0 := by
+  sorry
+
+/-- `(dilProj i)_{i<m}` forme une mesure de projection : elle somme à l'identité. -/
+theorem dilProj_sum_eq_one : (∑ i, dilProj n m i) = LinearMap.id := by
+  sorry
+
+end
+end QuantumFoundations
