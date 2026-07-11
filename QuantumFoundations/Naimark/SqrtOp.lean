@@ -1,5 +1,6 @@
 import QuantumFoundations.Naimark.Defs
 import Mathlib.Analysis.InnerProductSpace.Spectrum
+import Mathlib.Analysis.InnerProductSpace.Positive
 
 /-!
 # Racine carrée positive (dimension finie, construction spectrale)
@@ -73,6 +74,14 @@ private theorem sqrtOp_apply_basis {T : H n →ₗ[ℂ] H n} (hT : LinearMap.IsS
     rw [(hT.eigenvectorBasis finrank_euclideanSpace_fin).inner_eq_ite, if_neg hij]
     simp
   · intro h; exact absurd (Finset.mem_univ j) h
+
+/-- Les valeurs propres d'un opérateur positif sont positives : pont d'une ligne vers
+`LinearMap.IsPositive.nonneg_eigenvalues` (Mathlib), via la coïncidence de
+`Gleason.IsPositiveOp` et `LinearMap.IsPositive` (cf. en-tête). -/
+private theorem eigenvalues_nonneg {T : H n →ₗ[ℂ] H n} (hP : IsPositiveOp T) (j : Fin n) :
+    0 ≤ hP.1.eigenvalues finrank_euclideanSpace_fin j := by
+  have hPos : T.IsPositive := ⟨hP.1, hP.2⟩
+  exact hPos.nonneg_eigenvalues finrank_euclideanSpace_fin j
 
 /-- `sqrtOp T` est positif dès que `T` l'est. -/
 theorem sqrtOp_isPositive {T : H n →ₗ[ℂ] H n} (hT : IsPositiveOp T) :
