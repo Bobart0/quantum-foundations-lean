@@ -59,6 +59,21 @@ private theorem sqrtOp_apply {T : H n →ₗ[ℂ] H n} (hT : LinearMap.IsSymmetr
   simp only [sqrtOp, dif_pos hT, LinearMap.sum_apply, LinearMap.smul_apply,
     ContinuousLinearMap.coe_coe, InnerProductSpace.rankOne_apply]
 
+/-- `sqrtOp T` agit sur un vecteur propre de `T` par multiplication par `√λⱼ`
+(la somme spectrale s'effondre sur le seul terme `j` par orthonormalité de la base). -/
+private theorem sqrtOp_apply_basis {T : H n →ₗ[ℂ] H n} (hT : LinearMap.IsSymmetric T)
+    (j : Fin n) :
+    sqrtOp T (hT.eigenvectorBasis finrank_euclideanSpace_fin j) =
+      (Real.sqrt (hT.eigenvalues finrank_euclideanSpace_fin j) : ℂ) •
+        hT.eigenvectorBasis finrank_euclideanSpace_fin j := by
+  rw [sqrtOp_apply hT, Finset.sum_eq_single j]
+  · rw [(hT.eigenvectorBasis finrank_euclideanSpace_fin).inner_eq_ite, if_pos rfl]
+    simp
+  · intro i _ hij
+    rw [(hT.eigenvectorBasis finrank_euclideanSpace_fin).inner_eq_ite, if_neg hij]
+    simp
+  · intro h; exact absurd (Finset.mem_univ j) h
+
 /-- `sqrtOp T` est positif dès que `T` l'est. -/
 theorem sqrtOp_isPositive {T : H n →ₗ[ℂ] H n} (hT : IsPositiveOp T) :
     IsPositiveOp (sqrtOp T) := by
