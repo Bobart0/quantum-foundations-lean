@@ -72,7 +72,20 @@ theorem adjoint_coordL (i : Fin m) :
 /-- Les blocs sont deux à deux orthonormés : `coordL i ∘ singleL j = δᵢⱼ • id`. -/
 theorem coordL_singleL (i j : Fin m) :
     coordL n m i ∘ₗ singleL n m j = if i = j then LinearMap.id else 0 := by
-  sorry
+  by_cases h : i = j
+  · subst h
+    simp only [if_true]
+    apply LinearMap.ext
+    intro x
+    show WithLp.toLp 2 (fun k : Fin n => (singleL n m i x) (i, k)) = x
+    simp only [singleL, LinearMap.coe_mk, AddHom.coe_mk, if_pos rfl]
+    exact WithLp.toLp_ofLp (p := 2) x
+  · simp only [if_neg h]
+    apply LinearMap.ext
+    intro x
+    show WithLp.toLp 2 (fun k : Fin n => (singleL n m j x) (i, k)) = (0 : H n)
+    simp only [singleL, LinearMap.coe_mk, AddHom.coe_mk, if_neg h]
+    rfl
 
 /-- Projection orthogonale sur le `i`-ème bloc de `DilSpace n m`. -/
 noncomputable def dilProj (n m : ℕ) (i : Fin m) : DilSpace n m →ₗ[ℂ] DilSpace n m :=
