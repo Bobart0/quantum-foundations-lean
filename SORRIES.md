@@ -4,7 +4,8 @@ Suivi de l'avancement, sur le modèle de gleason-theorem-lean. Coché = `lake bu
 vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 (cœur), Paris §3.2 Thm 4 (contexte physique, N5 optionnel).
 
-Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0.
+Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
+restant depuis la clôture de N3.
 
 ---
 
@@ -46,17 +47,26 @@ Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0.
 - [x] 4 sorry restants (N3 seul), `lake build` vert, `guard.sh` : 0 axiome
 
 ## N3 — La dilation (Watrous Thm 2.42)
-- [ ] `dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id`
-- [ ] `naimark_dilation : ∀ i, adjoint (dilV P) ∘ₗ dilProj i ∘ₗ dilV P = P.E i`
-- [ ] `theorem naimark` (assemblage des deux précédents)
-- [ ] `naimark_born` (corollaire statistique : les probabilités coïncident)
+- [x] Étape 0 validée : conventions d'adjoint confirmées (`adjoint_inner_left`,
+      `adjoint_inner_right`, `adjoint_comp`, `map_sum` pour l'adjoint d'une somme
+      finie) — citées, pas re-dérivées.
+- [x] `key1`, `key2` : pivots à somme simple (jamais de double somme, cf. règle 7
+      CLAUDE.md / leçon `riesz_rep_assembly`)
+- [x] `dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id`
+- [x] `naimark_dilation : ∀ i, adjoint (dilV P) ∘ₗ dilProj i ∘ₗ dilV P = P.E i`
+- [x] `theorem naimark` (assemblage direct des deux précédents)
+- [x] `naimark_born` (corollaire statistique : les probabilités coïncident)
+- [x] 0 sorry restant sur Naimark v1, `lake build` vert, `guard.sh` : 0 axiome,
+      0 `native_decide` (bug latent corrigé : `grep` sans match sous
+      `set -e -o pipefail` tuait le script pile au moment d'atteindre 0 sorry)
 
 ## N4 — Clôture
-- [ ] SORRIES.md à jour, `#print axioms naimark` vérifié (propext/choice/sound
-      uniquement)
+- [x] SORRIES.md à jour, `#print axioms` vérifié :
+      `QuantumFoundations.naimark` et `QuantumFoundations.naimark_born` dépendent
+      de `[propext, Classical.choice, Quot.sound]` uniquement
 - [ ] README : énoncé, écart documenté vs Watrous (somme directe vs ⊗),
       mention explicite de l'assistance IA
-- [ ] `git tag v1.0-naimark`, push --tags
+- [x] `git tag v1.0-naimark`, push --tags
 
 ## N5 — OPTIONNEL : version unitaire/ancilla (Paris Thm 4 / Watrous Cor. 2.43)
 Nécessite un lemme non trivial et absent à ce jour : extension d'une isométrie
