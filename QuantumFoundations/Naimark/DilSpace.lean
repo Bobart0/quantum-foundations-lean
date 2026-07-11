@@ -102,11 +102,22 @@ theorem dilProj_isSymmetric (i : Fin m) : LinearMap.IsSymmetric (dilProj n m i) 
 
 theorem dilProj_idempotent (i : Fin m) :
     dilProj n m i ∘ₗ dilProj n m i = dilProj n m i := by
-  sorry
+  apply LinearMap.ext
+  intro x
+  show singleL n m i (coordL n m i (singleL n m i (coordL n m i x)))
+    = singleL n m i (coordL n m i x)
+  have h := LinearMap.congr_fun (coordL_singleL i i) (coordL n m i x)
+  simp only [ite_true, LinearMap.comp_apply, LinearMap.id_apply] at h
+  rw [h]
 
 theorem dilProj_orthogonal {i j : Fin m} (h : i ≠ j) :
     dilProj n m i ∘ₗ dilProj n m j = 0 := by
-  sorry
+  apply LinearMap.ext
+  intro x
+  show singleL n m i (coordL n m i (singleL n m j (coordL n m j x))) = 0
+  have heq := LinearMap.congr_fun (coordL_singleL i j) (coordL n m j x)
+  simp only [if_neg h, LinearMap.comp_apply, LinearMap.zero_apply] at heq
+  rw [heq, map_zero]
 
 /-- `(dilProj i)_{i<m}` forme une mesure de projection : elle somme à l'identité. -/
 theorem dilProj_sum_eq_one : (∑ i, dilProj n m i) = LinearMap.id := by
