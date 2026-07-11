@@ -21,8 +21,11 @@ Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0.
 - [x] Squelette compile, 13 sorry, 0 axiome, CI/guard.sh adaptés au nouveau nom
 
 ## N1 — `sqrtOp` (le seul contenu mathématique neuf)
-- [ ] `sqrtOp_isPositive : IsPositiveOp T → IsPositiveOp (sqrtOp T)`
-- [ ] `sqrtOp_mul_self : IsPositiveOp T → sqrtOp T ∘ₗ sqrtOp T = T`
+- [x] `sqrtOp_isPositive : IsPositiveOp T → IsPositiveOp (sqrtOp T)`
+- [x] `sqrtOp_mul_self : IsPositiveOp T → sqrtOp T ∘ₗ sqrtOp T = T`
+      (extensionnalité sur la base propre, pas de double somme ; 3 lemmes privés
+      auxiliaires : `sqrtOp_apply`, `sqrtOp_apply_basis`, `eigenvalues_nonneg`)
+- [x] 11 sorry restants, `lake build` vert, `guard.sh` : 0 axiome
 
 ## N2 — Briques de l'espace dilaté `K`
 - [ ] `inner_singleL : ⟪singleL i x, w⟫ = ⟪x, coordL i w⟫`
