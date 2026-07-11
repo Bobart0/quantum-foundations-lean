@@ -100,10 +100,50 @@ donne l'unitaire cherché sur `K`.
 `LinearIsometryEquiv`, navigation dans `WithLp 2 (_ × _)`, recollement final) est un
 morceau de preuve substantiel en soi — la friction `WithLp`/`.ofLp` déjà rencontrée
 sur N0–N3 pour des énoncés bien plus simples laisse penser que la fermeture réelle
-dépasserait largement les 30 minutes allouées. Prochaine tentative : budgéter une
-session dédiée, commencer par prouver isolément le lemme de recollement générique
-(`A ≃ₗᵢ B → Aᗮ ≃ₗᵢ Bᗮ → E ≃ₗᵢ E` pour `A, B ≤ E` de même dimension) en `stdin` avant
-de l'attaquer dans le fichier.
+dépasserait largement les 30 minutes allouées.
+
+**Tentative 2 du 2026-07-11 (budget 60 min, non concluante — arrêtée, aucun sorry ni
+code cassé committé).** Nouvelle architecture : projections orthogonales directes
+(`Submodule.orthogonalProjectionOnto`), sans `orthogonalDecomposition`/`WithLp`.
+Étape 0 confirmée en stdin :
+- `Submodule.HasOrthogonalProjection` : instance automatique pour tout sous-espace
+  d'un espace de dimension finie — OK.
+- `Submodule.orthogonalProjectionOnto (K) : E →L[𝕜] ↥K` (`orthogonalProjection` est
+  déprécié, alias vers `orthogonalProjectionOnto`) ; décomposition directe obtenue via
+  `Submodule.starProjection_add_starProjection_orthogonal` + `starProjection_apply`
+  (`K.starProjection v = ↑(K.orthogonalProjectionOnto v)`), PAS un lemme unique tout
+  fait sous ce nom exact.
+- `Submodule.norm_sq_eq_add_norm_sq_projection (x) (S) [HasOrthogonalProjection] :
+  ‖x‖² = ‖S.orthogonalProjectionOnto x‖² + ‖Sᗮ.orthogonalProjectionOnto x‖²` — Pythagore,
+  nom confirmé.
+- `LinearMap.injective_iff_surjective [FiniteDimensional K V] {f : V →ₗ[K] V} :
+  Injective f ↔ Surjective f` — confirmé (`Mathlib.LinearAlgebra.FiniteDimensional.Basic`).
+- Pas de `LinearIsometryEquiv.ofBijective` ; la bonne brique est
+  `LinearIsometryEquiv.ofSurjective (f : F →ₛₗᵢ E) (hf : Surjective f) : F ≃ₛₗᵢ E`, et
+  pour construire une `LinearIsometry` depuis un `LinearMap` + preuve de norme :
+  `LinearIsometry.mk (toLinearMap) (∀ x, ‖toLinearMap x‖ = ‖x‖)`.
+- `LinearIsometry.equivRange (f : F →ₛₗᵢ E) : F ≃ₛₗᵢ (LinearMap.range f.toLinearMap)`
+  existe (corestriction d'une isométrie à son image) — confirmé.
+- `Orthonormal.equiv`/`stdOrthonormalBasis` : inchangés (tentative 1).
+
+**Obstruction rencontrée — PAS mathématique, PERFORMANCE Lean** : dès N5-1/N5-2
+(censés être mécaniques), composer deux `LinearIsometryEquiv` obtenus via
+`.equivRange` avec `.symm.trans` sur des sous-espaces définis par
+`LinearMap.range (...).toLinearMap` (`A := range(singleL i₀)`, `B := range(dilV P)`)
+provoque un **timeout déterministe au `whnf`** (`maxHeartbeats`), y compris relevé à
+1 000 000 puis 4 000 000 — l'élaborateur semble tenter de déplier ces définitions en
+profondeur lors de la vérification de type de la composition, sans jamais aboutir
+dans un temps raisonnable. Piste alternative testée avec succès : construire les
+projecteurs `proj_B := dilV P ∘ₗ adjoint(dilV P)` directement comme endomorphismes de
+`K` (formule standard `VV*` pour la projection orthogonale sur `range V` quand
+`V*V = id` — idempotence et symétrie viennent gratuitement de `dilV_isometry`), ce qui
+évite totalement `Submodule`/`↥A`/`LinearIsometryEquiv` composés et compile sans
+timeout. Reste un point dur non résolu dans le temps imparti : construire `W`
+(l'isométrie entre les complémentaires orthogonaux `Aᗮ`/`Bᗮ`) nécessite malgré tout un
+minimum de structure de sous-espace (pour appliquer `Orthonormal.equiv`), donc la
+route « 100% opérateurs, zéro submodule » n'est pas complètement praticable telle
+quelle — mais limiter l'usage des submodules à CE seul endroit (au lieu de toute
+l'architecture A/B) est la piste à explorer en premier lors d'une prochaine tentative.
 - [ ] `exists_unitary_extension` (lemme général, isométries partielles dim finie)
 - [ ] `naimark_projective_form` (Px, unitaire U, %B — la forme "ancilla" complète)
 
