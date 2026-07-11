@@ -92,7 +92,13 @@ noncomputable def dilProj (n m : ℕ) (i : Fin m) : DilSpace n m →ₗ[ℂ] Dil
   singleL n m i ∘ₗ coordL n m i
 
 theorem dilProj_isSymmetric (i : Fin m) : LinearMap.IsSymmetric (dilProj n m i) := by
-  sorry
+  have hadj : LinearMap.adjoint (dilProj n m i) = dilProj n m i := by
+    show LinearMap.adjoint (singleL n m i ∘ₗ coordL n m i) = singleL n m i ∘ₗ coordL n m i
+    rw [LinearMap.adjoint_comp, adjoint_coordL, adjoint_singleL]
+  intro x y
+  have h := LinearMap.adjoint_inner_right (dilProj n m i) x y
+  rw [hadj] at h
+  exact h.symm
 
 theorem dilProj_idempotent (i : Fin m) :
     dilProj n m i ∘ₗ dilProj n m i = dilProj n m i := by
