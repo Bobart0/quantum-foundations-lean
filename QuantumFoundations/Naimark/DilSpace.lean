@@ -78,7 +78,7 @@ theorem coordL_singleL (i j : Fin m) :
     apply LinearMap.ext
     intro x
     show WithLp.toLp 2 (fun k : Fin n => (singleL n m i x) (i, k)) = x
-    simp only [singleL, LinearMap.coe_mk, AddHom.coe_mk, if_pos rfl]
+    simp only [singleL, LinearMap.coe_mk, AddHom.coe_mk]
     exact WithLp.toLp_ofLp (p := 2) x
   · simp only [if_neg h]
     apply LinearMap.ext
