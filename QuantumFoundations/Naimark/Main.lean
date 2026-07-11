@@ -84,10 +84,17 @@ theorem dilV_isometry (P : POVM n m) :
   rw [← LinearMap.sum_apply, P.sum_eq_one]
   rfl
 
-/-- La mesure projective `dilProj` réalise `P` via `dilV` : `adjoint V ∘ dilProj i ∘ V = E i`. -/
+/-- La mesure projective `dilProj` réalise `P` via `dilV` : `adjoint V ∘ dilProj i ∘ V = E i`.
+Aucune somme à développer — tout vient de `key1`/`key2` déjà fermés. -/
 theorem naimark_dilation (P : POVM n m) (i : Fin m) :
     LinearMap.adjoint (dilV P) ∘ₗ dilProj n m i ∘ₗ dilV P = P.E i := by
-  sorry
+  apply LinearMap.ext
+  intro x
+  show (LinearMap.adjoint (dilV P)) ((dilProj n m i) (dilV P x)) = P.E i x
+  show (LinearMap.adjoint (dilV P)) ((singleL n m i) ((coordL n m i) (dilV P x))) = P.E i x
+  rw [← LinearMap.comp_apply (coordL n m i) (dilV P), key1,
+    ← LinearMap.comp_apply (LinearMap.adjoint (dilV P)) (singleL n m i), key2,
+    ← LinearMap.comp_apply (sqrtOp (P.E i)) (sqrtOp (P.E i)), sqrtOp_mul_self (P.pos i)]
 
 /-- **Théorème de dilation de Naimark** (dimension finie, somme directe). -/
 theorem naimark (P : POVM n m) :
