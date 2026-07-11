@@ -38,10 +38,19 @@ def coordL (n m : ℕ) (i : Fin m) : DilSpace n m →ₗ[ℂ] H n where
   map_add' w w' := by rw [← WithLp.toLp_add]; congr 1
   map_smul' c w := by rw [← WithLp.toLp_smul]; congr 1
 
-/-- `coordL i` est l'adjoint formel de `singleL i` (produit scalaire). -/
+/-- `coordL i` est l'adjoint formel de `singleL i` (produit scalaire) : calcul-pivot,
+la somme sur `Fin m × Fin n` se réduit au bloc `i` par construction de `singleL`. -/
 theorem inner_singleL (i : Fin m) (x : H n) (w : DilSpace n m) :
     ⟪singleL n m i x, w⟫_ℂ = ⟪x, coordL n m i w⟫_ℂ := by
-  sorry
+  show ⟪(WithLp.toLp 2 (fun p : Fin m × Fin n => if p.1 = i then x p.2 else 0) : DilSpace n m),
+    w⟫_ℂ = _
+  rw [PiLp.inner_apply, PiLp.inner_apply, Fintype.sum_prod_type, Finset.sum_eq_single i]
+  · simp [coordL]
+  · intro a _ ha
+    apply Finset.sum_eq_zero
+    intro b _
+    simp [ha]
+  · intro h; exact absurd (Finset.mem_univ i) h
 
 /-- Version opératorielle de `inner_singleL` : `coordL i` est LE `LinearMap.adjoint`
 de `singleL i`. -/
