@@ -13,5 +13,5 @@ if grep -rn 'native_decide' QuantumFoundations QuantumFoundations.lean 2>/dev/nu
   echo "ÉCHEC : 'native_decide' est interdit (élargit la base de confiance)."
   exit 1
 fi
-N=$(grep -rno '\bsorry\b' QuantumFoundations QuantumFoundations.lean 2>/dev/null | wc -l | tr -d ' ')
+N=$(grep -rno '\bsorry\b' QuantumFoundations QuantumFoundations.lean 2>/dev/null | wc -l | tr -d ' ' || true)
 echo "OK — aucun axiome, aucun native_decide. Sorries restants : ${N}"
