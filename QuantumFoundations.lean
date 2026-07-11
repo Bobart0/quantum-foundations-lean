@@ -2,6 +2,7 @@ import QuantumFoundations.Naimark.Defs
 import QuantumFoundations.Naimark.SqrtOp
 import QuantumFoundations.Naimark.DilSpace
 import QuantumFoundations.Naimark.Main
+import QuantumFoundations.Naimark.Unitary
 import QuantumFoundations.Nonvacuity
 
 namespace QuantumFoundations
