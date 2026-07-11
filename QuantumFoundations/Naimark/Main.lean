@@ -67,10 +67,22 @@ private theorem key2 (P : POVM n m) (i : Fin m) :
   simp only [step]
   rw [Finset.sum_ite_eq' Finset.univ i (fun j => sqrtOp (P.E j) x), if_pos (Finset.mem_univ i)]
 
-/-- `dilV P` est une isométrie : `adjoint (dilV P) ∘ dilV P = id`. -/
+/-- `dilV P` est une isométrie : `adjoint (dilV P) ∘ dilV P = id`. Une seule somme
+sur l'indice de bloc (via `key2` puis `sqrtOp_mul_self`), jamais de double somme. -/
 theorem dilV_isometry (P : POVM n m) :
     LinearMap.adjoint (dilV P) ∘ₗ dilV P = LinearMap.id := by
-  sorry
+  apply LinearMap.ext
+  intro x
+  show (LinearMap.adjoint (dilV P)) ((∑ i, singleL n m i ∘ₗ sqrtOp (P.E i)) x) = x
+  rw [LinearMap.sum_apply, map_sum]
+  simp only [LinearMap.comp_apply]
+  have step : ∀ i : Fin m, (LinearMap.adjoint (dilV P)) ((singleL n m i) (sqrtOp (P.E i) x))
+      = P.E i x := by
+    intro i
+    rw [← LinearMap.comp_apply, key2 P i, ← LinearMap.comp_apply, sqrtOp_mul_self (P.pos i)]
+  simp only [step]
+  rw [← LinearMap.sum_apply, P.sum_eq_one]
+  rfl
 
 /-- La mesure projective `dilProj` réalise `P` via `dilV` : `adjoint V ∘ dilProj i ∘ V = E i`. -/
 theorem naimark_dilation (P : POVM n m) (i : Fin m) :
