@@ -16,6 +16,7 @@ jobs:
     needs: guard
     steps:
       - uses: actions/checkout@v4
-      # leanprover/lean-action installe elan, récupère le cache Mathlib et lance `lake build`.
-      # TODO(M0) : vérifier les options exactes de l'action à la première exécution.
+      # leanprover/lean-action détecte le workspace Lake, récupère le cache Mathlib
+      # (lake exe cache get) et lance `lake build` — aucune option supplémentaire
+      # nécessaire pour ce projet (config par défaut vérifiée).
       - uses: leanprover/lean-action@v1
