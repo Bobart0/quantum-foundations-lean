@@ -6,7 +6,8 @@ vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 
 Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
-(optionnel) le 2026-07-11.
+(optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
+total : 24).
 
 ---
 
@@ -260,30 +261,70 @@ W0 → W1 → W2 → W3 → W4 → W5 (→ W6). **W1 en premier** car il calibre
 difficulté réel (`nlinarith`/`Complex.ext` territoriaux) et W4 s'y appuie
 entièrement.
 
-### W0 — Squelette (Defs, énoncé principal, Nonvacuity)
-- [ ] Étape 0 validée en stdin AVANT de figer les signatures (voir liste API
-      ci-dessous)
-- [ ] Défs à formules fermées (junk hors domaine) : `e := EuclideanSpace.single 0 1`,
-      `e' := T e`, `V`, `chi`
-- [ ] Énoncé principal `wigner` + tous les lemmes de W1-W5 posés en `sorry` ; cas
-      `n = 0` et `n = 1` prouvés directement (pas en sorry)
-- [ ] Nonvacuity : `T = id` satisfait `hT` (branche gauche, `rfl`) ; `T = conjCoords`
-      (conjugaison composante par composante) satisfait `hT` et habite la branche
-      droite — preuve que l'énoncé n'est ni vacueux ni mal câblé côté antiunitaire
-- [ ] `lake build` vert, `guard.sh` OK, CI inchangée
+### W0 — Squelette (Defs, énoncé principal, Nonvacuity) — ✅ CLOS (2026-07-12)
+- [x] Étape 0 validée en stdin (résultats exacts ci-dessous)
+- [x] Défs à formules fermées (junk hors domaine, aucune preuve prise en argument —
+      pattern `dite` sur `0 < n`/`2 ≤ n`, comme `sqrtOp`) : `e`, `eImg` (=`e'`),
+      `InPerp` (=`𝒫`, une `Prop`), `V`, `refVec`, `chidir`, `chi`, `U`,
+      `IsWignerMap` — `QuantumFoundations/Wigner/Defs.lean`
+- [x] Énoncé principal `wigner` + tous les lemmes de W1-W5 posés en `sorry`.
+      Écart au plan, signalé explicitement : cas `n = 0` PROUVÉ directement
+      (vacuité — `H 0` est `Subsingleton`, aucun vecteur unitaire) ; cas `n = 1`
+      laissé en `sorry` (court et autonome — aucune dépendance sur W1-W5 — mais
+      non attaqué à ce stade pour ne pas retarder la validation du squelette).
+- [x] Nonvacuity : `T = id` habite la branche unitaire, `T = conjCoords`
+      (conjugaison composante par composante, bundlée en isométrie
+      conj-semilinéaire via `LinearEquiv.ofBijective` + involutivité) habite la
+      branche antiunitaire — **entièrement prouvé, 0 sorry**, aucun fallback
+      manuel exotique nécessaire. `QuantumFoundations/Wigner/Nonvacuity.lean`
+- [x] `lake build` vert, `guard.sh` : 0 axiome, 0 `native_decide`, **24 sorry**
+      (Naimark reste à 0 ; total dépôt 24 — dans la fourchette 24-26 prévue)
 
-**API à vérifier en stdin (Étape 0)** : `EuclideanSpace.single` + `inner_single_left`/
-`inner_single_right` ; version espace-préhilbertien de `‖1+r‖² = 1+‖r‖²+2Re r`
-(`norm_add_sq` ou variante `RCLike`) ; `orthonormal_iff_ite` (ou équivalent) pour une
-famille `Fin m` ; Bessel-égalité pour W2 (chercher `Orthonormal.sum_inner_mul_inner`
-ou variante — sinon preuve manuelle ~10 lignes, expansion de
-`‖u − Σ ⟪gₚ,u⟫•gₚ‖²`) ; `LinearMap.injective_iff_surjective` (déjà confirmé lors de
-N5) ; constructeurs `LinearIsometryEquiv.mk`-équivalents pour les deux branches ;
-`Complex.conjLIE`/`linear_isometry_complex` (confirmés présents dans
-`Analysis/Complex/Isometry.lean`) comme raccourci optionnel de W1 ; côté
-Nonvacuity seulement (hors chemin critique) : construction directe de `conjCoords`
-sur `PiLp`/`EuclideanSpace` via `PiLp.inner_apply` si aucun combinateur `≃ₛₗᵢ` tout
-fait n'est trouvé.
+**Écart d'architecture, signalé** : namespace `QuantumFoundations.Wigner` (imbriqué),
+contrairement au namespace plat `QuantumFoundations` utilisé pour tout Naimark —
+délibéré, car les noms internes de Wigner (`e`, `V`, `U`, `chi`) sont génériques et
+auraient pollué l'espace de noms plat. `wigner` s'invoque donc
+`QuantumFoundations.Wigner.wigner`.
+
+**Fichiers créés** :
+```
+QuantumFoundations/Wigner/Scalar.lean        W1 : 3 sorry (kit scalaire ℂ)
+QuantumFoundations/Wigner/Defs.lean          e, eImg, InPerp, V, refVec, chidir, chi, U, IsWignerMap
+QuantumFoundations/Wigner/Bessel.lean        W2 : 2 sorry
+QuantumFoundations/Wigner/VConstruction.lean W3 : 6 sorry
+QuantumFoundations/Wigner/Core.lean          W4 : 6 sorry (seul contenu mathématique neuf)
+QuantumFoundations/Wigner/Main.lean          W5 : 5 sorry + théorème wigner (n=0 prouvé, n=1 et n≥2 sorry)
+QuantumFoundations/Wigner/Nonvacuity.lean    0 sorry, témoins id/conjCoords complets
+```
+
+**Résultats Étape 0 (stdin, tous confirmés)** :
+- `EuclideanSpace.single (i) (a) : EuclideanSpace 𝕜 ι` + `EuclideanSpace.inner_single_left/right`
+  — confirmés (noms `PiLp.norm_single`/`PiLp.single_apply` désormais préférés aux
+  alias `EuclideanSpace.*` dépréciés).
+- `‖1+r‖² = 1+‖r‖²+2Re r` : PAS de lemme direct sous ce nom — dérivé en 2 lignes via
+  `Complex.sq_norm` (`‖z‖² = normSq z`) + `Complex.normSq_add` + `Complex.normSq_one`.
+- `orthonormal_iff_ite` confirmé (`Orthonormal 𝕜 v ↔ ∀ i j, ⟪v i,v j⟫ = if i=j then 1 else 0`).
+- **Bessel-égalité (lemme (9) de Bargmann)** : aucun lemme exporté, mais la preuve de
+  `Orthonormal.sum_inner_products_le` (Bessel INÉGALITÉ, `Mathlib.Analysis.InnerProductSpace.Orthonormal`)
+  contient EXACTEMENT l'identité inconditionnelle recherchée comme étape interne
+  (`hbf : ‖x − Σ⟪vᵢ,x⟫•vᵢ‖² = ‖x‖² − Σ‖⟪vᵢ,x⟫‖²`), non exportée — recette de preuve
+  intégralement réutilisable : `norm_sub_sq`, `InnerProductSpace.norm_sq_eq_re_inner`,
+  `inner_sum`/`sum_inner`, `inner_smul_left`/`right`, `inner_conj_symm`,
+  `Orthonormal.inner_left_right_finset`.
+- `LinearMap.injective_iff_surjective [FiniteDimensional K V] {f : V →ₗ[K] V}` confirmé
+  (déjà utilisé en N5) — nécessitera la restriction ℝ-linéaire pour la branche
+  antiunitaire (conj-semilinéaire ⟹ ℝ-linéaire par restriction des scalaires).
+- `LinearIsometryEquiv.mk (toLinearEquiv : E ≃ₛₗ[σ] E₂) (norm_map) : E ≃ₛₗᵢ[σ] E₂` et
+  `LinearEquiv.ofBijective (f : M →ₛₗ[σ] M₂) (hf : Bijective f) : M ≃ₛₗ[σ] M₂` — tous
+  deux génériques en `σ` (confirmé, testés avec `σ = starRingEnd ℂ` directement sur
+  `EuclideanSpace ℂ (Fin n)`), pas de `LinearIsometryEquiv.ofBijective` direct.
+- `Complex.conjLIE : ℂ ≃ₗᵢ[ℝ] ℂ` et `linear_isometry_complex` confirmés présents
+  (`Mathlib.Analysis.Complex.Isometry`, nom RACINE, pas namespacé `Complex.`) —
+  gardés en raccourci optionnel de W1, non utilisés dans le squelette (nécessiterait
+  d'établir la ℝ-linéarité de `f` au préalable, travail supplémentaire non gratuit).
+- `conjCoords` (témoin Nonvacuity) construit intégralement à la main
+  (`WithLp.toLp`/`WithLp.ext_iff`, `LinearEquiv.ofBijective` sur son involutivité) —
+  **aucun sorry**, pas besoin de fallback plus complexe qu'anticipé.
 
 ### W1 — Kit scalaire ℂ (zéro dépendance, dé-risque tout, à prouver en premier)
 - [ ] `re_eq_of_norm_eq : ‖u‖ = ‖v‖ → ‖1+u‖ = ‖1+v‖ → u.re = v.re` (via

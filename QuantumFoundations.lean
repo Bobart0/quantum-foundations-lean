@@ -4,6 +4,13 @@ import QuantumFoundations.Naimark.DilSpace
 import QuantumFoundations.Naimark.Main
 import QuantumFoundations.Naimark.Unitary
 import QuantumFoundations.Nonvacuity
+import QuantumFoundations.Wigner.Scalar
+import QuantumFoundations.Wigner.Defs
+import QuantumFoundations.Wigner.Bessel
+import QuantumFoundations.Wigner.VConstruction
+import QuantumFoundations.Wigner.Core
+import QuantumFoundations.Wigner.Main
+import QuantumFoundations.Wigner.Nonvacuity
 
 namespace QuantumFoundations
 
