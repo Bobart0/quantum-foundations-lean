@@ -191,5 +191,175 @@ généralisée au-delà des sommes indexées).
 
 ---
 
-## Wigner — plan détaillé à venir une fois Naimark clos
-(section à remplir)
+## Wigner — plan (stratégie établie avec Fable 5, 2026-07-12)
+
+**Énoncé.** Toute transformation sur les états purs (vecteurs unitaires de `H n`)
+qui préserve les probabilités de transition `|⟨φ|ψ⟩|²` est induite par un opérateur
+unitaire ou antiunitaire, unique à une phase globale près. Sources : Bargmann,
+*Note on Wigner's Theorem on Symmetry Operations* (J. Math. Phys. 1964) — blueprint
+principal, quasi « proof-assistant ready » (§3–§5 finitaires, ponctuels, purement
+algèbre de produits scalaires) ; Simon et al. — contre-vérification et plan B de
+globalisation (Étape 6, invariant `c_jc_k·c_kc_ℓ·(c_jc_ℓ)`), rejeté comme blueprint
+principal (trigonométrie sur des cercles de vecteurs, `Real.Angle`, friction connue).
+
+**Verdict Mathlib upstream (scan complet mathlib4 master, juillet 2026, par Fable
+5) : terrain totalement libre.** Aucun fichier/déclaration `Wigner`, `antiunitary`,
+`Kadison`. Seul actif pertinent : `Mathlib.Analysis.Complex.Isometry`
+(`linear_isometry_complex : ∀ f : ℂ ≃ₗᵢ[ℝ] ℂ, f = rotation a ∨ f = conjLIE.trans
+(rotation a)`) — un atout optionnel pour W1, pas un précédent. PhysLean/PhysLib et
+Lean-QuantumInfo (fusionnés) ne couvrent pas Wigner. Candidat Mathlib de premier
+ordre : la machinerie semilinéaire (`≃ₛₗᵢ[starRingEnd ℂ]`) existe sans aucun
+théorème qui la peuple côté antiunitaire.
+
+**Formulation retenue — (A) en noyau, (B) en corollaire optionnel (W6).** Rejets
+motivés : (C) quotient `Projectivization` — API purement algébrique, aucune API
+métrique, tout passerait par des lifts constants pour zéro bénéfice (wrapper
+cosmétique possible en W6 optionnel) ; (D) `∃ σ` quantifié sur le `RingHom` —
+enfer d'instances `RingHomInvPair` dépendantes, remplacé par une disjonction `∨`
+de deux existentiels concrets (les deux types cibles typent, confirmé en stdin).
+
+```lean
+theorem wigner (n : ℕ) (T : H n → H n)
+    (hT : ∀ x y, ‖x‖ = 1 → ‖y‖ = 1 → ‖⟪T x, T y⟫_ℂ‖ = ‖⟪x, y⟫_ℂ‖) :
+    (∃ U : H n ≃ₗᵢ[ℂ] H n,
+        ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+  ∨ (∃ U : H n ≃ₛₗᵢ[starRingEnd ℂ] H n,
+        ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+```
+
+**Décisions de conception (dans l'ordre d'importance) :**
+- **Pas d'hypothèse de bijectivité.** Bargmann §1.2 : l'injectivité au niveau des
+  rayons découle de `hT` (Cauchy-Schwarz : deux rayons unités coïncident ssi leur
+  produit vaut 1) ; en dimension finie `U` est automatiquement bijectif (isométrie).
+  Énoncé strictement plus fort que Simon et al. (qui supposent `Ω` bijective,
+  eq. 2.8), exactement le Main Theorem de Bargmann §1.3 spécialisé — à souligner
+  dans le README final.
+- **`∀ n`, sans seuil.** `n = 0` vacuité, `n = 1` trivial (les deux branches
+  marchent, Bargmann §1.4), cœur uniforme pour `n ≥ 2`. Contrairement à Gleason
+  (`n ≥ 3`), aucune contrainte de dimension dans le cœur.
+- **Construire `U`, jamais étendre `T`.** `U` est défini par une formule fermée
+  depuis des données finies (§W3/W5) ; aucun problème d'« extension depuis la
+  sphère » n'existe dans cette architecture.
+- **`χ` défonctionnalisé.** En interne : fonction nue `χ : ℂ → ℂ` (formule
+  d'extraction explicite, W4) + des `Prop`. Bundling en `≃ₗᵢ`/`≃ₛₗᵢ` uniquement à
+  la frontière (les deux branches du `rcases` final de W5).
+- **Phases = paires `(c : ℂ) + ‖c‖ = 1`**, jamais `Circle`/`unitary ℂ`.
+- **`𝒫 = e⊥` comme condition `Prop`** (`⟪e, z⟫ = 0`), jamais le type `Submodule` —
+  la leçon Submodule/WithLp de Naimark (N5, tentatives 1-2) s'applique intégralement.
+- **(B) en corollaire seulement**, forme `S (rankOne x x) = rankOne (U x) (U x)`
+  — jamais `U ∘ P ∘ U⁻¹` (évite toute friction `RingHomCompTriple` avec la
+  conjugaison semilinéaire). Réutilise la machinerie `rankOne` déjà éprouvée côté
+  `gleason`, fournit le pont « à la Kadison » pour un futur papier.
+- **Zéro trigonométrie, zéro angle** — critère qui départage Bargmann (retenu) de
+  Simon et al. (rejeté comme blueprint principal, gardé en contre-vérification).
+
+**Compte total attendu : ~24-26 sorry au sortir de W0.** Le seul contenu
+mathématique neuf est **W4** (comme `sqrtOp` pour N1) ; W2-W3-W5 sont de la
+plomberie disciplinée (comme N2-N3 pour Naimark). Ordre d'attaque :
+W0 → W1 → W2 → W3 → W4 → W5 (→ W6). **W1 en premier** car il calibre le niveau de
+difficulté réel (`nlinarith`/`Complex.ext` territoriaux) et W4 s'y appuie
+entièrement.
+
+### W0 — Squelette (Defs, énoncé principal, Nonvacuity)
+- [ ] Étape 0 validée en stdin AVANT de figer les signatures (voir liste API
+      ci-dessous)
+- [ ] Défs à formules fermées (junk hors domaine) : `e := EuclideanSpace.single 0 1`,
+      `e' := T e`, `V`, `chi`
+- [ ] Énoncé principal `wigner` + tous les lemmes de W1-W5 posés en `sorry` ; cas
+      `n = 0` et `n = 1` prouvés directement (pas en sorry)
+- [ ] Nonvacuity : `T = id` satisfait `hT` (branche gauche, `rfl`) ; `T = conjCoords`
+      (conjugaison composante par composante) satisfait `hT` et habite la branche
+      droite — preuve que l'énoncé n'est ni vacueux ni mal câblé côté antiunitaire
+- [ ] `lake build` vert, `guard.sh` OK, CI inchangée
+
+**API à vérifier en stdin (Étape 0)** : `EuclideanSpace.single` + `inner_single_left`/
+`inner_single_right` ; version espace-préhilbertien de `‖1+r‖² = 1+‖r‖²+2Re r`
+(`norm_add_sq` ou variante `RCLike`) ; `orthonormal_iff_ite` (ou équivalent) pour une
+famille `Fin m` ; Bessel-égalité pour W2 (chercher `Orthonormal.sum_inner_mul_inner`
+ou variante — sinon preuve manuelle ~10 lignes, expansion de
+`‖u − Σ ⟪gₚ,u⟫•gₚ‖²`) ; `LinearMap.injective_iff_surjective` (déjà confirmé lors de
+N5) ; constructeurs `LinearIsometryEquiv.mk`-équivalents pour les deux branches ;
+`Complex.conjLIE`/`linear_isometry_complex` (confirmés présents dans
+`Analysis/Complex/Isometry.lean`) comme raccourci optionnel de W1 ; côté
+Nonvacuity seulement (hors chemin critique) : construction directe de `conjCoords`
+sur `PiLp`/`EuclideanSpace` via `PiLp.inner_apply` si aucun combinateur `≃ₛₗᵢ` tout
+fait n'est trouvé.
+
+### W1 — Kit scalaire ℂ (zéro dépendance, dé-risque tout, à prouver en premier)
+- [ ] `re_eq_of_norm_eq : ‖u‖ = ‖v‖ → ‖1+u‖ = ‖1+v‖ → u.re = v.re` (via
+      `‖1+r‖² = 1+‖r‖²+2Re r`)
+- [ ] `eq_one_of_norm_one_re_one : ‖u‖ = 1 → u.re = 1 → u = 1` (rigidité)
+- [ ] `scalar_dichotomy` : pour `f : ℂ → ℂ` avec `(∀ α, ‖f α‖ = ‖α‖)`, `f 1 = 1`,
+      `(∀ α β, (conj (f α) * f β).re = (conj α * β).re)`, alors `f = id ∨ f = conj`
+      — Bargmann §4.6 abstrait en pur lemme ℂ (preuve en trois lignes : `χ(i) = ηi`
+      avec `η = ±1` ; `Im χ(β) = η Im β` via l'identité de partie réelle ; conclusion)
+
+### W2 — Plomberie produit-scalaire
+- [ ] Lemme (9) de Bargmann (pièce maîtresse) : famille orthonormée finie `g`,
+      `‖u‖² = Σ ‖⟪g p, u⟫‖² → u = Σ ⟪g p, u⟫ • g p` (identité de Bessel avec égalité
+      — élimine `exists_orthonormalBasis_extension` du chemin critique, aucune
+      extension de base, aucun comptage de cardinal, aucune surjectivité requise)
+- [ ] Images T-orthonormées : moduli `δ_pq` + normes 1 ⇒ `Orthonormal` (cas `p = q` :
+      `⟪Tf,Tf⟫` réel ≥ 0 de module 1 ⇒ = 1)
+- [ ] Identités d'homogénéité/scaling (remplace l'extension aux rayons de Bargmann §2)
+
+### W3 — Construction de `V` + propriétés de base (Bargmann §3, eqs 11-12a)
+- [ ] `V z := γ⁻¹ • T w − e'` où `w := ‖e+z‖⁻¹ • (e+z)`, `γ := ⟪e', T w⟫` (formule
+      directe) — préférer les formes multiplicatives croisées dans les hypothèses
+      (`γ • V z = T w − γ • e'`) plutôt que des `⁻¹` dans les buts
+- [ ] `⟪e', V z⟫ = 0` ; `‖V z‖ = ‖z‖` ; colinéarité définitionnelle
+      `V z = δ • T(‖z‖⁻¹ • z)`
+- [ ] (11) `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` ; (12) partie réelle préservée ; (12a)
+      `⟪Vw,Vx⟫ = ⟪w,x⟫` si réel
+
+### W4 — LE cœur : analyse de `V` (Bargmann §4 — l'analogue de `sqrtOp` pour N1)
+- [ ] `chidir f α := ⟪V f, V (α • f)⟫` (extraction directionnelle) ; (14) module,
+      (15)(15a)(15b) identités de partie réelle
+- [ ] Repère adapté à la paire : case split sur la dépendance LINÉAIRE (PAS sur
+      `n`) ; Gram-Schmidt à la main `f₂ := normalisé de (z − ⟪f₁,z⟫•f₁)` — le cas
+      `n = 2` est absorbé automatiquement (la dépendance y est forcée), aucune
+      disjonction `n = 2` vs `n ≥ 3` dans le cœur
+- [ ] Formule d'expansion (16) : coefficients `a'_p = χ_p(a_p)` via vecteurs tests
+      `f_p•(conj a_p)⁻¹` + (12a) + rigidité (W1)
+- [ ] `χ₂ = χ₁` via `w = f₁ + f₂` ; globalisation : `χdir` constant sur toutes les
+      directions
+- [ ] `chi := chidir ref` ; dichotomie `χ = id ∨ χ = conj` [application directe de
+      `scalar_dichotomy`, W1]
+- [ ] (18) : `V` additive, `V` χ-homogène, `⟪Vy,Vz⟫ = χ⟪y,z⟫` sur `𝒫`
+
+### W5 — Assemblage (Bargmann §5) + théorème principal
+- [ ] `U a := χ⟪e,a⟫ • e' + V(a − ⟪e,a⟫•e)` ; additivité, χ-semilinéarité,
+      `⟪Ua,Ub⟫ = χ⟪a,b⟫` (calcul de deux lignes, `Vz ⊥ e'`)
+- [ ] Compatibilité `∀ x` unitaire `∃ c` : cas `⟪e,x⟫ ≠ 0` par calcul direct ; cas
+      `⟪e,x⟫ = 0` GRATUIT (colinéarité définitionnelle de W3 — aucun Cauchy-Schwarz
+      nécessaire ici, contrairement à l'inquiétude initiale)
+- [ ] Bijectivité : injectif (isométrie) → surjectif. Piège anticipé :
+      `injective_iff_surjective` sur un endomorphisme conj-semilinéaire — parade :
+      restreindre en ℝ-linéaire (une application conj-semilinéaire est ℝ-linéaire),
+      faire la bijectivité en ℝ-linéaire sur l'espace ℝ-fini-dimensionnel, puis
+      rapatrier ; aucune coordonnée nécessaire
+- [ ] Bundling des deux branches ; `theorem wigner` ; dispatch `n ≤ 1`
+
+### W6 — OPTIONNEL (façon `v2.0-naimark`)
+- [ ] Unicité à phase globale près (Bargmann §6, Théorème 2, `dim ≥ 2` — ratio
+      `τ(a)` constant via le déterminant de Gram (invariant) + additivité)
+- [ ] Exclusivité unitaire/antiunitaire pour `n ≥ 2` via l'invariant de rayons
+      `Δ(a₁,a₂,a₃) := ⟪a₁,a₂⟫⟪a₂,a₃⟫⟪a₃,a₁⟫` (Bargmann §1.5 — témoin explicite fini :
+      `e₁=e`, `e₂=(e−f)/√2`, `e₃=(e+f(1−i))/√3` donnent `Δ = i/6 ∉ ℝ`, donc aucun
+      unitaire et antiunitaire ne peuvent induire la même action sur les rayons dès
+      `n ≥ 2` ; échoue en `n = 1`, comme attendu — calcul fini explicite)
+- [ ] Corollaire (B) `rankOne` ; wrapper `Projectivization` éventuel (basse priorité)
+
+### Ce qui ne bloquera PAS (contrairement aux craintes initiales)
+Extension de bases orthonormées (éliminée par le lemme (9) de W2) ; gestion de
+phase globale (les phases restent des scalaires LOCAUX `c` avec `‖c‖=1`, jamais un
+choix cohérent global à construire) ; quotients (aucun, formulation (A)) ;
+linéarité-depuis-métrique (l'additivité de `V` se démontre composante par
+composante via (16), jamais extraite d'une hypothèse métrique abstraite).
+
+### Frictions Lean à provisionner (analogues aux leçons Naimark)
+Déballage de normes PiLp/WithLp dans les calculs de W3 (`γ⁻¹`, `‖e+z‖`) — mêmes
+patterns que sur `gleason`/N0-N3, lemmes `private` à contexte minimal si timeout
+`whnf` (règle 12 CLAUDE.md) ; junk values des défs totales (`V` hors `𝒫`, `chi` hors
+domaine) — chaque lemme porte ses side conditions, discipline déjà rodée sur
+`sqrtOp`/`dilProj`.
