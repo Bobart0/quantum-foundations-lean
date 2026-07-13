@@ -34,7 +34,10 @@ theorem re_eq_of_norm_eq {u v : ℂ} (h1 : ‖u‖ = ‖v‖) (h2 : ‖(1 : ℂ)
 
 /-- Rigidité : un scalaire de norme 1 et de partie réelle 1 vaut 1. -/
 theorem eq_one_of_norm_one_re_one {u : ℂ} (h1 : ‖u‖ = 1) (h2 : u.re = 1) : u = 1 := by
-  sorry
+  have hns : Complex.normSq u = 1 := by rw [← Complex.sq_norm, h1]; norm_num
+  rw [Complex.normSq_apply, h2] at hns
+  have him : u.im = 0 := by nlinarith [sq_nonneg u.im]
+  exact Complex.ext h2 him
 
 /-- **Dichotomie scalaire** (Bargmann §4.6, abstrait en pur lemme ℂ) : toute fonction
 `f : ℂ → ℂ` qui préserve la norme, fixe `1`, et préserve la partie réelle du produit
