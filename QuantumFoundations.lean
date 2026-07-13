@@ -11,6 +11,7 @@ import QuantumFoundations.Wigner.VConstruction
 import QuantumFoundations.Wigner.Core
 import QuantumFoundations.Wigner.Main
 import QuantumFoundations.Wigner.Nonvacuity
+import QuantumFoundations.Wigner.Uniqueness
 
 namespace QuantumFoundations
 

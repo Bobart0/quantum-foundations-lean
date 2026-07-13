@@ -1,0 +1,247 @@
+import QuantumFoundations.Wigner.Main
+
+/-!
+# W6 (optionnel) — Unicité et exclusivité (Bargmann §1.5, §6 restreint)
+
+Deux livrables indépendants, de priorité basse :
+(A) Exclusivité unitaire/antiunitaire (Bargmann §1.5, témoin `Delta = i/6`).
+(B) Unicité de `U` à phase globale près relativement au choix du représentant
+`eImg` (version RESTREINTE : pas la généralité complète du Théorème 2 de
+Bargmann, qui demanderait de rederiver l'homogénéité réelle depuis
+l'additivité + l'isométrie pour un `U'` complètement arbitraire — non
+nécessaire ici, puisque toute la liberté de `wigner` provient du choix de
+`eImg`).
+-/
+
+namespace QuantumFoundations.Wigner
+
+open scoped InnerProductSpace
+open Gleason
+
+noncomputable section
+
+variable {n : ℕ} {T : H n → H n}
+
+/-! ## (A) Exclusivité unitaire/antiunitaire (Bargmann §1.5) -/
+
+/-- Produit cyclique de rayons, témoin de non-réalité (Bargmann §1.5). -/
+def Delta (a b c : H n) : ℂ := ⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ
+
+private theorem conj_mul_self_eq_one {z : ℂ} (h : ‖z‖ = 1) : (starRingEnd ℂ) z * z = 1 := by
+  rw [mul_comm, Complex.mul_conj]
+  norm_cast
+  rw [← Complex.sq_norm, h]
+  norm_num
+
+/-- Analogue semilinéaire de `LinearIsometryEquiv.inner_map_map`, absent de
+Mathlib pour `σ ≠ id` — dérivé à la main par polarisation. -/
+private theorem conj_isometry_inner {U' : H n → H n}
+    (hadd : ∀ a b, U' (a + b) = U' a + U' b)
+    (hsmul : ∀ (c : ℂ) a, U' (c • a) = (starRingEnd ℂ) c • U' a)
+    (hiso : ∀ a, ‖U' a‖ = ‖a‖) (a b : H n) :
+    ⟪U' a, U' b⟫_ℂ = (starRingEnd ℂ) ⟪a, b⟫_ℂ := by
+  have hRe : (⟪U' a, U' b⟫_ℂ).re = (⟪a, b⟫_ℂ).re := by
+    have h1 : ‖a + b‖ ^ 2 = ‖a‖ ^ 2 + 2 * RCLike.re ⟪a, b⟫_ℂ + ‖b‖ ^ 2 := norm_add_sq (𝕜 := ℂ) a b
+    have h2 : ‖U' a + U' b‖ ^ 2
+        = ‖U' a‖ ^ 2 + 2 * RCLike.re ⟪U' a, U' b⟫_ℂ + ‖U' b‖ ^ 2 := norm_add_sq (𝕜 := ℂ) (U' a) (U' b)
+    rw [← hadd, hiso, hiso, hiso] at h2
+    have hfin : RCLike.re ⟪a, b⟫_ℂ = RCLike.re ⟪U' a, U' b⟫_ℂ := by linarith [h1, h2]
+    exact hfin.symm
+  have hIm : (⟪U' a, U' b⟫_ℂ).im = -(⟪a, b⟫_ℂ).im := by
+    have h1 : ‖a + Complex.I • b‖ ^ 2
+        = ‖a‖ ^ 2 + 2 * RCLike.re ⟪a, Complex.I • b⟫_ℂ + ‖Complex.I • b‖ ^ 2 :=
+      norm_add_sq (𝕜 := ℂ) a (Complex.I • b)
+    have h2 : ‖U' a - Complex.I • U' b‖ ^ 2
+        = ‖U' a‖ ^ 2 - 2 * RCLike.re ⟪U' a, Complex.I • U' b⟫_ℂ + ‖Complex.I • U' b‖ ^ 2 :=
+      norm_sub_sq (𝕜 := ℂ) (U' a) (Complex.I • U' b)
+    have hUab : U' (a + Complex.I • b) = U' a - Complex.I • U' b := by
+      rw [hadd, hsmul, sub_eq_add_neg]
+      congr 1
+      simp
+    rw [← hUab, hiso, hiso] at h2
+    have hrw1 : RCLike.re ⟪a, Complex.I • b⟫_ℂ = -(⟪a, b⟫_ℂ).im := by
+      rw [inner_smul_right]
+      show (Complex.I * ⟪a, b⟫_ℂ).re = -(⟪a, b⟫_ℂ).im
+      simp [Complex.mul_re]
+    have hrw2 : RCLike.re ⟪U' a, Complex.I • U' b⟫_ℂ = -(⟪U' a, U' b⟫_ℂ).im := by
+      rw [inner_smul_right]
+      show (Complex.I * ⟪U' a, U' b⟫_ℂ).re = -(⟪U' a, U' b⟫_ℂ).im
+      simp [Complex.mul_re]
+    rw [hrw1] at h1
+    rw [hrw2] at h2
+    have hnI : ‖Complex.I • b‖ = ‖b‖ := by rw [norm_smul]; simp
+    have hnI' : ‖Complex.I • U' b‖ = ‖U' b‖ := by rw [norm_smul]; simp
+    rw [hnI] at h1
+    rw [hnI', hiso] at h2
+    nlinarith [h1, h2]
+  exact Complex.ext hRe (by rw [Complex.conj_im]; exact hIm)
+
+/-- Étape 1, branche linéaire (`chi = id`) : `Delta` est invariant sous `T`. -/
+theorem delta_transform_lin (_hT : IsWignerMap T) (_hn : 2 ≤ n) (U : H n ≃ₗᵢ[ℂ] H n)
+    (hcompat : ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+    (a b c : H n) (ha : ‖a‖ = 1) (hb : ‖b‖ = 1) (hc : ‖c‖ = 1) :
+    Delta (T a) (T b) (T c) = Delta a b c := by
+  obtain ⟨ca, hcanorm, hTa⟩ := hcompat a ha
+  obtain ⟨cb, hcbnorm, hTb⟩ := hcompat b hb
+  obtain ⟨cc, hccnorm, hTc⟩ := hcompat c hc
+  show ⟪T a, T b⟫_ℂ * ⟪T b, T c⟫_ℂ * ⟪T c, T a⟫_ℂ = Delta a b c
+  rw [hTa, hTb, hTc]
+  show ⟪ca • U a, cb • U b⟫_ℂ * ⟪cb • U b, cc • U c⟫_ℂ * ⟪cc • U c, ca • U a⟫_ℂ
+      = ⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ
+  simp only [inner_smul_left, inner_smul_right, LinearIsometryEquiv.inner_map_map]
+  have h1 := conj_mul_self_eq_one hcanorm
+  have h2 := conj_mul_self_eq_one hcbnorm
+  have h3 := conj_mul_self_eq_one hccnorm
+  linear_combination
+    (⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ * cb * (starRingEnd ℂ) cb * cc * (starRingEnd ℂ) cc) * h1
+    + (⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ * (starRingEnd ℂ) cc * cc) * h2
+    + (⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ) * h3
+
+/-- Étape 1, branche antiunitaire (`chi = conj`) : `Delta` est envoyé sur son
+conjugué sous `T`. -/
+theorem delta_transform_conj (_hT : IsWignerMap T) (_hn : 2 ≤ n)
+    (U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n)
+    (hcompat : ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
+    (a b c : H n) (ha : ‖a‖ = 1) (hb : ‖b‖ = 1) (hc : ‖c‖ = 1) :
+    Delta (T a) (T b) (T c) = (starRingEnd ℂ) (Delta a b c) := by
+  obtain ⟨ca, hcanorm, hTa⟩ := hcompat a ha
+  obtain ⟨cb, hcbnorm, hTb⟩ := hcompat b hb
+  obtain ⟨cc, hccnorm, hTc⟩ := hcompat c hc
+  have hUadd : ∀ x y : H n, U' (x + y) = U' x + U' y := fun x y => U'.map_add x y
+  have hUsmul : ∀ (z : ℂ) (x : H n), U' (z • x) = (starRingEnd ℂ) z • U' x := fun z x =>
+    U'.map_smulₛₗ z x
+  have hUiso : ∀ x : H n, ‖U' x‖ = ‖x‖ := fun x => U'.norm_map x
+  show ⟪T a, T b⟫_ℂ * ⟪T b, T c⟫_ℂ * ⟪T c, T a⟫_ℂ = (starRingEnd ℂ) (Delta a b c)
+  rw [hTa, hTb, hTc]
+  show ⟪ca • U' a, cb • U' b⟫_ℂ * ⟪cb • U' b, cc • U' c⟫_ℂ * ⟪cc • U' c, ca • U' a⟫_ℂ
+      = (starRingEnd ℂ) (⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ)
+  simp only [inner_smul_left, inner_smul_right, conj_isometry_inner hUadd hUsmul hUiso, map_mul]
+  have h1 := conj_mul_self_eq_one hcanorm
+  have h2 := conj_mul_self_eq_one hcbnorm
+  have h3 := conj_mul_self_eq_one hccnorm
+  linear_combination
+    ((starRingEnd ℂ) ⟪a, b⟫_ℂ * (starRingEnd ℂ) ⟪b, c⟫_ℂ * (starRingEnd ℂ) ⟪c, a⟫_ℂ
+      * cb * (starRingEnd ℂ) cb * cc * (starRingEnd ℂ) cc) * h1
+    + ((starRingEnd ℂ) ⟪a, b⟫_ℂ * (starRingEnd ℂ) ⟪b, c⟫_ℂ * (starRingEnd ℂ) ⟪c, a⟫_ℂ
+      * (starRingEnd ℂ) cc * cc) * h2
+    + ((starRingEnd ℂ) ⟪a, b⟫_ℂ * (starRingEnd ℂ) ⟪b, c⟫_ℂ * (starRingEnd ℂ) ⟪c, a⟫_ℂ) * h3
+
+private theorem he_self' (hn : 2 ≤ n) : ⟪e n, e n⟫_ℂ = (1 : ℂ) := by
+  have h0 : 0 < n := by omega
+  simp only [e, dif_pos h0, EuclideanSpace.inner_single_left, PiLp.single_apply]
+  simp
+
+private theorem he_norm' (hn : 2 ≤ n) : ‖e n‖ = 1 := by
+  have h0 : 0 < n := by omega
+  simp only [e, dif_pos h0, PiLp.norm_single]
+  norm_num
+
+private theorem refVec_norm' (hn : 2 ≤ n) : ‖refVec n‖ = 1 := by
+  simp only [refVec, dif_pos hn, PiLp.norm_single]
+  norm_num
+
+private theorem refVec_InPerp' (hn : 2 ≤ n) : InPerp (refVec n) := by
+  have h0 : 0 < n := by omega
+  show ⟪e n, refVec n⟫_ℂ = 0
+  simp only [e, refVec, dif_pos h0, dif_pos hn, EuclideanSpace.inner_single_left,
+    PiLp.single_apply]
+  simp
+
+/-- Témoins de non-réalité de Bargmann §1.5 : deux vecteurs unitaires formant,
+avec `e`, un triplet dont `Delta` n'est pas réel. -/
+private noncomputable def e2 (n : ℕ) : H n := ((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)
+
+private noncomputable def e3 (n : ℕ) : H n :=
+  ((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)
+
+private theorem e2_norm (hn : 2 ≤ n) : ‖e2 n‖ = 1 := by
+  have hef : ⟪e n, refVec n⟫_ℂ = 0 := refVec_InPerp' hn
+  have hsub2 : ‖e n - refVec n‖ ^ 2 = 2 := by
+    rw [norm_sub_sq (𝕜 := ℂ), he_norm' hn, refVec_norm' hn, hef]
+    norm_num
+  have hc2sq : (Real.sqrt 2)⁻¹ ^ 2 = (1 / 2 : ℝ) := by
+    rw [inv_pow, Real.sq_sqrt (by norm_num : (2:ℝ) ≥ 0)]; norm_num
+  show ‖((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)‖ = 1
+  have hsq : ‖((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)‖ ^ 2 = 1 := by
+    rw [norm_smul, mul_pow, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg 2), hc2sq, hsub2]
+    norm_num
+  nlinarith [hsq, norm_nonneg (((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)),
+    sq_nonneg (‖((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)‖ - 1)]
+
+private theorem e3_norm (hn : 2 ≤ n) : ‖e3 n‖ = 1 := by
+  have hef : ⟪e n, refVec n⟫_ℂ = 0 := refVec_InPerp' hn
+  have hnormI : ‖(1 - Complex.I) • refVec n‖ ^ 2 = 2 := by
+    rw [norm_smul, mul_pow, refVec_norm' hn, Complex.sq_norm, Complex.normSq_apply]
+    norm_num
+  have hcross : (⟪e n, (1 - Complex.I) • refVec n⟫_ℂ).re = 0 := by
+    rw [inner_smul_right, hef]; simp
+  have hadd3 : ‖e n + (1 - Complex.I) • refVec n‖ ^ 2 = 3 := by
+    rw [norm_add_sq (𝕜 := ℂ), he_norm' hn]
+    rw [show RCLike.re ⟪e n, (1 - Complex.I) • refVec n⟫_ℂ
+        = (⟪e n, (1 - Complex.I) • refVec n⟫_ℂ).re from rfl, hcross, hnormI]
+    norm_num
+  have hc3sq : (Real.sqrt 3)⁻¹ ^ 2 = (1 / 3 : ℝ) := by
+    rw [inv_pow, Real.sq_sqrt (by norm_num : (3:ℝ) ≥ 0)]; norm_num
+  show ‖((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)‖ = 1
+  have hsq : ‖((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)‖ ^ 2 = 1 := by
+    rw [norm_smul, mul_pow, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg 3), hc3sq, hadd3]
+    norm_num
+  nlinarith [hsq, norm_nonneg (((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)),
+    sq_nonneg (‖((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)‖ - 1)]
+
+/-- Étape 2 : calcul explicite `Delta(e, e2, e3) = i/6` (Bargmann §1.5). -/
+theorem bargmann_delta_witness (hn : 2 ≤ n) : Delta (e n) (e2 n) (e3 n) = Complex.I / 6 := by
+  have hself := he_self' hn
+  have hfself : ⟪refVec n, refVec n⟫_ℂ = (1 : ℂ) := by
+    rw [inner_self_eq_norm_sq_to_K, refVec_norm' hn]; norm_num
+  have hef : ⟪e n, refVec n⟫_ℂ = 0 := refVec_InPerp' hn
+  have hfe : ⟪refVec n, e n⟫_ℂ = 0 := by
+    have h : (starRingEnd ℂ) ⟪refVec n, e n⟫_ℂ = 0 := by
+      rw [inner_conj_symm (e n) (refVec n)]; exact hef
+    have h2 := congrArg (starRingEnd ℂ) h
+    simpa using h2
+  show ⟪e n, ((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n)⟫_ℂ *
+      ⟪((Real.sqrt 2)⁻¹ : ℂ) • (e n - refVec n),
+        ((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n)⟫_ℂ *
+      ⟪((Real.sqrt 3)⁻¹ : ℂ) • (e n + (1 - Complex.I) • refVec n), e n⟫_ℂ = Complex.I / 6
+  simp only [inner_smul_left, inner_smul_right, inner_sub_left, inner_sub_right, inner_add_left,
+    inner_add_right, hself, hfself, hef, hfe, Complex.conj_ofReal, map_sub, map_one, map_inv₀,
+    Complex.conj_I]
+  have hc2sq : ((Real.sqrt 2 : ℝ)⁻¹ : ℂ) ^ 2 = (1 / 2 : ℂ) := by
+    have h : (Real.sqrt 2)⁻¹ ^ 2 = (1 / 2 : ℝ) := by
+      rw [inv_pow, Real.sq_sqrt (by norm_num : (2:ℝ) ≥ 0)]; norm_num
+    have h2 : ((Real.sqrt 2 : ℝ)⁻¹ : ℂ) ^ 2 = ((1 / 2 : ℝ) : ℂ) := by exact_mod_cast h
+    rw [h2]; norm_num
+  have hc3sq : ((Real.sqrt 3 : ℝ)⁻¹ : ℂ) ^ 2 = (1 / 3 : ℂ) := by
+    have h : (Real.sqrt 3)⁻¹ ^ 2 = (1 / 3 : ℝ) := by
+      rw [inv_pow, Real.sq_sqrt (by norm_num : (3:ℝ) ≥ 0)]; norm_num
+    have h2 : ((Real.sqrt 3 : ℝ)⁻¹ : ℂ) ^ 2 = ((1 / 3 : ℝ) : ℂ) := by exact_mod_cast h
+    rw [h2]; norm_num
+  linear_combination
+    (((Real.sqrt 3 : ℝ)⁻¹ : ℂ)) ^ 2 * Complex.I * hc2sq + ((1 : ℂ) / 2) * Complex.I * hc3sq
+
+/-- Étape 3 : un même `T` ne peut être compatible simultanément avec une
+équivalence unitaire ET une équivalence antiunitaire (Bargmann §1.5). -/
+theorem exclusivity (hT : IsWignerMap T) (hn : 2 ≤ n) :
+    ¬ ((∃ U : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+     ∧ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)) := by
+  rintro ⟨⟨U, hU⟩, ⟨U', hU'⟩⟩
+  have ha : ‖e n‖ = 1 := he_norm' hn
+  have hb : ‖e2 n‖ = 1 := e2_norm hn
+  have hc : ‖e3 n‖ = 1 := e3_norm hn
+  have hlin := delta_transform_lin hT hn U hU (e n) (e2 n) (e3 n) ha hb hc
+  have hconj := delta_transform_conj hT hn U' hU' (e n) (e2 n) (e3 n) ha hb hc
+  rw [bargmann_delta_witness hn] at hlin
+  rw [bargmann_delta_witness hn] at hconj
+  rw [hlin] at hconj
+  have hconjI : (starRingEnd ℂ) (Complex.I / 6) = -(Complex.I / 6) := by
+    rw [map_div₀, Complex.conj_I, map_ofNat]
+    ring
+  rw [hconjI] at hconj
+  have hI0 : Complex.I = 0 := by linear_combination 3 * hconj
+  exact Complex.I_ne_zero hI0
+
+end
+end QuantumFoundations.Wigner
