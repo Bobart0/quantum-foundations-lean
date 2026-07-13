@@ -103,7 +103,9 @@ theorem inner_eImg_V (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp 
     inv_mul_cancel₀ (gamma_ne_zero hT hn hz)]
   ring
 
-private theorem norm_T_unit (hT : IsWignerMap T) {v : H n} (hv : ‖v‖ = 1) : ‖T v‖ = 1 := by
+/-- Réutilisé par W4 (`Core.lean`, `T_phase`) : `T` préserve la norme des vecteurs
+unitaires — pas seulement les produits scalaires. -/
+theorem norm_T_unit (hT : IsWignerMap T) {v : H n} (hv : ‖v‖ = 1) : ‖T v‖ = 1 := by
   have h1 : ‖⟪T v, T v⟫_ℂ‖ = ‖⟪v, v⟫_ℂ‖ := hT v v hv hv
   have hvv : ⟪v, v⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hv]; norm_num
   rw [hvv, norm_one, inner_self_eq_norm_sq_to_K] at h1
