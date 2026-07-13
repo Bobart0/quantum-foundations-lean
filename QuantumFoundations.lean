@@ -12,6 +12,13 @@ import QuantumFoundations.Wigner.Core
 import QuantumFoundations.Wigner.Main
 import QuantumFoundations.Wigner.Nonvacuity
 import QuantumFoundations.Wigner.Uniqueness
+import QuantumFoundations.Uhlhorn.Defs
+import QuantumFoundations.Uhlhorn.WignerProjectionForm
+import QuantumFoundations.Uhlhorn.Spectral
+import QuantumFoundations.Uhlhorn.GleasonExtend
+import QuantumFoundations.Uhlhorn.GleasonTwice
+import QuantumFoundations.Uhlhorn.Assembly
+import QuantumFoundations.Uhlhorn.Nonvacuity
 
 namespace QuantumFoundations
 
