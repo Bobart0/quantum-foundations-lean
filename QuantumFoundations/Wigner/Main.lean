@@ -112,11 +112,108 @@ theorem inner_U_eq_chi_inner (hT : IsWignerMap T) (hn : 2 ≤ n) (a b : H n) :
     mul_zero, add_zero, zero_add, inner_V_eq_chi_inner hT hn _ _ hzap hzbp, chi_conj_mul hT hn,
     ← chi_add hT hn, ← inner_ab_decomp hn]
 
+private theorem norm_add_e_sq (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
+    ‖e n + z‖ ^ 2 = 1 + ‖z‖ ^ 2 := by
+  rw [norm_add_sq (𝕜 := ℂ), he_norm hn, hz]
+  simp
+
+private theorem he_add_ne_zero (hn : 2 ≤ n) {z : H n} (hz : InPerp z) : e n + z ≠ 0 := by
+  intro h
+  have hnz : ‖e n + z‖ ^ 2 = 0 := by rw [h]; simp
+  rw [norm_add_e_sq hn hz] at hnz
+  nlinarith [sq_nonneg ‖z‖]
+
+private theorem norm_w (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
+    ‖(‖e n + z‖⁻¹ : ℂ) • (e n + z)‖ = 1 := by
+  have hne := he_add_ne_zero hn hz
+  rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+    inv_mul_cancel₀ (norm_ne_zero_iff.mpr hne)]
+
+private theorem inner_e_w (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
+    ⟪e n, ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ = (‖e n + z‖⁻¹ : ℂ) := by
+  rw [inner_smul_right, inner_add_right, he_self hn, hz]
+  ring
+
+private theorem norm_gamma (hT : IsWignerMap T) (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
+    ‖⟪eImg T, T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ‖ = ‖e n + z‖⁻¹ := by
+  show ‖⟪T (e n), T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ‖ = ‖e n + z‖⁻¹
+  rw [hT (e n) _ (he_norm hn) (norm_w hn hz), inner_e_w hn hz, norm_inv, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (norm_pos_iff.mpr (he_add_ne_zero hn hz))]
+
 /-- Compatibilité de `U` avec `T` à une phase près, sur la sphère unité. Cœur de
 la preuve de `wigner`. -/
 theorem exists_phase_U (hT : IsWignerMap T) (hn : 2 ≤ n) (x : H n) (hx : ‖x‖ = 1) :
     ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U T x := by
-  sorry
+  have hx0 : x ≠ 0 := by intro h; rw [h, norm_zero] at hx; exact one_ne_zero hx.symm
+  by_cases hα0 : ⟪e n, x⟫_ℂ = 0
+  · -- x ∈ 𝒫 : gratuit via V_colinear (W3), aucun Cauchy-Schwarz.
+    have hxp : InPerp x := hα0
+    have hUx : U T x = V T x := by
+      have hchi0 : chi T (0 : ℂ) = 0 := by have h := chi_real hT hn 0; simpa using h
+      show chi T ⟪e n, x⟫_ℂ • eImg T + V T (x - ⟪e n, x⟫_ℂ • e n) = V T x
+      rw [hα0, hchi0, zero_smul, zero_smul, sub_zero, zero_add]
+    obtain ⟨δ, hδnorm, hVx⟩ := V_colinear hT hn x hxp hx0
+    rw [hx] at hVx hδnorm
+    norm_num at hVx hδnorm
+    have hδne : δ ≠ 0 := by intro h; rw [h, norm_zero] at hδnorm; exact zero_ne_one hδnorm
+    refine ⟨δ⁻¹, by rw [norm_inv, hδnorm, inv_one], ?_⟩
+    rw [hUx, hVx, smul_smul, inv_mul_cancel₀ hδne, one_smul]
+  · -- α := ⟪e n,x⟫ ≠ 0
+    set α := ⟪e n, x⟫_ℂ with hα_def
+    have hαne : ‖α‖ ≠ 0 := norm_ne_zero_iff.mpr hα0
+    set zx := x - α • e n with hzx_def
+    have hzxp : InPerp zx := InPerp_z hn x
+    set ζ := α⁻¹ • zx with hζ_def
+    have hζp : InPerp ζ := by
+      show ⟪e n, ζ⟫_ℂ = 0
+      rw [hζ_def, inner_smul_right, hzxp]; ring
+    have hzx_eq : zx = α • ζ := by
+      rw [hζ_def, smul_smul, mul_inv_cancel₀ hα0, one_smul]
+    have hx_decomp : x = α • (e n + ζ) := by
+      have hxz : x = zx + α • e n := by rw [hzx_def]; abel
+      rw [hxz, hzx_eq, smul_add]; abel
+    set w := (‖e n + ζ‖⁻¹ : ℂ) • (e n + ζ) with hw_def
+    have hnormw1 : ‖e n + ζ‖ = ‖α‖⁻¹ := by
+      have h1 : ‖x‖ = ‖α‖ * ‖e n + ζ‖ := by rw [hx_decomp, norm_smul]
+      rw [hx] at h1
+      field_simp at h1 ⊢
+      linarith [h1]
+    set c0 : ℂ := α * (‖α‖ : ℂ)⁻¹ with hc0_def
+    have hc0u : ‖c0‖ = 1 := by
+      rw [hc0_def, norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+        mul_inv_cancel₀ hαne]
+    have hwu : ‖w‖ = 1 := norm_w hn hζp
+    have hx_eq_c0w : x = c0 • w := by
+      rw [hx_decomp, hw_def, smul_smul]
+      congr 1
+      rw [hc0_def, hnormw1]
+      push_cast
+      rw [inv_inv, mul_assoc, inv_mul_cancel₀ (by exact_mod_cast hαne : (‖α‖ : ℂ) ≠ 0), mul_one]
+    obtain ⟨lam, hlamnorm, hTx⟩ := T_phase hT hwu hc0u
+    rw [← hx_eq_c0w] at hTx
+    set γ := ⟪eImg T, T w⟫_ℂ with hγ_def
+    have hγnorm : ‖γ‖ = ‖α‖ := by rw [hγ_def, hw_def, norm_gamma hT hn hζp, hnormw1, inv_inv]
+    have hγne : γ ≠ 0 := by intro h; rw [h, norm_zero] at hγnorm; exact hαne hγnorm.symm
+    have hVζ_eq : V T ζ = γ⁻¹ • T w - eImg T := rfl
+    have hTw_eq : T w = γ • (V T ζ + eImg T) := by
+      have h1 : γ⁻¹ • T w = V T ζ + eImg T := by rw [hVζ_eq]; abel
+      rw [← h1, smul_smul, mul_inv_cancel₀ hγne, one_smul]
+    have hUx_eq : U T x = chi T α • (V T ζ + eImg T) := by
+      show chi T α • eImg T + V T zx = chi T α • (V T ζ + eImg T)
+      rw [hzx_eq, V_chi_homogeneous hT hn α ζ hζp, smul_add, add_comm (chi T α • V T ζ)]
+    have hchiα_norm : ‖chi T α‖ = ‖α‖ := by
+      rcases chi_dichotomy hT hn with h | h
+      · rw [congrFun h]; rfl
+      · rw [congrFun h]; exact Complex.norm_conj α
+    have hchiα_ne : chi T α ≠ 0 := by rw [← norm_ne_zero_iff, hchiα_norm]; exact hαne
+    set c := lam * γ * (chi T α)⁻¹ with hc_def
+    have hcnorm : ‖c‖ = 1 := by
+      rw [hc_def, norm_mul, norm_mul, norm_inv, hlamnorm, one_mul, hγnorm, hchiα_norm,
+        mul_inv_cancel₀ hαne]
+    refine ⟨c, hcnorm, ?_⟩
+    rw [hTx, hTw_eq, hUx_eq, smul_smul, smul_smul]
+    congr 1
+    rw [hc_def, mul_assoc, inv_mul_cancel₀ hchiα_ne, mul_one]
 
 /-- `U` préserve la norme, INDÉPENDAMMENT de la branche de `chi` (`inner_U_eq_chi_inner`
 donne `⟪Ua,Ua⟫ = chi⟪a,a⟫`, et `chi` fixe le réel non-négatif `‖a‖²`). -/
