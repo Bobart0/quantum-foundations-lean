@@ -141,6 +141,15 @@ private theorem eq_of_norm_eq_re_eq {z : ℂ} {M : ℝ} (h1 : ‖z‖ = M) (h2 :
   have him : z.im = 0 := by nlinarith [sq_nonneg z.im]
   exact Complex.ext h2 (by rw [him]; simp)
 
+/-- Isolé en lemme `ℂ` pur (contexte minimal) pour éviter le timeout `whnf` documenté
+règle 12 : appliqué inline à `chi T b` (une expression énorme, `chidir` déplié via
+`V`/`⟪·,·⟫`), `norm_cast` explore le terme et dépasse `maxHeartbeats`. -/
+private theorem sq_norm_eq_mul_conj {b c : ℂ} (h : ‖c‖ = ‖b‖) :
+    (‖b‖ : ℂ) ^ 2 = c * (starRingEnd ℂ) c := by
+  rw [← h, Complex.mul_conj]
+  norm_cast
+  exact Complex.sq_norm c
+
 private theorem inner_I_smul_eq_norm {a : ℂ} (ha : a ≠ 0) :
     (starRingEnd ℂ) (Complex.I * a * (‖a‖ : ℂ)⁻¹) * Complex.I * a = (‖a‖ : ℂ) := by
   have hane : (‖a‖ : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr ha
@@ -345,20 +354,336 @@ theorem chi_dichotomy (hT : IsWignerMap T) (hn : 2 ≤ n) :
     (fun α => chi T α) = id ∨ (fun α => chi T α) = starRingEnd ℂ :=
   chidir_dichotomy hT hn (refVec n) (refVec_InPerp hn) (refVec_norm hn)
 
-/-- (18a) `V` est additive sur `𝒫`. -/
-theorem V_additive (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n) (hy : InPerp y)
-    (hz : InPerp z) : V T (y + z) = V T y + V T z := by
-  sorry
+/-- `chi` fixe les réels dans les DEUX branches (`id r = r` ; `conj r = r` pour
+`r` réel) — outil réutilisé pour l'homogénéité de `V` et la formule à deux
+directions. -/
+private theorem chi_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) :
+    chi T (r : ℂ) = (r : ℂ) := by
+  rcases chi_dichotomy hT hn with h | h
+  · rw [congrFun h]; rfl
+  · rw [congrFun h]; exact Complex.conj_ofReal r
 
-/-- (18b) `V` est `χ`-homogène sur `𝒫`. -/
+/-- (18b) `V` est `χ`-homogène sur `𝒫` (généralise `V_dir_colinear`/`chi_eq_chidir`
+d'un `f` unitaire à un `z` quelconque de `𝒫`, via `z = ‖z‖ • (‖z‖⁻¹•z)` et
+`chi_real`, puisque `‖z‖` est réel). -/
 theorem V_chi_homogeneous (hT : IsWignerMap T) (hn : 2 ≤ n) (c : ℂ) (z : H n)
     (hz : InPerp z) : V T (c • z) = chi T c • V T z := by
-  sorry
+  by_cases hz0 : z = 0
+  · subst hz0
+    have hV0 : V T (0 : H n) = 0 := by
+      have h := norm_V hT hn 0 (by show ⟪e n, (0 : H n)⟫_ℂ = 0; simp)
+      rw [norm_zero] at h; exact norm_eq_zero.mp h
+    rw [smul_zero, hV0, smul_zero]
+  · set f : H n := (‖z‖⁻¹ : ℂ) • z with hf_def
+    have hfu : ‖f‖ = 1 := by
+      rw [hf_def, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+        inv_mul_cancel₀ (norm_ne_zero_iff.mpr hz0)]
+    have hfp : InPerp f := by
+      show ⟪e n, f⟫_ℂ = 0; rw [hf_def, inner_smul_right, hz]; ring
+    have hzf : z = (‖z‖ : ℂ) • f := by
+      rw [hf_def, smul_smul, mul_inv_cancel₀ (by exact_mod_cast norm_ne_zero_iff.mpr hz0 :
+        (‖z‖ : ℂ) ≠ 0), one_smul]
+    have hVz : V T z = (‖z‖ : ℂ) • V T f := by
+      conv_lhs => rw [hzf]
+      rw [V_dir_colinear hT hn hfp hfu, ← chi_eq_chidir hT hn f hfp hfu, chi_real hT hn]
+    have hVcz : V T (c • z) = chi T (c * (‖z‖ : ℂ)) • V T f := by
+      conv_lhs => rw [hzf]
+      rw [smul_smul, V_dir_colinear hT hn hfp hfu, chi_eq_chidir hT hn f hfp hfu]
+    rw [hVcz, hVz, smul_smul]
+    congr 1
+    rcases chi_dichotomy hT hn with h | h
+    · rw [congrFun h, congrFun h]; rfl
+    · rw [congrFun h, congrFun h, map_mul, Complex.conj_ofReal]
 
-/-- (18c) `V` transporte le produit scalaire via `χ` sur `𝒫`. -/
+/-- Formule de décomposition à deux directions ORTHOGONALES (Bargmann §4.6-4.7,
+préliminaire à l'additivité). Preuve DIRECTE (pas de Bessel/`orthonormal_image`
+nécessaire) : le candidat `chi a1 • V f1 + chi a2 • V f2` a même norme que `V x`
+(Pythagore + `‖chi c‖ = ‖c‖`) et la partie réelle de leur produit scalaire croisé
+vaut EXACTEMENT cette norme commune — rigidité `eq_of_norm_eq_re_eq` appliquée à
+`⟪V(a_p f_p), V x⟫`, qui isole `⟪V f_p, V x⟫ = chi a_p` pour chaque `p`. -/
+private theorem V_two_dir (hT : IsWignerMap T) (hn : 2 ≤ n) {f1 f2 : H n} (hf1 : InPerp f1)
+    (hf1u : ‖f1‖ = 1) (hf2 : InPerp f2) (hf2u : ‖f2‖ = 1) (horth : ⟪f1, f2⟫_ℂ = 0)
+    (a1 a2 : ℂ) : V T (a1 • f1 + a2 • f2) = chi T a1 • V T f1 + chi T a2 • V T f2 := by
+  have hf1self : ⟪f1, f1⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hf1u]; norm_num
+  have hf2self : ⟪f2, f2⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hf2u]; norm_num
+  set x := a1 • f1 + a2 • f2 with hx_def
+  have hxp : InPerp x := by
+    show ⟪e n, x⟫_ℂ = 0
+    rw [hx_def, inner_add_right, inner_smul_right, inner_smul_right, hf1, hf2]; ring
+  have hVf1f2 : ⟪V T f1, V T f2⟫_ℂ = 0 := by
+    have h := norm_inner_V hT hn f1 f2 hf1 hf2
+    rw [horth, norm_zero] at h; exact norm_eq_zero.mp h
+  have key : ∀ (g : H n) (b : ℂ), InPerp g → ‖g‖ = 1 → ⟪g, x⟫_ℂ = b →
+      ⟪V T g, V T x⟫_ℂ = chi T b := by
+    intro g b hg hgu hgx
+    by_cases hb0 : b = 0
+    · have hgVx : ⟪V T g, V T x⟫_ℂ = 0 := by
+        have hmod : ‖⟪V T g, V T x⟫_ℂ‖ = ‖b‖ := by
+          rw [norm_inner_V hT hn g x hg hxp, hgx]
+        rw [hb0, norm_zero] at hmod; exact norm_eq_zero.mp hmod
+      have hchib : chi T b = 0 := by
+        rw [hb0, chi_eq_chidir hT hn g hg hgu]
+        show ⟪V T g, V T ((0 : ℂ) • g)⟫_ℂ = 0
+        rw [zero_smul]
+        have hV0 : V T (0 : H n) = 0 := by
+          have h := norm_V hT hn 0 (by show ⟪e n, (0 : H n)⟫_ℂ = 0; simp)
+          rw [norm_zero] at h; exact norm_eq_zero.mp h
+        rw [hV0, inner_zero_right]
+      rw [hgVx, hchib]
+    · have hgb : ⟪g, b • g⟫_ℂ = b := by
+        rw [inner_smul_right]
+        have hgself : ⟪g, g⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hgu]; norm_num
+        rw [hgself, mul_one]
+      have hgbp : InPerp (b • g) := by
+        show ⟪e n, b • g⟫_ℂ = 0; rw [inner_smul_right, hg]; ring
+      have e1 : (starRingEnd ℂ) (chi T b) * ⟪V T g, V T x⟫_ℂ = (‖b‖ : ℂ) ^ 2 := by
+        have hmod : ‖⟪V T (b • g), V T x⟫_ℂ‖ = ‖b‖ ^ 2 := by
+          rw [norm_inner_V hT hn (b • g) x hgbp hxp, inner_smul_left, hgx, mul_comm,
+            Complex.mul_conj]
+          norm_cast
+          rw [Real.norm_eq_abs, abs_of_nonneg (Complex.normSq_nonneg b)]
+          exact (Complex.sq_norm b).symm
+        have hre : (⟪V T (b • g), V T x⟫_ℂ).re = ‖b‖ ^ 2 := by
+          rw [re_inner_V hT hn (b • g) x hgbp hxp, inner_smul_left, hgx, mul_comm,
+            Complex.mul_conj, Complex.ofReal_re]
+          exact (Complex.sq_norm b).symm
+        have hexact := eq_of_norm_eq_re_eq hmod hre
+        rw [V_dir_colinear hT hn hg hgu b, inner_smul_left,
+          ← chi_eq_chidir hT hn g hg hgu] at hexact
+        push_cast at hexact
+        exact hexact
+      have hmodb : ‖chi T b‖ = ‖b‖ := by
+        rw [chi_eq_chidir hT hn g hg hgu]
+        show ‖⟪V T g, V T (b • g)⟫_ℂ‖ = ‖b‖
+        rw [norm_inner_V hT hn g (b • g) hg hgbp, hgb]
+      have hchibne : chi T b ≠ 0 := by
+        intro hc; rw [hc, norm_zero] at hmodb; exact hb0 (norm_eq_zero.mp hmodb.symm)
+      have hconjne : (starRingEnd ℂ) (chi T b) ≠ 0 := by simpa using hchibne
+      have hsq : (‖b‖ : ℂ) ^ 2 = chi T b * (starRingEnd ℂ) (chi T b) :=
+        sq_norm_eq_mul_conj hmodb
+      generalize hc_def : chi T b = c at e1 hsq hconjne ⊢
+      rw [hsq, mul_comm c] at e1
+      exact mul_left_cancel₀ hconjne e1
+  have hβ1 : ⟪V T f1, V T x⟫_ℂ = chi T a1 := by
+    apply key f1 a1 hf1 hf1u
+    rw [hx_def, inner_add_right, inner_smul_right, inner_smul_right, horth, hf1self]; ring
+  have hβ2 : ⟪V T f2, V T x⟫_ℂ = chi T a2 := by
+    apply key f2 a2 hf2 hf2u
+    rw [hx_def, inner_add_right, inner_smul_right, inner_smul_right, hf2self]
+    have : ⟪f2, f1⟫_ℂ = 0 := by rw [← inner_conj_symm f2 f1, horth]; simp
+    rw [this]; ring
+  set x' := chi T a1 • V T f1 + chi T a2 • V T f2 with hx'_def
+  have hnormVx : ‖V T x‖ ^ 2 = ‖a1‖ ^ 2 + ‖a2‖ ^ 2 := by
+    rw [norm_V hT hn x hxp, hx_def, norm_add_sq (𝕜 := ℂ), norm_smul, norm_smul, hf1u, hf2u,
+      mul_one, mul_one]
+    have : ⟪a1 • f1, a2 • f2⟫_ℂ = 0 := by rw [inner_smul_left, inner_smul_right, horth]; ring
+    rw [this]; simp
+  have hchia1 : ‖chi T a1‖ = ‖a1‖ := by
+    rw [chi_eq_chidir hT hn f1 hf1 hf1u]
+    show ‖⟪V T f1, V T (a1 • f1)⟫_ℂ‖ = ‖a1‖
+    rw [norm_inner_V hT hn f1 (a1 • f1) hf1
+      (by show ⟪e n, a1 • f1⟫_ℂ = 0; rw [inner_smul_right, hf1]; ring),
+      inner_smul_right, hf1self, mul_one]
+  have hchia2 : ‖chi T a2‖ = ‖a2‖ := by
+    rw [chi_eq_chidir hT hn f2 hf2 hf2u]
+    show ‖⟪V T f2, V T (a2 • f2)⟫_ℂ‖ = ‖a2‖
+    rw [norm_inner_V hT hn f2 (a2 • f2) hf2
+      (by show ⟪e n, a2 • f2⟫_ℂ = 0; rw [inner_smul_right, hf2]; ring),
+      inner_smul_right, hf2self, mul_one]
+  have hcross : ⟪chi T a1 • V T f1, chi T a2 • V T f2⟫_ℂ = 0 := by
+    rw [inner_smul_left, inner_smul_right, hVf1f2]; ring
+  have hVf1u : ‖V T f1‖ = 1 := by rw [norm_V hT hn f1 hf1, hf1u]
+  have hVf2u : ‖V T f2‖ = 1 := by rw [norm_V hT hn f2 hf2, hf2u]
+  have hnormx' : ‖x'‖ ^ 2 = ‖a1‖ ^ 2 + ‖a2‖ ^ 2 := by
+    rw [hx'_def, norm_add_sq (𝕜 := ℂ), norm_smul, norm_smul, hchia1, hchia2, hcross,
+      hVf1u, hVf2u]
+    simp
+  have hre : (⟪V T x, x'⟫_ℂ).re = ‖a1‖ ^ 2 + ‖a2‖ ^ 2 := by
+    rw [hx'_def, inner_add_right, inner_smul_right, inner_smul_right,
+      ← inner_conj_symm (V T x) (V T f1), ← inner_conj_symm (V T x) (V T f2), hβ1, hβ2,
+      ← sq_norm_eq_mul_conj hchia1, ← sq_norm_eq_mul_conj hchia2]
+    norm_cast
+  have hnormsub : ‖V T x - x'‖ ^ 2 = 0 := by
+    rw [norm_sub_sq (𝕜 := ℂ), hnormVx, hnormx', show RCLike.re ⟪V T x, x'⟫_ℂ
+      = (⟪V T x, x'⟫_ℂ).re from rfl, hre]
+    ring
+  have hsub : V T x - x' = 0 := by
+    have h0 : ‖V T x - x'‖ = 0 := by
+      nlinarith [sq_nonneg ‖V T x - x'‖, hnormsub, norm_nonneg (V T x - x')]
+    exact norm_eq_zero.mp h0
+  exact sub_eq_zero.mp hsub
+
+/-- `chi` fixe les réels ADDITIVEMENT décalés : `chi (r + a) = r + chi a` pour `r`
+réel, dans les deux branches (`id` trivial ; `conj` additive + fixe les réels). -/
+private theorem chi_add_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) (a : ℂ) :
+    chi T ((r : ℂ) + a) = (r : ℂ) + chi T a := by
+  rcases chi_dichotomy hT hn with h | h
+  · rw [congrFun h, congrFun h]; rfl
+  · rw [congrFun h, congrFun h, map_add, Complex.conj_ofReal]
+
+/-- (18a) `V` est additive sur `𝒫`. Preuve : cas colinéaire (`z = a•f1`) direct via
+`chi_add_real` ; cas général via Gram-Schmidt (`f2` := composante de `z`
+orthogonale à `f1 := y/‖y‖`, normalisée) puis `V_two_dir`. -/
+theorem V_additive (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n) (hy : InPerp y)
+    (hz : InPerp z) : V T (y + z) = V T y + V T z := by
+  by_cases hy0 : y = 0
+  · subst hy0
+    have hV0 : V T (0 : H n) = 0 := by
+      have h := norm_V hT hn 0 (by show ⟪e n, (0 : H n)⟫_ℂ = 0; simp)
+      rw [norm_zero] at h; exact norm_eq_zero.mp h
+    rw [zero_add, hV0, zero_add]
+  set f1 : H n := (‖y‖⁻¹ : ℂ) • y with hf1_def
+  have hf1u : ‖f1‖ = 1 := by
+    rw [hf1_def, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+      inv_mul_cancel₀ (norm_ne_zero_iff.mpr hy0)]
+  have hf1p : InPerp f1 := by
+    show ⟪e n, f1⟫_ℂ = 0; rw [hf1_def, inner_smul_right, hy]; ring
+  have hf1self : ⟪f1, f1⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hf1u]; norm_num
+  have hyf1 : y = (‖y‖ : ℂ) • f1 := by
+    rw [hf1_def, smul_smul, mul_inv_cancel₀ (by exact_mod_cast norm_ne_zero_iff.mpr hy0 :
+      (‖y‖ : ℂ) ≠ 0), one_smul]
+  set a : ℂ := ⟪f1, z⟫_ℂ with ha_def
+  set g : H n := z - a • f1 with hg_def
+  by_cases hg0 : g = 0
+  · have hz_eq : z = a • f1 := sub_eq_zero.mp (hg_def ▸ hg0)
+    have hsum : y + z = ((‖y‖ : ℂ) + a) • f1 := by
+      conv_lhs => rw [hyf1, hz_eq]
+      rw [add_smul]
+    have hVsum : V T (y + z) = chi T ((‖y‖ : ℂ) + a) • V T f1 := by
+      rw [hsum, V_dir_colinear hT hn hf1p hf1u, chi_eq_chidir hT hn f1 hf1p hf1u]
+    have hVy : V T y = (‖y‖ : ℂ) • V T f1 := by
+      conv_lhs => rw [hyf1]
+      rw [V_dir_colinear hT hn hf1p hf1u, ← chi_eq_chidir hT hn f1 hf1p hf1u, chi_real hT hn]
+    have hVz : V T z = chi T a • V T f1 := by
+      rw [hz_eq, V_dir_colinear hT hn hf1p hf1u, chi_eq_chidir hT hn f1 hf1p hf1u]
+    rw [hVsum, hVy, hVz, chi_add_real hT hn, add_smul]
+  · have hgp : InPerp g := by
+      show ⟪e n, g⟫_ℂ = 0
+      rw [hg_def, inner_sub_right, inner_smul_right, hz, hf1p]; ring
+    set f2 : H n := (‖g‖⁻¹ : ℂ) • g with hf2_def
+    have hf2u : ‖f2‖ = 1 := by
+      rw [hf2_def, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+        inv_mul_cancel₀ (norm_ne_zero_iff.mpr hg0)]
+    have hf2p : InPerp f2 := by
+      show ⟪e n, f2⟫_ℂ = 0; rw [hf2_def, inner_smul_right, hgp]; ring
+    have hf1g : ⟪f1, g⟫_ℂ = 0 := by
+      rw [hg_def, inner_sub_right, inner_smul_right, hf1self, mul_one, ha_def, sub_self]
+    have horth : ⟪f1, f2⟫_ℂ = 0 := by
+      rw [hf2_def, inner_smul_right, hf1g, mul_zero]
+    have hgf2 : g = (‖g‖ : ℂ) • f2 := by
+      rw [hf2_def, smul_smul, mul_inv_cancel₀ (by exact_mod_cast norm_ne_zero_iff.mpr hg0 :
+        (‖g‖ : ℂ) ≠ 0), one_smul]
+    have hzf12 : z = a • f1 + (‖g‖ : ℂ) • f2 := by
+      rw [← hgf2, hg_def]; abel
+    have hyf12 : y = (‖y‖ : ℂ) • f1 + (0 : ℂ) • f2 := by
+      conv_lhs => rw [hyf1]
+      rw [zero_smul, add_zero]
+    have hsum : y + z = ((‖y‖ : ℂ) + a) • f1 + (‖g‖ : ℂ) • f2 := by
+      conv_lhs => rw [hyf1, hzf12]
+      rw [add_smul]; abel
+    have hVsum : V T (y + z) = chi T ((‖y‖ : ℂ) + a) • V T f1 + chi T (‖g‖ : ℂ) • V T f2 := by
+      rw [hsum, V_two_dir hT hn hf1p hf1u hf2p hf2u horth]
+    have hVy : V T y = chi T (‖y‖ : ℂ) • V T f1 + chi T (0 : ℂ) • V T f2 := by
+      conv_lhs => rw [hyf12]
+      rw [V_two_dir hT hn hf1p hf1u hf2p hf2u horth]
+    have hVz : V T z = chi T a • V T f1 + chi T (‖g‖ : ℂ) • V T f2 := by
+      rw [hzf12, V_two_dir hT hn hf1p hf1u hf2p hf2u horth]
+    have hchi0 : chi T (0 : ℂ) = 0 := by
+      have h := chi_real hT hn 0; simpa using h
+    have hchiy : chi T (‖y‖ : ℂ) = (‖y‖ : ℂ) := chi_real hT hn ‖y‖
+    rw [hVsum, hVy, hVz, hchi0, hchiy, chi_add_real hT hn, zero_smul, add_zero, add_smul]
+    abel
+
+/-- `chi` fixe les réels MULTIPLICATIVEMENT : `chi (r * w) = r * chi w` pour `r`
+réel (`id` trivial ; `conj` multiplicative + fixe les réels). -/
+private theorem chi_mul_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) (w : ℂ) :
+    chi T ((r : ℂ) * w) = (r : ℂ) * chi T w := by
+  rcases chi_dichotomy hT hn with h | h
+  · rw [congrFun h, congrFun h]; rfl
+  · rw [congrFun h, congrFun h, map_mul, Complex.conj_ofReal]
+
+/-- Cas particulier de (18c) avec `g` unitaire — même argument de rigidité que
+`V_two_dir`, mais sans besoin d'une seconde direction orthogonale : `z`
+quelconque de `𝒫` joue directement le rôle de `x`. -/
+private theorem V_inner_eq_chi_of_unit (hT : IsWignerMap T) (hn : 2 ≤ n) {g : H n}
+    (hg : InPerp g) (hgu : ‖g‖ = 1) {z : H n} (hz : InPerp z) :
+    ⟪V T g, V T z⟫_ℂ = chi T ⟪g, z⟫_ℂ := by
+  set b : ℂ := ⟪g, z⟫_ℂ with hb_def
+  by_cases hb0 : b = 0
+  · have hmod : ‖⟪V T g, V T z⟫_ℂ‖ = ‖b‖ := norm_inner_V hT hn g z hg hz
+    rw [hb0, norm_zero] at hmod
+    have hVz0 : ⟪V T g, V T z⟫_ℂ = 0 := norm_eq_zero.mp hmod
+    have hchib : chi T b = 0 := by
+      rw [hb0, chi_eq_chidir hT hn g hg hgu]
+      show ⟪V T g, V T ((0 : ℂ) • g)⟫_ℂ = 0
+      rw [zero_smul]
+      have hV0 : V T (0 : H n) = 0 := by
+        have h := norm_V hT hn 0 (by show ⟪e n, (0 : H n)⟫_ℂ = 0; simp)
+        rw [norm_zero] at h; exact norm_eq_zero.mp h
+      rw [hV0, inner_zero_right]
+    rw [hVz0, hchib]
+  · have hgb : ⟪g, b • g⟫_ℂ = b := by
+      rw [inner_smul_right]
+      have hgself : ⟪g, g⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hgu]; norm_num
+      rw [hgself, mul_one]
+    have hgbp : InPerp (b • g) := by
+      show ⟪e n, b • g⟫_ℂ = 0; rw [inner_smul_right, hg]; ring
+    have e1 : (starRingEnd ℂ) (chi T b) * ⟪V T g, V T z⟫_ℂ = (‖b‖ : ℂ) ^ 2 := by
+      have hmod : ‖⟪V T (b • g), V T z⟫_ℂ‖ = ‖b‖ ^ 2 := by
+        rw [norm_inner_V hT hn (b • g) z hgbp hz, inner_smul_left, ← hb_def, mul_comm,
+          Complex.mul_conj]
+        norm_cast
+        rw [Real.norm_eq_abs, abs_of_nonneg (Complex.normSq_nonneg b)]
+        exact (Complex.sq_norm b).symm
+      have hre : (⟪V T (b • g), V T z⟫_ℂ).re = ‖b‖ ^ 2 := by
+        rw [re_inner_V hT hn (b • g) z hgbp hz, inner_smul_left, ← hb_def, mul_comm,
+          Complex.mul_conj, Complex.ofReal_re]
+        exact (Complex.sq_norm b).symm
+      have hexact := eq_of_norm_eq_re_eq hmod hre
+      rw [V_dir_colinear hT hn hg hgu b, inner_smul_left,
+        ← chi_eq_chidir hT hn g hg hgu] at hexact
+      push_cast at hexact
+      exact hexact
+    have hmodb : ‖chi T b‖ = ‖b‖ := by
+      rw [chi_eq_chidir hT hn g hg hgu]
+      show ‖⟪V T g, V T (b • g)⟫_ℂ‖ = ‖b‖
+      rw [norm_inner_V hT hn g (b • g) hg hgbp, hgb]
+    have hchibne : chi T b ≠ 0 := by
+      intro hc; rw [hc, norm_zero] at hmodb; exact hb0 (norm_eq_zero.mp hmodb.symm)
+    have hconjne : (starRingEnd ℂ) (chi T b) ≠ 0 := by simpa using hchibne
+    have hsq : (‖b‖ : ℂ) ^ 2 = chi T b * (starRingEnd ℂ) (chi T b) := sq_norm_eq_mul_conj hmodb
+    rw [hsq, mul_comm (chi T b)] at e1
+    exact mul_left_cancel₀ hconjne e1
+
+/-- (18c) `V` transporte le produit scalaire via `χ` sur `𝒫`. Réduction au cas
+unitaire (`V_inner_eq_chi_of_unit`) via `y = ‖y‖ • f1`, `V_chi_homogeneous` et
+`chi_mul_real`. -/
 theorem inner_V_eq_chi_inner (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n)
     (hy : InPerp y) (hz : InPerp z) : ⟪V T y, V T z⟫_ℂ = chi T ⟪y, z⟫_ℂ := by
-  sorry
+  by_cases hy0 : y = 0
+  · subst hy0
+    have hV0 : V T (0 : H n) = 0 := by
+      have h := norm_V hT hn 0 (by show ⟪e n, (0 : H n)⟫_ℂ = 0; simp)
+      rw [norm_zero] at h; exact norm_eq_zero.mp h
+    have hchi0 : chi T (0 : ℂ) = 0 := by have h := chi_real hT hn 0; simpa using h
+    rw [hV0, inner_zero_left, inner_zero_left, hchi0]
+  · set f1 : H n := (‖y‖⁻¹ : ℂ) • y with hf1_def
+    have hf1u : ‖f1‖ = 1 := by
+      rw [hf1_def, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_norm,
+        inv_mul_cancel₀ (norm_ne_zero_iff.mpr hy0)]
+    have hf1p : InPerp f1 := by
+      show ⟪e n, f1⟫_ℂ = 0; rw [hf1_def, inner_smul_right, hy]; ring
+    have hyf1 : y = (‖y‖ : ℂ) • f1 := by
+      rw [hf1_def, smul_smul, mul_inv_cancel₀ (by exact_mod_cast norm_ne_zero_iff.mpr hy0 :
+        (‖y‖ : ℂ) ≠ 0), one_smul]
+    have hVy : V T y = (‖y‖ : ℂ) • V T f1 := by
+      conv_lhs => rw [hyf1]
+      rw [V_chi_homogeneous hT hn (‖y‖ : ℂ) f1 hf1p, chi_real hT hn]
+    have hinner_yz : ⟪y, z⟫_ℂ = (‖y‖ : ℂ) * ⟪f1, z⟫_ℂ := by
+      conv_lhs => rw [hyf1]
+      rw [inner_smul_left, Complex.conj_ofReal]
+    rw [hVy, inner_smul_left, Complex.conj_ofReal, hinner_yz, chi_mul_real hT hn,
+      V_inner_eq_chi_of_unit hT hn hf1p hf1u hz]
 
 end
 end QuantumFoundations.Wigner
