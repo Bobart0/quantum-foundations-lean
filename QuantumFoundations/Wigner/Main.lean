@@ -253,6 +253,21 @@ theorem U_bijective (hT : IsWignerMap T) (hn : 2 ≤ n) : Function.Bijective (U 
           simpa using hr }
     exact (LinearMap.injective_iff_surjective (f := g)).mp (U_injective hT hn)
 
+/-- Cas `n = 1` : `𝒫` est réduit à `{0}` (`dim H 1 = 1`), donc tout `x` est un
+multiple scalaire de `e 1` — fait autonome, indépendant de `hn : 2 ≤ n`. -/
+private theorem H1_eq_inner_smul_e (x : H 1) : x = ⟪e 1, x⟫_ℂ • e 1 := by
+  have hi : ∀ i : Fin 1, i = 0 := fun i => Subsingleton.elim i 0
+  ext i
+  rw [hi i]
+  have h0 : (0 : ℕ) < 1 := by norm_num
+  simp only [e, dif_pos h0, EuclideanSpace.inner_single_left, PiLp.smul_apply, PiLp.single_apply]
+  simp
+
+private theorem he_norm_one : ‖e 1‖ = (1 : ℝ) := by
+  have h0 : (0 : ℕ) < 1 := by norm_num
+  simp only [e, dif_pos h0, PiLp.norm_single]
+  norm_num
+
 /-- **Théorème de Wigner** (dimension finie, sans hypothèse de bijectivité sur
 `T`). Toute transformation sur les états purs qui préserve les probabilités de
 transition `|⟨φ|ψ⟩|²` est induite par un unitaire ou un antiunitaire. -/
@@ -264,13 +279,78 @@ theorem wigner (n : ℕ) (T : H n → H n) (hT : IsWignerMap T) :
     refine Or.inl ⟨LinearIsometryEquiv.refl ℂ (H 0), fun x hx => ?_⟩
     rw [Subsingleton.elim x 0] at hx
     simp at hx
-  · -- n = 1 : les deux branches marchent (Bargmann §1.4) ; une seule "phase"
-    -- possible dès que dim = 1. À prouver : reste un lemme court et autonome
-    -- (aucune dépendance sur W1-W5), pas encore attaqué à ce stade du squelette.
-    sorry
+  · -- n = 1 : les deux branches marchent (Bargmann §1.4) ; branche linéaire par
+    -- convention. Dérivation autonome (aucune dépendance sur W1-W5, `hn : 2 ≤ n`
+    -- n'étant jamais disponible ici).
+    have hnormeImg1 : ‖eImg T‖ = 1 := by
+      have h1 : ‖⟪eImg T, eImg T⟫_ℂ‖ = ‖⟪e 1, e 1⟫_ℂ‖ := hT (e 1) (e 1) he_norm_one he_norm_one
+      have hee : ⟪e 1, e 1⟫_ℂ = (1 : ℂ) := by
+        have h0 : (0 : ℕ) < 1 := by norm_num
+        simp only [e, dif_pos h0, EuclideanSpace.inner_single_left, PiLp.single_apply]
+        simp
+      rw [hee, norm_one, inner_self_eq_norm_sq_to_K] at h1
+      have h2 : ‖eImg T‖ ^ 2 = 1 := by simpa using h1
+      nlinarith [h2, norm_nonneg (eImg T), sq_nonneg (‖eImg T‖ - 1)]
+    have heImg_ne : eImg T ≠ 0 := by
+      intro h; rw [h, norm_zero] at hnormeImg1; exact zero_ne_one hnormeImg1
+    let f1 : H 1 →ₗ[ℂ] H 1 :=
+      { toFun := fun x => ⟪e 1, x⟫_ℂ • eImg T
+        map_add' := fun a b => by simp only [inner_add_right, add_smul]
+        map_smul' := fun c a => by simp only [inner_smul_right, smul_smul, RingHom.id_apply] }
+    have hinj1 : Function.Injective f1 := by
+      intro a b hab
+      simp only [f1, LinearMap.coe_mk, AddHom.coe_mk] at hab
+      have hsub : (⟪e 1, a⟫_ℂ - ⟪e 1, b⟫_ℂ) • eImg T = 0 := by rw [sub_smul, hab, sub_self]
+      have heq : ⟪e 1, a⟫_ℂ = ⟪e 1, b⟫_ℂ := by
+        rcases smul_eq_zero.mp hsub with h | h
+        · exact sub_eq_zero.mp h
+        · exact absurd h heImg_ne
+      rw [H1_eq_inner_smul_e a, H1_eq_inner_smul_e b, heq]
+    have hsurj1 : Function.Surjective f1 := LinearMap.injective_iff_surjective.mp hinj1
+    have hnorm1 : ∀ x : H 1, ‖f1 x‖ = ‖x‖ := by
+      intro x
+      show ‖⟪e 1, x⟫_ℂ • eImg T‖ = ‖x‖
+      rw [norm_smul, hnormeImg1, mul_one]
+      conv_rhs => rw [H1_eq_inner_smul_e x]
+      rw [norm_smul, he_norm_one, mul_one]
+    refine Or.inl ⟨LinearIsometryEquiv.mk (LinearEquiv.ofBijective f1 ⟨hinj1, hsurj1⟩) hnorm1,
+      fun x hx => ?_⟩
+    set β := ⟪e 1, x⟫_ℂ with hβ_def
+    have hxβ : x = β • e 1 := H1_eq_inner_smul_e x
+    have hβnorm : ‖β‖ = 1 := by
+      have h1 : ‖x‖ = ‖β‖ * ‖e 1‖ := by rw [hxβ, norm_smul]
+      rw [hx, he_norm_one, mul_one] at h1
+      exact h1.symm
+    obtain ⟨lam, hlamnorm, hTx⟩ := T_phase hT he_norm_one hβnorm
+    rw [← hxβ] at hTx
+    have hβne : β ≠ 0 := by intro h; rw [h, norm_zero] at hβnorm; exact zero_ne_one hβnorm
+    refine ⟨lam * β⁻¹, ?_, ?_⟩
+    · rw [norm_mul, norm_inv, hlamnorm, hβnorm, inv_one, mul_one]
+    · show T x = (lam * β⁻¹) • (LinearEquiv.ofBijective f1 ⟨hinj1, hsurj1⟩ x)
+      show T x = (lam * β⁻¹) • f1 x
+      show T x = (lam * β⁻¹) • (β • eImg T)
+      rw [smul_smul, mul_assoc, inv_mul_cancel₀ hβne, mul_one]
+      exact hTx
   · -- n ≥ 2 : cœur, via exists_phase_U + U_bijective + bundling dans les deux
     -- branches (LinearIsometryEquiv.mk / LinearEquiv.ofBijective).
-    sorry
+    have hn2 : 2 ≤ n + 1 + 1 := by omega
+    rcases chi_dichotomy hT hn2 with hchi | hchi
+    · let f : H (n + 1 + 1) →ₗ[ℂ] H (n + 1 + 1) :=
+        { toFun := U T
+          map_add' := U_additive hT hn2
+          map_smul' := fun c a => by rw [U_chi_semilinear hT hn2 c a, congrFun hchi]; rfl }
+      have hbij : Function.Bijective f := U_bijective hT hn2
+      have hnorm : ∀ a, ‖(LinearEquiv.ofBijective f hbij) a‖ = ‖a‖ := fun a => U_norm_eq hT hn2 a
+      exact Or.inl ⟨LinearIsometryEquiv.mk (LinearEquiv.ofBijective f hbij) hnorm,
+        fun x hx => exists_phase_U hT hn2 x hx⟩
+    · let g : H (n + 1 + 1) →ₛₗ[starRingEnd ℂ] H (n + 1 + 1) :=
+        { toFun := U T
+          map_add' := U_additive hT hn2
+          map_smul' := fun c a => by rw [U_chi_semilinear hT hn2 c a, congrFun hchi] }
+      have hbij : Function.Bijective g := U_bijective hT hn2
+      have hnorm : ∀ a, ‖(LinearEquiv.ofBijective g hbij) a‖ = ‖a‖ := fun a => U_norm_eq hT hn2 a
+      exact Or.inr ⟨LinearIsometryEquiv.mk (LinearEquiv.ofBijective g hbij) hnorm,
+        fun x hx => exists_phase_U hT hn2 x hx⟩
 
 end
 end QuantumFoundations.Wigner
