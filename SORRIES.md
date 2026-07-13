@@ -7,8 +7,8 @@ vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 (optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
-total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2
-(2026-07-13).
+total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2,
+**13 sorry** après clôture de W3 (2026-07-13).
 
 ---
 
@@ -379,14 +379,72 @@ Frictions de cast `ℝ→ℂ` documentées (non bloquantes mais coûteuses en es
 `norm_cast` (normalise vers `↑(r^2)`) suivi d'un `rw [h2]; norm_num` explicite a
 fonctionné de façon fiable.
 
-### W3 — Construction de `V` + propriétés de base (Bargmann §3, eqs 11-12a)
-- [ ] `V z := γ⁻¹ • T w − e'` où `w := ‖e+z‖⁻¹ • (e+z)`, `γ := ⟪e', T w⟫` (formule
-      directe) — préférer les formes multiplicatives croisées dans les hypothèses
-      (`γ • V z = T w − γ • e'`) plutôt que des `⁻¹` dans les buts
-- [ ] `⟪e', V z⟫ = 0` ; `‖V z‖ = ‖z‖` ; colinéarité définitionnelle
-      `V z = δ • T(‖z‖⁻¹ • z)`
-- [ ] (11) `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` ; (12) partie réelle préservée ; (12a)
-      `⟪Vw,Vx⟫ = ⟪w,x⟫` si réel
+### W3 — Construction de `V` + propriétés de base (Bargmann §3, eqs 11-12a) — CLOS (2026-07-13)
+- [x] `inner_eImg_V` : `⟪e', V z⟫ = 0` — calcul direct sur la formule dépliée de
+      `V`, `⟪e',e'⟫=1` (`heImg_inner_self`) et `γ⁻¹*γ=1`
+- [x] `V_colinear` : **écart signalé et corrigé** — l'énoncé squelette affirmait
+      `‖δ‖ = 1`, ce qui est FAUX en général (contre-exemple : `T = id` donne
+      `V T z = z`, mais `δ • T(‖z‖⁻¹•z)` a toujours norme 1, donc `‖δ‖=1`
+      forcerait `‖z‖=1` pour tout `z ⊥ e`). Corrigé en `‖δ‖ = ‖z‖`, cohérent avec
+      `norm_V` et avec le commentaire Bargmann §3.2 déjà présent dans le fichier
+      (« `β'` a pour module `‖z‖` », pas nécessairement 1). Preuve : orthonormalise
+      `{e, f_z}` (`f_z := ‖z‖⁻¹•z`), pousse via `orthonormal_image` (W2) à
+      `{eImg T, T f_z}`, établit l'égalité de Bessel (9, W2) pour `T w` (`w` le
+      représentant unitaire de `e+z`) via préservation des probabilités de
+      transition sur chaque vecteur de la base, résout pour
+      `T w = γ•eImg T + μ•T f_z`, d'où `V T z = (γ⁻¹μ) • T f_z`
+- [x] `norm_V` : `‖V z‖ = ‖z‖` — cas `z=0` trivial (`V T 0 = 0` par calcul
+      direct), cas `z≠0` via `V_colinear`
+- [x] `norm_inner_V` (eq. 11) : `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` — preuve directe via
+      `V_colinear` (Vw,Vx multiples scalaires de `T` appliqué aux représentants
+      unitaires ; `IsWignerMap` donne directement le module du produit scalaire de
+      ces images ; les facteurs `‖w‖,‖x‖` s'annulent contre leurs inverses) — PAS
+      besoin de repasser par le vecteur bâti sur `e+z`, contrairement à
+      l'approche suggérée initialement
+- [x] `re_inner_V` (eq. 12) : partie réelle préservée — identité clé
+      `⟪Vw,Vx⟫ = (conj γ)⁻¹γ'⁻¹⟪Tw,Tw'⟫ − 1` (les termes croisés `⟪Tw,e'⟫`/
+      `⟪e',Tw'⟩` s'annulent EXACTEMENT contre `⟪e',e'⟫=1` en développant
+      `V z = γ⁻¹•Tw − e'` sur les deux arguments) ; le module de `⟪Tw,Tw'⟫` se
+      calcule en fonction de `⟪w,x⟫` seul (dépendance en `e+z` s'annule
+      complètement après simplification), donnant `‖1+⟪Vw,Vx⟫‖ = ‖1+⟪w,x⟫‖` ;
+      combiné à eq. 11, `re_eq_of_norm_eq` (W1, `Scalar.lean`) conclut directement
+- [x] `inner_V_eq_of_im_eq_zero` (eq. 12a) : égalité exacte si réel — (11)+(12)
+      forcent `Im⟪Vw,Vx⟫=0` via `|z|²=Re(z)²+Im(z)²` (même schéma que
+      `eq_one_of_norm_one_re_one`, W1)
+- [x] `hn : 2 ≤ n` ajouté aux 6 signatures (absent du squelette W0) : pour `n=0`,
+      `e n = 0` (valeur poubelle) et `eImg T` peut être nul, auquel cas `γ` peut
+      s'annuler et l'inversion `γ⁻¹•Tw` dégénère ; `2 ≤ n` choisi (plutôt que
+      `0 < n`, techniquement suffisant pour W3 seul) pour cohérence avec
+      `Core.lean` (W4), qui invoquera ces lemmes sous la même hypothèse
+- [x] **Écart signalé** : la formule de `V` dans `Defs.lean` n'a PAS de branche
+      `dite` séparée pour `z = 0` (contrairement à ce que supposait le plan
+      initial) — une seule formule uniforme couvre tous les cas car
+      `e n + z ≠ 0` est garanti dès que `n ≥ 1` et `z ⊥ e` (sinon `z = −e n`
+      donnerait `⟪e n,z⟫=−1≠0`, contradiction) ; aucun `by_cases z = 0` n'est
+      nécessaire dans les dérivations algébriques générales
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **13 sorry** (16 − 3, cumulé
+      19 − 6 sur tout W3)
+
+**Piège Lean rencontré et documenté** (règle 12 CLAUDE.md, généralisé) : déballer
+`e n` via `unfold e; rw [dif_pos h0]` (ou `show` explicite de la valeur dépliée)
+déclenche un timeout déterministe au `whnf` — la présence d'une instance `NeZero n`
+construite localement dans la branche `dite` est coûteuse à unifier lors d'une
+réécriture directe. Remède : `simp only [e, dif_pos h0, ...]` referme la même
+égalité sans jamais timeout (`simp` gère la réduction du `dite` plus robustement
+qu'un `rw`/`show` manuel).
+
+**Diamant d'instances rencontré et documenté** (nouveau, spécifique à
+`EuclideanSpace`/`Gleason.H n`) : `inner_self_eq_norm_sq_to_K` produit un terme
+`(↑‖x‖ : ℂ) ^ 2` via `RCLike.ofReal` + une instance `SeminormedAddCommGroup`
+dérivée de `PiLp.seminormedAddCommGroup`, DIFFÉRENTE (syntaxiquement, bien que
+définitionnellement égale) de `Complex.ofReal` + `PiLp.instNorm` utilisée
+ailleurs dans les mêmes calculs — un `rw`/`ring`/`exact_mod_cast` ciblant ce terme
+échoue silencieusement en laissant un but pourtant affiché comme trivial
+(`↑‖z‖ ^ 2 = ↑‖z‖ ^ 2` non fermé par `rfl` implicite). Parade fiable : isoler la
+conversion dans un `have` dédié fermé par `rw [inner_self_eq_norm_sq_to_K]; norm_cast`
+(le combo `rw` puis `norm_cast`, jamais `exact`/`exact_mod_cast` directement sur le
+lemme, ferme le diamant) puis réutiliser ce `have` — jamais raisonner sur le
+diamant après coup via `ring`/`field_simp` sur le terme brut.
 
 ### W4 — LE cœur : analyse de `V` (Bargmann §4 — l'analogue de `sqrtOp` pour N1)
 - [ ] `chidir f α := ⟪V f, V (α • f)⟫` (extraction directionnelle) ; (14) module,
