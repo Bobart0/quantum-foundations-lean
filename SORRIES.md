@@ -10,7 +10,10 @@ restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2,
 **13 sorry** après clôture de W3, **7 sorry** après clôture de W4,
 **0 sorry** après clôture de W5 (2026-07-13) — **théorème de Wigner intégralement
-prouvé, 0 axiome, 0 sorry sur tout le dépôt.**
+prouvé, 0 axiome, 0 sorry sur tout le dépôt.** W6 (optionnel, (A)+(B)) clos le
+2026-07-13 sans jamais introduire de sorry (chaque lemme écrit directement en
+preuve complète, skeleton-sorry-first non nécessaire vu la taille des étapes) —
+**0 sorry sur tout le dépôt, y compris W6.**
 
 ---
 
@@ -569,15 +572,43 @@ qui ont suffi pour `chidir_dichotomy`/`chi_dichotomy`.
   des contextes tactiques différents. Remède : fusionner les deux dérivations
   redondantes en une seule plutôt que d'essayer de déboguer la duplication.
 
-### W6 — OPTIONNEL (façon `v2.0-naimark`)
-- [ ] Unicité à phase globale près (Bargmann §6, Théorème 2, `dim ≥ 2` — ratio
-      `τ(a)` constant via le déterminant de Gram (invariant) + additivité)
-- [ ] Exclusivité unitaire/antiunitaire pour `n ≥ 2` via l'invariant de rayons
-      `Δ(a₁,a₂,a₃) := ⟪a₁,a₂⟫⟪a₂,a₃⟫⟪a₃,a₁⟫` (Bargmann §1.5 — témoin explicite fini :
-      `e₁=e`, `e₂=(e−f)/√2`, `e₃=(e+f(1−i))/√3` donnent `Δ = i/6 ∉ ℝ`, donc aucun
-      unitaire et antiunitaire ne peuvent induire la même action sur les rayons dès
-      `n ≥ 2` ; échoue en `n = 1`, comme attendu — calcul fini explicite)
-- [ ] Corollaire (B) `rankOne` ; wrapper `Projectivization` éventuel (basse priorité)
+### W6 — OPTIONNEL (façon `v2.0-naimark`) — CLOS (2026-07-13), 0 sorry, `QuantumFoundations/Wigner/Uniqueness.lean`
+
+**(A) Exclusivité unitaire/antiunitaire pour `n ≥ 2`** — ✅ implémentée exactement
+comme prévu, via l'invariant de rayons `Delta(a,b,c) := ⟪a,b⟫⟪b,c⟫⟪c,a⟫`
+(Bargmann §1.5) :
+- [x] `delta_transform_lin`/`delta_transform_conj` : invariance/conjugaison de
+      `Delta` sous `T`, un lemme par branche CONCRÈTE du théorème `wigner`
+      (`≃ₗᵢ[ℂ]` / `≃ₛₗᵢ[starRingEnd ℂ]`) plutôt qu'un `chi` abstrait paramétré
+      — écart signalé par rapport au plan initial, voir `ARCHITECTURE_NOTES.md`.
+      `conj_isometry_inner` (polarisation complexe) dérivé à la main : aucun
+      analogue Mathlib de `LinearIsometryEquiv.inner_map_map` pour `≃ₛₗᵢ[σ]`.
+- [x] `bargmann_delta_witness` : témoin explicite fini confirmé par Lean —
+      `e₁=e`, `e₂=(e−refVec)/√2`, `e₃=(e+refVec(1−i))/√3` donnent bien
+      `Delta = i/6 ∉ ℝ`
+- [x] `exclusivity` : assemblage — `i/6 = -(i/6)` donne `i = 0`, contradiction
+
+**(B) Unicité de `U` à phase globale près — version RESTREINTE** (pas le
+Théorème 2 complet de Bargmann §6) — ✅ :
+- [x] `Defs.lean` fixe `eImg T := T (e n)`, sans paramètre de choix de
+      représentant : introduction LOCALE (dans `Uniqueness.lean` seul,
+      `Defs.lean` non touché) d'une reconstruction paramétrée `Vp`/`chidirp`/
+      `chip`/`Up` avec `eImg` explicite, reliée à `V`/`chi`/`U` par des
+      lemmes-pont `rfl` (`V_eq_Vp`, `chi_eq_chip`, `U_eq_Up`)
+- [x] `Vp_smul_eImg`, `chip_smul_eImg`, `Up_smul_eImg` : `V`/`chi`/`U` recalculés
+      au représentant `λ • eImg` (`‖λ‖ = 1`) valent `λ • V`/`chi`/`λ • U` —
+      `chi` INCHANGÉ (pas seulement sa branche), pas de disjonction de cas
+- [x] `U_alt_eq_smul` : conclusion, `Up T (λ • eImg T) = λ • U T`
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **0 sorry**. `#print axioms` sur
+      `exclusivity`/`bargmann_delta_witness`/`U_alt_eq_smul` :
+      `[propext, Classical.choice, Quot.sound]`
+
+**Non attaqué (hors périmètre, signalé au départ)** : le Théorème 2 complet de
+Bargmann §6 (`U'` complètement arbitraire, pas seulement un autre représentant
+de `eImg`) demanderait de rederiver l'homogénéité réelle depuis l'additivité +
+l'isométrie — non nécessaire pour le cas d'usage réel du dépôt. Corollaire (B)
+`rankOne`/wrapper `Projectivization` (mentionné comme basse priorité dans le
+plan initial) : non implémenté.
 
 ### Ce qui ne bloquera PAS (contrairement aux craintes initiales)
 Extension de bases orthonormées (éliminée par le lemme (9) de W2) ; gestion de
