@@ -43,10 +43,50 @@ theorem eq_one_of_norm_one_re_one {u : ℂ} (h1 : ‖u‖ = 1) (h2 : u.re = 1) :
 `f : ℂ → ℂ` qui préserve la norme, fixe `1`, et préserve la partie réelle du produit
 `conj(f α) * f β` (i.e. la partie réelle de `⟪α,β⟫` vu dans ℂ) est l'identité ou la
 conjugaison. -/
-theorem scalar_dichotomy {f : ℂ → ℂ} (hnorm : ∀ α, ‖f α‖ = ‖α‖) (hone : f 1 = 1)
+theorem scalar_dichotomy {f : ℂ → ℂ} (_hnorm : ∀ α, ‖f α‖ = ‖α‖) (hone : f 1 = 1)
     (hre : ∀ α β, (starRingEnd ℂ (f α) * f β).re = (starRingEnd ℂ α * β).re) :
     f = id ∨ f = starRingEnd ℂ := by
-  sorry
+  have reI : ∀ w : ℂ, (starRingEnd ℂ w * Complex.I).re = w.im := by
+    intro w; simp [Complex.mul_re, Complex.conj_re, Complex.conj_im]
+  have conjMulSelf : ∀ z : ℂ, (starRingEnd ℂ z * z).re = Complex.normSq z := by
+    intro z; simp [Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.normSq_apply]
+  -- (Eq A) Re (f β) = Re β, en substituant α := 1 dans `hre` (et `f 1 = 1`).
+  have eqA : ∀ β, (f β).re = β.re := by
+    intro β
+    have h := hre 1 β
+    rw [hone] at h
+    simpa using h
+  -- (Étape B) f I = I ou f I = -I : partie réelle nulle (Eq A en `I`) et norme 1
+  -- (`hre I I` donne `normSq (f I) = 1`).
+  have hreI0 : (f Complex.I).re = 0 := by rw [eqA]; exact Complex.I_re
+  have hnormSqI : Complex.normSq (f Complex.I) = 1 := by
+    have h := hre Complex.I Complex.I
+    rw [conjMulSelf, reI, Complex.I_im] at h
+    exact h
+  have himI : (f Complex.I).im = 1 ∨ (f Complex.I).im = -1 := by
+    rw [Complex.normSq_apply, hreI0] at hnormSqI
+    have h2 : (f Complex.I).im ^ 2 = 1 := by nlinarith
+    exact sq_eq_one_iff.mp h2
+  rcases himI with hI | hI
+  · -- (Étape C, cas f I = I) `hre α I` donne Im(f α) = Im α ⟹ f = id.
+    left
+    have hfI : f Complex.I = Complex.I := Complex.ext hreI0 (by rw [hI, Complex.I_im])
+    funext α
+    have hImα : (f α).im = α.im := by
+      have h := hre α Complex.I
+      rw [hfI] at h
+      simpa [reI] using h
+    exact Complex.ext (eqA α) hImα
+  · -- (Étape C, cas f I = -I) `hre α I` donne Im(f α) = -Im α ⟹ f = conj.
+    right
+    have hfI : f Complex.I = -Complex.I := Complex.ext (by rw [hreI0]; simp) (by rw [hI]; simp)
+    funext α
+    have hImα : (f α).im = -α.im := by
+      have h := hre α Complex.I
+      rw [hfI] at h
+      simp only [mul_neg, Complex.neg_re, reI] at h
+      linarith
+    exact Complex.ext (eqA α) (by rw [Complex.conj_im]; exact hImα)
 
 end
 end QuantumFoundations.Wigner
