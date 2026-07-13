@@ -243,5 +243,93 @@ theorem exclusivity (hT : IsWignerMap T) (hn : 2 ≤ n) :
   have hI0 : Complex.I = 0 := by linear_combination 3 * hconj
   exact Complex.I_ne_zero hI0
 
+/-! ## (B) Unicité de `U` à phase globale près (version restreinte)
+
+`eImg T := T (e n)` est un `def` FIXE dans `Defs.lean` (pas de paramètre pour
+choisir un autre représentant unitaire de la même classe). Pour énoncer
+l'unicité, on introduit ici une version paramétrée LOCALE `Vp`/`chidirp`/`chip`/
+`Up`, obtenue en substituant, dans les formules mêmes de `Defs.lean`, `eImg T`
+par un représentant explicite `eImg0`. `Defs.lean` n'est pas modifié : les
+lemmes `V_eq_Vp`/`chi_eq_chip`/`U_eq_Up` ci-dessous montrent (par `rfl`) que ces
+versions paramétrées, évaluées en `eImg T`, redonnent exactement `V`/`chi`/`U`.
+
+Portée : ceci est strictement plus faible que le Théorème 2 de Bargmann §6 (qui
+couvrirait un `U'` complètement arbitraire) -- seule la liberté effectivement
+exploitée par `wigner`, le choix du représentant de `eImg`, est traitée. -/
+
+/-- Version paramétrée localement de `V` : `eImg` explicite plutôt que fixé à
+`eImg T := T (e n)`. -/
+private noncomputable def Vp (T : H n → H n) (eImg0 : H n) (z : H n) : H n :=
+  (⟪eImg0, T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ)⁻¹ • T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)) - eImg0
+
+private def chidirp (T : H n → H n) (eImg0 f : H n) (α : ℂ) : ℂ :=
+  ⟪Vp T eImg0 f, Vp T eImg0 (α • f)⟫_ℂ
+
+private noncomputable def chip (T : H n → H n) (eImg0 : H n) (α : ℂ) : ℂ :=
+  chidirp T eImg0 (refVec n) α
+
+private noncomputable def Up (T : H n → H n) (eImg0 : H n) (a : H n) : H n :=
+  chip T eImg0 ⟪e n, a⟫_ℂ • eImg0 + Vp T eImg0 (a - ⟪e n, a⟫_ℂ • e n)
+
+/-- Pont vers `Defs.lean` : `Vp`/`chidirp`/`chip`/`Up` évalués au représentant
+canonique `eImg T` redonnent exactement `V`/`chidir`/`chi`/`U`. -/
+private theorem V_eq_Vp (T : H n → H n) (z : H n) : V T z = Vp T (eImg T) z := rfl
+
+private theorem chidir_eq_chidirp (T : H n → H n) (f : H n) (α : ℂ) :
+    chidir T f α = chidirp T (eImg T) f α := rfl
+
+private theorem chi_eq_chip (T : H n → H n) (α : ℂ) : chi T α = chip T (eImg T) α := rfl
+
+private theorem U_eq_Up (T : H n → H n) (a : H n) : U T a = Up T (eImg T) a := rfl
+
+/-- Étapes (i)+(ii) : `V` calculé au représentant `λ • eImg` vaut `λ • V` calculé
+au représentant `eImg`, pour tout `‖λ‖ = 1`. -/
+theorem Vp_smul_eImg (T : H n → H n) (eImg0 : H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (z : H n) :
+    Vp T (lam • eImg0) z = lam • Vp T eImg0 z := by
+  set w := (‖e n + z‖⁻¹ : ℂ) • (e n + z)
+  show (⟪lam • eImg0, T w⟫_ℂ)⁻¹ • T w - lam • eImg0
+      = lam • ((⟪eImg0, T w⟫_ℂ)⁻¹ • T w - eImg0)
+  rw [inner_smul_left]
+  have hconjlam : (starRingEnd ℂ) lam * lam = 1 := conj_mul_self_eq_one hlam
+  have hinv2 : ((starRingEnd ℂ) lam)⁻¹ = lam := inv_eq_of_mul_eq_one_right hconjlam
+  have hinv : ((starRingEnd ℂ) lam * ⟪eImg0, T w⟫_ℂ)⁻¹ = lam * (⟪eImg0, T w⟫_ℂ)⁻¹ := by
+    rw [mul_inv, hinv2]
+  rw [hinv]
+  module
+
+/-- Étape (iii) : `χ` ne dépend PAS du choix du représentant `eImg` -- pas
+seulement sa branche `id`/`conj`, la fonction entière. -/
+theorem chip_smul_eImg (T : H n → H n) (eImg0 : H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (α : ℂ) :
+    chip T (lam • eImg0) α = chip T eImg0 α := by
+  show chidirp T (lam • eImg0) (refVec n) α = chidirp T eImg0 (refVec n) α
+  show ⟪Vp T (lam • eImg0) (refVec n), Vp T (lam • eImg0) (α • refVec n)⟫_ℂ
+      = ⟪Vp T eImg0 (refVec n), Vp T eImg0 (α • refVec n)⟫_ℂ
+  rw [Vp_smul_eImg T eImg0 lam hlam, Vp_smul_eImg T eImg0 lam hlam]
+  rw [inner_smul_left, inner_smul_right]
+  have hconjlam : (starRingEnd ℂ) lam * lam = 1 := conj_mul_self_eq_one hlam
+  rw [← mul_assoc, hconjlam, one_mul]
+
+/-- Étape (iv) : `U` calculé au représentant `λ • eImg` vaut `λ • U` calculé au
+représentant `eImg`. -/
+theorem Up_smul_eImg (T : H n → H n) (eImg0 : H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (a : H n) :
+    Up T (lam • eImg0) a = lam • Up T eImg0 a := by
+  show chip T (lam • eImg0) ⟪e n, a⟫_ℂ • (lam • eImg0)
+      + Vp T (lam • eImg0) (a - ⟪e n, a⟫_ℂ • e n)
+      = lam • (chip T eImg0 ⟪e n, a⟫_ℂ • eImg0 + Vp T eImg0 (a - ⟪e n, a⟫_ℂ • e n))
+  rw [chip_smul_eImg T eImg0 lam hlam, Vp_smul_eImg T eImg0 lam hlam, smul_add, smul_smul,
+    smul_smul, mul_comm lam]
+
+/-- **Unicité de `U` à phase globale près (version restreinte)** : si l'on
+reconstruit `V'`, `χ'`, `U'` en substituant, dans les formules de `Defs.lean`, le
+représentant unitaire `eImg T := T (e n)` par un autre représentant unitaire
+`λ • eImg T` de la même classe (`‖λ‖ = 1`), alors `U'` et `U` diffèrent
+exactement d'une phase globale `λ`. Version RESTREINTE du Théorème 2 de Bargmann
+§6 : ne couvre que la liberté effectivement exploitée par `wigner` (le choix du
+représentant de `eImg`), pas un `U'` complètement arbitraire. -/
+theorem U_alt_eq_smul (T : H n → H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (a : H n) :
+    Up T (lam • eImg T) a = lam • U T a := by
+  rw [U_eq_Up]
+  exact Up_smul_eImg T (eImg T) lam hlam a
+
 end
 end QuantumFoundations.Wigner
