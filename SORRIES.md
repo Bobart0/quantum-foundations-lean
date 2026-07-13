@@ -15,6 +15,11 @@ prouvé, 0 axiome, 0 sorry sur tout le dépôt.** W6 (optionnel, (A)+(B)) clos l
 preuve complète, skeleton-sorry-first non nécessaire vu la taille des étapes) —
 **0 sorry sur tout le dépôt, y compris W6.**
 
+Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
+**5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
+plus incertaine à l'issue de la reconnaissance). U1, U2, U3b, U4, U5 restent
+ouverts.
+
 ---
 
 ## N0 — Squelette (Defs, SqrtOp, DilSpace, Main, Nonvacuity)
@@ -623,3 +628,151 @@ patterns que sur `gleason`/N0-N3, lemmes `private` à contexte minimal si timeou
 `whnf` (règle 12 CLAUDE.md) ; junk values des défs totales (`V` hors `𝒫`, `chi` hors
 domaine) — chaque lemme porte ses side conditions, discipline déjà rodée sur
 `sqrtOp`/`dilProj`.
+
+---
+
+## Uhlhorn — Corollaire 1.2 de Šemrl (arXiv:2106.06182)
+
+**Énoncé.** En dimension finie `n ≥ 3`, toute application `φ` sur les projections
+de rang 1 qui préserve l'orthogonalité DANS UN SEUL SENS (`PQ = 0 ⟹
+φ(P)φ(Q) = 0` ; ni injectivité ni surjectivité supposées) est automatiquement une
+symétrie de Wigner (`∃ U` unitaire ou antiunitaire, `φ(P) = UPU*`). Source :
+Šemrl, *Wigner symmetries and Gleason's theorem*, 2021 (arXiv:2106.06182),
+Corollaire 1.2. Réutilise `wigner` (W0–W6, déjà clos) et `Gleason.gleason`
+(dépendance épinglée `v1.0-gleason`) comme boîtes noires.
+
+**Découpage de la preuve** (U1–U5, U3a inséré lors de la reconnaissance de U0,
+voir ci-dessous) :
+- **U1** — corollaire (B) de Wigner (jamais construit jusqu'ici) : `φ` préservant
+  `tr(φ(P)φ(Q)) = tr(PQ)` pour toute paire est une symétrie de Wigner. Se déduit
+  de `wigner` en choisissant un représentant unitaire par projection.
+- **U2** — lemme spectral élémentaire (pure algèbre linéaire) : `E` positif,
+  `E ≤ I`, `tr(E) = 1`, `⟨Ex,x⟩ = 1` pour `x` unitaire ⟹ `E = P_x`.
+- **U3a** — extension d'une fonction-cadre sur les droites en `ProjMeasure`
+  complet (pièce isolée lors de la reconnaissance, voir U0 ci-dessous).
+- **U3b** — « Gleason appliqué deux fois » : combine `Gleason.gleason`, U3a et U2.
+- **U4** — assemblage : U1 + U3b.
+- **U5** — réduction fini-dimensionnelle (comptage de cardinalité) + théorème
+  final `uhlhorn_finite_dim`, combiné à U4.
+
+### U0 — Reconnaissance + squelette — ✅ CLOS (2026-07-13)
+
+**Partie A (reconnaissance, obligatoire avant tout code) :**
+- [x] `Gleason.gleason {n} (hn : 3 ≤ n) (m : ProjMeasure n) : ∃! ρ, IsDensityOperator ρ
+      ∧ ∀ A, m.μ A = bornValue ρ A` — confirmé assez général pour être appliqué à
+      un `ProjMeasure` construit depuis `φ_D(P) := tr(D·φ(P))` (`ProjMeasure` est
+      un `Prop`-bundle générique sur `Submodule ℂ (H n) → ℝ`, sans référence à un
+      contexte Busch/Gleason spécifique)
+- [x] Représentation des projections de rang 1 côté `gleason` : AUCUN wrapper
+      `rankOne`/structure bundlée — toujours `Submodule ℂ (H n)` (`ProjMeasure`,
+      `bornValue`, `projL`) ou l'opérateur `InnerProductSpace.rankOne` de Mathlib
+      (déjà utilisé côté Naimark, `sqrtOp`), jamais les deux mélangés dans un
+      type dédié
+- [x] Signature de `wigner` reconfirmée inchangée depuis W6
+- [x] Aucune ébauche de corollaire (B) de Wigner (projection form) préexistante
+- [x] API spectrale confirmée : `IsPositiveOp`, `IsEffect T := IsPositiveOp T ∧
+      IsPositiveOp (1-T)` (= `0 ≤ T ≤ 1`), `LinearMap.trace`, et surtout
+      `Gleason.positive_inner_self_eq_zero` (déjà prouvé côté `gleason`,
+      directement réutilisable comme brique centrale de U2)
+- [x] **Conception validée** : `Proj1 (n) := {A : Submodule ℂ (H n) //
+      finrank ℂ A = 1}` (réutilise `Submodule`, aucun nouveau wrapper) ;
+      `IsWignerSymmetryProj`, **Option 1 retenue** — égalité de droites
+      `φ(ℂ∙x) = ℂ∙(Ux)`, PAS l'égalité opératorielle littérale `φ(P) = UPU*`
+      (Option 2, mathématiquement équivalente pour du rang 1, mais qui aurait
+      exigé `LinearMap.adjoint` d'une équivalence semilinéaire — jamais rencontré
+      dans ce projet, laissée en remarque pour une passe ultérieure si besoin)
+- [x] **Point supplémentaire de reconnaissance, avant le squelette** : audit
+      exhaustif des sites de construction d'un `ProjMeasure` dans `gleason`
+      (`EffectMeasure.toProjMeasure`, `pureState`) — aucun des deux n'étend une
+      fonction-cadre définie seulement sur les droites, tous deux donnent une
+      formule fermée directement sur tout sous-espace. **Ce lemme d'extension
+      n'existe nulle part dans `gleason-theorem-lean`** : isolé en sous-jalon
+      **U3a** à part entière (pas un détail interne de U3b), avec sa propre
+      estimation (~100-150 lignes, 4-6 sous-buts). Décision : U3a reste dans
+      `quantum-foundations-lean` (namespace `Uhlhorn`), pas dans
+      `gleason-theorem-lean` — même générique, on ne rouvre pas le dépôt public
+      tagué pour ce besoin
+
+**Partie B (squelette, `QuantumFoundations/Uhlhorn/`) :**
+- [x] `Defs.lean` : `Proj1`, `Proj1.mk_unit`, `TraceProd`, `PreservesOrthogonality`,
+      `IsWignerSymmetryProj`, `IsFrameFunctionOnLines`, `SendsONBToONB` — 0 sorry
+- [x] `WignerProjectionForm.lean` (U1, `wigner_projection_form`) — 1 sorry
+- [x] `Spectral.lean` (U2, `eq_projL_of_positive_le_one_trace_one_inner_one`) —
+      1 sorry
+- [x] `GleasonExtend.lean` (U3a, `exists_projMeasure_of_frameFunctionOnLines`,
+      signature complète posée sans sous-découper les 5 sous-buts internes en
+      sorries séparés) — 1 sorry
+- [x] `GleasonTwice.lean` (U3b, `traceProd_preserved_of_sendsONBToONB`) — 1 sorry
+- [x] `Assembly.lean` (U4 `wignerSymmetryProj_of_sendsONBToONB`, U5
+      `uhlhorn_finite_dim`) — 2 sorry
+- [x] `Nonvacuity.lean` (0 sorry) : témoin `φ := id` habite `PreservesOrthogonality`
+      et la branche unitaire de `IsWignerSymmetryProj` (`U := refl`, preuve par
+      `rfl`) ; témoin antiunitaire (`conjCoords`) NON immédiat (aurait exigé
+      `Submodule.map` pour une équivalence semilinéaire, jamais exercé dans ce
+      projet) — écarté conformément à la consigne (un seul témoin suffit)
+- [x] `lake build` vert, `guard.sh` : 0 axiome, 0 `native_decide`, **6 sorry**
+      (un par jalon U1/U2/U3a/U3b/U4/U5)
+
+**Écart mineur signalé et corrigé** : le premier jet du docstring de
+`GleasonExtend.lean` employait littéralement le mot « sorry » pour décrire la
+taille estimée du jalon, faisant remonter le compte `guard.sh` à 7 par un faux
+positif (le script ne distingue pas commentaires et code) — reformulé en
+« sous-buts intermédiaires ».
+
+### U3a — Extension frame function → `ProjMeasure` complet — ✅ CLOS (2026-07-13)
+
+Attaqué en premier, indépendamment du reste (U1/U2/U3b/U4/U5), car c'était la
+pièce dont la difficulté réelle restait la plus incertaine à l'issue de la
+reconnaissance de U0.
+
+- [x] `gv` (pont `Proj1 n → ℝ` vers `H n → ℝ`, valeur poubelle `0` hors de la
+      sphère unité) + `isCFrameFunction_gv` : `gv g` satisfait
+      `Gleason.IsCFrameFunction (gv g) 1`
+- [x] `orthonormal_stdBasis_coe`/`span_stdBasis_coe` : la base orthonormée
+      standard de `↥A` (`stdOrthonormalBasis ℂ A`), coercée dans `H n`, est
+      orthonormée et engendre `A` (`LinearIsometry.orthonormal_comp_iff`,
+      `Submodule.map_subtype_top`)
+- [x] `frameSum` (`μ A := ∑ i, gv g (stdOrthonormalBasis ℂ A i)`) +
+      **`frameSum_eq_sum_of_orthonormal_spanning`** (Sous-lemme 1, indépendance
+      du choix de base, sous forme générique — tout `Fintype ι` de bon cardinal,
+      pas seulement `Fin (finrank A)`, via `Fintype.equivFinOfCardEq` +
+      `Equiv.sum_comp`)
+- [x] `frameSum_top` (Sous-lemme 3), `frameSum_nonneg` (Sous-lemme 4),
+      `frameSum_add_isOrtho` (Sous-lemme 5, via `Sum.elim` — seule concaténation
+      de bases construite à la main dans tout le fichier)
+- [x] `exists_unit_vector_of_proj1` + `frameSum_proj1` : `μ` coïncide avec `g`
+      sur chaque droite
+- [x] `exists_projMeasure_of_frameFunctionOnLines` assemblé, 0 sorry
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **5 sorry** (6 − 1)
+
+**Écart majeur signalé (change la difficulté anticipée du jalon)** : la
+stratégie de reconnaissance envisageait de redémontrer l'indépendance de base
+(Sous-lemme 1) depuis zéro par concaténation `Fin k ⊕ Fin l → Fin n`
+(`finSumFinEquiv`/`Fin.append`). En lisant `Gleason.Complex.RealSections`
+(importé transitivement mais jamais lu en détail avant ce jalon), j'ai trouvé
+que cet argument y est **déjà entièrement prouvé** sous forme vectorielle :
+`Gleason.cframe_sum_invariant` (pour une fonction-cadre `g : H n → ℝ`
+satisfaisant `IsCFrameFunction g W`, deux familles orthonormées de même taille
+engendrant le même sous-espace donnent la même somme). Stratégie retenue :
+pont vers cette machinerie déjà prouvée (`gv`/`isCFrameFunction_gv`) plutôt que
+réimplémentation indépendante — la seule concaténation de bases réellement
+construite à la main dans tout le fichier est celle de `add_isOrtho` (Sous-lemme
+5), sur un périmètre bien plus restreint (juste `A` et `B`) que la construction
+générale de l'extension elle-même.
+
+**Piège Lean rencontré et documenté** : `Module.finrank ℂ (A ⊔ B)` (sans
+coercion explicite vers le type sous-jacent) fait échouer l'élaboration
+(`failed to synthesize instance Max Type`) — Lean pousse le type attendu `Type`
+dans l'application de `⊔` avant de réaliser qu'il doit d'abord élaborer
+`A ⊔ B : Submodule ℂ (H n)` puis coercer le résultat. Remède systématique :
+écrire `Module.finrank ℂ ↥(A ⊔ B)` avec la coercion `↥` explicite dès que
+l'argument de `Module.finrank`/toute fonction attendant un `Type` est une
+expression composée (pas une simple variable) construite avec un opérateur de
+treillis sur des `Submodule`.
+
+### U1, U2, U3b, U4, U5 — non attaqués
+
+Squelette posé (voir U0 ci-dessus), preuves non commencées. Ordre de dépendance
+réel : U2 et U3a sont indépendants l'un de l'autre (U3a clos) ; U3b dépend des
+deux ; U1 est indépendant de tout le reste ; U4 dépend de U1+U3b ; U5 dépend de
+U4 seul.
