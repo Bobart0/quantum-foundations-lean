@@ -7,7 +7,8 @@ vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 (optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
-total : 24) — **21 sorry** après clôture de W1 le 2026-07-13.
+total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2
+(2026-07-13).
 
 ---
 
@@ -344,14 +345,39 @@ QuantumFoundations/Wigner/Nonvacuity.lean    0 sorry, témoins id/conjCoords com
       gardée dans la signature (renommée `_hnorm`, énoncé inchangé)
 - [x] `guard.sh` : 0 axiome, 0 `native_decide`, **21 sorry** (24 − 3)
 
-### W2 — Plomberie produit-scalaire
-- [ ] Lemme (9) de Bargmann (pièce maîtresse) : famille orthonormée finie `g`,
-      `‖u‖² = Σ ‖⟪g p, u⟫‖² → u = Σ ⟪g p, u⟫ • g p` (identité de Bessel avec égalité
-      — élimine `exists_orthonormalBasis_extension` du chemin critique, aucune
-      extension de base, aucun comptage de cardinal, aucune surjectivité requise)
-- [ ] Images T-orthonormées : moduli `δ_pq` + normes 1 ⇒ `Orthonormal` (cas `p = q` :
-      `⟪Tf,Tf⟫` réel ≥ 0 de module 1 ⇒ = 1)
-- [ ] Identités d'homogénéité/scaling (remplace l'extension aux rayons de Bargmann §2)
+### W2 — Plomberie produit-scalaire — ✅ CLOS (2026-07-13)
+- [x] `bessel_eq_of_norm_sq_eq` (lemme (9) de Bargmann, pièce maîtresse) : famille
+      orthonormée finie `g` (`{ι : Type*} [Fintype ι]`, pas seulement `Fin m`),
+      `‖u‖² = Σ ‖⟪g p, u⟫‖² → u = Σ ⟪g p, u⟫ • g p` — identité de Bessel avec
+      égalité, élimine `exists_orthonormalBasis_extension` du chemin critique,
+      aucune extension de base, aucun comptage de cardinal, aucune surjectivité.
+      Preuve : `key : ⟪g p,y⟫=⟪g p,u⟫` (effondrement simple) réutilisé pour
+      `hyy`/`hyu` (chacun un calcul à somme simple, jamais de double somme
+      inlinée) puis `norm_sub_sq` + hypothèse ⟹ `‖u-y‖=0`.
+- [x] `orthonormal_image` : moduli `δ_pq` + normes 1 ⇒ `Orthonormal` (cas `p = q` :
+      `⟪Tf,Tf⟫ = (↑‖Tf‖:ℂ)²` via `inner_self_eq_norm_sq_to_K`, module 1 ⇒ `‖Tf‖²=1`)
+      — signature complétée avec `[DecidableEq ι]` (requis par `orthonormal_iff_ite`,
+      ajout d'hypothèse pure, aucune restriction d'usage réelle)
+- [x] Bullet « identités d'homogénéité/scaling » du plan initial : ABSORBÉE dans
+      `V_colinear` (W3) — pas un lemme séparé, aucun sorry dédié
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **19 sorry** (21 − 2)
+
+**Piège Lean rencontré et documenté** (dans `Bessel.lean`) : un `rw` ciblant un
+terme SANS métavariable (`⟪g p,u⟫` fixe, pas un pattern) réécrit TOUTES ses
+occurrences syntaxiques identiques simultanément — après avoir substitué `⟪g p,y⟫`
+par `⟪g p,u⟫` via `key p`, le but contenait deux copies syntaxiquement identiques
+de `⟪g p,u⟫`, et un `rw [← inner_conj_symm ...]` les a toutes les deux réécrites au
+lieu d'une seule (double `conj`). Parade : `mul_comm` puis appliquer le lemme
+directement sur `conj(z)*z`, jamais de `rw` ciblant un sous-terme dupliqué sans
+métavariable pour le distinguer des autres occurrences identiques.
+
+Frictions de cast `ℝ→ℂ` documentées (non bloquantes mais coûteuses en essais) :
+`inner_self_eq_norm_sq_to_K x : ⟪x,x⟫ = ↑‖x‖ ^ 2` élabore en `(↑‖x‖ : ℂ) ^ 2`
+(cast AVANT la puissance, pas `↑(‖x‖^2)`) — `simpa`/`simp` gèrent la conversion
+`‖(↑r)^2‖ → r^2` sans effort, mais pour re-fermer dans l'autre sens
+(`r^2=1 → (↑r)^2=1`), ni `exact_mod_cast` ni `push_cast` seuls n'ont suffi ;
+`norm_cast` (normalise vers `↑(r^2)`) suivi d'un `rw [h2]; norm_num` explicite a
+fonctionné de façon fiable.
 
 ### W3 — Construction de `V` + propriétés de base (Bargmann §3, eqs 11-12a)
 - [ ] `V z := γ⁻¹ • T w − e'` où `w := ‖e+z‖⁻¹ • (e+z)`, `γ := ⟪e', T w⟫` (formule
