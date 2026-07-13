@@ -25,8 +25,9 @@ variable {n : ℕ} {T : H n → H n}
 /-- Étape 1 de Bargmann §4.2 : si `T` préserve les probabilités de transition, une
 rotation de phase `c • f` sur un vecteur unitaire `f` induit une rotation de phase
 sur `T f` — cas d'égalité de Cauchy-Schwarz appliqué à `T f, T(c•f)` (tous deux
-unitaires, produit scalaire de module 1). -/
-private theorem T_phase (hT : IsWignerMap T) {f : H n} (hf : ‖f‖ = 1) {c : ℂ} (hc : ‖c‖ = 1) :
+unitaires, produit scalaire de module 1). Réutilisé par W5 (`Main.lean`,
+`exists_phase_U`). -/
+theorem T_phase (hT : IsWignerMap T) {f : H n} (hf : ‖f‖ = 1) {c : ℂ} (hc : ‖c‖ = 1) :
     ∃ lam : ℂ, ‖lam‖ = 1 ∧ T (c • f) = lam • T f := by
   have hcf : ‖c • f‖ = 1 := by rw [norm_smul, hc, hf, mul_one]
   have hTf : ‖T f‖ = 1 := norm_T_unit hT hf
@@ -356,8 +357,8 @@ theorem chi_dichotomy (hT : IsWignerMap T) (hn : 2 ≤ n) :
 
 /-- `chi` fixe les réels dans les DEUX branches (`id r = r` ; `conj r = r` pour
 `r` réel) — outil réutilisé pour l'homogénéité de `V` et la formule à deux
-directions. -/
-private theorem chi_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) :
+directions, et pour W5 (`Main.lean`). -/
+theorem chi_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) :
     chi T (r : ℂ) = (r : ℂ) := by
   rcases chi_dichotomy hT hn with h | h
   · rw [congrFun h]; rfl
