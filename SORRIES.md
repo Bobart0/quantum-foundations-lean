@@ -17,8 +17,8 @@ preuve complète, skeleton-sorry-first non nécessaire vu la taille des étapes)
 
 Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
 **5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
-plus incertaine à l'issue de la reconnaissance). U1, U2, U3b, U4, U5 restent
-ouverts.
+plus incertaine à l'issue de la reconnaissance), **4 sorry** après clôture de U1
+(2026-07-13). U2, U3b, U4, U5 restent ouverts.
 
 ---
 
@@ -770,9 +770,44 @@ l'argument de `Module.finrank`/toute fonction attendant un `Type` est une
 expression composée (pas une simple variable) construite avec un opérateur de
 treillis sur des `Submodule`.
 
-### U1, U2, U3b, U4, U5 — non attaqués
+### U1 — Corollaire (B) de Wigner en langage de projections — ✅ CLOS (2026-07-13)
+
+Attaqué juste après U3a, indépendamment de U2/U3a/U3b : `wigner_projection_form`
+ne dépend que de `wigner` (W0–W6, déjà clos) et de `TraceProd`/`Proj1`
+(`Defs.lean`), pas de `Gleason.gleason` ni de `ProjMeasure`.
+
+- [x] `projL_singleton_unit` (privé) : `projL (ℂ∙x) y = ⟪x,y⟫•x` pour `x`
+      unitaire, via `Submodule.starProjection_singleton`
+- [x] **Étape 1** `traceProd_mk_unit_eq` : `TraceProd (mk_unit x) (mk_unit y) =
+      ‖⟪x,y⟫‖²` — `bornValue_span_singleton` a suffi tel quel une fois
+      `projL_singleton_unit` établi, aucun lemme intermédiaire supplémentaire
+- [x] **Étape 2** `T`/`T_unit`/`T_repr` : construction de `T : H n → H n` par
+      choix (`Classical.choose`) d'un représentant unitaire canonique de
+      `φ (mk_unit x hx)`, via `exists_unit_vector_of_proj1`
+- [x] **Étape 3** `isWignerMap_T` : `T` satisfait `IsWignerMap`, en appliquant
+      l'Étape 1 dans les deux sens autour de l'hypothèse `hφ` (préservation de
+      `TraceProd`), puis `a²=b² ∧ a,b≥0 ⟹ a=b` par `nlinarith`
+      (`sq_nonneg (a-b)`/`sq_nonneg (a+b)`)
+- [x] **Étape 4-5** `wigner_projection_form` : `rcases wigner n T (isWignerMap_T
+      hφ)`, reconstruction de `IsWignerSymmetryProj φ` par égalité de droites
+      (`Submodule.span_singleton_smul_eq`, `c ≠ 0` depuis `‖c‖=1`) dans les deux
+      branches, symétriques
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **4 sorry** (5 − 1)
+
+**Écart signalé (décision de l'Étape 0, point 3)** : `exists_unit_vector_of_proj1`
+est nécessaire à la fois ici (U1) et dans U3a (`GleasonExtend.lean`, où il était
+`private`). Plutôt que (a) l'y rendre public et importer tout
+`GleasonExtend.lean` dans `WignerProjectionForm.lean` (créerait une dépendance
+de fichier de U1 — censé être indépendant du reste — vers U3a), ou (b) le
+redupliquer localement, **relocalisé dans `Defs.lean`** (public, partagé) — une
+troisième option non listée explicitement dans les deux proposées, jugée
+meilleure des deux : aucune duplication, aucune dépendance de fichier
+superflue. `GleasonExtend.lean` mis à jour en conséquence (suppression de la
+copie `private`, aucun changement de preuve).
+
+### U2, U3b, U4, U5 — non attaqués
 
 Squelette posé (voir U0 ci-dessus), preuves non commencées. Ordre de dépendance
 réel : U2 et U3a sont indépendants l'un de l'autre (U3a clos) ; U3b dépend des
-deux ; U1 est indépendant de tout le reste ; U4 dépend de U1+U3b ; U5 dépend de
-U4 seul.
+deux ; U1 (clos) était indépendant de tout le reste ; U4 dépend de U1+U3b ; U5
+dépend de U4 seul.
