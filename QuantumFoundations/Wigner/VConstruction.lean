@@ -1,4 +1,5 @@
 import QuantumFoundations.Wigner.Bessel
+import QuantumFoundations.Wigner.Scalar
 
 /-!
 # W3 — Construction de `V` et propriétés de base (Bargmann §3, eqs 11-12a)
@@ -213,35 +214,140 @@ theorem V_colinear (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp z)
     rw [hTw_eq, smul_add, smul_smul, smul_smul, inv_mul_cancel₀ hγne, one_smul,
       add_sub_cancel_left]
 
+/-- `V` envoie toujours `0` (élément trivial de `𝒫`) sur `0`. -/
+private theorem V_zero (hT : IsWignerMap T) (hn : 2 ≤ n) : V T (0 : H n) = 0 := by
+  show (⟪eImg T, T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0))⟫_ℂ)⁻¹ •
+      T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0)) - eImg T = 0
+  rw [add_zero, he_norm hn, Complex.ofReal_one, inv_one, one_smul]
+  show (⟪eImg T, eImg T⟫_ℂ)⁻¹ • eImg T - eImg T = 0
+  rw [heImg_inner_self hT hn, inv_one, one_smul, sub_self]
+
 theorem norm_V (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp z) :
     ‖V T z‖ = ‖z‖ := by
   by_cases hz0 : z = 0
-  · subst hz0
-    have hV0 : V T (0 : H n) = 0 := by
-      show (⟪eImg T, T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0))⟫_ℂ)⁻¹ •
-          T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0)) - eImg T = 0
-      rw [add_zero, he_norm hn, Complex.ofReal_one, inv_one, one_smul]
-      show (⟪eImg T, eImg T⟫_ℂ)⁻¹ • eImg T - eImg T = 0
-      rw [heImg_inner_self hT hn, inv_one, one_smul, sub_self]
-    rw [hV0, norm_zero]
+  · subst hz0; rw [V_zero hT hn, norm_zero]
   · obtain ⟨δ, hδ, hVz⟩ := V_colinear hT hn z hz hz0
     rw [hVz, norm_smul, hδ, norm_T_unit hT (hfz_norm hz0), mul_one]
 
-/-- (11) Module du produit scalaire préservé par `V` sur `𝒫`. -/
-theorem norm_inner_V (hT : IsWignerMap T) (w x : H n) (hw : InPerp w) (hx : InPerp x) :
-    ‖⟪V T w, V T x⟫_ℂ‖ = ‖⟪w, x⟫_ℂ‖ := by
-  sorry
+private theorem inner_fw_fx_norm {w x : H n} (hw0 : w ≠ 0) (hx0 : x ≠ 0) :
+    ‖⟪(‖w‖⁻¹ : ℂ) • w, (‖x‖⁻¹ : ℂ) • x⟫_ℂ‖ = ‖w‖⁻¹ * ‖x‖⁻¹ * ‖⟪w, x⟫_ℂ‖ := by
+  rw [inner_smul_left, inner_smul_right, map_inv₀, Complex.conj_ofReal, norm_mul, norm_mul,
+    norm_inv, norm_inv, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+    abs_norm, abs_norm, mul_assoc]
 
-/-- (12) Partie réelle du produit scalaire préservée par `V` sur `𝒫`. -/
-theorem re_inner_V (hT : IsWignerMap T) (w x : H n) (hw : InPerp w) (hx : InPerp x) :
-    (⟪V T w, V T x⟫_ℂ).re = (⟪w, x⟫_ℂ).re := by
-  sorry
+/-- (11) Module du produit scalaire préservé par `V` sur `𝒫`. Preuve directe via la
+colinéarité (`V_colinear` ci-dessus) : `Vw,Vx` sont des multiples de `T` appliqué aux
+représentants unitaires, et `T` préserve le module du produit scalaire de deux
+vecteurs unitaires (hypothèse `IsWignerMap`) — aucun besoin de repasser par `w`
+(le vecteur bâti sur `e+z`, contrairement à ce que suggérait le plan initial). -/
+theorem norm_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
+    (hx : InPerp x) : ‖⟪V T w, V T x⟫_ℂ‖ = ‖⟪w, x⟫_ℂ‖ := by
+  by_cases hw0 : w = 0
+  · subst hw0; rw [V_zero hT hn]; simp
+  by_cases hx0 : x = 0
+  · subst hx0; rw [V_zero hT hn]; simp
+  obtain ⟨δw, hδw, hVw⟩ := V_colinear hT hn w hw hw0
+  obtain ⟨δx, hδx, hVx⟩ := V_colinear hT hn x hx hx0
+  rw [hVw, hVx, inner_smul_left, inner_smul_right, norm_mul, norm_mul, Complex.norm_conj,
+    hT _ _ (hfz_norm hw0) (hfz_norm hx0), inner_fw_fx_norm hw0 hx0, hδw, hδx]
+  have hwR : ‖w‖ ≠ 0 := norm_ne_zero_iff.mpr hw0
+  have hxR : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx0
+  field_simp
+
+/-- Identité clé (Bargmann §3, eq. 10) : en développant `V z = γ⁻¹•Tw - e'` sur les
+deux arguments, les termes croisés `⟪Tw,e'⟫`/`⟪e',Tw⟩` s'annulent EXACTEMENT contre
+`⟪e',e'⟫ = 1`, ne laissant que le terme principal moins `1`. C'est cette structure
+« `1 + ...` » qui permet ensuite d'appliquer `re_eq_of_norm_eq` (W1). -/
+private theorem inner_V_eq (hT : IsWignerMap T) (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z)
+    (hz' : InPerp z') :
+    ⟪V T z, V T z'⟫_ℂ =
+      (starRingEnd ℂ (⟪eImg T, T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ))⁻¹ *
+          (⟪eImg T, T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ)⁻¹ *
+          ⟪T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)), T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ -
+        1 := by
+  show ⟪(⟪eImg T, T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ)⁻¹ • T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))
+        - eImg T,
+      (⟪eImg T, T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ)⁻¹ • T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))
+        - eImg T⟫_ℂ =
+      (starRingEnd ℂ (⟪eImg T, T ((‖e n + z‖⁻¹ : ℂ) • (e n + z))⟫_ℂ))⁻¹ *
+          (⟪eImg T, T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ)⁻¹ *
+          ⟪T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)), T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ -
+        1
+  set Tw := T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)) with hTw_def
+  set Tw' := T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z')) with hTw'_def
+  set γ := ⟪eImg T, Tw⟫_ℂ with hγ_def
+  set γ' := ⟪eImg T, Tw'⟫_ℂ with hγ'_def
+  have hγne : γ ≠ 0 := gamma_ne_zero hT hn hz
+  have hγ'ne : γ' ≠ 0 := gamma_ne_zero hT hn hz'
+  have e1 : ⟪γ⁻¹ • Tw, γ'⁻¹ • Tw'⟫_ℂ = (starRingEnd ℂ γ)⁻¹ * γ'⁻¹ * ⟪Tw, Tw'⟫_ℂ := by
+    rw [inner_smul_left, inner_smul_right, map_inv₀]
+    ring
+  have e2 : ⟪γ⁻¹ • Tw, eImg T⟫_ℂ = 1 := by
+    rw [inner_smul_left, ← inner_conj_symm Tw (eImg T), ← hγ_def, map_inv₀]
+    exact inv_mul_cancel₀ (by simpa using hγne)
+  have e3 : ⟪eImg T, γ'⁻¹ • Tw'⟫_ℂ = 1 := by
+    rw [inner_smul_right, ← hγ'_def]
+    exact inv_mul_cancel₀ hγ'ne
+  have e4 : ⟪eImg T, eImg T⟫_ℂ = 1 := heImg_inner_self hT hn
+  rw [inner_sub_left, inner_sub_right, inner_sub_right, e1, e2, e3, e4]
+  ring
+
+private theorem inner_ew_ewx_eq (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z) (hz' : InPerp z') :
+    ⟪(‖e n + z‖⁻¹ : ℂ) • (e n + z), (‖e n + z'‖⁻¹ : ℂ) • (e n + z')⟫_ℂ
+      = (‖e n + z‖⁻¹ : ℂ) * (‖e n + z'‖⁻¹ : ℂ) * (1 + ⟪z, z'⟫_ℂ) := by
+  rw [inner_smul_left, inner_smul_right, map_inv₀, Complex.conj_ofReal, inner_add_left,
+    inner_add_right, inner_add_right, he_inner_self hn, hz', inner_z_e hz]
+  ring
+
+/-- Le module de `⟪Tw,Tw'⟫` (les images des représentants unitaires de `e+z`/`e+z'`)
+se calcule en fonction de `⟪z,z'⟫` seul — c'est le pont entre `IsWignerMap` (qui ne
+voit que des vecteurs unitaires) et l'énoncé (12), qui porte sur `z,z' ∈ 𝒫`
+quelconques. -/
+private theorem norm_Tw_Tw' (hT : IsWignerMap T) (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z)
+    (hz' : InPerp z') :
+    ‖⟪T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)), T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ‖
+      = ‖e n + z‖⁻¹ * ‖e n + z'‖⁻¹ * ‖1 + ⟪z, z'⟫_ℂ‖ := by
+  rw [hT _ _ (norm_w hn hz) (norm_w hn hz'), inner_ew_ewx_eq hn hz hz', norm_mul, norm_mul,
+    norm_inv, norm_inv, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+    abs_norm, abs_norm]
+
+/-- (12) Partie réelle du produit scalaire préservée par `V` sur `𝒫`. Preuve : via
+`inner_V_eq`, `⟪Vw,Vx⟫ = M - 1` avec `M := (conj γ)⁻¹γ'⁻¹⟪Tw,Tw'⟫` ; `‖M‖` se
+simplifie en `‖1+⟪w,x⟫‖` (les facteurs `‖e+z‖`/`‖e+z'‖` s'annulent EXACTEMENT
+contre `‖γ‖⁻¹`/`‖γ'‖⁻¹`, cf. `norm_gamma`), donc `‖1+⟪Vw,Vx⟫‖ = ‖1+⟪w,x⟫‖` ; combiné
+à `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` (`norm_inner_V` ci-dessus), `re_eq_of_norm_eq` (W1) conclut. -/
+theorem re_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
+    (hx : InPerp x) : (⟪V T w, V T x⟫_ℂ).re = (⟪w, x⟫_ℂ).re := by
+  have hone : ‖(1 : ℂ) + ⟪V T w, V T x⟫_ℂ‖ = ‖(1 : ℂ) + ⟪w, x⟫_ℂ‖ := by
+    have hV := inner_V_eq hT hn hw hx
+    have h1 : (1 : ℂ) + ⟪V T w, V T x⟫_ℂ =
+        (starRingEnd ℂ (⟪eImg T, T ((‖e n + w‖⁻¹ : ℂ) • (e n + w))⟫_ℂ))⁻¹ *
+          (⟪eImg T, T ((‖e n + x‖⁻¹ : ℂ) • (e n + x))⟫_ℂ)⁻¹ *
+          ⟪T ((‖e n + w‖⁻¹ : ℂ) • (e n + w)), T ((‖e n + x‖⁻¹ : ℂ) • (e n + x))⟫_ℂ := by
+      rw [hV]; ring
+    rw [h1, norm_mul, norm_mul, norm_inv, norm_inv, Complex.norm_conj, norm_gamma hT hn hw,
+      norm_gamma hT hn hx, norm_Tw_Tw' hT hn hw hx, inv_inv, inv_inv]
+    have hnw : ‖e n + w‖ ≠ 0 := norm_ne_zero_iff.mpr (he_add_ne_zero hn hw)
+    have hnx : ‖e n + x‖ ≠ 0 := norm_ne_zero_iff.mpr (he_add_ne_zero hn hx)
+    field_simp
+  exact re_eq_of_norm_eq (norm_inner_V hT hn w x hw hx) hone
 
 /-- (12a) Si `⟪w,x⟫` est déjà réel, `V` le préserve exactement (pas seulement sa
-partie réelle ou son module). -/
-theorem inner_V_eq_of_im_eq_zero (hT : IsWignerMap T) (w x : H n) (hw : InPerp w)
+partie réelle ou son module) : (11)+(12) forcent `Im⟪Vw,Vx⟫ = 0` par
+`|z|² = Re(z)² + Im(z)²`. -/
+theorem inner_V_eq_of_im_eq_zero (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
     (hx : InPerp x) (hreal : (⟪w, x⟫_ℂ).im = 0) : ⟪V T w, V T x⟫_ℂ = ⟪w, x⟫_ℂ := by
-  sorry
+  have h11 : ‖⟪V T w, V T x⟫_ℂ‖ = ‖⟪w, x⟫_ℂ‖ := norm_inner_V hT hn w x hw hx
+  have h12 : (⟪V T w, V T x⟫_ℂ).re = (⟪w, x⟫_ℂ).re := re_inner_V hT hn w x hw hx
+  have hns : Complex.normSq ⟪V T w, V T x⟫_ℂ = Complex.normSq ⟪w, x⟫_ℂ := by
+    rw [← Complex.sq_norm, ← Complex.sq_norm, h11]
+  rw [Complex.normSq_apply, Complex.normSq_apply, h12, hreal] at hns
+  have him : (⟪V T w, V T x⟫_ℂ).im = 0 := by nlinarith [sq_nonneg (⟪V T w, V T x⟫_ℂ).im]
+  have hxre : ⟪w, x⟫_ℂ = ((⟪w, x⟫_ℂ).re : ℂ) := by
+    conv_lhs => rw [← Complex.re_add_im ⟪w, x⟫_ℂ]
+    rw [hreal]; simp
+  rw [hxre]
+  exact Complex.ext h12 him
 
 end
 end QuantumFoundations.Wigner
