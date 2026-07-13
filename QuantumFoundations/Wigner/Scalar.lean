@@ -20,7 +20,17 @@ noncomputable section
 ont même partie réelle. Via `‖1+r‖² = 1+‖r‖²+2Re r`. -/
 theorem re_eq_of_norm_eq {u v : ℂ} (h1 : ‖u‖ = ‖v‖) (h2 : ‖(1 : ℂ) + u‖ = ‖(1 : ℂ) + v‖) :
     u.re = v.re := by
-  sorry
+  have key : ∀ r : ℂ, ‖(1 : ℂ) + r‖ ^ 2 = 1 + ‖r‖ ^ 2 + 2 * r.re := by
+    intro r
+    rw [Complex.sq_norm, Complex.normSq_add, Complex.normSq_one, ← Complex.sq_norm]
+    simp [Complex.conj_re]
+  have hu := key u
+  have hv := key v
+  have h1' : ‖u‖ ^ 2 = ‖v‖ ^ 2 := by rw [h1]
+  have h2' : ‖(1 : ℂ) + u‖ ^ 2 = ‖(1 : ℂ) + v‖ ^ 2 := by rw [h2]
+  rw [hu, h1'] at h2'
+  rw [hv] at h2'
+  linarith
 
 /-- Rigidité : un scalaire de norme 1 et de partie réelle 1 vaut 1. -/
 theorem eq_one_of_norm_one_re_one {u : ℂ} (h1 : ‖u‖ = 1) (h2 : u.re = 1) : u = 1 := by
