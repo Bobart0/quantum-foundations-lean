@@ -7,7 +7,7 @@ vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
 Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 sorry**
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 (optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
-total : 24).
+total : 24) — **21 sorry** après clôture de W1 le 2026-07-13.
 
 ---
 
@@ -326,14 +326,23 @@ QuantumFoundations/Wigner/Nonvacuity.lean    0 sorry, témoins id/conjCoords com
   (`WithLp.toLp`/`WithLp.ext_iff`, `LinearEquiv.ofBijective` sur son involutivité) —
   **aucun sorry**, pas besoin de fallback plus complexe qu'anticipé.
 
-### W1 — Kit scalaire ℂ (zéro dépendance, dé-risque tout, à prouver en premier)
-- [ ] `re_eq_of_norm_eq : ‖u‖ = ‖v‖ → ‖1+u‖ = ‖1+v‖ → u.re = v.re` (via
-      `‖1+r‖² = 1+‖r‖²+2Re r`)
-- [ ] `eq_one_of_norm_one_re_one : ‖u‖ = 1 → u.re = 1 → u = 1` (rigidité)
-- [ ] `scalar_dichotomy` : pour `f : ℂ → ℂ` avec `(∀ α, ‖f α‖ = ‖α‖)`, `f 1 = 1`,
+### W1 — Kit scalaire ℂ (zéro dépendance, dé-risque tout, à prouver en premier) — ✅ CLOS (2026-07-13)
+- [x] `re_eq_of_norm_eq : ‖u‖ = ‖v‖ → ‖1+u‖ = ‖1+v‖ → u.re = v.re` — dérivé via
+      `Complex.sq_norm`/`Complex.normSq_add`/`Complex.normSq_one` (2 lignes) puis
+      `linarith`
+- [x] `eq_one_of_norm_one_re_one : ‖u‖ = 1 → u.re = 1 → u = 1` — `normSq u = 1`
+      + `re = 1` ⟹ `im² = 0` (`nlinarith`) ⟹ `im = 0` ⟹ `Complex.ext`
+- [x] `scalar_dichotomy` : pour `f : ℂ → ℂ` avec `(∀ α, ‖f α‖ = ‖α‖)`, `f 1 = 1`,
       `(∀ α β, (conj (f α) * f β).re = (conj α * β).re)`, alors `f = id ∨ f = conj`
-      — Bargmann §4.6 abstrait en pur lemme ℂ (preuve en trois lignes : `χ(i) = ηi`
-      avec `η = ±1` ; `Im χ(β) = η Im β` via l'identité de partie réelle ; conclusion)
+      — Bargmann §4.6 transposé ligne à ligne (Eq A via `α := 1` ; Étape B via
+      `Complex.normSq`/`sq_eq_one_iff` ; Étape C via `hre α I`) ; identités clé
+      établies en `have` locaux (`reI`, `conjMulSelf`), pas de lemme Mathlib direct
+      pour `Re(conj w * I) = w.im` ni `Re(conj z * z) = normSq z` (simp ciblé suffit)
+- [x] **Écart signalé** : l'hypothèse `hnorm` (préservation de la norme) s'avère
+      INUTILE dans la preuve de `scalar_dichotomy` — confirmé par le compilateur
+      (warning unused-variable) et cohérent avec la dérivation Bargmann fournie ;
+      gardée dans la signature (renommée `_hnorm`, énoncé inchangé)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **21 sorry** (24 − 3)
 
 ### W2 — Plomberie produit-scalaire
 - [ ] Lemme (9) de Bargmann (pièce maîtresse) : famille orthonormée finie `g`,
