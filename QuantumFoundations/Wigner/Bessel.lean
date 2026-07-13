@@ -74,9 +74,27 @@ theorem bessel_eq_of_norm_sq_eq {ι : Type*} [Fintype ι] {g : ι → H n} (hg :
 
 /-- Si `T` préserve les probabilités de transition, l'image par `T` d'une famille
 orthonormée (finie) reste orthonormée. -/
-theorem orthonormal_image (hT : IsWignerMap T) {ι : Type*} [Fintype ι] {g : ι → H n}
-    (hg : Orthonormal ℂ g) : Orthonormal ℂ (fun p => T (g p)) := by
-  sorry
+theorem orthonormal_image (hT : IsWignerMap T) {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {g : ι → H n} (hg : Orthonormal ℂ g) : Orthonormal ℂ (fun p => T (g p)) := by
+  rw [orthonormal_iff_ite]
+  intro p q
+  have hgite := orthonormal_iff_ite.mp hg
+  by_cases hpq : p = q
+  · subst hpq
+    have h1 : ‖⟪T (g p), T (g p)⟫_ℂ‖ = ‖⟪g p, g p⟫_ℂ‖ := hT (g p) (g p) (hg.1 p) (hg.1 p)
+    rw [hgite p p, if_pos rfl] at h1
+    simp only [norm_one] at h1
+    rw [inner_self_eq_norm_sq_to_K] at h1
+    have h2 : ‖T (g p)‖ ^ 2 = 1 := by simpa using h1
+    rw [inner_self_eq_norm_sq_to_K, if_pos rfl]
+    norm_cast
+    rw [h2]
+    norm_num
+  · have h1 : ‖⟪T (g p), T (g q)⟫_ℂ‖ = ‖⟪g p, g q⟫_ℂ‖ := hT (g p) (g q) (hg.1 p) (hg.1 q)
+    rw [hgite p q, if_neg hpq] at h1
+    simp only [norm_zero] at h1
+    rw [if_neg hpq]
+    exact norm_eq_zero.mp h1
 
 end
 end QuantumFoundations.Wigner
