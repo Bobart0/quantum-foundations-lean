@@ -161,24 +161,6 @@ private theorem frameSum_add_isOrtho {g : Proj1 n → ℝ} (hg : IsFrameFunction
   simp only [Sum.elim_inl, Sum.elim_inr]
   rfl
 
-/-- Tout `P : Proj1 n` est porté par un vecteur unitaire canonique
-(`Submodule.eq_span_singleton_of_mem_of_finrank_eq_one`, pas de recours à
-`stdOrthonormalBasis` — évite toute gymnastique d'index pour ce cas `finrank = 1`). -/
-private theorem exists_unit_vector_of_proj1 (P : Proj1 n) :
-    ∃ x : H n, ‖x‖ = 1 ∧ (P : Submodule ℂ (H n)) = ℂ ∙ x := by
-  have hne : (P : Submodule ℂ (H n)) ≠ ⊥ := by
-    intro hbot
-    have h1 := P.2
-    rw [hbot] at h1
-    simp at h1
-  obtain ⟨w, hwP, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
-  refine ⟨(‖w‖⁻¹ : ℂ) • w, ?_, ?_⟩
-  · rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg w),
-      inv_mul_cancel₀ (norm_ne_zero_iff.mpr hw0)]
-  · rw [Submodule.span_singleton_smul_eq (isUnit_iff_ne_zero.mpr
-      (by exact_mod_cast norm_ne_zero_iff.mpr hw0 : (‖w‖ : ℂ) ≠ 0)).inv]
-    exact eq_span_singleton_of_mem_of_finrank_eq_one P.2 hwP hw0
-
 /-- La restriction de `μ := frameSum g` à `Proj1 n` redonne exactement `g`. -/
 private theorem frameSum_proj1 {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLines g)
     (P : Proj1 n) : frameSum g (P : Submodule ℂ (H n)) = g P := by

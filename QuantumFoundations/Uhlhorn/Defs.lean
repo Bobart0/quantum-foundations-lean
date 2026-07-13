@@ -42,6 +42,27 @@ abbrev Proj1 (n : ℕ) := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1}
 def Proj1.mk_unit (x : H n) (hx : ‖x‖ = 1) : Proj1 n :=
   ⟨ℂ ∙ x, finrank_span_singleton (ne_zero_of_norm_eq_one hx)⟩
 
+/-- Tout `P : Proj1 n` est porté par un vecteur unitaire canonique
+(`eq_span_singleton_of_mem_of_finrank_eq_one`, pas de recours à
+`stdOrthonormalBasis` — évite toute gymnastique d'index pour ce cas `finrank = 1`).
+Public : partagé entre U1 (`WignerProjectionForm.lean`) et U3a
+(`GleasonExtend.lean`) — évite la duplication et une dépendance de fichier
+gênante de U1 (indépendant du reste) vers U3a. -/
+theorem exists_unit_vector_of_proj1 (P : Proj1 n) :
+    ∃ x : H n, ‖x‖ = 1 ∧ (P : Submodule ℂ (H n)) = ℂ ∙ x := by
+  have hne : (P : Submodule ℂ (H n)) ≠ ⊥ := by
+    intro hbot
+    have h1 := P.2
+    rw [hbot] at h1
+    simp at h1
+  obtain ⟨w, hwP, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+  refine ⟨(‖w‖⁻¹ : ℂ) • w, ?_, ?_⟩
+  · rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg w),
+      inv_mul_cancel₀ (norm_ne_zero_iff.mpr hw0)]
+  · rw [Submodule.span_singleton_smul_eq (isUnit_iff_ne_zero.mpr
+      (by exact_mod_cast norm_ne_zero_iff.mpr hw0 : (‖w‖ : ℂ) ≠ 0)).inv]
+    exact eq_span_singleton_of_mem_of_finrank_eq_one P.2 hwP hw0
+
 /-- `tr(PQ)`, exprimé via l'infrastructure Gleason existante (`projL`/`bornValue`) :
 `bornValue (projL P) Q = Re tr(projL P ∘ₗ projL Q)`. -/
 def TraceProd (P Q : Proj1 n) : ℝ :=
