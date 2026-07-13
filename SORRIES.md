@@ -8,7 +8,7 @@ Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 s
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 (optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
 total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2,
-**13 sorry** après clôture de W3 (2026-07-13).
+**13 sorry** après clôture de W3, **7 sorry** après clôture de W4 (2026-07-13).
 
 ---
 
@@ -446,20 +446,67 @@ conversion dans un `have` dédié fermé par `rw [inner_self_eq_norm_sq_to_K]; n
 lemme, ferme le diamant) puis réutiliser ce `have` — jamais raisonner sur le
 diamant après coup via `ring`/`field_simp` sur le terme brut.
 
-### W4 — LE cœur : analyse de `V` (Bargmann §4 — l'analogue de `sqrtOp` pour N1)
-- [ ] `chidir f α := ⟪V f, V (α • f)⟫` (extraction directionnelle) ; (14) module,
-      (15)(15a)(15b) identités de partie réelle
-- [ ] Repère adapté à la paire : case split sur la dépendance LINÉAIRE (PAS sur
-      `n`) ; Gram-Schmidt à la main `f₂ := normalisé de (z − ⟪f₁,z⟫•f₁)` — le cas
-      `n = 2` est absorbé automatiquement (la dépendance y est forcée), aucune
-      disjonction `n = 2` vs `n ≥ 3` dans le cœur
-- [ ] Formule d'expansion (16) : coefficients `a'_p = χ_p(a_p)` via vecteurs tests
-      `f_p•(conj a_p)⁻¹` + (12a) + rigidité (W1)
-- [ ] `χ₂ = χ₁` via `w = f₁ + f₂` ; globalisation : `χdir` constant sur toutes les
-      directions
-- [ ] `chi := chidir ref` ; dichotomie `χ = id ∨ χ = conj` [application directe de
-      `scalar_dichotomy`, W1]
-- [ ] (18) : `V` additive, `V` χ-homogène, `⟪Vy,Vz⟫ = χ⟪y,z⟫` sur `𝒫`
+### W4 — LE cœur : analyse de `V` (Bargmann §4 — l'analogue de `sqrtOp` pour N1) — CLOS (2026-07-13)
+- [x] `chidir_dichotomy` : `chidir T f` (f unitaire QUELCONQUE de `𝒫`, pas
+      seulement `refVec` — généralisation gratuite) vérifie les hypothèses de
+      `scalar_dichotomy` (W1). Deux préliminaires privés : `T_phase` (Étape 1,
+      cas d'égalité de Cauchy-Schwarz — `norm_inner_eq_norm_tfae`, index 0↔2 —
+      appliqué à `T f, T(c•f)`) et `V_dir_colinear` (Étape 2, généralisée à `f`
+      quelconque : `V(α•f) = chidir T f α • V f`, coefficient identifié par
+      unicité contre `V f ≠ 0`)
+- [x] `chi_dichotomy` : corollaire trivial de `chidir_dichotomy` en `f := refVec`
+- [x] `chi_eq_chidir` (globalisation, **écart signalé et résolu** — généralisation
+      aux repères NON orthogonaux, cf. note ci-dessous) : `chi T α = chidir T f α`
+      pour tout `f` unitaire de `𝒫`, PAS seulement `refVec`
+- [x] `V_chi_homogeneous` (18b) : généralise `V_dir_colinear`/`chi_eq_chidir` d'un
+      `f` unitaire à un `z` quelconque, via `z = ‖z‖•(‖z‖⁻¹•z)` + `chi_real`
+      (`chi` fixe les réels dans les deux branches id/conj)
+- [x] `V_additive` (18a) : cas colinéaire direct via `chi_add_real` (`chi(r+a) =
+      r+chi(a)`, `r` réel) ; cas général via Gram-Schmidt (`f₂` := composante de
+      `z` orthogonale à `f₁ := y/‖y‖`, normalisée) + `V_two_dir` (privé,
+      préliminaire clé : `V(a₁f₁+a₂f₂) = chi(a₁)•Vf₁+chi(a₂)•Vf₂` pour `f₁⊥f₂` —
+      preuve DIRECTE sans Bessel/`orthonormal_image`, via rigidité
+      `eq_of_norm_eq_re_eq` appliquée à `⟪V(a_p f_p), V x⟫`, contrairement à
+      l'approche à 3 vecteurs orthonormés envisagée initialement)
+- [x] `inner_V_eq_chi_inner` (18c) : réduit au cas unitaire
+      (`V_inner_eq_chi_of_unit`, même rigidité que `V_two_dir` mais sans seconde
+      direction) via `y = ‖y‖•f₁`, `V_chi_homogeneous`, `chi_mul_real`
+      (`chi(r*w) = r*chi(w)`, `r` réel)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **7 sorry** (10 − 3, cumulé
+      13 − 6 sur tout W4)
+
+**Écart signalé et résolu** (`chi_eq_chidir`, généralisation aux repères non
+orthogonaux) : l'argument de Bargmann §4.3-4.5 (`w = f₁+f₂`, comparaison de
+coefficients d'un développement de Bessel 2D) ne fonctionne QUE pour des
+directions ORTHOGONALES — insuffisant dès que `n ≥ 3` et `f` n'est ni colinéaire
+ni orthogonal à `refVec`. Route retenue (après confirmation utilisateur) :
+réduire `chi_eq_chidir` à une comparaison en un SEUL point (`i`, où `id` et
+`conj` se distinguent), via `chidir_branch_transfer` — pour `f1,f2` unitaires
+avec `⟪f1,f2⟫ ≠ 0` (PAS besoin d'orthogonalité), deux vecteurs-test
+`c1 := i·a/‖a‖`, `c1' := a/‖a‖` (`a := ⟪f1,f2⟫`) rendent `⟪c1•f1,i•f2⟫` et
+`⟪c1'•f1,f2⟫` TOUS DEUX exactement `‖a‖` (réel positif, par construction
+algébrique — aucune disjonction réel/non-réel sur `a`), ce qui pilote
+`chidir f2` au point `i` via la rigidité `eq_of_norm_eq_re_eq`. Seul cas
+dégénéré : `f = -refVec` (colinéaire), traité séparément par
+`chidir_colinear_refVec`. 8 lemmes privés au total pour ce seul sorry
+(`eq_of_norm_eq_re_eq`, `inner_I_smul_eq_norm`, `inner_smul_eq_norm`,
+`chidir_branch_transfer`, `chidir_colinear_refVec`, `eq_branch_of_eq_at_I`,
+`chi_real`, `sq_norm_eq_mul_conj`), contre les 2 (`T_phase`, `V_dir_colinear`)
+qui ont suffi pour `chidir_dichotomy`/`chi_dichotomy`.
+
+**Pièges Lean rencontrés et documentés** :
+- (règle 12 CLAUDE.md, nouvelle instance) appliquer `norm_cast`/`Complex.mul_conj`
+  directement à une expression comme `chi T b` (énorme une fois `chidir` déplié
+  via `V`/`⟪·,·⟫`) déclenche un timeout `whnf`. Remède : extraire l'identité
+  purement `ℂ` dans un lemme `private` à contexte minimal (`sq_norm_eq_mul_conj`)
+  — jamais de `generalize` inline dans le gros contexte, ça ne suffit pas à
+  éviter le timeout (contrairement à l'attente).
+- `rw` sur un but/une hypothèse contenant À LA FOIS une variable `z` et une
+  expression `‖z‖` qui en dépend réécrit LES DEUX simultanément dès qu'on
+  substitue `z` (`hyf1 : z = ‖z‖•f`), produisant un terme absurde du type
+  `‖‖z‖•f‖`. Parade systématique : `conv_lhs => rw [...]` pour restreindre la
+  réécriture au seul membre qui doit changer, jamais un `rw` non contraint sur
+  un but qui mentionne la norme du terme substitué ailleurs.
 
 ### W5 — Assemblage (Bargmann §5) + théorème principal
 - [ ] `U a := χ⟪e,a⟫ • e' + V(a − ⟪e,a⟫•e)` ; additivité, χ-semilinéarité,
