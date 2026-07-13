@@ -4,13 +4,15 @@
 Formaliser en Lean 4 / Mathlib, **sans aucun axiome**, en dimension finie sur ℂ :
 1. **Théorème de dilation de Naimark** (POVM finie à m issues sur ℂⁿ) — ✅ TERMINÉ
    (tags `v1.0-naimark` et suivants ; N0–N4 + N5 optionnel, tous clos, 0 sorry).
-2. **Théorème de Wigner** — EN COURS. Toute transformation sur les états purs qui
-   préserve `|⟨φ|ψ⟩|²` est induite par un unitaire ou un antiunitaire. Plan détaillé
-   (jalons W0–W6, stratégie établie avec Fable 5) dans SORRIES.md, section
-   « Wigner ». Blueprint mathématique : Bargmann 1964 (§3–§5 quasi tels quels) ;
-   Simon et al. en contre-vérification uniquement (rejeté comme blueprint
-   principal — trigonométrie/`Real.Angle`). Terrain Mathlib totalement libre
-   (aucun `Wigner`/`antiunitary` upstream, vérifié juillet 2026).
+2. **Théorème de Wigner** — ✅ TERMINÉ (2026-07-13, W0–W5 tous clos, 0 sorry, 0
+   axiome). Toute transformation sur les états purs qui préserve `|⟨φ|ψ⟩|²` est
+   induite par un unitaire ou un antiunitaire, SANS hypothèse de bijectivité sur
+   la transformation de départ (formulation (A), strictement plus forte que Simon
+   et al.). Blueprint mathématique : Bargmann 1964 (§1–§5 quasi tels quels) ; Simon
+   et al. utilisé uniquement en contre-vérification (rejeté comme blueprint
+   principal — trigonométrie/`Real.Angle`). Historique complet (stratégie,
+   dérivations, écarts signalés et résolus) dans SORRIES.md, section « Wigner ».
+   W6 (unicité à phase globale près, optionnel) : non attaqué.
 
 ## Sources (dans le dossier projet côté utilisateur)
 - **Watrous**, *The Theory of Quantum Information* (2018), §2.3, **Theorem 2.42** (p. 109)

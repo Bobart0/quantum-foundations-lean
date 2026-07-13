@@ -8,7 +8,9 @@ Compte total attendu (Naimark, hors N5) : **13 sorry** au sortir de N0 — **0 s
 restant depuis la clôture de N3, et toujours **0 sorry** après clôture de N5
 (optionnel) le 2026-07-11. Wigner (W0) ajoute **24 sorry** le 2026-07-12 (dépôt
 total : 24) — **21 sorry** après clôture de W1, **19 sorry** après clôture de W2,
-**13 sorry** après clôture de W3, **7 sorry** après clôture de W4 (2026-07-13).
+**13 sorry** après clôture de W3, **7 sorry** après clôture de W4,
+**0 sorry** après clôture de W5 (2026-07-13) — **théorème de Wigner intégralement
+prouvé, 0 axiome, 0 sorry sur tout le dépôt.**
 
 ---
 
@@ -508,18 +510,64 @@ qui ont suffi pour `chidir_dichotomy`/`chi_dichotomy`.
   réécriture au seul membre qui doit changer, jamais un `rw` non contraint sur
   un but qui mentionne la norme du terme substitué ailleurs.
 
-### W5 — Assemblage (Bargmann §5) + théorème principal
-- [ ] `U a := χ⟪e,a⟫ • e' + V(a − ⟪e,a⟫•e)` ; additivité, χ-semilinéarité,
-      `⟪Ua,Ub⟫ = χ⟪a,b⟫` (calcul de deux lignes, `Vz ⊥ e'`)
-- [ ] Compatibilité `∀ x` unitaire `∃ c` : cas `⟪e,x⟫ ≠ 0` par calcul direct ; cas
-      `⟪e,x⟫ = 0` GRATUIT (colinéarité définitionnelle de W3 — aucun Cauchy-Schwarz
-      nécessaire ici, contrairement à l'inquiétude initiale)
-- [ ] Bijectivité : injectif (isométrie) → surjectif. Piège anticipé :
-      `injective_iff_surjective` sur un endomorphisme conj-semilinéaire — parade :
-      restreindre en ℝ-linéaire (une application conj-semilinéaire est ℝ-linéaire),
-      faire la bijectivité en ℝ-linéaire sur l'espace ℝ-fini-dimensionnel, puis
-      rapatrier ; aucune coordonnée nécessaire
-- [ ] Bundling des deux branches ; `theorem wigner` ; dispatch `n ≤ 1`
+### W5 — Assemblage (Bargmann §5) + théorème principal — CLOS (2026-07-13)
+- [x] `U_additive`, `U_chi_semilinear` : algèbre directe sur `U a := chi⟪e,a⟫•eImg +
+      V(a−⟪e,a⟫•e)`, via `chi_add`/`chi_mul` (NOUVEAUX, généraux sur tout `ℂ` —
+      distincts de `chi_add_real`/`chi_mul_real` de W4, qui ne couvrent qu'un
+      facteur réel) + `V_additive`/`V_chi_homogeneous` (W4)
+- [x] `inner_U_eq_chi_inner` : décomposition standard `⟪a,b⟫ = conj(αₐ)·α_b +
+      ⟪zₐ,z_b⟫` + `inner_eImg_V` (W3, les termes croisés s'annulent) +
+      `inner_V_eq_chi_inner` (W4) + nouvelle identité `chi_conj_mul`
+      (`conj(chi a)·chi b = chi(conj(a)·b)`, vraie dans les deux branches)
+- [x] `U_bijective` : **écart avantageux** — contrairement au plan initial, le
+      fichier réel sépare `Function.Bijective (U T)` (une simple fonction) du
+      bundling en `≃ₗᵢ`/`≃ₛₗᵢ`, reporté à `wigner` lui-même. Injectivité
+      BRANCH-INDÉPENDANTE via `U_norm_eq` (`‖Ua‖=‖a‖`, conséquence directe de
+      `inner_U_eq_chi_inner` + `chi_real`, valable simultanément dans les deux
+      branches). Surjectivité : `rcases chi_dichotomy`, `LinearMap`
+      littéral (`{toFun:=U T, map_add':=..., map_smul':=...}` — confirmé
+      fonctionner sans constructeur nommé), branche `chi=id` → `→ₗ[ℂ]` direct,
+      branche `chi=conj` → `→ₗ[ℝ]` (restriction aux scalaires réels, LA vraie
+      inconnue du jalon : confirmé qu'AUCUN lemme semilinéaire direct n'existe
+      dans Mathlib, la restriction à ℝ est la seule voie, et
+      `LinearMap.injective_iff_surjective` s'applique tel quel avec `K:=ℝ`)
+- [x] `exists_phase_U` : confirmé — le cas `⟪e,x⟫=0` est bien GRATUIT (juste
+      `V_colinear`, W3, appliqué directement à `x`), aucun Cauchy-Schwarz. Cas
+      `⟪e,x⟫≠0` : dérivation complète via `T_phase` (W4) + déballage
+      DÉFINITIONNEL de `V ζ` (par `rfl`, aucun lemme dédié nécessaire) +
+      `V_chi_homogeneous`
+- [x] `wigner` n≥2 : assemblage sans surprise — `LinearEquiv.ofBijective` +
+      `LinearIsometryEquiv.mk`, la coercion de l'équivalence bundlée se réduit à
+      `U T` par `rfl` (confirmé par test stdin)
+- [x] `wigner` n=1 : dérivation AUTONOME (indépendante de W1-W5, `hn:2≤n` jamais
+      disponible) — `H 1` de dimension 1 (`H1_eq_inner_smul_e`, via `Fin 1`
+      subsingleton), `U₁ x := ⟪e 1,x⟫•eImg T` directement ℂ-LINÉAIRE (pas
+      seulement semilinéaire), placé dans la branche `chi=id` par convention
+      (Bargmann §1.4 : les deux branches marchent, aucun moyen de les
+      distinguer en dimension 1)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **0 sorry** (7 − 7, cumulé
+      24 − 24 sur tout Wigner) — **THÉORÈME DE WIGNER CLOS**.
+      `#print axioms wigner` : `[propext, Classical.choice, Quot.sound]`
+      (trio standard du noyau, aucun axiome ajouté)
+
+**Pièges Lean rencontrés et documentés** :
+- (RCLike/Complex diamond, 3e occurrence) appliquer `inner_self_eq_norm_sq_to_K`
+  DEUX FOIS dans le même `rw ... at h` (une fois sur `⟪Ua,Ua⟫`, une fois sur
+  `⟪a,a⟫` niché sous `chi T`) produit des formes syntaxiquement différentes bien
+  qu'affichées identiques, cassant tout `rw` ultérieur. Remède définitif :
+  isoler CHAQUE application dans son propre `have` fermé par
+  `rw [...]; norm_cast`, jamais deux applications dans le même `rw ... at h`.
+- Cast : après substitution de `‖e n+ζ‖` (réel) par `‖α‖⁻¹` À L'INTÉRIEUR d'un
+  coefficient déjà casté en `ℂ`, le terme obtenu est `(↑(‖α‖⁻¹))⁻¹` (double
+  inverse avec cast intercalé) — `inv_inv` seul ne matche pas ; `push_cast`
+  avant `inv_inv` pousse le cast à l'intérieur de l'inverse et débloque.
+- `simpa using h` peut sur-simplifier un but/une hypothèse de la forme `x^2=1`
+  en la disjonction `x=1 ∨ x=-1` (via une lemme `sq_eq_one_iff`-like du simp
+  set par défaut) au lieu de la fermer directement contre une hypothèse déjà
+  disponible sous forme d'équation — se manifeste de façon inattendue quand
+  deux dérivations quasi identiques du MÊME fait sont écrites séparément dans
+  des contextes tactiques différents. Remède : fusionner les deux dérivations
+  redondantes en une seule plutôt que d'essayer de déboguer la duplication.
 
 ### W6 — OPTIONNEL (façon `v2.0-naimark`)
 - [ ] Unicité à phase globale près (Bargmann §6, Théorème 2, `dim ≥ 2` — ratio
