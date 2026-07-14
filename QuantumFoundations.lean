@@ -20,6 +20,7 @@ import QuantumFoundations.Uhlhorn.GleasonTwice
 import QuantumFoundations.Uhlhorn.Assembly
 import QuantumFoundations.Uhlhorn.Nonvacuity
 import QuantumFoundations.BornRule.Perspective
+import QuantumFoundations.BornRule.GleasonBridge
 
 namespace QuantumFoundations
 
