@@ -68,6 +68,14 @@ theorem exists_unit_vector_of_proj1 (P : Proj1 n) :
 def TraceProd (P Q : Proj1 n) : ℝ :=
   bornValue (projL (P : Submodule ℂ (H n))) (Q : Submodule ℂ (H n))
 
+/-- La projection orthogonale sur la droite de `x` unitaire, en formule fermée.
+Public : partagé entre U1 (`WignerProjectionForm.lean`) et U2 (`Spectral.lean`). -/
+theorem projL_singleton_unit (x y : H n) (hx : ‖x‖ = 1) :
+    projL (ℂ ∙ x) y = ⟪x, y⟫_ℂ • x := by
+  unfold projL
+  rw [ContinuousLinearMap.coe_coe, Submodule.starProjection_singleton ℂ]
+  simp [hx]
+
 /-- `φ` préserve l'orthogonalité DANS UN SEUL SENS : `PQ = 0 ⟹ φ(P)φ(Q) = 0`. Ni
 injectivité ni surjectivité supposées sur `φ`. -/
 def PreservesOrthogonality (φ : Proj1 n → Proj1 n) : Prop :=

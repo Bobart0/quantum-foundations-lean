@@ -22,12 +22,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-private theorem projL_singleton_unit (x y : H n) (hx : ‖x‖ = 1) :
-    projL (ℂ ∙ x) y = ⟪x, y⟫_ℂ • x := by
-  unfold projL
-  rw [ContinuousLinearMap.coe_coe, Submodule.starProjection_singleton ℂ]
-  simp [hx]
-
 /-- **Étape 1** : `TraceProd` sur deux droites est le module au carré du produit
 scalaire des représentants unitaires. -/
 theorem traceProd_mk_unit_eq (x y : H n) (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
