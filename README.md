@@ -249,31 +249,31 @@ supplémentaire, confirmé ci-dessus.
 
 ## Carte du dépôt
 
-| Fichier | Contenu | Lignes |
+| Fichier                                     | Contenu                                                                            | Lignes |
 |---|---|---:|
-| `QuantumFoundations/Naimark/Defs.lean` | `POVM n m` (réutilise `Gleason.IsPositiveOp`) | 26 |
-| `QuantumFoundations/Naimark/SqrtOp.lean` | Racine carrée positive (construction spectrale) | 123 |
-| `QuantumFoundations/Naimark/DilSpace.lean` | Espace de dilatation `K`, `singleL`/`coordL`/`dilProj` | 138 |
-| `QuantumFoundations/Naimark/Main.lean` | `dilV`, isométrie, théorème de Naimark, corollaire de Born | 114 |
-| `QuantumFoundations/Naimark/Unitary.lean` | N5 (optionnel) : extension unitaire, forme ancilla | 137 |
-| `QuantumFoundations/Wigner/Defs.lean` | `e`, `eImg`, `InPerp`, `V`, `refVec`, `chidir`, `chi`, `U`, `IsWignerMap` | 70 |
-| `QuantumFoundations/Wigner/Scalar.lean` | Kit scalaire ℂ (rigidité, dichotomie `id`/`conj`) | 92 |
-| `QuantumFoundations/Wigner/Bessel.lean` | Identité de Bessel (égalité) ; images orthonormées | 100 |
-| `QuantumFoundations/Wigner/VConstruction.lean` | Construction B de Bargmann : `V`, colinéarité, (11)-(12a) | 355 |
-| `QuantumFoundations/Wigner/Core.lean` | Cœur : dichotomie de `chi`, additivité/homogénéité de `V` | 690 |
-| `QuantumFoundations/Wigner/Main.lean` | `U`, bijectivité, compatibilité avec `T`, théorème `wigner` | 356 |
-| `QuantumFoundations/Wigner/Uniqueness.lean` | W6 (optionnel) : exclusivité (A), unicité restreinte (B) | 335 |
-| `QuantumFoundations/Wigner/Nonvacuity.lean` | Témoins Wigner : `id` (branche unitaire), `conjCoords` (branche antiunitaire) | 79 |
+| `QuantumFoundations/Naimark/Defs.lean`      | `POVM n m` (réutilise `Gleason.IsPositiveOp`)                                      | 26 |
+| `QuantumFoundations/Naimark/SqrtOp.lean`    | Racine carrée positive (construction spectrale)                                    | 123 |
+| `QuantumFoundations/Naimark/DilSpace.lean`  | Espace de dilatation `K`, `singleL`/`coordL`/`dilProj`                             | 138 |
+| `QuantumFoundations/Naimark/Main.lean`      | `dilV`, isométrie, théorème de Naimark, corollaire de Born                         | 114 |
+| `QuantumFoundations/Naimark/Unitary.lean`   | N5 (optionnel) : extension unitaire, forme ancilla                                 | 137 |
+| `QuantumFoundations/Wigner/Defs.lean`       | `e`, `eImg`, `InPerp`, `V`, `refVec`, `chidir`, `chi`, `U`, `IsWignerMap`          | 70 |
+| `QuantumFoundations/Wigner/Scalar.lean`     | Kit scalaire ℂ (rigidité, dichotomie `id`/`conj`)                                  | 92 |
+| `QuantumFoundations/Wigner/Bessel.lean`     | Identité de Bessel (égalité) ; images orthonormées                                 | 100 |
+| `QuantumFoundations/Wigner/VConstruction.lean` | Construction B de Bargmann : `V`, colinéarité, (11)-(12a)                       | 355 |
+| `QuantumFoundations/Wigner/Core.lean`       | Cœur : dichotomie de `chi`, additivité/homogénéité de `V`                          | 690 |
+| `QuantumFoundations/Wigner/Main.lean`       | `U`, bijectivité, compatibilité avec `T`, théorème `wigner`                        | 356 |
+| `QuantumFoundations/Wigner/Uniqueness.lean` | W6 (optionnel) : exclusivité (A), unicité restreinte (B)                           | 335 |
+| `QuantumFoundations/Wigner/Nonvacuity.lean` | Témoins Wigner : `id` (branche unitaire), `conjCoords` (branche antiunitaire)      | 79 |
 | `QuantumFoundations/Uhlhorn/Defs.lean` | `Proj1`, `TraceProd`, `PreservesOrthogonality`, `IsWignerSymmetryProj`, `IsFrameFunctionOnLines`, `SendsONBToONB` | 121 |
-| `QuantumFoundations/Uhlhorn/WignerProjectionForm.lean` | U1 : corollaire (B) de Wigner en langage de projections | 86 |
-| `QuantumFoundations/Uhlhorn/Spectral.lean` | U2 : lemme spectral élémentaire | 108 |
-| `QuantumFoundations/Uhlhorn/GleasonExtend.lean` | U3a : extension d'une fonction-cadre sur les droites en `ProjMeasure` complet | 194 |
-| `QuantumFoundations/Uhlhorn/GleasonTwice.lean` | U3b : « Gleason appliqué deux fois » | 189 |
-| `QuantumFoundations/Uhlhorn/Assembly.lean` | U4 (assemblage) + U5 (réduction fini-dimensionnelle), théorème `uhlhorn_finite_dim` | 83 |
-| `QuantumFoundations/Uhlhorn/Nonvacuity.lean` | Témoin Uhlhorn : `φ := id` | 37 |
-| `QuantumFoundations/Nonvacuity.lean` | Témoin Naimark : POVM uniforme `n=2, m=2` | 55 |
-| `QuantumFoundations.lean` | Agrégateur d'imports racine | 25 |
-| **Total** | **22 fichiers** | **3513** |
+| `QuantumFoundations/Uhlhorn/WignerProjectionForm.lean` | U1 : corollaire (B) de Wigner en langage de projections                 | 86 |
+| `QuantumFoundations/Uhlhorn/Spectral.lean`  | U2 : lemme spectral élémentaire                                                     | 108 |
+| `QuantumFoundations/Uhlhorn/GleasonExtend.lean` | U3a : extension d'une fonction-cadre sur les droites en `ProjMeasure` complet  | 194 |
+| `QuantumFoundations/Uhlhorn/GleasonTwice.lean` | U3b : « Gleason appliqué deux fois »                                            | 189 |
+| `QuantumFoundations/Uhlhorn/Assembly.lean`  | U4 (assemblage) + U5 (réduction fini-dimensionnelle), théorème `uhlhorn_finite_dim` | 83 |
+| `QuantumFoundations/Uhlhorn/Nonvacuity.lean` | Témoin Uhlhorn : `φ := id`                                                        | 37 |
+| `QuantumFoundations/Nonvacuity.lean`         | Témoin Naimark : POVM uniforme `n=2, m=2`                                         | 55 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 25 |
+| **Total**                                    | **22 fichiers**                                                                   | **3513** |
 
 Documentation : `CLAUDE.md` (règles pour l'agent IA, à lire au démarrage),
 `SORRIES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -281,38 +281,38 @@ consolidée de tous les écarts vs les plans initiaux).
 
 ## Jalons — Naimark
 
-| Jalon | Contenu                                    | État |
-|-------|---------------------------------------------|------|
-| N0    | Squelette (POVM, DilSpace, Nonvacuity)       | ✅ |
-| N1    | `sqrtOp` (racine carrée positive spectrale)  | ✅ |
-| N2    | Briques de l'espace dilaté (`singleL`/`coordL`/`dilProj`) | ✅ |
-| N3    | Dilation (`dilV`, `naimark`, `naimark_born`) | ✅ |
-| N4    | Clôture (README, `#print axioms`, tag)       | ✅ |
-| N5    | *Optionnel* : version unitaire/ancilla (tag `v2.0-naimark`) | ✅ |
+| Jalon | Contenu                                                    | État |
+|-------|------------------------------------------------------------|------|
+| N0    | Squelette (POVM, DilSpace, Nonvacuity)                     | ✅ |
+| N1    | `sqrtOp` (racine carrée positive spectrale)                | ✅ |
+| N2    | Briques de l'espace dilaté (`singleL`/`coordL`/`dilProj`)  | ✅ |
+| N3    | Dilation (`dilV`, `naimark`, `naimark_born`)               | ✅ |
+| N4    | Clôture (README, `#print axioms`, tag)                     | ✅ |
+| N5    | *Optionnel* : version unitaire/ancilla (tag `v2.0-naimark`)| ✅ |
 
 ## Jalons — Wigner
 
-| Jalon | Contenu                                              | État |
-|-------|-------------------------------------------------------|------|
-| W0    | Squelette (Defs, Nonvacuity, 24 sorry)                 | ✅ |
-| W1    | Kit scalaire (`Scalar.lean` : rigidité, `scalar_dichotomy`) | ✅ |
-| W2    | Identité de Bessel (égalité), images orthonormées      | ✅ |
-| W3    | Construction `V` (colinéarité, eqs 11–12a)             | ✅ |
-| W4    | Cœur : dichotomie de `chi`, additivité/homogénéité de `V` | ✅ |
-| W5    | Assemblage (`U`, bijectivité, compatibilité, `wigner`) | ✅ |
+| Jalon | Contenu                                                                    | État |
+|-------|----------------------------------------------------------------------------|------|
+| W0    | Squelette (Defs, Nonvacuity, 24 sorry)                                     | ✅ |
+| W1    | Kit scalaire (`Scalar.lean` : rigidité, `scalar_dichotomy`)                | ✅ |
+| W2    | Identité de Bessel (égalité), images orthonormées                          | ✅ |
+| W3    | Construction `V` (colinéarité, eqs 11–12a)                                 | ✅ |
+| W4    | Cœur : dichotomie de `chi`, additivité/homogénéité de `V`                  | ✅ |
+| W5    | Assemblage (`U`, bijectivité, compatibilité, `wigner`)                     | ✅ |
 | W6    | *Optionnel* : exclusivité (A) + unicité restreinte (B) (tag `v2.0-wigner`) | ✅ |
 
 ## Jalons — Uhlhorn
 
-| Jalon | Contenu                                              | État |
-|-------|-------------------------------------------------------|------|
-| U0    | Reconnaissance + squelette (`Defs.lean`, 6 sorry)      | ✅ |
-| U1    | Corollaire (B) de Wigner en langage de projections (`wigner_projection_form`) | ✅ |
+| Jalon | Contenu                                                                        | État |
+|-------|--------------------------------------------------------------------------------|------|
+| U0    | Reconnaissance + squelette (`Defs.lean`, 6 sorry)                              | ✅ |
+| U1    | Corollaire (B) de Wigner en langage de projections (`wigner_projection_form`)  | ✅ |
 | U2    | Lemme spectral élémentaire (`eq_projL_of_positive_le_one_trace_one_inner_one`) | ✅ |
-| U3a   | Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet | ✅ |
-| U3b   | « Gleason appliqué deux fois » (`traceProd_preserved_of_sendsONBToONB`) | ✅ |
-| U4    | Assemblage direct de U1 et U3b                         | ✅ |
-| U5    | Réduction fini-dimensionnelle, théorème final (tag `v1.0-uhlhorn`) | ✅ |
+| U3a   | Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet        | ✅ |
+| U3b   | « Gleason appliqué deux fois » (`traceProd_preserved_of_sendsONBToONB`)        | ✅ |
+| U4    | Assemblage direct de U1 et U3b                                                 | ✅ |
+| U5    | Réduction fini-dimensionnelle, théorème final (tag `v1.0-uhlhorn`)             | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -366,3 +366,7 @@ Aucun `axiom`, aucun `native_decide` (CI bloquante, `scripts/guard.sh`). Toute n
 structure d'hypothèses reçoit un habitant concret dans `Nonvacuity.lean`, dans le même
 commit. Un `sorry` honnête plutôt qu'un énoncé affaibli en silence — voir `CLAUDE.md`
 pour l'ensemble des règles.
+
+## Licence
+
+[Apache License 2.0](LICENSE).
