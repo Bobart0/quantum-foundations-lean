@@ -19,6 +19,7 @@ import QuantumFoundations.Uhlhorn.GleasonExtend
 import QuantumFoundations.Uhlhorn.GleasonTwice
 import QuantumFoundations.Uhlhorn.Assembly
 import QuantumFoundations.Uhlhorn.Nonvacuity
+import QuantumFoundations.BornRule.Perspective
 
 namespace QuantumFoundations
 
