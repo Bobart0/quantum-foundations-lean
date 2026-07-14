@@ -88,6 +88,64 @@ theorem projL_singleton_unit (x y : H n) (hx : ‖x‖ = 1) :
   rw [ContinuousLinearMap.coe_coe, Submodule.starProjection_singleton ℂ]
   simp [hx]
 
+/-- Un opérateur densité a une forme quadratique bornée par `1` en tout vecteur
+unitaire — décomposition de trace autour de `x`. Public : partagé entre U3b
+(`GleasonTwice.lean`) et B3 (`BornRule/Pinning.lean`), relocalisé ici lors de
+B3 (même pattern que `exists_unit_vector_of_proj1`/`projL_singleton_unit`). -/
+theorem density_inner_le_one {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ)
+    {x : H n} (hx : ‖x‖ = 1) : (⟪ρ x, x⟫_ℂ).re ≤ 1 := by
+  have hn1 : 1 ≤ n := one_le_of_norm_eq_one hx
+  obtain ⟨b, hb⟩ := exists_orthonormalBasis_extension_complex hn1 (fun _ : Fin 1 => x)
+    (by rw [orthonormal_iff_ite]; intro i j; fin_cases i; fin_cases j; simp [hx])
+  set i0 : Fin n := Fin.castLE hn1 (0 : Fin 1) with hi0
+  have hbi0 : b i0 = x := hb 0
+  have htrace_sum : LinearMap.trace ℂ (H n) ρ = ∑ i, ⟪b i, ρ (b i)⟫_ℂ :=
+    LinearMap.trace_eq_sum_inner ρ b
+  have hnn : ∀ i, 0 ≤ (⟪b i, ρ (b i)⟫_ℂ).re := by
+    intro i
+    rw [← hρ.symmetric (b i) (b i)]
+    exact hρ.nonneg (b i)
+  have hle : (⟪b i0, ρ (b i0)⟫_ℂ).re ≤ ∑ i, (⟪b i, ρ (b i)⟫_ℂ).re :=
+    Finset.single_le_sum (fun i _ => hnn i) (Finset.mem_univ i0)
+  rw [← Complex.re_sum, ← htrace_sum, hρ.trace_one] at hle
+  rw [hbi0] at hle
+  rw [hρ.symmetric x x]
+  simpa using hle
+
+private theorem sub_nonneg_of_density {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ) (z : H n) :
+    0 ≤ (⟪(1 - ρ) z, z⟫_ℂ).re := by
+  rcases eq_or_ne z 0 with hz0 | hz0
+  · simp [hz0]
+  · set x : H n := (‖z‖⁻¹ : ℂ) • z with hx_def
+    have hxnorm : ‖x‖ = 1 := by
+      rw [hx_def, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (norm_nonneg z), inv_mul_cancel₀ (norm_ne_zero_iff.mpr hz0)]
+    have hz_eq : z = (‖z‖ : ℂ) • x := by
+      rw [hx_def, smul_smul, ← Complex.ofReal_inv, ← Complex.ofReal_mul,
+        mul_inv_cancel₀ (norm_ne_zero_iff.mpr hz0), Complex.ofReal_one, one_smul]
+    have hinner : ⟪ρ z, z⟫_ℂ = (((‖z‖ : ℝ) ^ 2 : ℝ) : ℂ) * ⟪ρ x, x⟫_ℂ := by
+      conv_lhs => rw [hz_eq]
+      rw [map_smul, inner_smul_left, inner_smul_right, Complex.conj_ofReal]
+      push_cast; ring
+    have hle := density_inner_le_one hρ hxnorm
+    have hzz : ⟪z, z⟫_ℂ = (((‖z‖ : ℝ) ^ 2 : ℝ) : ℂ) := by
+      rw [inner_self_eq_norm_sq_to_K]; norm_cast
+    rw [LinearMap.sub_apply, Module.End.one_apply, inner_sub_left, hzz, hinner,
+      Complex.sub_re, Complex.re_ofReal_mul, Complex.ofReal_re]
+    nlinarith [sq_nonneg (‖z‖ : ℝ), hle]
+
+/-- **Densité ⟹ effet** (absent de `gleason-theorem-lean`, confirmé en
+reconnaissance U3b) : positivité + trace `1` en dimension finie force `≤ 1`
+(les valeurs propres d'une densité sont positives et somment à `1`, donc
+chacune est `≤ 1`). Public depuis B3 (même relocalisation que ci-dessus). -/
+theorem isEffect_of_isDensityOperator {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ) :
+    IsEffect ρ := by
+  have h1 : IsPositiveOp ρ := ⟨hρ.symmetric, hρ.nonneg⟩
+  have h2symm : LinearMap.IsSymmetric (1 - ρ) := LinearMap.IsSymmetric.one.sub hρ.symmetric
+  have h2nn : ∀ z, 0 ≤ (⟪(1 - ρ) z, z⟫_ℂ).re := sub_nonneg_of_density hρ
+  have h2 : IsPositiveOp (1 - ρ) := ⟨h2symm, h2nn⟩
+  exact ⟨h1, h2⟩
+
 /-- `φ` préserve l'orthogonalité DANS UN SEUL SENS : `PQ = 0 ⟹ φ(P)φ(Q) = 0`. Ni
 injectivité ni surjectivité supposées sur `φ`. -/
 def PreservesOrthogonality (φ : Proj1 n → Proj1 n) : Prop :=
