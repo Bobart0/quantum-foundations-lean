@@ -89,6 +89,67 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   via l'identité de polarisation complexe (parties réelle et imaginaire
   séparément, à partir de `norm_add_sq`/`norm_sub_sq`).
 
+## Uhlhorn (U0–U5)
+
+- **`Proj1 (n) := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1}`**, égalité
+  de droites (`IsWignerSymmetryProj`, Option 1) plutôt que l'égalité
+  opératorielle littérale `φ(P) = UPU*` (Option 2) — validé en reconnaissance
+  U0 : les deux formulations sont équivalentes pour du rang 1, mais l'Option 2
+  aurait exigé `LinearMap.adjoint` d'une équivalence semilinéaire
+  (`≃ₛₗᵢ[starRingEnd ℂ]`), jamais rencontré ailleurs dans ce projet. Option 2
+  laissée en remarque pour une passe ultérieure si le papier final en a besoin.
+- **U3a isolé comme sous-jalon à part entière**, pas un détail interne de U3b.
+  Découvert pendant la reconnaissance de U0 : aucun lemme « fonction-cadre sur
+  les droites → `ProjMeasure` complet » n'existe dans `gleason-theorem-lean`
+  (audité exhaustivement : les deux seuls sites de construction d'un
+  `ProjMeasure`, `EffectMeasure.toProjMeasure` et `pureState`, donnent tous
+  deux une formule fermée directement sur tout sous-espace). Décision : ce
+  lemme reste dans `quantum-foundations-lean` (namespace `Uhlhorn`), pas dans
+  `gleason-theorem-lean`, même génériquement Gleason — on ne rouvre pas le
+  dépôt public tagué pour ce besoin. Découpage final à 6 jalons (U1, U2, U3a,
+  U3b, U4, U5) au lieu des 5 initialement esquissés.
+- **U3a — réutilisation de `Gleason.cframe_sum_invariant` au lieu d'une
+  reconstruction manuelle de l'indépendance de base.** Le point délicat anticipé
+  (indépendance du choix de base orthonormée pour l'extension) n'a pas été
+  redémontré depuis zéro par concaténation `Fin k ⊕ Fin l → Fin n`
+  (`finSumFinEquiv`/`Fin.append`) : `Gleason.Complex.RealSections` contient déjà
+  cet argument sous forme vectorielle (`cframe_sum_invariant`, pour une
+  fonction-cadre `H n → ℝ`). La seule concaténation de bases construite à la
+  main dans tout U3a est celle d'`add_isOrtho` (via `Sum.elim`), sur un
+  périmètre bien plus restreint que la construction générale de l'extension.
+- **U3b — Sous-lemme « densité ⟹ effet » absent de `gleason-theorem-lean`,
+  dérivé localement.** Confirmé absent en reconnaissance (positivité + trace 1
+  en dimension finie ⟹ `≤ 1`, car les valeurs propres d'une densité sont
+  positives et somment à 1) ; dérivé via la même technique de décomposition de
+  trace autour d'un point que U2 (`isEffect_of_isDensityOperator`,
+  `GleasonTwice.lean`).
+- **U3b — la résolution de l'identité comme identité D'OPÉRATEURS
+  (`∑ i, projL (ℂ∙(bi)) = 1`, via `Gleason.projL_sup_of_pairwise_isOrtho`)
+  s'est avérée NON nécessaire.** `LinearMap.trace_eq_sum_inner` donne
+  directement la trace d'un opérateur comme somme sur N'IMPORTE QUELLE base
+  orthonormée — en particulier la base image de `φ` (garantie complète par
+  `SendsONBToONB`) — sans jamais former l'opérateur somme explicitement.
+- **U5 — le point d'incertitude principal (comportement du constructeur
+  `OrthonormalBasis` vis-à-vis des valeurs pointwise) s'est résolu
+  favorablement dès le premier essai.** `basisOfOrthonormalOfCardEqFinrank`
+  (famille orthonormée + cardinalité → `Basis`) suivi de
+  `Module.Basis.toOrthonormalBasis` préservent tous deux les valeurs POINTWISE
+  exactement (`coe_basisOfOrthonormalOfCardEqFinrank`/
+  `Module.Basis.coe_toOrthonormalBasis`, deux lemmes `@[simp]` existants) — pas
+  seulement à un reindexing près. Aucun lemme de compatibilité supplémentaire
+  n'a été nécessaire.
+- **`exists_unit_vector_of_proj1` et `projL_singleton_unit` relocalisés en
+  `Defs.lean`** (public, partagé) au fil des jalons plutôt que dupliqués ou
+  laissés `private` dans un seul fichier — même pattern que
+  `one_le_of_norm_eq_one` (nécessaire en U2 et U3b). Discipline systématique
+  dès qu'un même besoin réapparaît dans un second fichier : relocalisation
+  immédiate, jamais de copie.
+- **Dépendance double, sans fuite d'axiome.** `uhlhorn_finite_dim` (U5) est le
+  premier théorème du dépôt à dépendre à la fois de `Gleason.gleason`
+  (dépendance externe épinglée) ET de `QuantumFoundations.Wigner.wigner`
+  (bloc interne). `#print axioms` confirme le trio standard malgré cette
+  double chaîne — voir README, section « Dépendances ».
+
 ## Résidus documentaires identifiés lors de l'audit de clôture
 
 - `QuantumFoundations/Wigner/Uniqueness.lean` : les lemmes-pont privés
@@ -113,6 +174,13 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   opérateurs d'une mesure projective sont deux à deux orthogonaux, idempotents,
   de somme l'identité) — un engagement mathématique documenté dans `CLAUDE.md`
   indépendant du chemin de preuve de `naimark` lui-même.
+- `QuantumFoundations/Uhlhorn/` : audit spécifique lors de la clôture du bloc —
+  **aucun résidu identifié**. Les deux seules déclarations publiques sans
+  second point d'usage dans le dossier (`isWignerSymmetryProj_id`,
+  `uhlhorn_finite_dim`) sont l'une un témoin de non-vacuité terminal, l'autre
+  le théorème final du bloc — toutes deux attendues comme points d'entrée, pas
+  des orphelins. `sendsONBToONB_of_preservesOrthogonality` est `private` comme
+  prévu (consommé uniquement par `uhlhorn_finite_dim`, dans le même fichier).
 
 ## Divergences de convention de nommage Naimark ↔ Wigner (listées, non corrigées)
 
@@ -136,3 +204,21 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
 Ces deux points de nommage sont cosmétiques et ne cassent aucune référence
 externe (aucun autre dépôt n'importe ce projet à ce jour) — harmonisation
 laissée à la discrétion de l'utilisateur avant publication.
+
+## Cohérence de nommage Uhlhorn vs Naimark/Wigner
+
+- **Namespace imbriqué `QuantumFoundations.Uhlhorn`**, comme Wigner (pas plat
+  comme Naimark) — cohérent avec la règle « nouveau bloc mathématique = son
+  propre namespace » déjà établie.
+- **Style des identifiants** : ni le style camelCase-implémentation de Naimark
+  (`dilV`, `singleL`) ni les lettres isolées à la Bargmann de Wigner (`e`, `V`,
+  `U`) — Uhlhorn utilise des noms complets descriptifs
+  (`SendsONBToONB`, `PreservesOrthogonality`, `TraceProd`,
+  `exists_projMeasure_of_frameFunctionOnLines`). Cohérent avec le fait
+  qu'Uhlhorn n'a pas de notation source à respecter lettre à lettre (Šemrl
+  2021 n'introduit pas de symboles aussi courts que Bargmann) — un TROISIÈME
+  style, mais chacun interne cohérent et justifié par sa source.
+- Docstrings (`/-- ... -/`), commentaires de jalon (`/-! # Ux — titre ... -/`
+  avec écarts signalés en tête de fichier), français partout, préfixe `h` pour
+  les hypothèses, `private` pour les lemmes internes : identiques aux deux
+  blocs précédents, aucune divergence.
