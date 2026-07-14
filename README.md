@@ -1,14 +1,15 @@
-# quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner et Uhlhorn
+# quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner, Uhlhorn et BornRule
 
 **Statut : Naimark v2 COMPLET (`v2.0-naimark`, 2026-07-11), Wigner COMPLET avec
-unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), ET Uhlhorn COMPLET
-(`v1.0-uhlhorn`, 2026-07-14).** Trois formalisations mécanisées, **sans axiome**
+unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
+(`v1.0-uhlhorn`, 2026-07-14) ET BornRule COMPLET (`grainCoherenceTheorem`,
+2026-07-14).** Quatre formalisations mécanisées, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
-**En chiffres (calculés, pas estimés) : 22 fichiers `.lean`, 3513 lignes,
-93 déclarations publiques (structures, définitions, théorèmes), 0 `sorry`,
-0 axiome — les 84 déclarations porteuses de contenu (hors `structure`/`Prop`/
+**En chiffres (calculés, pas estimés) : 26 fichiers `.lean`, 4251 lignes,
+124 déclarations publiques (structures, définitions, théorèmes), 0 `sorry`,
+0 axiome — les 109 déclarations porteuses de contenu (hors `structure`/`Prop`/
 `abbrev`) vérifiées individuellement par `#print axioms` dépendent toutes
 d'exactement `[propext, Classical.choice, Quot.sound]`, le trio standard du
 noyau Lean/Mathlib, sans exception.**
@@ -36,12 +37,23 @@ externe épinglée) et le théorème de Wigner (bloc interne ci-dessus) — voir
 section dédiée plus bas pour le détail de cette double dépendance et sa
 vérification d'axiomes.
 
+Le **Théorème de Cohérence de Grain** (« 𝒢 » dans les articles compagnons,
+« Deriving the Born Rule from Grain Coherence and Dynamical Stability ») :
+pour une « perspective » (partition orthogonale de `H n` en cellules) et une
+règle d'estimation satisfaisant quatre axiomes purement combinatoires (Grain,
+Norm, Pos, Null), la valeur de la règle sur toute cellule est EXACTEMENT la
+règle de Born (`∑ᵢ ‖⟨v,fᵢ⟩‖²` sur une base orthonormée de la cellule) — sans
+jamais supposer a priori que la règle est de la forme d'une trace. Remplace,
+par rapport au prototype `tstar-born-rule-lean`, l'`axiom gleason` (non
+prouvé) par une vraie application de `Gleason.gleason`, et réutilise
+l'infrastructure Uhlhorn (U2, U3a). Voir la section dédiée plus bas.
+
 Ce dépôt s'appuie sur [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean)
 (tag `v1.0-gleason`). Naimark n'y réutilise que `IsPositiveOp`
-(`Gleason.Busch.Effects`) ; Uhlhorn, en revanche, invoque `Gleason.gleason`
-lui-même ainsi qu'une partie de sa machinerie interne — voir la section
-« Dépendances » plus bas pour le détail et la vérification de non-fuite
-d'axiome.
+(`Gleason.Busch.Effects`) ; Uhlhorn et BornRule, en revanche, invoquent
+`Gleason.gleason` lui-même ainsi qu'une partie de sa machinerie interne — voir
+la section « Dépendances » plus bas pour le détail et la vérification de
+non-fuite d'axiome.
 
 ## Énoncé
 
@@ -196,6 +208,48 @@ absente de `gleason-theorem-lean` et donc dérivée dans ce dépôt ; U3b :
 fini-dimensionnelle par comptage de cardinalité) — détail complet dans
 `SORRIES.md`.
 
+## Théorème de Cohérence de Grain (BornRule)
+
+```lean
+structure Perspective (n : ℕ) where
+  cells : Finset (Submodule ℂ (H n))
+  nz    : ∀ c ∈ cells, c ≠ ⊥
+  ortho : ∀ c ∈ cells, ∀ c' ∈ cells, c ≠ c' → c ≤ c'ᗮ
+  span  : sSup (cells : Set (Submodule ℂ (H n))) = ⊤
+
+theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
+    (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
+    (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
+    Est D c = ∑ i : Fin (Module.finrank ℂ c),
+      ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
+```
+
+Reformalisation du théorème principal de « Deriving the Born Rule from Grain
+Coherence and Dynamical Stability » — nommé `𝒢` dans les articles compagnons,
+`grainCoherenceTheorem` en Lean (identifiant ASCII délibéré, le renommage des
+manuscrits est hors scope de ce dépôt). Couvre UNIQUEMENT la route descriptive
+(Gleason) du papier ; la route dynamique (Proposition 3, théorème de Short) et
+le Corollaire 1 (convergence intersubjective) sont des extensions futures
+possibles, non attaquées ici.
+
+**Ce résultat COMPOSE Gleason et l'infrastructure Uhlhorn plutôt que
+d'introduire un contenu mathématique autonome** : B2 construit une fonction-
+cadre sur les droites directement depuis la règle d'estimation (via
+`Perspective.binary`) et invoque U3a + `Gleason.gleason` (réel, pas un axiome)
+pour obtenir une densité `ρ` ; B3 réutilise U2 pour montrer qu'un opérateur
+densité qui s'annule sur l'orthogonal d'un vecteur unitaire `v` est exactement
+`projL (ℂ∙v)` ; B4 relie (Null) à cette hypothèse d'annulation et assemble le
+tout via `refinePerspective`/`refine_filter_eq_cellLines` (déjà prouvés en B1).
+Découpage complet en quatre jalons (B1 : scaffolding — perspectives, axiomes,
+non-contextualité ; B2 : pont vers Gleason ; B3 : pinning ; B4 : assemblage
+final) — détail complet, écarts favorables et comparaison ligne à ligne avec
+l'ancien `tstar-born-rule-lean` dans `SORRIES.md`.
+
+**Remplace intégralement `axiom gleason`** : `#print axioms
+grainCoherenceTheorem` ne dépend que de `[propext, Classical.choice,
+Quot.sound]` — contrairement à `tstar-born-rule-lean`, où `#print axioms
+theorem1_general` liste en plus `gleason` comme axiome séparé.
+
 ## Assistance IA
 
 Ce développement (squelette, preuves, choix d'architecture) a été réalisé avec
@@ -220,7 +274,7 @@ lake build                    # doit terminer vert
 ./scripts/guard.sh            # 0 axiome, 0 native_decide, 0 sorry (Naimark v2 + Wigner + Uhlhorn)
 ```
 
-`#print axioms` sur les théorèmes-têtes de chapitre (liste exhaustive des 84
+`#print axioms` sur les théorèmes-têtes de chapitre (liste exhaustive des 109
 déclarations publiques porteuses de contenu dans `ARCHITECTURE_NOTES.md`/le
 rapport de clôture — toutes dépendent du même trio) :
 
@@ -237,15 +291,22 @@ rapport de clôture — toutes dépendent du même trio) :
 'QuantumFoundations.Uhlhorn.wignerSymmetryProj_of_sendsONBToONB' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.Uhlhorn.traceProd_preserved_of_sendsONBToONB' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.Uhlhorn.exists_projMeasure_of_frameFunctionOnLines' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.grainCoherenceTheorem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.full_rho_facts' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 Ce sont les trois axiomes standards acceptés par Lean/Mathlib lui-même (extensionnalité
 propositionnelle, axiome du choix, solidité des quotients) — aucun `sorryAx`, aucun
-`axiom` spécifique au projet. **Point vérifié spécifiquement pour Uhlhorn** :
-`uhlhorn_finite_dim` est le premier théorème du dépôt à dépendre à la fois de
-`Gleason.gleason` (dépendance externe) ET de `QuantumFoundations.Wigner.wigner`
-(bloc interne) — cette double chaîne de dépendances ne fait fuiter aucun axiome
-supplémentaire, confirmé ci-dessus.
+`axiom` spécifique au projet. **Points vérifiés spécifiquement** : `uhlhorn_finite_dim`
+est le premier théorème du dépôt à dépendre à la fois de `Gleason.gleason`
+(dépendance externe) ET de `QuantumFoundations.Wigner.wigner` (bloc interne) ;
+`grainCoherenceTheorem` dépend à la fois de `Gleason.gleason` ET de
+l'infrastructure Uhlhorn interne (U2, U3a) — dans les deux cas, cette double
+chaîne de dépendances ne fait fuiter aucun axiome supplémentaire, confirmé
+ci-dessus.
 
 ## Carte du dépôt
 
@@ -271,9 +332,13 @@ supplémentaire, confirmé ci-dessus.
 | `QuantumFoundations/Uhlhorn/GleasonTwice.lean` | U3b : « Gleason appliqué deux fois »                                            | 189 |
 | `QuantumFoundations/Uhlhorn/Assembly.lean`  | U4 (assemblage) + U5 (réduction fini-dimensionnelle), théorème `uhlhorn_finite_dim` | 83 |
 | `QuantumFoundations/Uhlhorn/Nonvacuity.lean` | Témoin Uhlhorn : `φ := id`                                                        | 37 |
+| `QuantumFoundations/BornRule/Perspective.lean` | B1 : `Perspective`, `Refines`, `AxGrain`/`AxNorm`/`AxPos`/`AxNul`, `lemma4_noncontextual`, `basisPerspective`, `cellLines`, `refinePerspective` | 445 |
+| `QuantumFoundations/BornRule/GleasonBridge.lean` | B2 : `g`, `g_isFrameFunctionOnLines`, `exists_rho` (remplace `axiom gleason`) | 81 |
+| `QuantumFoundations/BornRule/Pinning.lean`   | B3 : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)          | 70 |
+| `QuantumFoundations/BornRule/Assembly.lean`  | B4 (assemblage), théorème final `grainCoherenceTheorem`                          | 136 |
 | `QuantumFoundations/Nonvacuity.lean`         | Témoin Naimark : POVM uniforme `n=2, m=2`                                         | 55 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 25 |
-| **Total**                                    | **22 fichiers**                                                                   | **3513** |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 29 |
+| **Total**                                    | **26 fichiers**                                                                   | **4251** |
 
 Documentation : `CLAUDE.md` (règles pour l'agent IA, à lire au démarrage),
 `SORRIES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -314,6 +379,15 @@ consolidée de tous les écarts vs les plans initiaux).
 | U4    | Assemblage direct de U1 et U3b                                                 | ✅ |
 | U5    | Réduction fini-dimensionnelle, théorème final (tag `v1.0-uhlhorn`)             | ✅ |
 
+## Jalons — BornRule
+
+| Jalon | Contenu                                                                        | État |
+|-------|----------------------------------------------------------------------------------|------|
+| B1    | Scaffolding : `Perspective`, axiomes, `lemma4_noncontextual`, `refinePerspective` | ✅ |
+| B2    | Pont vers Gleason : `g`, `IsFrameFunctionOnLines`, `exists_rho`                | ✅ |
+| B3    | Pinning : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)  | ✅ |
+| B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
+
 ## Théorèmes principaux — table de référence
 
 | Théorème | Énoncé informel | Référence | Fichier (lignes) | Statut | Tag |
@@ -325,11 +399,12 @@ consolidée de tous les écarts vs les plans initiaux).
 | `exclusivity` | Un même `T` ne peut être compatible à la fois avec une équivalence unitaire et une antiunitaire (`n ≥ 2`) | Bargmann 1964 §1.5 | `Wigner/Uniqueness.lean` (335) | 0 sorry, 0 axiome | `v2.0-wigner` |
 | `U_alt_eq_smul` | `U` est unique à phase globale près relativement au choix du représentant de `eImg` (version restreinte) | Bargmann 1964 §6 (restreint) | `Wigner/Uniqueness.lean` (335) | 0 sorry, 0 axiome | `v2.0-wigner` |
 | `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (83) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
+| `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | « Deriving the Born Rule from Grain Coherence and Dynamical Stability » | `BornRule/Assembly.lean` (136) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
 chacun, voir section précédente et le rapport de clôture pour la liste
-exhaustive des 84 déclarations vérifiées).
+exhaustive des 109 déclarations vérifiées).
 
 ## Dépendances
 
@@ -338,22 +413,30 @@ Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvab
 
 - [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean),
   `rev = "v1.0-gleason"` (résolu en `876aa7390b5d831cd81415d55493a1c0c3bae31e`,
-  révision fixe inchangée depuis Naimark). **Usage étendu depuis Uhlhorn**
-  (contrairement à Naimark, qui ne réutilise que `Gleason.IsPositiveOp`, un
-  simple `Prop`) : Uhlhorn invoque `Gleason.gleason` lui-même — le théorème de
-  Gleason complet, pas seulement une définition — ainsi qu'une partie de sa
-  machinerie interne (`Gleason.positive_inner_self_eq_zero`,
-  `Gleason.cframe_sum_invariant`, `Gleason.ProjMeasure`/`bornValue`/`projL`,
+  révision fixe inchangée depuis Naimark). **Usage étendu depuis Uhlhorn, repris
+  par BornRule** (contrairement à Naimark, qui ne réutilise que
+  `Gleason.IsPositiveOp`, un simple `Prop`) : Uhlhorn ET BornRule invoquent
+  `Gleason.gleason` lui-même — le théorème de Gleason complet, pas seulement
+  une définition — ainsi qu'une partie de sa machinerie interne
+  (`Gleason.positive_inner_self_eq_zero`, `Gleason.cframe_sum_invariant`,
+  `Gleason.ProjMeasure`/`bornValue`/`projL`,
   `Gleason.exists_orthonormalBasis_extension_complex`,
   `Submodule.starProjection_isSymmetric`/`re_inner_starProjection_nonneg`).
-  C'est délibéré et attendu : Uhlhorn (Corollaire 1.2 de Šemrl) **compose**
-  Gleason et Wigner par construction, ce n'est pas un résultat autonome — voir
-  la section dédiée plus haut. Malgré cette dépendance substantiellement plus
-  large, **aucune fuite d'axiome par transitivité** : confirmé directement par
+  C'est délibéré et attendu : Uhlhorn (Corollaire 1.2 de Šemrl) et BornRule
+  (`grainCoherenceTheorem`) **composent** Gleason (et, pour Uhlhorn, Wigner)
+  par construction — ce ne sont pas des résultats autonomes, voir les sections
+  dédiées plus haut. Malgré cette dépendance substantiellement plus large,
+  **aucune fuite d'axiome par transitivité** : confirmé directement par
   `#print axioms` sur chaque théorème du présent dépôt, y compris
-  `uhlhorn_finite_dim`, qui dépend à la fois de `Gleason.gleason` (externe) et
-  de `QuantumFoundations.Wigner.wigner` (interne) sans faire apparaître un
-  axiome supplémentaire.
+  `uhlhorn_finite_dim` (dépend à la fois de `Gleason.gleason` externe et de
+  `QuantumFoundations.Wigner.wigner` interne) et `grainCoherenceTheorem`
+  (dépend à la fois de `Gleason.gleason` externe et de l'infrastructure
+  Uhlhorn interne U2/U3a) — dans les deux cas sans faire apparaître un axiome
+  supplémentaire. BornRule réutilise en outre directement, depuis Uhlhorn,
+  `eq_projL_of_positive_le_one_trace_one_inner_one` (U2),
+  `exists_projMeasure_of_frameFunctionOnLines` (U3a) et
+  `isEffect_of_isDensityOperator` (relocalisé de U3b vers `Uhlhorn/Defs.lean`
+  lors de B3) — aucun contenu Gleason/Uhlhorn n'est reprouvé.
 - `mathlib`, `rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"`.
 
 `./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'état exact

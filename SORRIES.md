@@ -23,6 +23,13 @@ clôture de U3b (2026-07-14), **1 sorry** après clôture de U4 (2026-07-14),
 **0 sorry** après clôture de U5 (2026-07-14) — **Corollaire 1.2 de Šemrl
 intégralement prouvé, 0 axiome, 0 sorry sur tout le dépôt.**
 
+BornRule (B1–B4, 2026-07-14) : chaque jalon écrit directement en preuve
+complète (skeleton-sorry-first non nécessaire, comme pour W6) — **0 sorry
+introduit, 0 sorry sur tout le dépôt tout au long du développement.**
+`grainCoherenceTheorem` (le « 𝒢 » des articles compagnons) intégralement
+prouvé, `Gleason.gleason` importé comme vrai théorème (plus un axiome séparé
+comme dans l'ancien `tstar-born-rule-lean`).
+
 ---
 
 ## N0 — Squelette (Defs, SqrtOp, DilSpace, Main, Nonvacuity)
@@ -943,3 +950,185 @@ identifié (comportement du constructeur `OrthonormalBasis` vis-à-vis des
 valeurs pointwise) s'est résolu dans le cas le plus favorable dès le premier
 essai. Cérémonie de clôture (tag, README, résumé chiffré) : objet d'un prompt
 dédié, sur le modèle de ce qui a été fait pour le bloc Naimark+Wigner.
+## BornRule — Théorème de Cohérence de Grain (« 𝒢 » des articles compagnons)
+
+**Énoncé.** Reformalisation du théorème principal de « Deriving the Born Rule
+from Grain Coherence and Dynamical Stability » (article informel « T* »,
+renommé « 𝒢 »/*Grain Coherence Theorem* dans les articles — renommage HORS
+SCOPE de ce développement Lean, voir « Hors scope » ci-dessous). Pour une
+« perspective » `D` (partition de `H n` en cellules orthogonales non nulles)
+et une cellule `c` de `D`, une règle d'estimation `Est` satisfaisant (Grain),
+(Norm), (Pos) et, pour un vecteur unitaire `v` fixé, (Null), vérifie
+`Est D c = ∑ᵢ ‖⟪v, fᵢ⟫‖²` sur toute base orthonormée `(fᵢ)` de `c` — la règle
+de Born, en toute généralité, dérivée SANS supposer `Est` a priori de la forme
+d'une trace. Source : prototype `tstar-born-rule-lean`
+(`theorem1_general_en.lean`, `axiom gleason`) ; ce développement remplace
+l'axiome par une vraie application de `Gleason.gleason` (dépendance épinglée
+`v1.0-gleason`) et réutilise au maximum l'infrastructure Uhlhorn (U2, U3a).
+
+**Découpage de la preuve** (B1–B4) :
+- **B1** — scaffolding : `Perspective`, `Refines`, `AxGrain`/`AxNorm`/`AxPos`/
+  `AxNul`, `lemma4_noncontextual` (non-contextualité, conséquence de (Grain)
+  seule), `basisPerspective`, `cellLines`, `refinePerspective`.
+- **B2** — pont vers Gleason : `g : Proj1 n → ℝ` construit directement via
+  `Perspective.binary`, `IsFrameFunctionOnLines g`, puis U3a
+  (`exists_projMeasure_of_frameFunctionOnLines`) et la vraie `Gleason.gleason`.
+- **B3** — pinning : un opérateur densité qui s'annule sur l'orthogonal d'un
+  vecteur unitaire `v` est exactement `projL (ℂ∙v)`, via décomposition de
+  trace + U2 (`eq_projL_of_positive_le_one_trace_one_inner_one`).
+- **B4** — assemblage : `hker_derivation` (relie (Null) à l'hypothèse abstraite
+  de B3), `full_rho_facts` (une seule application de Gleason combinant B2+B3),
+  `grainCoherenceTheorem` (théorème final).
+
+### B1 — Perspective.lean (scaffolding) — ✅ CLOS (2026-07-14)
+
+**Partie A (reconnaissance, obligatoire avant tout code) :**
+- [x] `inner_conj_symm (x y : E) : (starRingEnd 𝕜) ⟪y, x⟫_𝕜 = ⟪x, y⟫_𝕜` —
+      signature exacte confirmée en stdin (piège récurrent du projet : sens
+      des arguments « inversé » par rapport à l'intuition naïve)
+- [x] `Submodule.sup_orthogonal_of_hasOrthogonalProjection : K ⊔ Kᗮ = ⊤` et
+      `Submodule.span_range_eq_iSup` confirmés en stdin : ferment directement,
+      sur `H n`, les deux replis `first | ... | sorry` du prototype
+      (`Perspective.binary.span`, `basisPerspective.span`) — zéro but ouvert,
+      y compris en position de repli, contrairement au prototype qui en
+      laisse deux non fermés
+- [x] Décision de conception validée : reformulation directe pour
+      `V := H n` (pas d'espace abstrait `V` générique) — `Gleason.gleason` est
+      spécifique à `H n`, et `Module.finrank ℂ (H n) = n` (`simp`) élimine une
+      couche de cast pour les bases de l'espace entier
+- [x] Port complet : `Perspective`, `Refines`, `Perspective.unique_parent`,
+      `Perspective.binary`, `Perspective.singleton_of_mem_top`,
+      `AxGrain`/`AxNorm`/`AxPos`/`AxNul`, `lemma4_noncontextual`,
+      `line_ne_bot`/`line_ne_top`/`line_injective`, `basisPerspective`,
+      `cellLines` (+ 6 lemmes de spec), `refinePerspective` (+ 2 lemmes)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry (écrit directement en
+      preuve complète, comme W6)
+
+**Écarts signalés** (portage, 3 corrections trouvées en stdin) :
+- `open scoped Classical` omis dans la première ébauche (nécessaire pour
+  `Finset.filter (· ≤ c)`, présent dans le prototype)
+- `inner_conj_symm` : ordre des arguments inversé par rapport à une lecture
+  naïve du fallback `first | ... | ...` du prototype (qui couvrait les deux
+  ordres par prudence) — fixé aux 4 occurrences après confirmation stdin
+- `inner_self_eq_norm_sq_to_K` sur un sous-type `↥c` : `rw` nu échoue
+  (unification), nécessite une instanciation explicite `(𝕜 := ℂ)` via `have`
+  avant `rw` — fixé aux 2 occurrences
+- `guard.sh` faux positif sur le mot « sorry » dans le docstring du module
+  (même classe de bug que `GleasonExtend.lean` en Uhlhorn) — reformulé
+
+### B2 — GleasonBridge.lean (remplace l'axiome) — ✅ CLOS (2026-07-14)
+
+- [x] `g (hn2 : 2 ≤ n) (P : Proj1 n) : ℝ := Est (Perspective.binary (P:Submodule)
+      _ _) (P:Submodule)` — écart favorable : construit directement sur
+      `Proj1 n`, sans `gline` vectoriel intermédiaire (le prototype construit
+      `gline` en premier). Bien défini car ne dépend que de la droite, jamais
+      d'un représentant unitaire
+- [x] `g_isFrameFunctionOnLines` : positivité directe depuis (Pos) ;
+      somme-à-1 via `lemma4_noncontextual` (bascule vers `basisPerspective`) +
+      `line_injective` (réindexation de la somme)
+- [x] `exists_rho` : U3a (`exists_projMeasure_of_frameFunctionOnLines`) donne
+      un `ProjMeasure`, puis la VRAIE `Gleason.gleason` donne `ρ` — remplace
+      intégralement `axiom gleason` et `exists_rho` de l'ancien fichier
+- [x] `guard.sh` : 0 axiome, 0 sorry. `#print axioms exists_rho` /
+      `g_isFrameFunctionOnLines` : `[propext, Classical.choice, Quot.sound]`
+      — `gleason` n'apparaît JAMAIS comme axiome séparé
+
+**Écarts signalés** : reformulation `∀ x, ∀ hx, ...` (au lieu de
+`∀ x, ‖x‖=1 → ...`) pour éviter un échec de recherche d'assumption anonyme
+(assumption sur `‖x‖ = 1` non nommée) ; `guard.sh` faux positif sur le mot
+« axiom » dans un docstring décrivant l'ancien prototype — reformulé (séparer
+le mot-clé `axiom` de son nom `gleason` par une virgule au lieu de les
+accoler).
+
+**Relocalisation** (commit séparé) : `isEffect_of_isDensityOperator` (+
+`density_inner_le_one`, `sub_nonneg_of_density`), `private` dans
+`Uhlhorn/GleasonTwice.lean` (U3b), migré public vers `Uhlhorn/Defs.lean` —
+nécessaire depuis B3 (`Pinning.lean`), même pattern de relocalisation que
+`exists_unit_vector_of_proj1`/`projL_singleton_unit`/`one_le_of_norm_eq_one`
+lors de U1/U2/U3a.
+
+### B3 — Pinning.lean (identification de ρ) — ✅ CLOS (2026-07-14)
+
+- [x] `eq_projL_of_vanishes_on_orthogonal` : un opérateur densité qui s'annule
+      sur l'orthogonal d'un vecteur unitaire `v` est exactement `projL (ℂ∙v)`.
+      Complète `v` en base orthonormée adaptée
+      (`exists_orthonormalBasis_extension_complex`, déjà utilisé 3× dans
+      Uhlhorn), décompose la trace pour obtenir `⟪ρv,v⟫ = 1`, applique
+      directement U2 via `isEffect_of_isDensityOperator`
+- [x] `guard.sh` : 0 axiome, 0 sorry. `#print axioms` :
+      `[propext, Classical.choice, Quot.sound]`
+
+**Écart favorable majeur** : le prototype reconstruit `lam = 1` via une
+identité de Parseval/Bessel sur une base orthonormée QUELCONQUE
+(`symmetric_pos_zero_of_diag_zero` + ~100 lignes). Ici, en partant de
+l'hypothèse « `ρ` s'annule sur `v⊥` » (forme forte, pas seulement partie
+réelle nulle) et en complétant `v` en base ADAPTÉE, la décomposition de trace
+donne directement `⟪ρv,v⟫ = 1`, et U2 conclut l'égalité opératorielle COMPLÈTE
+en une seule application — sans jamais reformuler l'argument de Parseval. Le
+pas « diagonale nulle ⟹ `ρw = 0` » (`Gleason.positive_inner_self_eq_zero`) est
+repoussé à B4, qui en a de toute façon besoin pour dériver `hker` depuis
+(Null).
+
+### B4 — Assembly.lean (théorème final) — ✅ CLOS (2026-07-14)
+
+- [x] `hker_derivation` : dérive l'hypothèse `hker` de B3 depuis `AxNul`, via
+      un recalibrage `w → u := w/‖w‖`. Écart favorable : le recollement
+      `g(w) = g(u)` est un simple `congrArg`/`Subtype.ext` sur l'égalité de
+      droites `ℂ∙w = ℂ∙u` — PAS une nouvelle application de
+      `lemma4_noncontextual` comme dans le prototype (`gline` y recalculait un
+      `Perspective.binary` distinct à chaque vecteur, nécessitant Lemme 4 pour
+      recoller deux perspectives ; `g` étant une fonction ordinaire de
+      `Proj1 n`, deux arguments égaux donnent des images égales sans argument
+      de non-contextualité). Écart supplémentaire découvert en écrivant la
+      preuve : ni `‖v‖=1` ni (Grain)/(Norm) ne sont nécessaires pour ce
+      lemme — hypothèses retirées de la signature
+- [x] `full_rho_facts` : une seule application de `Gleason.gleason` (B2)
+      fournit un `ρ` à la fois `projL(ℂ∙v)` (B3 + `hker_derivation`) ET
+      compatible avec `g` sur tout vecteur unitaire
+- [x] `grainCoherenceTheorem` : théorème final, nommé exactement ainsi (PAS
+      `𝒢` comme identifiant Lean — voir docstring). Assemblage via
+      `refinePerspective`/`refine_filter_eq_cellLines` (B1, déjà prouvés — pas
+      de nouveau contenu de comptage nécessaire ici, contrairement au
+      prototype qui les développe au même endroit que B4)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry sur tout le dépôt.
+      `#print axioms grainCoherenceTheorem` / `full_rho_facts` /
+      `hker_derivation` : `[propext, Classical.choice, Quot.sound]` —
+      `gleason` n'apparaît JAMAIS comme axiome séparé, contrairement à
+      `tstar-born-rule-lean` où `#print axioms theorem1_general` liste en plus
+      `gleason`.
+
+Aucun écart de fond par rapport à la stratégie de reconnaissance — les deux
+écarts favorables (recollement par `congrArg` plutôt que Lemme 4 ;
+hypothèses `hv`/(Grain)/(Norm) superflues dans `hker_derivation`) ont été
+découverts en écrivant la preuve, pas anticipés en reconnaissance.
+
+### Hors scope (explicite, ce développement Lean)
+
+- **Route dynamique** (Proposition 3 du papier : existence/cohérence d'une
+  règle d'estimation dynamique via le théorème de Short) : non attaquée. Ce
+  développement couvre UNIQUEMENT la route descriptive (Gleason).
+- **Corollaire 1** (convergence intersubjective entre observateurs) : non
+  attaqué — extension future possible, pas un manque de ce jalon.
+- **Renommage T* → 𝒢** dans les manuscrits (article technique + article
+  compagnon « One State, Many Perspectives ») : HORS SCOPE de ce travail Lean.
+  Seul le nom Lean `grainCoherenceTheorem` (choisi pour éviter tout identifiant
+  non-ASCII) relève de ce développement ; la mise à jour des deux manuscrits
+  relève d'une passe de révision de texte séparée.
+
+### Comparaison avec `tstar-born-rule-lean`
+
+| | `tstar-born-rule-lean` (`theorem1_general_en.lean`) | `quantum-foundations-lean` (`BornRule`) |
+|---|---|---|
+| Espace | `V` abstrait (dimension finie) | `H n := EuclideanSpace ℂ (Fin n)` directement |
+| Gleason | `axiom gleason` (non prouvé) | `Gleason.gleason` — vrai théorème, dépendance épinglée |
+| Axiomes de `theorem1_general`/`grainCoherenceTheorem` | `propext, Classical.choice, Quot.sound, gleason` | `propext, Classical.choice, Quot.sound` |
+| `pinning` | environ 100 lignes (Parseval/Bessel sur base quelconque) | environ 45 lignes (décomposition de trace sur base adaptée + U2) |
+| Recalibrage de `hker_derivation` | `lemma4_noncontextual` (deux perspectives `binary` distinctes à recoller) | `congrArg`/`Subtype.ext` (fonction ordinaire de `Proj1 n`) |
+| Replis (`Perspective.binary.span`, `basisPerspective.span`) | `first`/`sorry` (2 sorry potentiels) | fermés directement, 0 sorry |
+| Sorries | 2 (repliés) | 0 |
+
+**Conclusion : strictement plus fort** — mêmes résultats mathématiques (même
+énoncé final, `grainCoherenceTheorem` équivalent à `theorem1_general`), un
+axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
+courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
+Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
