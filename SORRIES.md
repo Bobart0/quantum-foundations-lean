@@ -18,7 +18,8 @@ preuve complète, skeleton-sorry-first non nécessaire vu la taille des étapes)
 Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
 **5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
 plus incertaine à l'issue de la reconnaissance), **4 sorry** après clôture de U1
-(2026-07-13). U2, U3b, U4, U5 restent ouverts.
+(2026-07-13), **3 sorry** après clôture de U2 (2026-07-14). U3b, U4, U5 restent
+ouverts.
 
 ---
 
@@ -805,9 +806,51 @@ meilleure des deux : aucune duplication, aucune dépendance de fichier
 superflue. `GleasonExtend.lean` mis à jour en conséquence (suppression de la
 copie `private`, aucun changement de preuve).
 
-### U2, U3b, U4, U5 — non attaqués
+### U2 — Lemme spectral élémentaire — ✅ CLOS (2026-07-14)
 
-Squelette posé (voir U0 ci-dessus), preuves non commencées. Ordre de dépendance
-réel : U2 et U3a sont indépendants l'un de l'autre (U3a clos) ; U3b dépend des
-deux ; U1 (clos) était indépendant de tout le reste ; U4 dépend de U1+U3b ; U5
-dépend de U4 seul.
+Pure algèbre linéaire, indépendant de `Gleason.gleason`/`wigner`/U3a. Stratégie
+de référence directement inspirée de Šemrl §2 (preuve de la Claim) : `E` fixe
+`x`, puis décomposition bloc `[[1,0],[0,T]]` sur `H = span{x} ⊕ x⊥`.
+
+- [x] `one_le_of_norm_eq_one` (privé) : `‖x‖=1 ⟹ 1 ≤ n` (`H 0` est
+      `Subsingleton`)
+- [x] **Sous-lemme 1** `E_fixes_x` : `E x = x`, via
+      `Gleason.positive_inner_self_eq_zero` appliqué à `1 - E` (positif par
+      `hE.2`, symétrique — `IsPositiveOp` bundle déjà `LinearMap.IsSymmetric`
+      comme première composante, confirmé en Étape 0, aucune dérivation séparée
+      d'auto-adjonction nécessaire) au point `x` : `⟪(1-E)x,x⟫ = ⟪x,x⟫-⟪Ex,x⟫ =
+      1-1 = 0` (`hEx` étant directement une égalité COMPLEXE `= 1`, pas
+      seulement sa partie réelle — aucun chemin détourné nécessaire)
+- [x] **Assemblage final** `eq_projL_of_positive_le_one_trace_one_inner_one` :
+      `x` complété en base orthonormée COMPLÈTE de `H n`
+      (`exists_orthonormalBasis_extension_complex`, déjà utilisé côté
+      Naimark/Gleason, indexée directement par `Fin n` via `Fin.castLE` — pas
+      de nouvelle gymnastique d'index), trace décomposée autour de la position
+      de `x` (`LinearMap.trace_eq_sum_inner` + `Finset.add_sum_erase`) : le
+      terme en `x` vaut `1`, la trace totale vaut `1`, donc le reste de la
+      somme est nul ; chaque terme restant est positif (symétrie + positivité
+      de `E`), une somme de positifs nulle force chaque terme à `0`
+      (`Finset.sum_eq_zero_iff_of_nonneg`), d'où `E (b i) = 0` pour `i` autre
+      que la position de `x` (`Gleason.positive_inner_self_eq_zero` appliqué à
+      `E` directement, PAS à une restriction). Conclusion par décomposition de
+      tout `z` sur la base (`OrthonormalBasis.sum_repr'`)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **3 sorry** (4 − 1)
+
+**Écart majeur signalé (change l'architecture de l'assemblage final)** : ni
+`LinearMap.restrict` ni un « Sous-lemme 3 » générique (« opérateur positif de
+trace nulle est nul ») n'ont été nécessaires — ce dernier n'existe d'ailleurs
+pas dans `gleason-theorem-lean` (recherché en Étape 0, absent). La décomposition
+de la trace autour de `x` donne DIRECTEMENT `E (b i) = 0` pour chaque `i` autre
+que la position de `x`, en appliquant `positive_inner_self_eq_zero` à `E`
+complet — sans jamais introduire d'opérateur restreint à `x⊥`. Conséquence : le
+« Sous-lemme 2 » (stabilité de `x⊥`, `⟪x,Ey⟫=0` pour `y⊥x`) prévu dans la
+stratégie de référence s'avère inutile et n'est jamais invoqué.
+
+`projL_singleton_unit` (nécessaire ici ET dans U1) relocalisé de
+`WignerProjectionForm.lean` (`private`) vers `Defs.lean` (public, partagé) —
+même pattern que `exists_unit_vector_of_proj1`/U1.
+
+### U3b, U4, U5 — non attaqués
+
+Squelette posé (voir U0 ci-dessus), preuves non commencées. U3b dépend de U2
+(clos) et U3a (clos) ; U4 dépend de U1 (clos) et U3b ; U5 dépend de U4 seul.
