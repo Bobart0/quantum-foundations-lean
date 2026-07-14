@@ -7,9 +7,9 @@ unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
-**En chiffres (calculés, pas estimés) : 26 fichiers `.lean`, 4251 lignes,
-124 déclarations publiques (structures, définitions, théorèmes), 0 `sorry`,
-0 axiome — les 109 déclarations porteuses de contenu (hors `structure`/`Prop`/
+**En chiffres (calculés, pas estimés) : 27 fichiers `.lean`, 4425 lignes,
+131 déclarations publiques (structures, définitions, théorèmes), 0 `sorry`,
+0 axiome — les 116 déclarations porteuses de contenu (hors `structure`/`Prop`/
 `abbrev`) vérifiées individuellement par `#print axioms` dépendent toutes
 d'exactement `[propext, Classical.choice, Quot.sound]`, le trio standard du
 noyau Lean/Mathlib, sans exception.**
@@ -276,7 +276,7 @@ lake build                    # doit terminer vert
 ./scripts/guard.sh            # 0 axiome, 0 native_decide, 0 sorry (Naimark v2 + Wigner + Uhlhorn)
 ```
 
-`#print axioms` sur les théorèmes-têtes de chapitre (liste exhaustive des 109
+`#print axioms` sur les théorèmes-têtes de chapitre (liste exhaustive des 116
 déclarations publiques porteuses de contenu dans `ARCHITECTURE_NOTES.md`/le
 rapport de clôture — toutes dépendent du même trio) :
 
@@ -298,6 +298,8 @@ rapport de clôture — toutes dépendent du même trio) :
 'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 Ce sont les trois axiomes standards acceptés par Lean/Mathlib lui-même (extensionnalité
@@ -338,9 +340,10 @@ ci-dessus.
 | `QuantumFoundations/BornRule/GleasonBridge.lean` | B2 : `g`, `g_isFrameFunctionOnLines`, `exists_rho` (remplace `axiom gleason`) | 81 |
 | `QuantumFoundations/BornRule/Pinning.lean`   | B3 : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)          | 70 |
 | `QuantumFoundations/BornRule/Assembly.lean`  | B4 (assemblage), théorème final `grainCoherenceTheorem`                          | 136 |
+| `QuantumFoundations/BornRule/Nonvacuity.lean` | Témoin BornRule : `E₀ v` (règle de Born) satisfait Grain+Norm+Pos+Null simultanément | 180 |
 | `QuantumFoundations/Nonvacuity.lean`         | Témoin Naimark : POVM uniforme `n=2, m=2`                                         | 55 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 29 |
-| **Total**                                    | **26 fichiers**                                                                   | **4251** |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 30 |
+| **Total**                                    | **27 fichiers**                                                                   | **4425** |
 
 Documentation : `CLAUDE.md` (règles pour l'agent IA, à lire au démarrage),
 `SORRIES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -389,6 +392,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | B2    | Pont vers Gleason : `g`, `IsFrameFunctionOnLines`, `exists_rho`                | ✅ |
 | B3    | Pinning : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)  | ✅ |
 | B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
+| Nonvacuity | `E₀ v` (règle de Born) habite simultanément Grain+Norm+Pos+Null            | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -406,7 +410,7 @@ consolidée de tous les écarts vs les plans initiaux).
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
 chacun, voir section précédente et le rapport de clôture pour la liste
-exhaustive des 109 déclarations vérifiées).
+exhaustive des 116 déclarations vérifiées).
 
 ## Dépendances
 

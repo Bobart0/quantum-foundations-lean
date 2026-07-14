@@ -26,9 +26,11 @@ intégralement prouvé, 0 axiome, 0 sorry sur tout le dépôt.**
 BornRule (B1–B4, 2026-07-14) : chaque jalon écrit directement en preuve
 complète (skeleton-sorry-first non nécessaire, comme pour W6) — **0 sorry
 introduit, 0 sorry sur tout le dépôt tout au long du développement.**
-`grainCoherenceTheorem` (le « 𝒢 » des articles compagnons) intégralement
-prouvé, `Gleason.gleason` importé comme vrai théorème (plus un axiome séparé
-comme dans l'ancien `tstar-born-rule-lean`).
+`grainCoherenceTheorem` intégralement prouvé, `Gleason.gleason` importé
+comme vrai théorème (plus un axiome séparé comme dans l'ancien
+`tstar-born-rule-lean`). `Nonvacuity.lean` (2026-07-15) comble l'écart
+signalé lors de l'audit de clôture : `E₀ v` satisfait simultanément les
+quatre axiomes (Grain)/(Norm)/(Pos)/(Null) — 0 sorry introduit.
 
 ---
 
@@ -1102,24 +1104,60 @@ Aucun écart de fond par rapport à la stratégie de reconnaissance — les deux
 hypothèses `hv`/(Grain)/(Norm) superflues dans `hker_derivation`) ont été
 découverts en écrivant la preuve, pas anticipés en reconnaissance.
 
+### Nonvacuity — la règle de Born satisfait les 4 axiomes — ✅ CLOS (2026-07-15)
+
+Comble l'écart signalé lors de l'audit de clôture (dérogation à la règle
+absolue 3 de `CLAUDE.md`, `BornRule` étant alors le seul bloc du dépôt sans
+`Nonvacuity.lean`) : `E₀ v D c := ‖projL c v‖²` (règle de Born pour un
+vecteur unitaire `v` fixé, ignore `D` — comme `g` en B2) satisfait
+SIMULTANÉMENT `AxGrain`, `AxNorm`, `AxPos`, `AxNul` —
+`grainCoherenceTheorem` n'est donc pas vacuement vrai.
+
+- [x] **`refine_filter_sup_eq`** (Lemme 3, généralise `refine_filter_eq_cellLines`
+      de B1 à un raffinement `D'` ARBITRAIRE plutôt qu'au seul
+      `refinePerspective D` canonique) : les cellules de `D'` sous `c`
+      couvrent exactement `c`. Direction non triviale (`c ≤ sup`) via
+      résolution de l'identité restreinte à `D'.cells`
+      (`Gleason.projL_sup_of_pairwise_isOrtho`) : tout `x ∈ c` s'écrit comme
+      somme de ses projections sur les cellules de `D'`, celles hors de `c`
+      (parent ≠ `c` dans `D`, via `unique_parent`) contribuant 0 car
+      orthogonales à `c`
+- [x] **`norm_sq_sum_of_pairwise_orthogonal`** (privé) : théorème de
+      Pythagore fini par expansion bilinéaire directe du produit scalaire
+      (`sum_inner`/`inner_sum` + collapse diagonal via `Finset.sum_eq_single`)
+- [x] **`sum_sq_projL_of_pairwise_isOrtho`** (privé) : combine résolution de
+      l'identité et Pythagore fini — additivité de `‖projL · v‖²` sur une
+      famille orthogonale de cellules
+- [x] `E₀_isPos`, `E₀_isNul` : immédiats (positivité d'un carré ;
+      `Submodule.starProjection_apply_eq_zero_iff` pour l'annulation)
+- [x] `E₀_isNorm`, `E₀_isGrain` : applications directes de
+      `sum_sq_projL_of_pairwise_isOrtho`, respectivement à `D.cells` (sup `=
+      ⊤` via `D.span`) et à `D'.cells.filter (· ≤ c)` (sup `= c` via
+      `refine_filter_sup_eq`)
+- [x] `E₀_satisfies_axioms`, témoin combiné, plus un `example`
+      d'inhabitation concrète sur `H 3`
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry sur tout le dépôt.
+      `#print axioms` sur les 32 déclarations porteuses de contenu de
+      `BornRule` (25 précédentes + 7 nouvelles) : `[propext, Classical.choice,
+      Quot.sound]`, sans exception
+
+**Coût réel** (répond explicitement à la question posée en reconnaissance) :
+`Gleason.projL_sup_of_pairwise_isOrtho` (résolution de l'identité comme
+identité D'OPÉRATEURS pour une famille finie orthogonale) était DÉJÀ
+disponible dans `gleason-theorem-lean` (`Gleason/Operator.lean`, O2a(ii)) —
+PAS re-dérivée ici, contrairement à ce que U3b avait initialement anticipé
+puis jugé inutile pour son propre besoin (résolution via `bornValue`
+directement). Le théorème de Pythagore fini sur `‖·‖²` (plutôt que sur
+`bornValue`, seul cas déjà couvert côté `gleason-theorem-lean` via
+`bornValue_sum_of_pairwise_isOrtho`) était en revanche absent tel quel et a
+dû être dérivé ici (`norm_sq_sum_of_pairwise_orthogonal`, ~15 lignes,
+expansion bilinéaire directe — pas une reconstruction lourde).
+
 ### Hors scope (extensions futures possibles, pas des manques de ce jalon)
 
 - **Une seconde route de dérivation, indépendante de Gleason** : via un
   axiome de stabilité dynamique plutôt que de cohérence de grain. Ce
   développement couvre UNIQUEMENT la route descriptive (Gleason).
-- **L'existence/consistance des axiomes (Grain)/(Norm)/(Pos)/(Null)
-  eux-mêmes** : non attaquée — ce développement part de ces quatre axiomes
-  comme hypothèses, sans construire de témoin `Est` les satisfaisant tous
-  simultanément (construire un tel témoin reviendrait à re-prouver, dans
-  l'autre sens, que la règle de Born satisfait bien (Grain) sur une
-  décomposition orthogonale arbitraire — contenu mathématique nouveau, non
-  attaqué dans cette passe). **Écart signalé** : contrairement aux trois
-  autres blocs du dépôt, `BornRule` n'a pas de `Nonvacuity.lean` habitant
-  `Perspective`/`AxGrain`/`AxNorm`/`AxPos`/`AxNul` — dérogation à la règle
-  absolue 3 de `CLAUDE.md`, identifiée lors de l'audit de clôture
-  (2026-07-14), non corrigée dans cette passe car cela exigerait précisément
-  le contenu mathématique nouveau écarté ci-dessus. `Perspective n` seule
-  (sans les axiomes) est trivialement habitée (`basisPerspective`).
 - **La convergence intersubjective entre observateurs** comme corollaire du
   théorème principal : non attaquée.
 

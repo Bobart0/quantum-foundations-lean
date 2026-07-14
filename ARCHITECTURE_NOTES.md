@@ -297,11 +297,12 @@ laissée à la discrétion de l'utilisateur avant publication.
 - Docstrings, préfixe `h` pour les hypothèses, `private` pour les lemmes
   internes : identiques aux trois blocs précédents, aucune divergence.
 - **Écart de conformité à la règle 3 (Nonvacuity), identifié lors de l'audit
-  de clôture** : contrairement à `Naimark/Nonvacuity.lean`,
-  `Wigner/Nonvacuity.lean` et `Uhlhorn/Nonvacuity.lean`, il n'existe PAS de
-  `BornRule/Nonvacuity.lean`. `Perspective`, `AxGrain`, `AxNorm`, `AxPos`,
-  `AxNul` (structures d'hypothèses introduites en B1) n'ont jamais reçu de
-  témoin dans le même commit. Non corrigé dans cette passe de clôture (voir
-  `SORRIES.md`, section « Hors scope », pour le détail de pourquoi un témoin
-  complet exigerait du contenu mathématique nouveau) — signalé explicitement
-  à l'utilisateur plutôt que silencieusement ignoré.
+  de clôture — RÉSOLU (2026-07-15, `BornRule/Nonvacuity.lean`).**
+  `E₀ v D c := ‖projL c v‖²` (règle de Born pour un vecteur unitaire `v` fixé)
+  habite simultanément `AxGrain`/`AxNorm`/`AxPos`/`AxNul`. Le point technique
+  central (`refine_filter_sup_eq`, généralisant `refine_filter_eq_cellLines`
+  de B1 à un raffinement arbitraire) réutilise
+  `Gleason.projL_sup_of_pairwise_isOrtho` (résolution de l'identité comme
+  opérateur, déjà disponible dans `gleason-theorem-lean`) — seul le théorème
+  de Pythagore fini sur `‖·‖²` (absent tel quel, `gleason-theorem-lean` ne
+  couvrant que l'additivité de `bornValue`) a dû être dérivé, en ~15 lignes.
