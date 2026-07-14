@@ -19,8 +19,9 @@ Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
 **5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
 plus incertaine à l'issue de la reconnaissance), **4 sorry** après clôture de U1
 (2026-07-13), **3 sorry** après clôture de U2 (2026-07-14), **2 sorry** après
-clôture de U3b (2026-07-14), **1 sorry** après clôture de U4 (2026-07-14). U5
-seul reste ouvert.
+clôture de U3b (2026-07-14), **1 sorry** après clôture de U4 (2026-07-14),
+**0 sorry** après clôture de U5 (2026-07-14) — **Corollaire 1.2 de Šemrl
+intégralement prouvé, 0 axiome, 0 sorry sur tout le dépôt.**
 
 ---
 
@@ -905,9 +906,40 @@ exactement ce que `traceProd_preserved_of_sendsONBToONB` (U3b) produit.
 Aucun écart, aucun nouveau contenu mathématique — composition directe comme
 anticipé.
 
-### U5 — non attaqué
+### U5 — Réduction fini-dimensionnelle — ✅ CLOS (2026-07-14) — **COROLLAIRE 1.2 DE ŠEMRL CLOS**
 
-Squelette posé (voir U0 ci-dessus), preuve non commencée. Dépend de U4 (clos)
-seul — réduction fini-dimensionnelle (comptage de cardinalité) de
-`PreservesOrthogonality` à `SendsONBToONB`, puis conclusion via U4. Dernier
-jalon avant la clôture complète du Corollaire 1.2 de Šemrl.
+Dernier jalon du projet Uhlhorn : réduit `PreservesOrthogonality` (orthogonalité
+préservée dans un seul sens, ni injectivité ni surjectivité supposées) à
+`SendsONBToONB` par un argument de comptage de cardinalité, puis conclut via U4.
+
+- [x] **Sous-lemme A** (dans `sendsONBToONB_of_preservesOrthogonality`) : pour
+      une base orthonormée `b`, les représentants unitaires choisis
+      (`exists_unit_vector_of_proj1`) des images `φ(mk_unit(b i))` forment une
+      famille orthonormée `x` — `PreservesOrthogonality` transporte
+      l'orthogonalité de `b i ⊥ b j` (`⟪bi,bj⟫=0`) vers `x i ⊥ x j`, via
+      l'aller-retour produit-scalaire-nul ↔ sous-espaces orthogonaux
+      (`Submodule.isOrtho_span` pour convertir vers les droites,
+      `Submodule.isOrtho_iff_inner_eq` + `Submodule.mem_span_singleton_self`
+      pour reconvertir)
+- [x] **Sous-lemme B** : une famille orthonormée de cardinal `n = finrank (H n)`
+      forme automatiquement une base orthonormée COMPLÈTE
+      (`basisOfOrthonormalOfCardEqFinrank` puis `Module.Basis.toOrthonormalBasis`)
+      — **point d'incertitude principal du jalon, résolu favorablement** : les
+      deux constructeurs préservent les valeurs POINTWISE
+      (`coe_basisOfOrthonormalOfCardEqFinrank`/`Module.Basis.coe_toOrthonormalBasis`,
+      tous deux `@[simp]`), donnant `b' i = x i` exactement — pas seulement à
+      un reindexing près. Aucun lemme de compatibilité supplémentaire
+      nécessaire, contrairement à ce que la reconnaissance envisageait comme
+      risque principal
+- [x] `uhlhorn_finite_dim := wignerSymmetryProj_of_sendsONBToONB hn φ
+      (sendsONBToONB_of_preservesOrthogonality hn φ hφ)` (U4, assemblage direct)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **0 SORRY sur tout le dépôt**.
+      `#print axioms uhlhorn_finite_dim` /
+      `wignerSymmetryProj_of_sendsONBToONB` : `[propext, Classical.choice,
+      Quot.sound]`
+
+Aucun écart par rapport à la stratégie de reconnaissance — le seul risque
+identifié (comportement du constructeur `OrthonormalBasis` vis-à-vis des
+valeurs pointwise) s'est résolu dans le cas le plus favorable dès le premier
+essai. Cérémonie de clôture (tag, README, résumé chiffré) : objet d'un prompt
+dédié, sur le modèle de ce qui a été fait pour le bloc Naimark+Wigner.
