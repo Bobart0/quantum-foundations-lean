@@ -22,8 +22,8 @@ variable {n : ℕ}
 /-- **U4** (assemblage) : U1 + U3b — si `φ` envoie tout COSP sur un COSP, `φ` est
 une symétrie de Wigner. -/
 theorem wignerSymmetryProj_of_sendsONBToONB (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
-    (hφ : SendsONBToONB φ) : IsWignerSymmetryProj φ := by
-  sorry
+    (hφ : SendsONBToONB φ) : IsWignerSymmetryProj φ :=
+  wigner_projection_form n φ (traceProd_preserved_of_sendsONBToONB hn φ hφ)
 
 /-- **U5 — Corollaire 1.2 de Šemrl** (Šemrl 2021, arXiv:2106.06182) : en dimension
 finie `n ≥ 3`, toute application sur les projections de rang 1 qui préserve
