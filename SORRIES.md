@@ -18,8 +18,8 @@ preuve complète, skeleton-sorry-first non nécessaire vu la taille des étapes)
 Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
 **5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
 plus incertaine à l'issue de la reconnaissance), **4 sorry** après clôture de U1
-(2026-07-13), **3 sorry** après clôture de U2 (2026-07-14). U3b, U4, U5 restent
-ouverts.
+(2026-07-13), **3 sorry** après clôture de U2 (2026-07-14), **2 sorry** après
+clôture de U3b (2026-07-14). U4, U5 restent ouverts.
 
 ---
 
@@ -850,7 +850,47 @@ stratégie de référence s'avère inutile et n'est jamais invoqué.
 `WignerProjectionForm.lean` (`private`) vers `Defs.lean` (public, partagé) —
 même pattern que `exists_unit_vector_of_proj1`/U1.
 
-### U3b, U4, U5 — non attaqués
+### U3b — L'argument « Gleason appliqué deux fois » — ✅ CLOS (2026-07-14)
 
-Squelette posé (voir U0 ci-dessus), preuves non commencées. U3b dépend de U2
-(clos) et U3a (clos) ; U4 dépend de U1 (clos) et U3b ; U5 dépend de U4 seul.
+Cœur du papier de Šemrl. Consomme U2 et U3a comme boîtes noires (aucune preuve
+interne rouverte).
+
+- [x] **Sous-lemme 0** `isEffect_of_isDensityOperator` (absent de
+      `gleason-theorem-lean`, confirmé en reconnaissance) : positivité + trace
+      `1` en dimension finie force `≤ 1`. Dérivé via `density_inner_le_one`
+      (même décomposition de trace autour d'un point que U2) puis
+      `sub_nonneg_of_density` (homogénéité pour passer d'un vecteur unitaire à
+      un vecteur quelconque)
+- [x] **Sous-lemme 2** `exists_density_born_eq` (première application de
+      `Gleason.gleason`) : pour `D` densité fixée, `P ↦ bornValue D (φP)` est
+      une `IsFrameFunctionOnLines` — nonneg via `hD.nonneg`, somme à `1` via
+      `LinearMap.trace_eq_sum_inner D b'` sur la base `b'` (complète, garantie
+      par `SendsONBToONB`) — U3a donne un `ProjMeasure`, `Gleason.gleason`
+      donne `E` avec `bornValue D (φP) = bornValue E P` pour tout `P`
+- [x] `traceProd_self_eq_one`, `isDensityOperator_projL_of_proj1` (utilitaires
+      courts : `projL` d'une droite est une densité, via
+      `Submodule.starProjection_isSymmetric`/`Submodule.re_inner_starProjection_nonneg`
+      /`InnerProductSpace.trace_rankOne`)
+- [x] **Sous-lemme 3 + assemblage** `traceProd_preserved_of_sendsONBToONB` : fixe
+      `P` (premier argument du but), applique Sous-lemme 2 à `D := projL(φP)`,
+      spécialise en `P` lui-même (`bornValue E P = TraceProd(φP)(φP) = 1`), en
+      déduit (via U2) `E = projL P`, réinjecte en `Q` :
+      `TraceProd(φP)(φQ) = bornValue D (φQ) = bornValue E Q = TraceProd P Q`
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **2 sorry** (3 − 1)
+
+**Écart signalé** : le « Sous-lemme 1 » de la stratégie de reconnaissance
+(résolution de l'identité comme identité D'OPÉRATEURS,
+`∑ i, projL (ℂ ∙ (b i)) = 1`, via `Gleason.projL_sup_of_pairwise_isOrtho`)
+s'est avéré **non nécessaire**. `LinearMap.trace_eq_sum_inner` donne
+directement la trace de `D` comme somme sur N'IMPORTE QUELLE base orthonormée
+— en particulier la base `b'` image de `φ` — sans jamais former explicitement
+l'opérateur `∑ i, projL (ℂ ∙ (b' i))`.
+
+`one_le_of_norm_eq_one` (nécessaire ici ET dans U2) relocalisé de
+`Spectral.lean` (`private`) vers `Defs.lean` (public, partagé) — même pattern
+que `projL_singleton_unit`/`exists_unit_vector_of_proj1`.
+
+### U4, U5 — non attaqués
+
+Squelette posé (voir U0 ci-dessus), preuves non commencées. U4 dépend de U1
+(clos) et U3b (clos) ; U5 dépend de U4 seul.
