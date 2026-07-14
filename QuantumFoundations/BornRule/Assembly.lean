@@ -11,16 +11,12 @@ séparées ne renverraient pas nécessairement le même témoin, `Gleason.gleaso
 étant un théorème d'existence, pas un objet canonique) ; `grainCoherenceTheorem`
 assemble le tout via `refinePerspective`/`refine_filter_eq_cellLines` (B1).
 
-**Écart favorable trouvé en reconnaissance** : l'étape de recalibrage de
-`hker_derivation` (montrer que la valeur de `g`/`Est` en `w` et en son
-renormalisé `u` coïncident) est un `congrArg` immédiat sur l'égalité de
-sous-espaces `ℂ∙w = ℂ∙u` transportée en égalité de `Proj1 n` (`Subtype.ext`),
-PAS une nouvelle application de `lemma4_noncontextual` : `g` est une fonction
-ordinaire de `Proj1 n`, deux arguments égaux donnent des images égales sans
-argument de non-contextualité supplémentaire (contrairement au prototype
-`tstar-born-rule-lean`, où `gline` recalculait un `Perspective.binary` distinct
-à chaque vecteur et devait invoquer `lemma4_noncontextual` pour recoller les
-deux perspectives `binary(ℂ∙w)` et `binary(ℂ∙u)`).
+L'étape de recalibrage de `hker_derivation` (montrer que la valeur de `g`/`Est`
+en `w` et en son renormalisé `u` coïncident) est un `congrArg` immédiat sur
+l'égalité de sous-espaces `ℂ∙w = ℂ∙u` transportée en égalité de `Proj1 n`
+(`Subtype.ext`) : `g` étant une fonction ordinaire de `Proj1 n`, deux
+arguments égaux donnent des images égales sans argument de non-contextualité
+supplémentaire.
 -/
 
 namespace QuantumFoundations.BornRule
@@ -39,10 +35,10 @@ variable {n : ℕ} (Est : Perspective n → Submodule ℂ (H n) → ℝ)
 lequel (Null) + B2 donnent directement `g u = 0`, puis
 `Gleason.positive_inner_self_eq_zero` conclut `ρ w = 0`.
 
-Écart favorable supplémentaire : ni `hv : ‖v‖ = 1` ni (Grain)/(Norm) ne sont
-nécessaires ici — `AxNul` ne suppose pas `v` unitaire, et le recalibrage
-`gline w = gline u` se fait par simple `congrArg`/`Subtype.ext` (voir note
-d'en-tête), sans invoquer `lemma4_noncontextual`. -/
+Ni `hv : ‖v‖ = 1` ni (Grain)/(Norm) ne sont nécessaires ici — `AxNul` ne
+suppose pas `v` unitaire, et le recalibrage `g w = g u` se fait par simple
+`congrArg`/`Subtype.ext` (voir note d'en-tête), sans invoquer
+`lemma4_noncontextual`. -/
 theorem hker_derivation (hn3 : 3 ≤ n) {v : H n} (hNul : AxNul Est v)
     {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ)
     (hgleason : ∀ x : H n, ∀ hx : ‖x‖ = 1,
@@ -97,11 +93,17 @@ theorem full_rho_facts (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est) (hPo
   exact eq_projL_of_vanishes_on_orthogonal hρ_dens hv
     (hker_derivation Est hn3 hNul hρ_dens hgleason)
 
-/-- The Grain Coherence Theorem (« 𝒢 » in the companion articles). For an
-arbitrary perspective D and cell c, E D c is the sum of squared overlaps of v
-on an orthonormal basis of c — the Born rule in fully general form, derived
-from (Grain), (Norm), (Pos), (Null) alone, with Gleason's theorem imported as
-a genuine theorem (Gleason.gleason) rather than an axiom. -/
+/-- **Théorème de Cohérence de Grain.** Pour une perspective `D` (partition de
+`H n` en cellules orthogonales non nulles) et une cellule `c` de `D`, toute
+règle d'estimation `Est` satisfaisant (Grain), (Norm), (Pos) et, pour un
+vecteur unitaire `v` fixé, (Null), vérifie `Est D c = ∑ᵢ ‖⟪v,fᵢ⟫‖²` sur toute
+base orthonormée `(fᵢ)` de `c` — la règle de Born en toute généralité, dérivée
+des quatre axiomes de cohérence seuls, SANS supposer `Est` a priori de la
+forme d'une trace. Résultat composé, pas autonome : s'appuie sur le théorème
+de Gleason (Gleason 1957, *Measures on the closed subspaces of a Hilbert
+space*), importé comme un vrai théorème (`Gleason.gleason`, dépendance externe
+épinglée) plutôt que comme un axiome, ainsi que sur l'infrastructure interne
+du bloc Uhlhorn (U2, U3a). -/
 theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
     (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
     (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :

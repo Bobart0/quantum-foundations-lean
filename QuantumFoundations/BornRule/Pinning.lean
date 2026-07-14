@@ -4,23 +4,17 @@ import QuantumFoundations.Uhlhorn.Spectral
 /-!
 # B3 — Pinning : identification de `ρ`
 
-Lemme de repérage abstrait (« pinning lemma », Section 4 du papier) : si `ρ`
-est un opérateur densité qui s'annule sur l'orthogonal d'un vecteur unitaire
-`v`, alors `ρ` est EXACTEMENT la projection de rang 1 sur `v`.
+Lemme de repérage abstrait : si `ρ` est un opérateur densité qui s'annule sur
+l'orthogonal d'un vecteur unitaire `v`, alors `ρ` est EXACTEMENT la projection
+de rang 1 sur `v`.
 
-**Écart favorable trouvé en reconnaissance** : le prototype
-(`tstar-born-rule-lean`, `theorem1_general_en.lean`, ~100 lignes) reconstruit
-`lam = 1` via une identité de Parseval/Bessel sur une base orthonormée
-QUELCONQUE. Ici, en repartant directement de l'hypothèse « `ρ` s'annule sur
-`v⊥` » (plutôt que « la partie réelle de `⟪w,ρw⟫` s'annule », comme le fait le
-prototype via `symmetric_pos_zero_of_diag_zero`) et en complétant `v` en une
-base orthonormée ADAPTÉE (`exists_orthonormalBasis_extension_complex`, déjà
-utilisé 3 fois dans Uhlhorn), la décomposition de trace donne directement
-`⟪ρv,v⟫ = 1`, puis U2 (`eq_projL_of_positive_le_one_trace_one_inner_one`)
-conclut l'égalité opératorielle COMPLÈTE en une seule application — sans
-reformuler l'argument de Parseval. Le pas « diagonale nulle ⟹ `ρw = 0` »
-(`Gleason.positive_inner_self_eq_zero`) est repoussé à B4, qui en a de toute
-façon besoin pour dériver l'hypothèse `hker` à partir de (Null).
+Preuve par décomposition de trace sur une base orthonormée ADAPTÉE à `v`
+(`exists_orthonormalBasis_extension_complex`, déjà utilisée 3 fois dans
+Uhlhorn) : l'hypothèse d'annulation donne directement `⟪ρv,v⟫ = 1`, puis U2
+(`eq_projL_of_positive_le_one_trace_one_inner_one`) conclut l'égalité
+opératorielle COMPLÈTE en une seule application. Le pas « diagonale nulle ⟹
+`ρw = 0` » (`Gleason.positive_inner_self_eq_zero`) est repoussé à B4, qui en a
+de toute façon besoin pour dériver l'hypothèse `hker` à partir de (Null).
 -/
 
 namespace QuantumFoundations.BornRule

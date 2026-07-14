@@ -3,16 +3,16 @@ import QuantumFoundations.Uhlhorn.GleasonExtend
 import Gleason.Main
 
 /-!
-# B2 — Pont vers Gleason : élimination de l'axiome
+# B2 — Pont vers Gleason
 
-Remplace l'`axiom`, nommé `gleason`, de l'ancien prototype (`tstar-born-rule-lean`,
-`theorem1_general_en.lean`) par une vraie application de `Gleason.gleason`.
+Construit une densité `ρ` à partir d'une règle d'estimation `Est` satisfaisant
+(Grain), (Norm), (Pos), via une vraie application du théorème de Gleason
+(`Gleason.gleason`, dépendance externe épinglée).
 
-Écart favorable trouvé en reconnaissance par rapport au prototype : `g` est
-construit directement sur `Proj1 n` via `Perspective.binary`, sans passer par
-un `gline` vectoriel intermédiaire — la valeur ne dépend que de la droite
-`(P : Submodule)`, jamais d'un représentant unitaire, donc rien ne force à
-raisonner vecteur d'abord. Le lien avec U3a
+`g : Proj1 n → ℝ` est construit directement sur `Proj1 n` via
+`Perspective.binary`, sans passer par un intermédiaire vectoriel — la valeur
+ne dépend que de la droite `(P : Submodule)`, jamais d'un représentant
+unitaire, donc rien ne force à raisonner vecteur d'abord. Le lien avec U3a
 (`exists_projMeasure_of_frameFunctionOnLines`) est alors immédiat : il suffit
 de vérifier `IsFrameFunctionOnLines g` (positivité directe depuis (Pos),
 somme-à-1 via `lemma4_noncontextual` + `basisPerspective`), puis d'appeler
@@ -31,11 +31,9 @@ noncomputable section
 
 variable {n : ℕ} (Est : Perspective n → Submodule ℂ (H n) → ℝ)
 
-/-- `g P := Est (binary P) P` : la fonction-cadre sur les droites,
-    directement sur `Proj1 n` — ne passe jamais par un `gline` vectoriel
-    provisoire (écart favorable trouvé en reconnaissance par rapport au
-    prototype, qui construisait `gline` en premier). Bien définie car la
-    valeur ne dépend que de la droite `(P : Submodule)`, pas d'un
+/-- `g P := Est (binary P) P` : la fonction-cadre sur les droites, définie
+    directement sur `Proj1 n`, sans intermédiaire vectoriel. Bien définie car
+    la valeur ne dépend que de la droite `(P : Submodule)`, pas d'un
     représentant unitaire. -/
 noncomputable def g (hn2 : 2 ≤ n) (P : Proj1 n) : ℝ :=
   Est (Perspective.binary (P : Submodule ℂ (H n))
@@ -64,9 +62,10 @@ theorem g_isFrameFunctionOnLines (hn2 : 2 ≤ n) (hA : AxGrain Est) (hN : AxNorm
     rwa [show (basisPerspective b).cells = Finset.univ.image (fun i => ℂ ∙ (b i : H n)) from rfl,
       Finset.sum_image (line_injective b)] at hsum
 
-/-- **Théorème 1, Étape 1** : remplace intégralement l'`axiom` `gleason` et
-    `exists_rho` de l'ancien fichier par une VRAIE application de
-    `Gleason.gleason`, via U3a (`exists_projMeasure_of_frameFunctionOnLines`). -/
+/-- Une règle d'estimation satisfaisant (Grain), (Norm), (Pos) est représentée
+    par un opérateur densité `ρ` via la règle de Born, sur tout vecteur
+    unitaire — VRAIE application de `Gleason.gleason` sur la `ProjMeasure`
+    obtenue via U3a (`exists_projMeasure_of_frameFunctionOnLines`). -/
 theorem exists_rho (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est) (hPos : AxPos Est) :
     ∃ ρ : H n →ₗ[ℂ] H n, IsDensityOperator ρ ∧
       ∀ x : H n, ∀ hx : ‖x‖ = 1, g Est (by omega) (Proj1.mk_unit x hx) = (⟪ρ x, x⟫_ℂ).re := by
