@@ -1102,18 +1102,26 @@ Aucun écart de fond par rapport à la stratégie de reconnaissance — les deux
 hypothèses `hv`/(Grain)/(Norm) superflues dans `hker_derivation`) ont été
 découverts en écrivant la preuve, pas anticipés en reconnaissance.
 
-### Hors scope (explicite, ce développement Lean)
+### Hors scope (extensions futures possibles, pas des manques de ce jalon)
 
-- **Route dynamique** (Proposition 3 du papier : existence/cohérence d'une
-  règle d'estimation dynamique via le théorème de Short) : non attaquée. Ce
+- **Une seconde route de dérivation, indépendante de Gleason** : via un
+  axiome de stabilité dynamique plutôt que de cohérence de grain. Ce
   développement couvre UNIQUEMENT la route descriptive (Gleason).
-- **Corollaire 1** (convergence intersubjective entre observateurs) : non
-  attaqué — extension future possible, pas un manque de ce jalon.
-- **Renommage T* → 𝒢** dans les manuscrits (article technique + article
-  compagnon « One State, Many Perspectives ») : HORS SCOPE de ce travail Lean.
-  Seul le nom Lean `grainCoherenceTheorem` (choisi pour éviter tout identifiant
-  non-ASCII) relève de ce développement ; la mise à jour des deux manuscrits
-  relève d'une passe de révision de texte séparée.
+- **L'existence/consistance des axiomes (Grain)/(Norm)/(Pos)/(Null)
+  eux-mêmes** : non attaquée — ce développement part de ces quatre axiomes
+  comme hypothèses, sans construire de témoin `Est` les satisfaisant tous
+  simultanément (construire un tel témoin reviendrait à re-prouver, dans
+  l'autre sens, que la règle de Born satisfait bien (Grain) sur une
+  décomposition orthogonale arbitraire — contenu mathématique nouveau, non
+  attaqué dans cette passe). **Écart signalé** : contrairement aux trois
+  autres blocs du dépôt, `BornRule` n'a pas de `Nonvacuity.lean` habitant
+  `Perspective`/`AxGrain`/`AxNorm`/`AxPos`/`AxNul` — dérogation à la règle
+  absolue 3 de `CLAUDE.md`, identifiée lors de l'audit de clôture
+  (2026-07-14), non corrigée dans cette passe car cela exigerait précisément
+  le contenu mathématique nouveau écarté ci-dessus. `Perspective n` seule
+  (sans les axiomes) est trivialement habitée (`basisPerspective`).
+- **La convergence intersubjective entre observateurs** comme corollaire du
+  théorème principal : non attaquée.
 
 ### Comparaison avec `tstar-born-rule-lean`
 

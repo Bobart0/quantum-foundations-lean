@@ -37,16 +37,16 @@ externe épinglée) et le théorème de Wigner (bloc interne ci-dessus) — voir
 section dédiée plus bas pour le détail de cette double dépendance et sa
 vérification d'axiomes.
 
-Le **Théorème de Cohérence de Grain** (« 𝒢 » dans les articles compagnons,
-« Deriving the Born Rule from Grain Coherence and Dynamical Stability ») :
-pour une « perspective » (partition orthogonale de `H n` en cellules) et une
-règle d'estimation satisfaisant quatre axiomes purement combinatoires (Grain,
-Norm, Pos, Null), la valeur de la règle sur toute cellule est EXACTEMENT la
-règle de Born (`∑ᵢ ‖⟨v,fᵢ⟩‖²` sur une base orthonormée de la cellule) — sans
-jamais supposer a priori que la règle est de la forme d'une trace. Remplace,
-par rapport au prototype `tstar-born-rule-lean`, l'`axiom gleason` (non
-prouvé) par une vraie application de `Gleason.gleason`, et réutilise
-l'infrastructure Uhlhorn (U2, U3a). Voir la section dédiée plus bas.
+Le **Théorème de Cohérence de Grain** (Gleason 1957, *Measures on the closed
+subspaces of a Hilbert space*, comme théorème sous-jacent) : pour une
+« perspective » (partition orthogonale de `H n` en cellules) et une règle
+d'estimation satisfaisant quatre axiomes purement combinatoires (Grain, Norm,
+Pos, Null), la valeur de la règle sur toute cellule est EXACTEMENT la règle de
+Born (`∑ᵢ ‖⟨v,fᵢ⟩‖²` sur une base orthonormée de la cellule) — sans jamais
+supposer a priori que la règle est de la forme d'une trace. Comme Uhlhorn,
+c'est un résultat qui **compose** un bloc interne (l'infrastructure Uhlhorn,
+U2 et U3a) et une dépendance externe (`Gleason.gleason`, importé comme vrai
+théorème plutôt que comme axiome) — voir la section dédiée plus bas.
 
 Ce dépôt s'appuie sur [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean)
 (tag `v1.0-gleason`). Naimark n'y réutilise que `IsPositiveOp`
@@ -224,13 +224,17 @@ theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Es
       ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
 ```
 
-Reformalisation du théorème principal de « Deriving the Born Rule from Grain
-Coherence and Dynamical Stability » — nommé `𝒢` dans les articles compagnons,
-`grainCoherenceTheorem` en Lean (identifiant ASCII délibéré, le renommage des
-manuscrits est hors scope de ce dépôt). Couvre UNIQUEMENT la route descriptive
-(Gleason) du papier ; la route dynamique (Proposition 3, théorème de Short) et
-le Corollaire 1 (convergence intersubjective) sont des extensions futures
-possibles, non attaquées ici.
+Pour une perspective `D` (partition orthogonale de `H n` en cellules non
+nulles) et une cellule `c` de `D`, toute règle d'estimation `Est` satisfaisant
+(Grain), (Norm), (Pos) et, pour un vecteur unitaire `v` fixé, (Null), vérifie
+`Est D c = ∑ᵢ ‖⟨v,fᵢ⟩‖²` sur toute base orthonormée `(fᵢ)` de `c` — la règle de
+Born en toute généralité, dérivée des quatre axiomes de cohérence seuls, sans
+supposer `Est` a priori de la forme d'une trace. Couvre la route descriptive
+(via le théorème de Gleason) ; une seconde route de dérivation indépendante
+(via un axiome de stabilité dynamique plutôt que de cohérence de grain),
+l'existence/consistance des quatre axiomes eux-mêmes, et la convergence
+intersubjective entre observateurs comme corollaire sont des extensions
+futures possibles, non attaquées ici.
 
 **Ce résultat COMPOSE Gleason et l'infrastructure Uhlhorn plutôt que
 d'introduire un contenu mathématique autonome** : B2 construit une fonction-
@@ -242,13 +246,11 @@ densité qui s'annule sur l'orthogonal d'un vecteur unitaire `v` est exactement
 tout via `refinePerspective`/`refine_filter_eq_cellLines` (déjà prouvés en B1).
 Découpage complet en quatre jalons (B1 : scaffolding — perspectives, axiomes,
 non-contextualité ; B2 : pont vers Gleason ; B3 : pinning ; B4 : assemblage
-final) — détail complet, écarts favorables et comparaison ligne à ligne avec
-l'ancien `tstar-born-rule-lean` dans `SORRIES.md`.
+final) — détail complet et écarts favorables dans `SORRIES.md`.
 
-**Remplace intégralement `axiom gleason`** : `#print axioms
-grainCoherenceTheorem` ne dépend que de `[propext, Classical.choice,
-Quot.sound]` — contrairement à `tstar-born-rule-lean`, où `#print axioms
-theorem1_general` liste en plus `gleason` comme axiome séparé.
+`#print axioms grainCoherenceTheorem` ne dépend que de `[propext,
+Classical.choice, Quot.sound]` : le théorème de Gleason est importé comme un
+vrai théorème (`Gleason.gleason`), jamais postulé.
 
 ## Assistance IA
 

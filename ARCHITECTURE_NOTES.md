@@ -152,43 +152,39 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
 
 ## BornRule (B1–B4)
 
-- **Reformulation directe pour `V := H n`** (décision de reconnaissance B0),
-  plutôt que porter le prototype `tstar-born-rule-lean` sur un espace abstrait
-  `V` générique — `Gleason.gleason` est spécifique à `H n`, et
+- **Formulé directement pour `V := H n`**, plutôt qu'un espace abstrait `V`
+  générique — `Gleason.gleason` est spécifique à `H n`, et
   `Module.finrank ℂ (H n) = n` (`simp`) élimine une couche de cast pour les
   bases de l'espace entier (`basisPerspective`/`line_ne_bot`/`line_ne_top`/
   `line_injective`).
-- **B1 — les deux replis `first | ... | sorry` du prototype
-  (`Perspective.binary.span`, `basisPerspective.span`) se referment
-  directement sur `H n`**, sans reconstruction : respectivement
-  `Submodule.sup_orthogonal_of_hasOrthogonalProjection` (instance
-  `HasOrthogonalProjection` automatique en dimension finie) et
+- **B1 — les deux replis potentiels (`Perspective.binary.span`,
+  `basisPerspective.span`) se referment directement sur `H n`**, sans
+  reconstruction : respectivement `Submodule.sup_orthogonal_of_hasOrthogonalProjection`
+  (instance `HasOrthogonalProjection` automatique en dimension finie) et
   `Submodule.span_range_eq_iSup` (déjà exploité côté
   `Gleason.ProjMeasure.isCFrameFunction`).
 - **B2 — `g : Proj1 n → ℝ` construit directement sur les droites**
-  (`Perspective.binary (P:Submodule) ...`), sans passer par un `gline`
-  vectoriel intermédiaire comme le prototype. Conséquence en cascade
-  favorable en B4 (voir plus bas).
+  (`Perspective.binary (P:Submodule) ...`), sans intermédiaire vectoriel : la
+  valeur ne dépend que de la droite `(P : Submodule)`, jamais d'un
+  représentant unitaire. Conséquence favorable en cascade sur B4 (voir
+  plus bas).
 - **B2 — relocalisation de `isEffect_of_isDensityOperator`** (+
   `density_inner_le_one`, `sub_nonneg_of_density`), `private` dans
   `Uhlhorn/GleasonTwice.lean` (U3b), migré public vers `Uhlhorn/Defs.lean` —
   nécessaire depuis B3, même pattern de relocalisation systématique que
   `exists_unit_vector_of_proj1`/`projL_singleton_unit`/`one_le_of_norm_eq_one`
   lors de U1/U2/U3a.
-- **B3 — la reconstruction de `lam = 1` du prototype (identité de
-  Parseval/Bessel sur une base orthonormée quelconque, ~100 lignes) est
-  remplacée par une décomposition de trace sur une base ADAPTÉE à `v`**,
-  donnant directement `⟪ρv,v⟫ = 1`, puis U2
+- **B3 — identification de `ρ` par décomposition de trace sur une base
+  ADAPTÉE à `v`** (`exists_orthonormalBasis_extension_complex`), donnant
+  directement `⟪ρv,v⟫ = 1`, puis U2
   (`eq_projL_of_positive_le_one_trace_one_inner_one`) conclut l'égalité
-  opératorielle complète en une seule application.
+  opératorielle complète en une seule application — pas de détour par une
+  identité de Parseval/Bessel sur une base quelconque.
 - **B4 — le recalibrage `w → u := w/‖w‖` de `hker_derivation` ne nécessite PAS
-  `lemma4_noncontextual`**, contrairement au prototype (où `gline`
-  recalculait un `Perspective.binary` distinct à chaque vecteur, obligeant à
-  recoller deux perspectives partageant une cellule commune). Puisque `g` (B2)
-  est une fonction ordinaire de `Proj1 n`, l'égalité de droites `ℂ∙w = ℂ∙u`
-  se transporte en égalité de `Proj1 n` (`Subtype.ext`) et `g(w) = g(u)` suit
-  par simple `congrArg` — conséquence directe de la conception `Proj1`-first
-  de B2.
+  `lemma4_noncontextual`** : puisque `g` (B2) est une fonction ordinaire de
+  `Proj1 n`, l'égalité de droites `ℂ∙w = ℂ∙u` se transporte directement en
+  égalité de `Proj1 n` (`Subtype.ext`) et `g(w) = g(u)` suit par simple
+  `congrArg` — conséquence directe de la conception `Proj1`-first de B2.
 - **B4 — hypothèses superflues retirées de `hker_derivation`** : ni `‖v‖ = 1`
   ni (Grain)/(Norm) ne sont nécessaires (découvert en écrivant la preuve, pas
   anticipé en reconnaissance) — `AxNul` ne suppose pas `v` unitaire, et le
@@ -197,12 +193,14 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   le second théorème du dépôt (après `uhlhorn_finite_dim`) à dépendre à la
   fois d'une dépendance externe (`Gleason.gleason`) et de contenu interne
   substantiel (infrastructure Uhlhorn U2/U3a). `#print axioms` confirme le
-  trio standard malgré cette double chaîne — voir README, section
+  trio standard sur les deux maillons de cette chaîne — voir README, section
   « Dépendances ».
-- **Hors scope explicite** (non attaqué dans ce développement) : route
-  dynamique (Proposition 3, théorème de Short), Corollaire 1 (convergence
-  intersubjective), renommage des manuscrits T\* → 𝒢 — voir `SORRIES.md`,
-  section « Hors scope ».
+- **Hors scope explicite** (extensions futures possibles, pas des manques de
+  ce jalon) : une seconde route de dérivation indépendante de Gleason (via un
+  axiome de stabilité dynamique plutôt que de cohérence de grain),
+  l'existence/consistance des axiomes (Grain)/(Norm)/(Pos)/(Null) eux-mêmes,
+  et la convergence intersubjective entre observateurs comme corollaire du
+  théorème principal — voir `SORRIES.md`, section « Hors scope ».
 
 ## Résidus documentaires identifiés lors de l'audit de clôture
 
@@ -276,3 +274,34 @@ laissée à la discrétion de l'utilisateur avant publication.
   avec écarts signalés en tête de fichier), français partout, préfixe `h` pour
   les hypothèses, `private` pour les lemmes internes : identiques aux deux
   blocs précédents, aucune divergence.
+
+## Cohérence de nommage BornRule vs Naimark/Wigner/Uhlhorn
+
+- **Namespace imbriqué `QuantumFoundations.BornRule`**, comme Wigner/Uhlhorn —
+  cohérent.
+- **Style des identifiants : hybride, un QUATRIÈME style.** `g` (une lettre)
+  suit le style Bargmann/Wigner ; `Perspective`, `Refines`, `hker_derivation`,
+  `full_rho_facts` suivent le style descriptif d'Uhlhorn ; mais
+  `AxGrain`/`AxNorm`/`AxPos`/`AxNul` introduisent un préfixe `Ax*` inédit dans
+  ce dépôt — les trois blocs précédents nomment leurs `Prop` d'hypothèse soit
+  par un préfixe `Is*` (`IsWignerMap`, `IsWignerSymmetryProj`,
+  `IsFrameFunctionOnLines`), soit par un nom descriptif nu
+  (`PreservesOrthogonality`, `SendsONBToONB`). Non harmonisé ici (listé,
+  non corrigé), la source de référence de ce bloc n'ayant pas de préfixe
+  `Is*` naturel pour des axiomes numérotés.
+- **`grainCoherenceTheorem` (camelCase) tranche avec la convention
+  snake_case** des autres théorèmes-têtes de chapitre (`naimark`,
+  `naimark_born`, `wigner`, `uhlhorn_finite_dim`) — choix délibéré (nom ASCII
+  pour un objet mathématique noté par un symbole non-ASCII), listé, non
+  corrigé.
+- Docstrings, préfixe `h` pour les hypothèses, `private` pour les lemmes
+  internes : identiques aux trois blocs précédents, aucune divergence.
+- **Écart de conformité à la règle 3 (Nonvacuity), identifié lors de l'audit
+  de clôture** : contrairement à `Naimark/Nonvacuity.lean`,
+  `Wigner/Nonvacuity.lean` et `Uhlhorn/Nonvacuity.lean`, il n'existe PAS de
+  `BornRule/Nonvacuity.lean`. `Perspective`, `AxGrain`, `AxNorm`, `AxPos`,
+  `AxNul` (structures d'hypothèses introduites en B1) n'ont jamais reçu de
+  témoin dans le même commit. Non corrigé dans cette passe de clôture (voir
+  `SORRIES.md`, section « Hors scope », pour le détail de pourquoi un témoin
+  complet exigerait du contenu mathématique nouveau) — signalé explicitement
+  à l'utilisateur plutôt que silencieusement ignoré.
