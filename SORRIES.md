@@ -19,7 +19,8 @@ Uhlhorn (U0, squelette) ajoute **6 sorry** le 2026-07-13 (dépôt total : 6) —
 **5 sorry** après clôture de U3a (2026-07-13, attaqué en premier car pièce la
 plus incertaine à l'issue de la reconnaissance), **4 sorry** après clôture de U1
 (2026-07-13), **3 sorry** après clôture de U2 (2026-07-14), **2 sorry** après
-clôture de U3b (2026-07-14). U4, U5 restent ouverts.
+clôture de U3b (2026-07-14), **1 sorry** après clôture de U4 (2026-07-14). U5
+seul reste ouvert.
 
 ---
 
@@ -890,7 +891,23 @@ l'opérateur `∑ i, projL (ℂ ∙ (b' i))`.
 `Spectral.lean` (`private`) vers `Defs.lean` (public, partagé) — même pattern
 que `projL_singleton_unit`/`exists_unit_vector_of_proj1`.
 
-### U4, U5 — non attaqués
+### U4 — Assemblage direct de U1 et U3b — ✅ CLOS (2026-07-14)
 
-Squelette posé (voir U0 ci-dessus), preuves non commencées. U4 dépend de U1
-(clos) et U3b (clos) ; U5 dépend de U4 seul.
+Jalon délibérément court : `wigner_projection_form` (U1) prend en hypothèse
+exactement ce que `traceProd_preserved_of_sendsONBToONB` (U3b) produit.
+
+- [x] `wignerSymmetryProj_of_sendsONBToONB (hn) (φ) (hφ : SendsONBToONB φ) :
+      IsWignerSymmetryProj φ := wigner_projection_form n φ
+      (traceProd_preserved_of_sendsONBToONB hn φ hφ)` — compile du premier
+      coup, aucun ajustement de signature nécessaire
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, **1 sorry** (2 − 1)
+
+Aucun écart, aucun nouveau contenu mathématique — composition directe comme
+anticipé.
+
+### U5 — non attaqué
+
+Squelette posé (voir U0 ci-dessus), preuve non commencée. Dépend de U4 (clos)
+seul — réduction fini-dimensionnelle (comptage de cardinalité) de
+`PreservesOrthogonality` à `SendsONBToONB`, puis conclusion via U4. Dernier
+jalon avant la clôture complète du Corollaire 1.2 de Šemrl.
