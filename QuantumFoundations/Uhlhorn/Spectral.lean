@@ -29,15 +29,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-private theorem one_le_of_norm_eq_one {x : H n} (hx : ‖x‖ = 1) : 1 ≤ n := by
-  rcases Nat.eq_zero_or_pos n with h0 | h0
-  · exfalso
-    subst h0
-    have hx0 : x = 0 := Subsingleton.elim _ _
-    rw [hx0] at hx
-    simp at hx
-  · exact h0
-
 /-- **Sous-lemme 1** : `E` fixe `x`. -/
 private theorem E_fixes_x {E : H n →ₗ[ℂ] H n} (hE : IsEffect E) {x : H n} (hx : ‖x‖ = 1)
     (hEx : ⟪E x, x⟫_ℂ = 1) : E x = x := by

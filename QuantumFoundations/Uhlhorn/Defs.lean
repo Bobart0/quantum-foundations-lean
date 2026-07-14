@@ -34,6 +34,18 @@ variable {n : ℕ}
 private theorem ne_zero_of_norm_eq_one {x : H n} (hx : ‖x‖ = 1) : x ≠ 0 := by
   intro h; rw [h, norm_zero] at hx; exact one_ne_zero hx.symm
 
+/-- Un vecteur unitaire force `n ≥ 1` (`H 0` est `Subsingleton`). Public : partagé
+entre U2 (`Spectral.lean`) et U3b (`GleasonTwice.lean`), toutes deux basées sur
+une complétion de base orthonormée via `exists_orthonormalBasis_extension_complex`. -/
+theorem one_le_of_norm_eq_one {x : H n} (hx : ‖x‖ = 1) : 1 ≤ n := by
+  rcases Nat.eq_zero_or_pos n with h0 | h0
+  · exfalso
+    subst h0
+    have hx0 : x = 0 := Subsingleton.elim _ _
+    rw [hx0] at hx
+    simp at hx
+  · exact h0
+
 /-- Une projection de rang 1, représentée comme sous-espace de dimension 1 — pas de
 wrapper `rankOne` dédié, convention identique à `Gleason.ProjMeasure`/`bornValue`. -/
 abbrev Proj1 (n : ℕ) := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1}
