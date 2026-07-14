@@ -23,6 +23,7 @@ import QuantumFoundations.BornRule.Perspective
 import QuantumFoundations.BornRule.GleasonBridge
 import QuantumFoundations.BornRule.Pinning
 import QuantumFoundations.BornRule.Assembly
+import QuantumFoundations.BornRule.Nonvacuity
 
 namespace QuantumFoundations
 
