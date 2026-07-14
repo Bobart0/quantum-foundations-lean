@@ -21,6 +21,7 @@ import QuantumFoundations.Uhlhorn.Assembly
 import QuantumFoundations.Uhlhorn.Nonvacuity
 import QuantumFoundations.BornRule.Perspective
 import QuantumFoundations.BornRule.GleasonBridge
+import QuantumFoundations.BornRule.Pinning
 
 namespace QuantumFoundations
 
