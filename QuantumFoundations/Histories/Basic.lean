@@ -26,6 +26,16 @@ noncomputable section
 
 variable {n L : ℕ}
 
+/-- Le dernier étage d'une histoire est le seul à contraindre l'appartenance
+de `chainOp h ψ` : la projection finale de la classe d'opérateurs (`Fin.foldl`
+déroulé une fois via `Fin.foldl_succ_last`) tombe dans la cellule `h (Fin.last
+L)`, quels que soient les étages antérieurs. -/
+private theorem chainOp_mem_last (h : History n (L + 1)) (ψ : H n) :
+    chainOp h ψ ∈ h (Fin.last L) := by
+  show (Fin.foldl (L + 1) (fun acc t => projL (h t) ∘ₗ acc) LinearMap.id) ψ ∈ h (Fin.last L)
+  rw [Fin.foldl_succ_last, LinearMap.comp_apply]
+  exact Submodule.starProjection_apply_mem (h (Fin.last L)) _
+
 /-- **K1(a).** Si deux histoires d'une même famille `Ps : Fin (L+1) →
 Perspective n` diffèrent au DERNIER étage, leur fonctionnelle de décohérence
 s'annule automatiquement — sans qu'il soit besoin d'examiner les étages
@@ -36,7 +46,15 @@ theorem decFunctional_last_stage_orthogonal (Ps : Fin (L + 1) → Perspective n)
     (h k : History n (L + 1)) (hh : IsHistoryOf Ps h) (hk : IsHistoryOf Ps k)
     (hlast : h (Fin.last L) ≠ k (Fin.last L)) :
     decFunctional ψ h k = 0 := by
-  sorry
+  have hmem_h : chainOp h ψ ∈ h (Fin.last L) := chainOp_mem_last h ψ
+  have hmem_k : chainOp k ψ ∈ k (Fin.last L) := chainOp_mem_last k ψ
+  have hh_last : h (Fin.last L) ∈ (Ps (Fin.last L)).cells := hh (Fin.last L)
+  have hk_last : k (Fin.last L) ∈ (Ps (Fin.last L)).cells := hk (Fin.last L)
+  have hortho : h (Fin.last L) ≤ (k (Fin.last L))ᗮ :=
+    (Ps (Fin.last L)).ortho (h (Fin.last L)) hh_last (k (Fin.last L)) hk_last hlast
+  show ⟪chainOp k ψ, chainOp h ψ⟫_ℂ = 0
+  have hperp : chainOp h ψ ∈ (k (Fin.last L))ᗮ := hortho hmem_h
+  exact (Submodule.mem_orthogonal (k (Fin.last L)) (chainOp h ψ)).mp hperp (chainOp k ψ) hmem_k
 
 /-- **K1(b).** Version minimale de l'additivité des probabilités d'histoires
 (écho d'`AxGrain`), suffisante pour K3 : sur une perspective `D1` quelconque
