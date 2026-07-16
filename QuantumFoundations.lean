@@ -24,6 +24,11 @@ import QuantumFoundations.BornRule.GleasonBridge
 import QuantumFoundations.BornRule.Pinning
 import QuantumFoundations.BornRule.Assembly
 import QuantumFoundations.BornRule.Nonvacuity
+import QuantumFoundations.Histories.Defs
+import QuantumFoundations.Histories.Nonvacuity
+import QuantumFoundations.Histories.Basic
+import QuantumFoundations.Histories.Witness
+import QuantumFoundations.Histories.ContraryInferences
 
 namespace QuantumFoundations
 
