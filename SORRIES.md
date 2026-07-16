@@ -32,6 +32,14 @@ comme vrai théorème (plus un axiome séparé comme dans l'ancien
 signalé lors de l'audit de clôture : `E₀ v` satisfait simultanément les
 quatre axiomes (Grain)/(Norm)/(Pos)/(Null) — 0 sorry introduit.
 
+Histories (K0, 2026-07-16) ajoute **5 sorry** (squelette Defs/Nonvacuity à
+0 sorry + K1/K2/K3 en sorry ; estimation initiale 5-7, réduite par deux
+factorisations paramétrées documentées dans les fichiers eux-mêmes) —
+**3 sorry** après clôture de K1 (2026-07-16), **2 sorry** après clôture de
+K2 (2026-07-16), **0 sorry** après clôture de K3 (2026-07-16) —
+**théorème des inférences contraires de Kent intégralement prouvé, 0
+axiome, 0 sorry sur tout le dépôt (cinq blocs).**
+
 ---
 
 ## N0 — Squelette (Defs, SqrtOp, DilSpace, Main, Nonvacuity)
@@ -1178,3 +1186,157 @@ expansion bilinéaire directe — pas une reconstruction lourde).
 axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
 courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
 Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
+
+## Histories — Théorème des inférences contraires de Kent
+
+**Énoncé.** Kent, *Quasiclassical Dynamics in a Closed Quantum System*, PRL 78,
+2874 (1997), arXiv:gr-qc/9604012 : dans le cadre des histoires cohérentes en
+dimension finie, deux ensembles cohérents d'histoires peuvent partager la
+même préparation `ψ` et la même post-sélection `F`, tout en impliquant
+chacun avec CERTITUDE une proposition différente, ces deux propositions
+étant mutuellement ORTHOGONALES. Un étage temporel d'un ensemble d'histoires
+EST une `Perspective` (`BornRule/Perspective.lean`) — réutilisée telle
+quelle, sans redéfinition (confirmé en reconnaissance K0). Le théorème de
+profusion générique de Dowker–Kent (J. Stat. Phys. 82, 1575 (1996),
+comptage de paramètres/dimensions de variétés) est explicitement HORS SCOPE
+de ce bloc — voir « Hors scope » ci-dessous.
+
+**Découpage de la preuve** (K0–K3) :
+- **K0** — squelette : `History`, `IsHistoryOf`, `chainOp` (produit ordonné
+  des `projL`, dernier étage appliqué en dernier), `decFunctional`
+  (conj-linéaire à gauche, `k` conjugué), `IsConsistent`, `histProb` ;
+  `Nonvacuity.lean` (toute `Perspective`, vue comme famille à un étage, est
+  cohérente) — 0 sorry, prouvé immédiatement (règle absolue 3).
+- **K1** — `Basic.lean` : `decFunctional_last_stage_orthogonal` (deux
+  histoires différant au dernier étage ont une fonctionnelle de décohérence
+  automatiquement nulle) et `histProb_additivity_two_stage` (Pythagore fini,
+  écho d'`AxGrain`).
+- **K2** — `Witness.lean` : le témoin explicite de Kent en `H 3` (`ψ₀`, `φ₀`
+  non normalisés, `P i := ℂ∙(e i)`, `F := ℂ∙φ₀`), `S_consistent`.
+- **K3** — `ContraryInferences.lean` : `inference` (certitude conditionnelle,
+  formulée sans quotient) et `contrary_inferences` (théorème final).
+
+### K0 — Defs.lean + Nonvacuity.lean + squelette K1-K3 — ✅ CLOS (2026-07-16)
+
+- [x] Reconnaissance (Partie A) : `Perspective`/`Perspective.binary`
+      réutilisables tels quels ; `projL_singleton_unit` (Uhlhorn/Defs.lean)
+      confirmé pour vecteur unitaire, et `Submodule.starProjection_singleton`
+      (Mathlib) confirmé pour la formule générale non-unitaire (ratio,
+      évite `Real.sqrt`) ; `LinearMap.adjoint_inner_left/right` confirmés
+      (convention conj-linéaire à gauche) ; auto-adjonction/idempotence de
+      `projL` dérivables en une ligne (`Submodule.starProjection_isSymmetric`,
+      `Submodule.isIdempotentElem_starProjection`) — pas de contenu
+      « histories »/« decoherence functional » préexistant (grep exhaustif).
+- [x] `History (n L : ℕ) := Fin L → Submodule ℂ (H n)`, `IsHistoryOf`,
+      `chainOp` (`Fin.foldl`, vérifié `Fin.foldl_succ_last`/`Fin.foldl_zero`
+      pour `L = 1, 2`), `decFunctional`, `IsConsistent`, `histProb`
+- [x] `isConsistent_single_stage` : 0 sorry, immédiat par orthogonalité des
+      cellules d'une `Perspective`
+- [x] Relocalisation PRÉALABLE (commit dédié) : `norm_sq_sum_of_pairwise_orthogonal`
+      et `sum_sq_projL_of_pairwise_isOrtho`, `private` dans
+      `BornRule/Nonvacuity.lean`, migrés public vers `BornRule/Perspective.lean`
+      — faits géométriques génériques sur `Perspective`, pas spécifiques au
+      témoin de Born de B-Nonvacuity, nécessaires à K1(b). Même pattern de
+      relocalisation que `exists_unit_vector_of_proj1`/`projL_singleton_unit`
+      (Uhlhorn) et `isEffect_of_isDensityOperator` (BornRule/B2).
+- [x] Squelette K1 (2 sorry), K2 (1 sorry), K3 (2 sorry) — écart vs
+      l'estimation initiale (3+2+2=7) justifié par deux factorisations
+      paramétrées (voir K2/K3 ci-dessous)
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 5 sorry (K0 lui-même : 0)
+
+**Écart signalé** : `guard.sh` compte `\bsorry\b` par grep naïf, y compris
+dans les docstrings — les premières versions des fichiers K1-K3 discutaient
+la discipline « squelette-sorry-first » en utilisant littéralement le mot
+« sorry » en prose, faisant gonfler le compte à 13. Convention du dépôt
+(confirmée : zéro occurrence ailleurs) : ne jamais écrire le mot en
+commentaire, utiliser « but ouvert » — corrigé avant le commit K0.
+
+### K1 — Basic.lean — ✅ CLOS (2026-07-16)
+
+- [x] `decFunctional_last_stage_orthogonal` : via un lemme privé
+      `chainOp_mem_last` (la classe d'opérateurs d'une histoire à `L+1`
+      étages tombe toujours dans la cellule du dernier étage,
+      `Fin.foldl_succ_last` déroulé une fois)
+- [x] `histProb_additivity_two_stage` : même recette que `E₀_isNorm`
+      (BornRule/Nonvacuity.lean) — `sum_sq_projL_of_pairwise_isOrtho`
+      (désormais public) + résolution de l'identité (`D1.span`,
+      `projL ⊤ = id`)
+- [x] `guard.sh` : 3 sorry restants (K2, K3(a), K3(b))
+
+**Écart signalé** : le troisième but prévu par la feuille de route
+(auto-adjonction/idempotence de `projL`) supprimé — dérivable en une ligne
+depuis Mathlib/gleason (reconnaissance A.2), jamais cité comme lemme séparé
+faute d'un second consommateur avant K2/K3.
+
+### K2 — Witness.lean — ✅ CLOS (2026-07-16)
+
+- [x] Données explicites en `H 3` : `e i := EuclideanSpace.single i 1`,
+      `ψ₀ := e0+e1+e2`, `φ₀ := e0+e1-e2` (non normalisés — toute la
+      contrariété se lit sur des rapports où `1/√3` s'annule), `P i := ℂ∙(e i)`,
+      `F := ℂ∙φ₀`
+- [x] **CORRECTION D'ÉNONCÉ (règle 2 du projet).** Le squelette K0 énonçait
+      `S_consistent (i : Fin 3)` SANS restriction sur `i`. Faux pour
+      `i = 2` : l'annulation clé `⟪φ₀, ψ₀ - e i⟫ = 1 - ⟪φ₀, e i⟫` ne s'annule
+      que pour `i ∈ {0,1}` (`⟪φ₀,e 0⟫ = ⟪φ₀,e 1⟫ = 1` mais `⟪φ₀,e 2⟫ = -1`,
+      `φ₀` porte un signe négatif sur `e2`). Ajout de l'hypothèse
+      `i = 0 ∨ i = 1`, seul domaine où le témoin est utilisé.
+- [x] `S_consistent` : par `decFunctional_last_stage_orthogonal` (K1a),
+      seules les paires différant à l'étage 0 restent à examiner. Cœur du
+      calcul : `P_proj_psi0` (`projL (P i) ψ₀ = e i`), `projL_compl`
+      (`projL Aᗮ = 1 - projL A`, via `Submodule.starProjection_orthogonal'`),
+      `w_ortho` (le vecteur `w := ψ₀ - e i` est orthogonal à la fois à `e i`
+      et à `φ₀` — cette dernière est L'ANNULATION CLÉ), `projL_proj_absorb`
+      (absorption via auto-adjonction + idempotence). Les 4 cas résiduels
+      (`c1 ∈ {F, Fᗮ}` × ordre de `{P i, (P i)ᗮ}`) se ferment tous via
+      `w_ortho_projLc1_u`/`u_ortho_projLc1_w`.
+- [x] **Écart vs la feuille de route** : un seul but ouvert paramétré
+      (`S_consistent (i : Fin 3)`) plutôt que deux (`S₁_consistent`/
+      `S₂_consistent`) — option explicitement autorisée par le plan « si la
+      duplication est lourde ». `S1_consistent`/`S2_consistent` l'instancient
+      sans sorry supplémentaire.
+- [x] `guard.sh` : 2 sorry restants (K3(a), K3(b))
+
+**Point de friction simp documenté** : `simp` non contraint réécrit
+spontanément `⟪x,x⟫_ℂ` en `‖x‖²` (lemme par défaut) — dans les calculs de
+normes, garder les rewrites `inner_self_eq_norm_sq_to_K` (ou l'expansion
+bilinéaire complète) APRÈS l'expansion, jamais avant, sinon le calcul se
+bloque sur une forme déjà repliée.
+
+### K3 — ContraryInferences.lean — ✅ CLOS (2026-07-16)
+
+- [x] **CORRECTION D'ÉNONCÉ (règle 2), même cause qu'en K2** :
+      `inference (i : Fin 3)` restreint à `i = 0 ∨ i = 1`, même annulation
+      en défaut à `i = 2`.
+- [x] `inference` : branche `(P i)ᗮ` puis `F` de probabilité NULLE
+      (annulation clé `w_ortho`, réutilisée depuis `Witness.lean` — rendue
+      publique à cette occasion), branche `P i` puis `F` de probabilité NON
+      NULLE (`projL F (e i) = (1/‖φ₀‖²) • φ₀ ≠ 0`, via le nouveau lemme
+      public `φ₀_norm_sq` et `φ₀_ne_zero`)
+- [x] `contrary_inferences` : assemblage mécanique, terme anonyme direct à
+      partir de `P_ortho`, `S_consistent 0/1` (K2) et `inference 0/1` (K3a)
+      — confirmé en reconnaissance avant l'écriture du squelette, aucune
+      mathématique nouvelle à la fermeture
+- [x] Rendus publics dans `Witness.lean` (nécessaires à K3, précédemment
+      `private`) : `projL_compl`, `P_proj_psi0`, `projL_F_eq`, `w_ortho`,
+      `chainOp_two_stage`, `phi0_inner_e01`, et le nouveau `φ₀_norm_sq`
+- [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry sur tout le dépôt
+      (cinq blocs). `#print axioms` sur les 36 déclarations porteuses de
+      contenu de `Histories` : `[propext, Classical.choice, Quot.sound]`,
+      sans exception, y compris à travers la chaîne à trois niveaux
+      Histories → BornRule (`Perspective`, `projL_sup_of_pairwise_isOrtho`
+      relocalisé) → Uhlhorn/Gleason externe.
+
+### Hors scope (extensions futures possibles, pas des manques de ce jalon)
+
+- **Le théorème de profusion générique de Dowker–Kent** (J. Stat. Phys. 82,
+  1575 (1996)) : comptage de paramètres montrant que la contrariété du
+  témoin K2 n'est pas un cas isolé mais générique dans l'espace des
+  ensembles cohérents — non attaqué, EXPLICITEMENT exclu par la demande
+  initiale de ce bloc.
+- **La cohérence faible** (partie réelle de `decFunctional` seulement,
+  plutôt que la cohérence medium/forte utilisée ici) : mentionnée en
+  docstring (`Defs.lean`), non formalisée.
+- **La « single-framework rule » de Griffiths** (réponse usuelle à
+  l'objection de Kent) : mentionnée en note de neutralité
+  (`ContraryInferences.lean`), non formalisée — c'est un argument
+  interprétatif, pas un énoncé mathématique supplémentaire à prouver.

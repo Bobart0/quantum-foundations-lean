@@ -202,6 +202,63 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   et la convergence intersubjective entre observateurs comme corollaire du
   théorème principal — voir `SORRIES.md`, section « Hors scope ».
 
+## Histories (K0–K3)
+
+- **Relocalisation préalable de `norm_sq_sum_of_pairwise_orthogonal` et
+  `sum_sq_projL_of_pairwise_isOrtho`**, `private` dans `BornRule/Nonvacuity.lean`,
+  migrés public vers `BornRule/Perspective.lean`, dans un commit dédié AVANT
+  le début de K0. Justification : ce sont des faits géométriques génériques
+  sur `Perspective` (Pythagore fini + valeur de Born additive sur un sup
+  orthogonal), pas spécifiques au témoin de Born construit dans
+  `BornRule/Nonvacuity.lean` — leur place naturelle est à côté de la
+  définition de `Perspective`, dans le fichier que `Histories` importe déjà.
+  Même logique que les relocalisations antérieures
+  (`exists_unit_vector_of_proj1`/`projL_singleton_unit` en Uhlhorn,
+  `isEffect_of_isDensityOperator` U3b→Uhlhorn/Defs.lean lors de B2) :
+  dès qu'un même besoin réapparaît dans un second fichier/bloc, relocalisation
+  immédiate, jamais de copie. Vérifié sans impact sur les axiomes de
+  `BornRule` (audit de clôture Histories, Bloc 1 point spécifique 2 —
+  34 déclarations, trio standard sans exception).
+- **Deux corrections d'énoncé (règle 2 du projet), même cause, découvertes
+  au moment de remplir les preuves (pas anticipées en reconnaissance) :**
+  `S_consistent` (K2, `Witness.lean`) et `inference` (K3, `ContraryInferences.lean`)
+  étaient énoncés dans le squelette K0 pour `i : Fin 3` SANS restriction.
+  Faux pour `i = 2` : `⟪φ₀, e i⟫ = 1` pour `i ∈ {0,1}` mais `= -1` pour
+  `i = 2` (`φ₀ := e0+e1-e2` porte un signe négatif sur `e2`), donc
+  l'annulation clé `⟪φ₀, ψ₀ - e i⟫ = 1 - ⟪φ₀, e i⟫` ne s'annule que pour
+  `i ∈ {0,1}`. Ajout de l'hypothèse `i = 0 ∨ i = 1` dans les deux cas,
+  commise avec message explicite plutôt que silencieusement affaiblie.
+- **Point de friction `simp` documenté** : `simp` non contraint réécrit
+  spontanément `⟪x,x⟫_ℂ` en `‖x‖²` (lemme par défaut de la bibliothèque),
+  ce qui bloque tout calcul voulant D'ABORD expanser bilinéairement un
+  produit scalaire puis SEULEMENT ENSUITE revenir à une norme. Règle
+  retenue dans `Witness.lean`/`ContraryInferences.lean` : les rewrites
+  `inner_self_eq_norm_sq_to_K` (ou l'expansion bilinéaire complète via
+  `simp only` contraint) viennent TOUJOURS après l'expansion, jamais avant.
+- **Convention d'ordre de `chainOp`, fixée dès `Defs.lean` et vérifiée par
+  calcul explicite** : la classe d'opérateurs d'une histoire
+  `h : Fin L → Submodule ℂ (H n)` est `C_h = P_{h(L-1)} ∘ ⋯ ∘ P_{h(0)}`, le
+  DERNIER étage appliqué EN DERNIER — implémentée par `Fin.foldl L (fun acc
+  t => projL (h t) ∘ₗ acc) LinearMap.id`, dont le déroulement a été vérifié
+  explicitement pour `L = 1, 2` via `Fin.foldl_succ_last`/`Fin.foldl_zero`
+  (`chainOp_two_stage` en `L = 2` : `projL (h 1) ∘ₗ projL (h 0)`, exactement
+  la convention physique standard).
+- **Orientation de `decFunctional`, fixée dès `Defs.lean`** :
+  `decFunctional ψ h k := ⟪chainOp k ψ, chainOp h ψ⟫_ℂ` porte `k` conjugué —
+  cohérent avec la convention conj-linéaire à GAUCHE du produit scalaire
+  Mathlib utilisée dans tout le dépôt (confirmée via
+  `LinearMap.adjoint_inner_left`/`right` en reconnaissance).
+- **Un seul but ouvert paramétré au lieu de deux, à K2 ET K3** :
+  `S_consistent (i : Fin 3)` (au lieu de `S₁_consistent`/`S₂_consistent`) et
+  `inference (i : Fin 3)` (au lieu de `inference_S₁`/`inference_S₂`) — les
+  deux preuves ne diffèrent que par l'indice `i ∈ {0,1}`, structurellement
+  identiques. Option explicitement autorisée par le plan initial
+  (« si la duplication est lourde, factorise »). Conséquence en cascade :
+  `contrary_inferences` (K3b) s'est avéré s'assembler MÉCANIQUEMENT une fois
+  `inference` clos — un simple terme anonyme, sans tactique ni mathématiques
+  nouvelles, confirmé en reconnaissance avant l'écriture du squelette et
+  vérifié à la fermeture.
+
 ## Résidus documentaires identifiés lors de l'audit de clôture
 
 - `QuantumFoundations/Wigner/Uniqueness.lean` : les lemmes-pont privés
@@ -233,6 +290,20 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   le théorème final du bloc — toutes deux attendues comme points d'entrée, pas
   des orphelins. `sendsONBToONB_of_preservesOrthogonality` est `private` comme
   prévu (consommé uniquement par `uhlhorn_finite_dim`, dans le même fichier).
+- `QuantumFoundations/Histories/Basic.lean`, `histProb_additivity_two_stage` :
+  prouvé (K1(b), tel que demandé par la feuille de route : « version minimale
+  suffisante pour K3 ») mais jamais consommé par aucune preuve ultérieure — la
+  route finalement empruntée par `inference` (K3a) passe directement par
+  `projL_F_eq`/`w_ortho` sur le témoin concret, sans repasser par l'additivité
+  générique des probabilités d'histoires. Gardé pour la même raison que
+  `inner_V_eq_of_im_eq_zero` en Wigner : c'est l'écho explicitement demandé
+  d'`AxGrain` (BornRule), un engagement mathématique documenté indépendant du
+  chemin de preuve finalement suivi par K3. Reste de `Histories` audité sans
+  autre résidu : toutes les autres déclarations publiques ont au moins un
+  second point d'usage (directement ou via `S1_consistent`/`S2_consistent`,
+  eux-mêmes non consommés en interne mais explicitement demandés par la
+  feuille de route comme spécialisations terminales de `S_consistent`, au
+  même titre que `isWignerSymmetryProj_id` en Uhlhorn).
 
 ## Divergences de convention de nommage Naimark ↔ Wigner (listées, non corrigées)
 
@@ -306,3 +377,34 @@ laissée à la discrétion de l'utilisateur avant publication.
   opérateur, déjà disponible dans `gleason-theorem-lean`) — seul le théorème
   de Pythagore fini sur `‖·‖²` (absent tel quel, `gleason-theorem-lean` ne
   couvrant que l'additivité de `bornValue`) a dû être dérivé, en ~15 lignes.
+
+## Cohérence de nommage Histories vs Naimark/Wigner/Uhlhorn/BornRule
+
+- **Namespace imbriqué `QuantumFoundations.Histories`**, comme
+  Wigner/Uhlhorn/BornRule — cohérent.
+- **Style des identifiants : hybride, comme BornRule, mais selon un clivage
+  différent.** Les définitions structurelles (`Defs.lean`) suivent le style
+  descriptif d'Uhlhorn/BornRule (`History`, `IsHistoryOf`, `chainOp`,
+  `decFunctional`, `IsConsistent`, `histProb`) ; le témoin concret
+  (`Witness.lean`) bascule vers des lettres/symboles isolés à la Bargmann/Wigner
+  (`e`, `ψ₀`, `φ₀`, `P`, `F`, `S`) — mais ici le clivage suit une frontière
+  claire (infrastructure générique vs données numériques concrètes d'un
+  exemple), contrairement au mélange BornRule (`g` isolé au milieu de noms
+  descriptifs sans séparation par fichier). `IsHistoryOf`/`IsConsistent`
+  suivent le préfixe `Is*` déjà établi par Uhlhorn (`IsWignerMap`,
+  `IsWignerSymmetryProj`) — PAS le préfixe `Ax*` introduit par BornRule pour
+  ses quatre hypothèses, cohérence restaurée avec le style majoritaire du
+  dépôt plutôt qu'avec le bloc immédiatement précédent.
+- **`ψ₀`/`φ₀` (indice zéro explicite) plutôt que `psi`/`phi` bruts** :
+  notation empruntée à la physique des états quantiques (état initial
+  indicé), absente des blocs précédents (aucun n'introduit de vecteur d'état
+  concret nommé par une lettre grecque) — cohérente en interne, nouvelle par
+  nécessité (premier bloc à construire un témoin numérique explicite plutôt
+  que de raisonner sur des objets génériques).
+- **`S` (une lettre) pour la famille d'histoires**, `D1`/`Dstage`/`DF` pour
+  les perspectives d'étage : mélange same-file du style Bargmann (`S`) et
+  descriptif (`Dstage`, `DF`) — non harmonisé plus finement, mais chacun
+  suffisamment local (utilisé seulement dans `Witness.lean`/
+  `ContraryInferences.lean`) pour ne pas créer d'ambiguïté.
+- Docstrings, préfixe `h` pour les hypothèses, `private` pour les lemmes
+  internes : identiques aux quatre blocs précédents, aucune divergence.
