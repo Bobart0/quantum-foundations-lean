@@ -1,4 +1,5 @@
 import QuantumFoundations.Wigner.Main
+import Gleason.Operator
 
 /-!
 # B1 — Scaffolding : perspectives, axiomes, Lemme 4 (Définitions 1-3, Lemmes 1-4)
@@ -413,6 +414,54 @@ theorem refinePerspective_refines (D : Perspective n) : Refines (refinePerspecti
   simp only [refinePerspective, Finset.mem_biUnion] at hx
   obtain ⟨c, hc, hx'⟩ := hx
   exact ⟨c, hc, cellLines_le c x hx'⟩
+
+/-- Théorème de Pythagore fini : la norme au carré d'une somme de vecteurs
+deux à deux orthogonaux est la somme des normes au carré. Absent tel quel de
+`gleason-theorem-lean` (qui n'a besoin que de l'additivité de `bornValue`,
+pas de `‖·‖²`), dérivé ici directement via l'expansion bilinéaire du produit
+scalaire. Relocalisé depuis `BornRule/Nonvacuity.lean` (public) : fait
+géométrique générique sur les familles orthogonales, indépendant du témoin
+de Born — sa place naturelle est aux côtés de `Perspective`, dans le fichier
+que `Histories` importe déjà. -/
+theorem norm_sq_sum_of_pairwise_orthogonal {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (x : ι → H n) (hortho : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ⟪x i, x j⟫_ℂ = 0) :
+    ‖∑ i ∈ s, x i‖ ^ 2 = ∑ i ∈ s, ‖x i‖ ^ 2 := by
+  have hinner : (⟪∑ i ∈ s, x i, ∑ j ∈ s, x j⟫_ℂ) = ∑ i ∈ s, ⟪x i, x i⟫_ℂ := by
+    rw [sum_inner]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [inner_sum, Finset.sum_eq_single i]
+    · intro j hj hji
+      exact hortho i hi j hj (fun h => hji h.symm)
+    · intro hi'
+      exact absurd hi hi'
+  rw [inner_self_eq_norm_sq_to_K] at hinner
+  rw [Finset.sum_congr rfl (fun i (_ : i ∈ s) => inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (x i))] at hinner
+  exact_mod_cast hinner
+
+/-- Combine la résolution de l'identité (`Gleason.projL_sup_of_pairwise_isOrtho`)
+et Pythagore fini : la valeur de Born sur le sup d'une famille orthogonale de
+cellules est la somme des valeurs de Born sur chaque cellule. Relocalisé
+depuis `BornRule/Nonvacuity.lean` (public), même raison que
+`norm_sq_sum_of_pairwise_orthogonal` ci-dessus. -/
+theorem sum_sq_projL_of_pairwise_isOrtho (s : Finset (Submodule ℂ (H n)))
+    (hortho : ∀ c' ∈ s, ∀ c'' ∈ s, c' ≠ c'' → c' ⟂ c'') (v : H n) :
+    ‖projL (s.sup id) v‖ ^ 2 = ∑ c' ∈ s, ‖projL c' v‖ ^ 2 := by
+  rw [Gleason.projL_sup_of_pairwise_isOrtho s id hortho]
+  simp only [id_eq]
+  have happly : (∑ c' ∈ s, projL c') v = ∑ c' ∈ s, projL c' v := by
+    simp [LinearMap.sum_apply]
+  rw [happly]
+  apply norm_sq_sum_of_pairwise_orthogonal
+  intro c' hc' c'' hc'' hne
+  have hcc : c' ⟂ c'' := hortho c' hc' c'' hc'' hne
+  have hmem : projL c' v ∈ c' := Submodule.starProjection_apply_mem c' v
+  have hmem2 : projL c'' v ∈ c'' := Submodule.starProjection_apply_mem c'' v
+  have h1 : projL c' v ∈ c''ᗮ := hcc hmem
+  have h2 : ⟪projL c'' v, projL c' v⟫_ℂ = 0 :=
+    (Submodule.mem_orthogonal c'' (projL c' v)).mp h1 (projL c'' v) hmem2
+  rw [← inner_conj_symm (projL c' v) (projL c'' v), h2]
+  simp
 
 /-- The (Grain) filter of `refinePerspective D` at a cell `c` of `D`
     coincides exactly with `cellLines c`. -/
