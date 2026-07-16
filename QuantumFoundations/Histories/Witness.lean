@@ -24,6 +24,18 @@ l'indice `i ∈ {0,1}` et l'annulation clé `⟪φ₀, e 1 + e 2⟫ = 0` /
 ci-dessous sans laisser de but supplémentaire ouvert. K2 ne compte donc qu'un
 seul but ouvert physique (au lieu de deux), qui décharge néanmoins les deux
 faits demandés par le plan.
+
+## Correction de l'énoncé (règle 2 du projet) : hypothèse `i = 0 ∨ i = 1` ajoutée
+
+Le squelette K0 énonçait `S_consistent (i : Fin 3) : IsConsistent ψ₀ (S i)`
+SANS restriction sur `i`. Ceci est FAUX pour `i = 2` : l'annulation clé
+`⟪φ₀, ψ₀ - e i⟫ = 1 - ⟪φ₀, e i⟫` s'annule seulement pour `i ∈ {0,1}`
+(`⟪φ₀,e 0⟫ = ⟪φ₀,e 1⟫ = 1` mais `⟪φ₀,e 2⟫ = -1`, vérifié explicitement par
+calcul — `φ₀ = e0+e1-e2` porte un signe négatif sur `e2`). La famille `S 2`
+n'est donc probablement PAS cohérente pour `ψ₀`. Correction (pas un
+affaiblissement dissimulé) : ajout de l'hypothèse `i = 0 ∨ i = 1`, seul
+domaine où le témoin est utilisé (`S1_consistent`/`S2_consistent`
+l'instancient trivialement).
 -/
 
 namespace QuantumFoundations.Histories
@@ -115,20 +127,192 @@ def DF : Perspective 3 := Perspective.binary F F_ne_bot F_ne_top
 /-- Famille à 2 étages `Sᵢ := [{P i, (P i)ᗮ}, {F, Fᗮ}]`. -/
 def S (i : Fin 3) : Fin 2 → Perspective 3 := ![Dstage i, DF]
 
-/-- **K2, but ouvert unique.** `Sᵢ` est cohérente pour `ψ₀`, pour `i ∈ {0,1}` (les
-deux seuls cas utilisés par le témoin). Par `decFunctional_last_stage_orthogonal`
-(K1(a)), seules les paires d'histoires différant à l'étage `0` restent à
-examiner ; l'annulation clé est `⟪φ₀, projL (P i)ᗮ ψ₀⟫ = 0` (calcul explicite
-sur `H 3`, à retrouver via `Fin.sum_univ_three`/`EuclideanSpace.inner_single_left`,
-voir reconnaissance A.3). -/
-theorem S_consistent (i : Fin 3) : IsConsistent ψ₀ (S i) := by
-  sorry
+/-- `projL Aᗮ = 1 - projL A` (Mathlib : `Submodule.starProjection_orthogonal'`),
+transporté en langage `LinearMap`. -/
+private theorem projL_compl (A : Submodule ℂ (H 3)) (x : H 3) :
+    projL Aᗮ x = x - projL A x := by
+  show (Aᗮ.starProjection : H 3 →L[ℂ] H 3) x = x - (A.starProjection : H 3 →L[ℂ] H 3) x
+  rw [Submodule.starProjection_orthogonal']
+  simp
+
+private theorem psi0_inner_e (i : Fin 3) : ⟪ψ₀, e i⟫_ℂ = 1 := by
+  unfold ψ₀ e
+  simp only [inner_add_left, EuclideanSpace.inner_single_left, map_one, PiLp.single_apply]
+  fin_cases i <;> norm_num [Fin.ext_iff]
+
+private theorem e_inner_psi0 (i : Fin 3) : ⟪e i, ψ₀⟫_ℂ = 1 := by
+  unfold ψ₀ e
+  simp only [inner_add_right, EuclideanSpace.inner_single_left, map_one, PiLp.single_apply]
+  fin_cases i <;> norm_num [Fin.ext_iff]
+
+private theorem e_inner_e_self (i : Fin 3) : ⟪e i, e i⟫_ℂ = 1 := by
+  unfold e
+  rw [EuclideanSpace.inner_single_left]
+  simp
+
+private theorem psi0_inner_phi0 : ⟪ψ₀, φ₀⟫_ℂ = 1 := by
+  unfold ψ₀ φ₀ e
+  simp only [inner_sub_right, inner_add_left, inner_add_right, EuclideanSpace.inner_single_left,
+    map_one, PiLp.single_apply]
+  norm_num [Fin.ext_iff]
+
+private theorem phi0_inner_psi0 : ⟪φ₀, ψ₀⟫_ℂ = 1 := by
+  unfold ψ₀ φ₀ e
+  simp only [inner_sub_left, inner_add_left, inner_add_right, EuclideanSpace.inner_single_left,
+    map_one, PiLp.single_apply]
+  norm_num [Fin.ext_iff]
+
+/-- Amplitude clé : `⟪e i, φ₀⟫ = 1` pour `i ∈ {0,1}` (`= -1` pour `i = 2`, hors
+scope du témoin — c'est la raison de la restriction `i = 0 ∨ i = 1`). -/
+private theorem e_inner_phi0_01 (i : Fin 3) (hi : i = 0 ∨ i = 1) : ⟪e i, φ₀⟫_ℂ = 1 := by
+  rcases hi with rfl | rfl
+  · unfold φ₀ e
+    simp only [inner_sub_right, inner_add_right, EuclideanSpace.inner_single_left, map_one,
+      PiLp.single_apply]
+    norm_num [Fin.ext_iff]
+  · unfold φ₀ e
+    simp only [inner_sub_right, inner_add_right, EuclideanSpace.inner_single_left, map_one,
+      PiLp.single_apply]
+    norm_num [Fin.ext_iff]
+
+private theorem phi0_inner_e01 (i : Fin 3) (hi : i = 0 ∨ i = 1) : ⟪φ₀, e i⟫_ℂ = 1 := by
+  rcases hi with rfl | rfl
+  · unfold φ₀ e
+    simp only [inner_sub_left, inner_add_left, EuclideanSpace.inner_single_left, map_one,
+      PiLp.single_apply]
+    norm_num [Fin.ext_iff]
+  · unfold φ₀ e
+    simp only [inner_sub_left, inner_add_left, EuclideanSpace.inner_single_left, map_one,
+      PiLp.single_apply]
+    norm_num [Fin.ext_iff]
+
+private theorem e_norm_one (i : Fin 3) : ‖e i‖ = 1 := by
+  unfold e
+  rw [PiLp.norm_single]
+  simp
+
+/-- `projL (P i) ψ₀ = e i` : la branche `P i` de la première étape isole
+exactement le `i`-ème vecteur de base (`ψ₀` a un coefficient unité sur
+chaque `e j`). -/
+private theorem P_proj_psi0 (i : Fin 3) : projL (P i) ψ₀ = e i := by
+  show (ℂ ∙ e i : Submodule ℂ (H 3)).starProjection ψ₀ = e i
+  rw [show ((ℂ ∙ e i : Submodule ℂ (H 3)).starProjection ψ₀)
+      = (⟪e i, ψ₀⟫_ℂ / ((‖e i‖ ^ 2 : ℝ) : ℂ)) • e i from Submodule.starProjection_singleton ℂ ψ₀]
+  rw [e_inner_psi0, e_norm_one]
+  norm_num
+
+/-- Formule fermée de `projL F` (vecteur `φ₀` non normalisé, `‖φ₀‖² = 3`, cf.
+`φ₀_inner_self`). -/
+private theorem projL_F_eq (x : H 3) :
+    projL F x = (⟪φ₀, x⟫_ℂ / ((‖φ₀‖ ^ 2 : ℝ) : ℂ)) • φ₀ := by
+  show (F : Submodule ℂ (H 3)).starProjection x = _
+  unfold F
+  exact Submodule.starProjection_singleton ℂ x
+
+/-- Les deux orthogonalités de `w := ψ₀ - e i` (image de la branche `(P i)ᗮ`
+de la première étape) qui pilotent toute la suite : `w ⊥ e i` et `w ⊥ φ₀`
+(cette dernière est L'ANNULATION CLÉ du témoin de Kent). -/
+private theorem w_ortho (i : Fin 3) (hi : i = 0 ∨ i = 1) :
+    ⟪ψ₀ - e i, e i⟫_ℂ = 0 ∧ ⟪ψ₀ - e i, φ₀⟫_ℂ = 0 ∧ ⟪φ₀, ψ₀ - e i⟫_ℂ = 0 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [inner_sub_left, psi0_inner_e, e_inner_e_self]; ring
+  · rw [inner_sub_left, psi0_inner_phi0, e_inner_phi0_01 i hi]; ring
+  · rw [inner_sub_right, phi0_inner_psi0, phi0_inner_e01 i hi]; ring
+
+private theorem e_ortho_psi0_sub_e (i : Fin 3) : ⟪e i, ψ₀ - e i⟫_ℂ = 0 := by
+  rw [inner_sub_right, e_inner_psi0, e_inner_e_self]; ring
+
+/-- `projL` est autoadjoint (dérivé en une ligne, reconnaissance A.2). -/
+private theorem projL_isSymmetric (c1 : Submodule ℂ (H 3)) : LinearMap.IsSymmetric (projL c1) := by
+  intro x y
+  show ⟪(c1.starProjection : H 3 →L[ℂ] H 3) x, y⟫_ℂ = ⟪x, (c1.starProjection : H 3 →L[ℂ] H 3) y⟫_ℂ
+  exact c1.starProjection_isSymmetric x y
+
+/-- Auto-adjonction + idempotence de `projL` : la projection peut s'« absorber »
+dans un seul des deux arguments de l'inner product. -/
+private theorem projL_proj_absorb (c1 : Submodule ℂ (H 3)) (w u : H 3) :
+    ⟪projL c1 w, projL c1 u⟫_ℂ = ⟪w, projL c1 u⟫_ℂ := by
+  have hidem : projL c1 (projL c1 u) = projL c1 u := by
+    show (c1.starProjection : H 3 →L[ℂ] H 3) ((c1.starProjection : H 3 →L[ℂ] H 3) u)
+      = (c1.starProjection : H 3 →L[ℂ] H 3) u
+    exact congrFun (congrArg DFunLike.coe c1.isIdempotentElem_starProjection.eq) u
+  rw [projL_isSymmetric c1 w (projL c1 u), hidem]
+
+/-- Pour `c1 ∈ {F, Fᗮ}`, la branche `w := ψ₀ - e i` reste orthogonale à
+`projL c1 (e i)` — vrai dans les deux cas grâce à `w_ortho`. -/
+private theorem w_ortho_projLc1_u (i : Fin 3) (hi : i = 0 ∨ i = 1) (c1 : Submodule ℂ (H 3))
+    (hc1 : c1 = F ∨ c1 = Fᗮ) :
+    ⟪ψ₀ - e i, projL c1 (e i)⟫_ℂ = 0 := by
+  rcases hc1 with rfl | rfl
+  · rw [projL_F_eq, inner_smul_right, (w_ortho i hi).2.1]; ring
+  · rw [projL_compl, inner_sub_right, projL_F_eq, inner_smul_right, (w_ortho i hi).2.1,
+      (w_ortho i hi).1]
+    ring
+
+/-- Symétrique de `w_ortho_projLc1_u` (ordre des arguments échangé). -/
+private theorem u_ortho_projLc1_w (i : Fin 3) (hi : i = 0 ∨ i = 1) (c1 : Submodule ℂ (H 3))
+    (hc1 : c1 = F ∨ c1 = Fᗮ) :
+    ⟪e i, projL c1 (ψ₀ - e i)⟫_ℂ = 0 := by
+  rcases hc1 with rfl | rfl
+  · rw [projL_F_eq, inner_smul_right, (w_ortho i hi).2.2]; ring
+  · rw [projL_compl, inner_sub_right, projL_F_eq, inner_smul_right, (w_ortho i hi).2.2,
+      e_ortho_psi0_sub_e]
+    ring
+
+/-- Déroulement de `chainOp` à `L = 2` étages : le dernier étage appliqué en
+dernier au premier, conformément à la convention de `Defs.lean`. -/
+private theorem chainOp_two_stage (h' : History 3 2) (ψ : H 3) :
+    chainOp h' ψ = projL (h' (Fin.last 1)) (projL (h' 0) ψ) := by
+  show (Fin.foldl 2 (fun acc t => projL (h' t) ∘ₗ acc) LinearMap.id) ψ
+    = projL (h' (Fin.last 1)) (projL (h' 0) ψ)
+  rw [Fin.foldl_succ_last]
+  simp only [Fin.foldl_succ, Fin.foldl_zero]
+  rfl
+
+/-- **K2, but ouvert unique.** `Sᵢ` est cohérente pour `ψ₀`, pour `i ∈ {0,1}`
+(voir correction de l'énoncé en en-tête de fichier). Par
+`decFunctional_last_stage_orthogonal` (K1(a)), seules les paires d'histoires
+différant à l'étage `0` restent à examiner ; l'annulation clé est
+`⟪φ₀, projL (P i)ᗮ ψ₀⟫ = 0`. -/
+theorem S_consistent (i : Fin 3) (hi : i = 0 ∨ i = 1) : IsConsistent ψ₀ (S i) := by
+  intro h k hh hk hne
+  by_cases hlast : h (Fin.last 1) ≠ k (Fin.last 1)
+  · exact decFunctional_last_stage_orthogonal (S i) ψ₀ h k hh hk hlast
+  push Not at hlast
+  have hne0 : h 0 ≠ k 0 := fun heq => hne (funext fun t => by fin_cases t; exacts [heq, hlast])
+  have hh0 : h 0 = P i ∨ h 0 = (P i)ᗮ := by
+    have := hh 0
+    simp only [S, Dstage, Matrix.cons_val_zero] at this
+    simpa [Perspective.binary] using this
+  have hk0 : k 0 = P i ∨ k 0 = (P i)ᗮ := by
+    have := hk 0
+    simp only [S, Dstage, Matrix.cons_val_zero] at this
+    simpa [Perspective.binary] using this
+  have hh1 : h (Fin.last 1) = F ∨ h (Fin.last 1) = Fᗮ := by
+    have := hh (Fin.last 1)
+    simp only [S, DF] at this
+    simpa [Perspective.binary] using this
+  show ⟪chainOp k ψ₀, chainOp h ψ₀⟫_ℂ = 0
+  rw [chainOp_two_stage k ψ₀, chainOp_two_stage h ψ₀, ← hlast]
+  rcases hh0 with hh0 | hh0
+  · rcases hk0 with hk0 | hk0
+    · exact absurd (hh0.trans hk0.symm) hne0
+    · rw [hh0, hk0, projL_compl (P i) ψ₀, P_proj_psi0]
+      rcases hh1 with hc1 | hc1
+      · rw [hc1, projL_proj_absorb]; exact w_ortho_projLc1_u i hi F (Or.inl rfl)
+      · rw [hc1, projL_proj_absorb]; exact w_ortho_projLc1_u i hi Fᗮ (Or.inr rfl)
+  · rcases hk0 with hk0 | hk0
+    · rw [hh0, hk0, projL_compl (P i) ψ₀, P_proj_psi0]
+      rcases hh1 with hc1 | hc1
+      · rw [hc1, projL_proj_absorb]; exact u_ortho_projLc1_w i hi F (Or.inl rfl)
+      · rw [hc1, projL_proj_absorb]; exact u_ortho_projLc1_w i hi Fᗮ (Or.inr rfl)
+    · exact absurd (hh0.trans hk0.symm) hne0
 
 /-- `S1 := S 0` : famille cohérente construite sur `P 0`. -/
-theorem S1_consistent : IsConsistent ψ₀ (S 0) := S_consistent 0
+theorem S1_consistent : IsConsistent ψ₀ (S 0) := S_consistent 0 (Or.inl rfl)
 
 /-- `S2 := S 1` : famille cohérente construite sur `P 1`. -/
-theorem S2_consistent : IsConsistent ψ₀ (S 1) := S_consistent 1
+theorem S2_consistent : IsConsistent ψ₀ (S 1) := S_consistent 1 (Or.inr rfl)
 
 end
 end QuantumFoundations.Histories
