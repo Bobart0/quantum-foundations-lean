@@ -65,7 +65,16 @@ sur `D1`, via `sum_sq_projL_of_pairwise_isOrtho` désormais public dans
 theorem histProb_additivity_two_stage (D1 : Perspective n) (ψ : H n)
     (c0 : Submodule ℂ (H n)) :
     ∑ c ∈ D1.cells, ‖projL c (projL c0 ψ)‖ ^ 2 = ‖projL c0 ψ‖ ^ 2 := by
-  sorry
+  have htop : D1.cells.sup id = (⊤ : Submodule ℂ (H n)) := by
+    rw [Finset.sup_id_eq_sSup]; exact D1.span
+  have hpyth := sum_sq_projL_of_pairwise_isOrtho D1.cells D1.ortho (projL c0 ψ)
+  rw [htop] at hpyth
+  have hid : projL (⊤ : Submodule ℂ (H n)) = LinearMap.id := by
+    unfold projL
+    rw [Submodule.starProjection_top]
+    rfl
+  rw [hid] at hpyth
+  simpa using hpyth.symm
 
 end
 end QuantumFoundations.Histories
