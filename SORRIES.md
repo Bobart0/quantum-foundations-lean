@@ -31,6 +31,10 @@ comme vrai théorème (plus un axiome séparé comme dans l'ancien
 `tstar-born-rule-lean`). `Nonvacuity.lean` (2026-07-15) comble l'écart
 signalé lors de l'audit de clôture : `E₀ v` satisfait simultanément les
 quatre axiomes (Grain)/(Norm)/(Pos)/(Null) — 0 sorry introduit.
+Le corollaire `grainCoherenceTheorem_projector` est ajouté le 2026-07-20 et
+publié sous `v2.1-bornrule` : simple forme projecteur du théorème final, sans
+hypothèse ni contenu mathématique indépendant supplémentaire. Son audit ne
+dépend que de `[propext, Classical.choice, Quot.sound]`.
 
 Histories (K0, 2026-07-16) ajoute **5 sorry** (squelette Defs/Nonvacuity à
 0 sorry + K1/K2/K3 en sorry ; estimation initiale 5-7, réduite par deux
@@ -1100,8 +1104,15 @@ repoussé à B4, qui en a de toute façon besoin pour dériver `hker` depuis
       `refinePerspective`/`refine_filter_eq_cellLines` (B1, déjà prouvés — pas
       de nouveau contenu de comptage nécessaire ici, contrairement au
       prototype qui les développe au même endroit que B4)
+- [x] `grainCoherenceTheorem_projector` (`v2.1-bornrule`, 2026-07-20) :
+      corollaire public direct `Est D c = ‖projL c v‖²`. La somme produite par
+      `grainCoherenceTheorem` est identifiée à la norme carrée de la projection
+      via `sum_sq_projL_of_pairwise_isOrtho (cellLines c)`, `cellLines_sSup`,
+      `cellLines_sum_eq` et `projL_singleton_unit`; aucune nouvelle hypothèse
+      ni duplication d'une longue preuve de Parseval
 - [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry sur tout le dépôt.
-      `#print axioms grainCoherenceTheorem` / `full_rho_facts` /
+      `#print axioms grainCoherenceTheorem` /
+      `grainCoherenceTheorem_projector` / `full_rho_facts` /
       `hker_derivation` : `[propext, Classical.choice, Quot.sound]` —
       `gleason` n'apparaît JAMAIS comme axiome séparé, contrairement à
       `tstar-born-rule-lean` où `#print axioms theorem1_general` liste en plus
