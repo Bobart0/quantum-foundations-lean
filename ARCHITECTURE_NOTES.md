@@ -195,6 +195,15 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   substantiel (infrastructure Uhlhorn U2/U3a). `#print axioms` confirme le
   trio standard sur les deux maillons de cette chaîne — voir README, section
   « Dépendances ».
+- **Corollaire projecteur (`v2.1-bornrule`, 2026-07-20).**
+  `grainCoherenceTheorem_projector` reformule directement le membre droit de
+  `grainCoherenceTheorem` en `‖projL c v‖²`. Ce n'est pas une nouvelle route
+  mathématique : `sum_sq_projL_of_pairwise_isOrtho` est appliqué à
+  `cellLines c`, `Finset.sup_id_eq_sSup` et `cellLines_sSup` identifient leur
+  supremum à `c`, `cellLines_sum_eq` réindexe la somme, puis
+  `projL_singleton_unit` et `norm_inner_symm` identifient chaque terme.
+  L'audit `#print axioms` reste exactement
+  `[propext, Classical.choice, Quot.sound]`.
 - **Hors scope explicite** (extensions futures possibles, pas des manques de
   ce jalon) : une seconde route de dérivation indépendante de Gleason (via un
   axiome de stabilité dynamique plutôt que de cohérence de grain),
@@ -218,7 +227,8 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   dès qu'un même besoin réapparaît dans un second fichier/bloc, relocalisation
   immédiate, jamais de copie. Vérifié sans impact sur les axiomes de
   `BornRule` (audit de clôture Histories, Bloc 1 point spécifique 2 —
-  34 déclarations, trio standard sans exception).
+  35 déclarations après ajout du corollaire projecteur, trio standard sans
+  exception).
 - **Deux corrections d'énoncé (règle 2 du projet), même cause, découvertes
   au moment de remplir les preuves (pas anticipées en reconnaissance) :**
   `S_consistent` (K2, `Witness.lean`) et `inference` (K3, `ContraryInferences.lean`)
