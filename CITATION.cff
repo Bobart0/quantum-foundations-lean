@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata in this file."
+title: quantum-foundations-lean
+type: software
+authors:
+  - family-names: Dalimier
+    given-names: Bertrand
+    affiliation: Independent Researcher
+abstract: >-
+  A Lean 4 and Mathlib library containing formalizations of Naimark dilation,
+  Wigner's theorem, Uhlhorn-type results, the grain-coherence-to-Born theorem,
+  and contrary inferences in consistent histories.
+license: Apache-2.0
+version: 2.1.1-bornrule
+date-released: 2026-07-21
+repository-code: "https://github.com/Bobart0/quantum-foundations-lean"
