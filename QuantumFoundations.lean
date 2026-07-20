@@ -29,6 +29,12 @@ import QuantumFoundations.Histories.Nonvacuity
 import QuantumFoundations.Histories.Basic
 import QuantumFoundations.Histories.Witness
 import QuantumFoundations.Histories.ContraryInferences
+import QuantumFoundations.Branches.Defs
+import QuantumFoundations.Branches.Nonvacuity
+import QuantumFoundations.Branches.Basic
+import QuantumFoundations.Branches.TwoObs
+import QuantumFoundations.Branches.Induction
+import QuantumFoundations.Branches.Local
 
 namespace QuantumFoundations
 
