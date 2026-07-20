@@ -238,6 +238,12 @@ theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Es
     (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
     Est D c = ∑ i : Fin (Module.finrank ℂ c),
       ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
+
+theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
+    (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
+    (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}
+    (hc : c ∈ D.cells) :
+    Est D c = ‖projL c v‖ ^ 2
 ```
 
 Pour une perspective `D` (partition orthogonale de `H n` en cellules non
@@ -267,6 +273,11 @@ final) — détail complet et écarts favorables dans `SORRIES.md`.
 `#print axioms grainCoherenceTheorem` ne dépend que de `[propext,
 Classical.choice, Quot.sound]` : le théorème de Gleason est importé comme un
 vrai théorème (`Gleason.gleason`), jamais postulé.
+
+`grainCoherenceTheorem_projector` est uniquement la version en notation
+projecteur du théorème précédent : l'identité de Parseval identifie sa somme
+sur la base orthonormée à `‖projL c v‖²`. Ce n'est pas un nouveau résultat
+mathématique indépendant.
 
 ## Théorème des inférences contraires de Kent (Histories)
 
@@ -356,6 +367,7 @@ rapport de clôture — toutes dépendent du même trio) :
 'QuantumFoundations.Uhlhorn.traceProd_preserved_of_sendsONBToONB' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.Uhlhorn.exists_projMeasure_of_frameFunctionOnLines' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.grainCoherenceTheorem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.grainCoherenceTheorem_projector' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.full_rho_facts' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -494,6 +506,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | `U_alt_eq_smul` | `U` est unique à phase globale près relativement au choix du représentant de `eImg` (version restreinte) | Bargmann 1964 §6 (restreint) | `Wigner/Uniqueness.lean` (335) | 0 sorry, 0 axiome | `v2.0-wigner` |
 | `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (83) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
 | `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | Gleason 1957 (théorème sous-jacent) | `BornRule/Assembly.lean` (136) | 0 sorry, 0 axiome | `v2.0-bornrule` |
+| `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
 | `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `Histories/ContraryInferences.lean` (97) | 0 sorry, 0 axiome | `v1.0-histories` |
 
 Statut « 0 axiome » signifie : dépend uniquement de

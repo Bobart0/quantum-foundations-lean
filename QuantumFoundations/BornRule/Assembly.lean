@@ -134,5 +134,26 @@ theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Es
   rw [mul_comm, Complex.mul_conj, Complex.ofReal_re]
   exact Complex.normSq_eq_norm_sq _
 
+/-- Version en notation projecteur de `grainCoherenceTheorem`. Il s'agit du
+même résultat, la somme des carrés des coefficients dans une base orthonormée
+de `c` étant la norme au carré de la projection orthogonale sur `c`. -/
+theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
+    (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
+    (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}
+    (hc : c ∈ D.cells) : Est D c = ‖projL c v‖ ^ 2 := by
+  rw [grainCoherenceTheorem Est hn3 hA hN hPos hv hNul D hc]
+  have hpyth := sum_sq_projL_of_pairwise_isOrtho
+    (cellLines c) (cellLines_ortho_within c) v
+  rw [Finset.sup_id_eq_sSup, cellLines_sSup] at hpyth
+  rw [hpyth, cellLines_sum_eq]
+  apply Finset.sum_congr rfl
+  intro i _
+  have hf_unit : ‖((stdOrthonormalBasis ℂ c i : c) : H n)‖ = 1 :=
+    (stdOrthonormalBasis ℂ c).orthonormal.1 i
+  rw [projL_singleton_unit _ _ hf_unit, norm_smul, hf_unit, mul_one,
+    norm_inner_symm]
+
+#print axioms grainCoherenceTheorem_projector
+
 end
 end QuantumFoundations.BornRule
