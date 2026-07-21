@@ -35,6 +35,8 @@ import QuantumFoundations.Branches.Basic
 import QuantumFoundations.Branches.TwoObs
 import QuantumFoundations.Branches.Induction
 import QuantumFoundations.Branches.Local
+import QuantumFoundations.Complexity.Main
+import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations
 

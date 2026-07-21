@@ -1,4 +1,4 @@
-# SORRIES.md — quantum-foundations-lean
+# MILESTONES.md — quantum-foundations-lean
 
 Suivi de l'avancement, sur le modèle de gleason-theorem-lean. Coché = `lake build`
 vert, 0 axiome (guard.sh), commit + push fait. Sources : Watrous *TQI* Thm 2.42
@@ -88,7 +88,7 @@ axiome, 0 sorry sur tout le dépôt (cinq blocs).**
       `adjoint_inner_right`, `adjoint_comp`, `map_sum` pour l'adjoint d'une somme
       finie) — citées, pas re-dérivées.
 - [x] `key1`, `key2` : pivots à somme simple (jamais de double somme, cf. règle 7
-      CLAUDE.md / leçon `riesz_rep_assembly`)
+      AGENTS.md / leçon `riesz_rep_assembly`)
 - [x] `dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id`
 - [x] `naimark_dilation : ∀ i, adjoint (dilV P) ∘ₗ dilProj i ∘ₗ dilV P = P.E i`
 - [x] `theorem naimark` (assemblage direct des deux précédents)
@@ -98,7 +98,7 @@ axiome, 0 sorry sur tout le dépôt (cinq blocs).**
       `set -e -o pipefail` tuait le script pile au moment d'atteindre 0 sorry)
 
 ## N4 — Clôture
-- [x] SORRIES.md à jour, `#print axioms` vérifié :
+- [x] MILESTONES.md à jour, `#print axioms` vérifié :
       `QuantumFoundations.naimark` et `QuantumFoundations.naimark_born` dépendent
       de `[propext, Classical.choice, Quot.sound]` uniquement
 - [x] README : énoncé, écart documenté vs Watrous (somme directe vs ⊗),
@@ -109,7 +109,7 @@ axiome, 0 sorry sur tout le dépôt (cinq blocs).**
 Nécessitait un lemme non trivial et absent à ce jour : extension d'une isométrie
 partielle `H n →ₗ K` en un unitaire global de `K`. L'esquisse de Paris
 ("identité sur l'orthogonal de ω_B") était insuffisante telle quelle — voir
-CLAUDE.md. Résolu à la tentative 3 (ci-dessous) par une route n'utilisant aucun
+AGENTS.md. Résolu à la tentative 3 (ci-dessous) par une route n'utilisant aucun
 `Submodule`, différente de l'esquisse de Paris comme du plan initial des
 tentatives 1/2.
 
@@ -212,7 +212,7 @@ Le correctif : isoler l'énoncé combiné dans un lemme `private` séparé
 deux cas concrets (`singleL n m i₀` et `dilV P`). La leçon générale : quand un
 `obtain`/`refine` composant plusieurs lemmes avec métavariables timeout au `whnf`
 malgré une preuve mathématiquement immédiate, ne pas insister sur l'inlining —
-extraire un lemme intermédiaire à énoncé entièrement explicite (règle 7 CLAUDE.md,
+extraire un lemme intermédiaire à énoncé entièrement explicite (règle 7 AGENTS.md,
 généralisée au-delà des sommes indexées).
 
 - [x] `exists_unitary_extension (P) (i₀) : ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m,
@@ -459,7 +459,7 @@ fonctionné de façon fiable.
 - [x] `guard.sh` : 0 axiome, 0 `native_decide`, **13 sorry** (16 − 3, cumulé
       19 − 6 sur tout W3)
 
-**Piège Lean rencontré et documenté** (règle 12 CLAUDE.md, généralisé) : déballer
+**Piège Lean rencontré et documenté** (règle 12 AGENTS.md, généralisé) : déballer
 `e n` via `unfold e; rw [dif_pos h0]` (ou `show` explicite de la valeur dépliée)
 déclenche un timeout déterministe au `whnf` — la présence d'une instance `NeZero n`
 construite localement dans la branche `dite` est coûteuse à unifier lors d'une
@@ -529,7 +529,7 @@ dégénéré : `f = -refVec` (colinéaire), traité séparément par
 qui ont suffi pour `chidir_dichotomy`/`chi_dichotomy`.
 
 **Pièges Lean rencontrés et documentés** :
-- (règle 12 CLAUDE.md, nouvelle instance) appliquer `norm_cast`/`Complex.mul_conj`
+- (règle 12 AGENTS.md, nouvelle instance) appliquer `norm_cast`/`Complex.mul_conj`
   directement à une expression comme `chi T b` (énorme une fois `chidir` déplié
   via `V`/`⟪·,·⟫`) déclenche un timeout `whnf`. Remède : extraire l'identité
   purement `ℂ` dans un lemme `private` à contexte minimal (`sq_norm_eq_mul_conj`)
@@ -649,7 +649,7 @@ composante via (16), jamais extraite d'une hypothèse métrique abstraite).
 ### Frictions Lean à provisionner (analogues aux leçons Naimark)
 Déballage de normes PiLp/WithLp dans les calculs de W3 (`γ⁻¹`, `‖e+z‖`) — mêmes
 patterns que sur `gleason`/N0-N3, lemmes `private` à contexte minimal si timeout
-`whnf` (règle 12 CLAUDE.md) ; junk values des défs totales (`V` hors `𝒫`, `chi` hors
+`whnf` (règle 12 AGENTS.md) ; junk values des défs totales (`V` hors `𝒫`, `chi` hors
 domaine) — chaque lemme porte ses side conditions, discipline déjà rodée sur
 `sqrtOp`/`dilProj`.
 
@@ -1126,7 +1126,7 @@ découverts en écrivant la preuve, pas anticipés en reconnaissance.
 ### Nonvacuity — la règle de Born satisfait les 4 axiomes — ✅ CLOS (2026-07-15)
 
 Comble l'écart signalé lors de l'audit de clôture (dérogation à la règle
-absolue 3 de `CLAUDE.md`, `BornRule` étant alors le seul bloc du dépôt sans
+absolue 3 de `AGENTS.md`, `BornRule` étant alors le seul bloc du dépôt sans
 `Nonvacuity.lean`) : `E₀ v D c := ‖projL c v‖²` (règle de Born pour un
 vecteur unitaire `v` fixé, ignore `D` — comme `g` en B2) satisfait
 SIMULTANÉMENT `AxGrain`, `AxNorm`, `AxPos`, `AxNul` —
@@ -1356,7 +1356,7 @@ bloque sur une forme déjà repliée.
 
 ## English translation
 
-# SORRIES.md — quantum-foundations-lean
+# MILESTONES.md — quantum-foundations-lean
 
 Progress tracking, following the model of gleason-theorem-lean. Checked = lake build
 green, 0 axioms (guard.sh), commit + push completed. Sources: Watrous TQI Thm 2.42
@@ -1448,7 +1448,7 @@ axioms, 0 sorry throughout the repository (five blocks).
  adjoint_inner_right, adjoint_comp, map_sum for the adjoint of a finite
  sum) — cited, not rederived.
 - [x] key1, key2: single-sum pivots (never a double sum; see rule 7 in
- CLAUDE.md / lesson from riesz_rep_assembly)
+ AGENTS.md / lesson from riesz_rep_assembly)
 - [x] dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id
 - [x] naimark_dilation : ∀ i, adjoint (dilV P) ∘ₗ dilProj i ∘ₗ dilV P = P.E i
 - [x] theorem naimark (direct assembly of the preceding two results)
@@ -1458,7 +1458,7 @@ axioms, 0 sorry throughout the repository (five blocks).
  set -e -o pipefail terminated the script precisely upon reaching 0 sorry)
 
 ## N4 — Completion
-- [x] SORRIES.md updated, #print axioms checked:
+- [x] MILESTONES.md updated, #print axioms checked:
  QuantumFoundations.naimark and QuantumFoundations.naimark_born depend
  only on [propext, Classical.choice, Quot.sound]
 - [x] README: statement, documented difference from Watrous (direct sum vs ⊗),
@@ -1469,7 +1469,7 @@ axioms, 0 sorry throughout the repository (five blocks).
 It required a nontrivial lemma that was not available at the time: extension of a
 partial isometry H n →ₗ K to a global unitary on K. Paris's sketch
 ("identity on the orthogonal complement of ω_B") was insufficient as stated — see
-CLAUDE.md. Resolved on attempt 3 (below) through an approach that uses no
+AGENTS.md. Resolved on attempt 3 (below) through an approach that uses no
 Submodule, different from both Paris's sketch and the initial plan for
 attempts 1/2.
 
@@ -1573,7 +1573,7 @@ The fix: isolate the combined statement in a separate private lemma
 the two concrete cases (singleL n m i₀ and dilV P). General lesson: when an
 obtain/refine composing several lemmas with metavariables times out at whnf
 despite a mathematically immediate proof, do not persist with inlining —
-extract an intermediate lemma with a fully explicit statement (rule 7 in CLAUDE.md,
+extract an intermediate lemma with a fully explicit statement (rule 7 in AGENTS.md,
 generalized beyond indexed sums).
 
 - [x] exists_unitary_extension (P) (i₀) : ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m,
@@ -1831,7 +1831,7 @@ worked reliably.
 - [x] guard.sh: 0 axioms, 0 native_decide, 13 sorry (16 − 3,
  cumulatively 19 − 6 over all of W3)
 
-Lean pitfall encountered and documented (rule 12 in CLAUDE.md, generalized):
+Lean pitfall encountered and documented (rule 12 in AGENTS.md, generalized):
 unfolding e n via unfold e; rw [dif_pos h0] (or an explicit show of the
 unfolded value) triggers a deterministic timeout at whnf — the presence of a
 locally constructed NeZero n instance in the dite branch is expensive to
@@ -1906,7 +1906,7 @@ chi_real, sq_norm_eq_mul_conj), versus the 2 (T_phase, V_dir_colinear)
 that sufficed for chidir_dichotomy/chi_dichotomy.
 
 Lean pitfalls encountered and documented:
-- (rule 12 in CLAUDE.md, new instance) applying norm_cast/Complex.mul_conj
+- (rule 12 in AGENTS.md, new instance) applying norm_cast/Complex.mul_conj
  directly to an expression such as chi T b (enormous once chidir is
  unfolded through V/⟪·,·⟫) triggers a whnf timeout. Remedy: extract the
  purely ℂ identity into a private lemma with a minimal context
@@ -2030,7 +2030,7 @@ never extracted from an abstract metric hypothesis).
 ### Lean friction to budget for (analogous to the Naimark lessons)
 Unfolding PiLp/WithLp norms in W3 calculations (γ⁻¹, ‖e+z‖) — same
 patterns as in gleason/N0–N3, with private lemmas in a minimal context if
-a whnf timeout occurs (rule 12 in CLAUDE.md); junk values of total definitions
+a whnf timeout occurs (rule 12 in AGENTS.md); junk values of total definitions
 (V outside 𝒫, chi outside its domain) — each lemma carries its side
 conditions, following the discipline already established for
 sqrtOp/dilProj.
@@ -2300,7 +2300,7 @@ discovered while writing the proof, not anticipated during reconnaissance.
 ### Nonvacuity — the Born rule satisfies all 4 axioms — ✅ CLOSED (2026-07-15)
 
 Closes the gap identified during the final audit (departure from absolute
-rule 3 of CLAUDE.md, since BornRule was then the only repository block
+rule 3 of AGENTS.md, since BornRule was then the only repository block
 without Nonvacuity.lean): E₀ v D c := ‖projL c v‖² (Born rule for a fixed
 unit vector v, ignores D — as does g in B2) SIMULTANEOUSLY satisfies
 AxGrain, AxNorm, AxPos, AxNul — hence grainCoherenceTheorem is not
@@ -2530,3 +2530,64 @@ already folded form.
  objection): mentioned in the neutrality note
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
+
+## Complexity — exact redundant-record interference bound (C0–C2)
+
+Closed on 2026-07-22. The implemented result is deliberately finite and
+exact: if `R` pairwise disjoint regions carry exact records of two distinct
+branches and an exact 2-local circuit has a nonzero cross amplitude between
+those branches, then `R ≤ 2 * C.length`.
+
+### C0 — finite 2-local circuits — ✅ CLOSED
+
+- [x] `TwoLocalGate`: linear isometric equivalence on `Sites N d`, finite
+  support, existing `IsLocalTo` witness, and support cardinality at most two.
+- [x] `Circuit := List TwoLocalGate`, chronological evaluation convention
+  `[G₁,G₂,G₃] x = G₃ (G₂ (G₁ x))`, union support, indexed `List.get` adapter,
+  append law, and `support.card ≤ 2 * length`.
+- [x] Non-vacuity: empty circuit and identity gate local to the empty region.
+
+### C1 — untouched records force zero cross amplitude — ✅ CLOSED
+
+- [x] `circuit_commute_of_disjoint`, proved gate by gate from the existing
+  `Branches.commute_of_disjoint` and explicit composition closure.
+- [x] Representation bridge through
+  `e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d` and `Circuit.evalOnH`.
+- [x] Existing record facts reused directly:
+  `branch_wellDefined`, `rproj_contract_apply`, and
+  `Submodule.starProjection_isSymmetric`.
+- [x] `cross_amplitude_eq_zero_of_untouched_record` and its contrapositive
+  `touched_of_cross_amplitude_ne_zero` closed without additional operator
+  theory.
+
+### C2 — counting and explicit circuit-length bound — ✅ CLOSED
+
+- [x] Hilbert-space-independent injection lemma: pairwise disjoint finite
+  regions all meeting one finite support inject into that support.
+- [x] `pigeonhole_corollary` was not used directly: it concludes
+  `¬ PairCovers`, assumes equal-sized indexed families, singleton supports,
+  and `3 ≤ R`; these hypotheses do not fit arbitrary lists of two-site gates.
+- [x] Main theorem
+  `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero`.
+- [x] Clean rebuild reached `Build completed successfully (8705 jobs)`;
+  guard and explicit forbidden-token audit are clean. The three requested
+  `#print axioms` outputs are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C2 (future extensions, not deficiencies)
+
+- Distinguishability complexity and the full Taylor–McCulloch good-branch
+  criterion.
+- Approximate records and quantitative robustness estimates.
+- Conditional persistence under Hamiltonian evolution.
+- Brown–Susskind complexity growth and canonical uniqueness of branch
+  decompositions.
+
+### Résumé français
+
+Les jalons C0–C2 établissent uniquement la borne exacte et
+fini-dimensionnelle `R ≤ 2 * C.length`. La syntaxe des circuits, la preuve
+opératorielle d’annulation et le comptage fini sont séparés. Les extensions
+aux records approximatifs, à la complexité de distinguabilité et à la
+persistance conditionnelle restent des travaux futurs distincts, et ne sont
+pas des manques de ce jalon.

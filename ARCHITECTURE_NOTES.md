@@ -1,16 +1,16 @@
 # ARCHITECTURE_NOTES.md — quantum-foundations-lean
 
 Mémoire technique unique des écarts entre les plans initiaux (annoncés au
-début de chaque jalon, dans les squelettes ou dans `SORRIES.md`) et l'état
+début de chaque jalon, dans les squelettes ou dans `MILESTONES.md`) et l'état
 réel du code, tel qu'il a fini par être prouvé. Consolidé lors de la passe de
 clôture arXiv (bloc N0–N5 Naimark, W0–W6 Wigner). Chaque entrée renvoie à la
-section `SORRIES.md` correspondante pour le détail de la dérivation.
+section `MILESTONES.md` correspondante pour le détail de la dérivation.
 
 ## Naimark (N0–N5)
 
 - **`DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n)`** choisi sur
   `PiLp 2 (fun _ : Fin m => H n)` dès N0, à friction de preuve égale, pour son
-  index plat unique (moins de couches `WithLp`/`.ofLp`). Voir `SORRIES.md` N0.
+  index plat unique (moins de couches `WithLp`/`.ofLp`). Voir `MILESTONES.md` N0.
 - **Somme directe hilbertienne au lieu du produit tensoriel** (`K := ⊕ H n`
   plutôt que `X ⊗ ℂ^Σ` chez Watrous) : API `PiLp`/`EuclideanSpace` plus mûre
   côté Mathlib à la date du projet que celle du produit tensoriel hilbertien.
@@ -26,8 +26,8 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   réussie) : ZÉRO `Submodule` de bout en bout — deux familles orthonormées de
   `K` tout entier, complétées en bases complètes via
   `Orthonormal.exists_orthonormalBasis_extension_of_card_eq` (isolé en lemme
-  `private` pour éviter le timeout, cf. règle 12 CLAUDE.md), puis recollées via
-  `Orthonormal.equiv`. Voir `SORRIES.md` N5, les trois tentatives datées.
+  `private` pour éviter le timeout, cf. règle 12 AGENTS.md), puis recollées via
+  `Orthonormal.equiv`. Voir `MILESTONES.md` N5, les trois tentatives datées.
 
 ## Wigner (W0–W6)
 
@@ -66,7 +66,7 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   fonctionnelle complète envisagée initialement. 8 lemmes privés au total pour
   ce seul sorry (contre 2 pour `chidir_dichotomy`/`chi_dichotomy`).
 - **W6 (A)/(B) formulées en lemmes concrets plutôt qu'un `chi` abstrait
-  paramétré.** Le plan initial de `SORRIES.md` envisageait l'exclusivité comme
+  paramétré.** Le plan initial de `MILESTONES.md` envisageait l'exclusivité comme
   un unique résultat paramétré par une notion abstraite de « `U` compatible de
   branche `chi` ». Formalisé en pratique comme DEUX lemmes séparés
   (`delta_transform_lin`/`delta_transform_conj`), un par branche concrète du
@@ -209,7 +209,7 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   axiome de stabilité dynamique plutôt que de cohérence de grain),
   l'existence/consistance des axiomes (Grain)/(Norm)/(Pos)/(Null) eux-mêmes,
   et la convergence intersubjective entre observateurs comme corollaire du
-  théorème principal — voir `SORRIES.md`, section « Hors scope ».
+  théorème principal — voir `MILESTONES.md`, section « Hors scope ».
 
 ## Histories (K0–K3)
 
@@ -291,7 +291,7 @@ section `SORRIES.md` correspondante pour le détail de la dérivation.
   passent par les pivots `key1`/`key2`, pas par ces quatre faits). Ce n'est
   PAS un oubli : ils formalisent explicitement Watrous Prop. 2.40 (les
   opérateurs d'une mesure projective sont deux à deux orthogonaux, idempotents,
-  de somme l'identité) — un engagement mathématique documenté dans `CLAUDE.md`
+  de somme l'identité) — un engagement mathématique documenté dans `AGENTS.md`
   indépendant du chemin de preuve de `naimark` lui-même.
 - `QuantumFoundations/Uhlhorn/` : audit spécifique lors de la clôture du bloc —
   **aucun résidu identifié**. Les deux seules déclarations publiques sans
@@ -426,17 +426,17 @@ laissée à la discrétion de l'utilisateur avant publication.
 # ARCHITECTURE_NOTES.md — quantum-foundations-lean
 
 Single technical record of deviations between the initial plans (announced at
-the beginning of each milestone, in the skeletons, or in SORRIES.md) and the
+the beginning of each milestone, in the skeletons, or in MILESTONES.md) and the
 actual state of the code as ultimately proved. Consolidated during the arXiv
 closing pass (Naimark block N0–N5, Wigner block W0–W6). Each entry refers to the
-corresponding section of SORRIES.md for details of the derivation.
+corresponding section of MILESTONES.md for details of the derivation.
 
 ## Naimark (N0–N5)
 
 - DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n) was chosen over
  PiLp 2 (fun _ : Fin m => H n) at N0, at equal proof-engineering cost,
  because of its single flat index (fewer WithLp/.ofLp layers). See
- SORRIES.md N0.
+ MILESTONES.md N0.
 - Hilbert direct sum rather than tensor product (K := ⊕ H n rather than
  Watrous's X ⊗ ℂ^Σ): at the time of the project, the Mathlib API for
  PiLp/EuclideanSpace was more mature than that for Hilbert tensor
@@ -455,8 +455,8 @@ corresponding section of SORRIES.md for details of the derivation.
  throughout—two orthonormal families in the whole space K, extended to
  complete bases via
  Orthonormal.exists_orthonormalBasis_extension_of_card_eq (isolated in a
- private lemma to avoid the timeout; see rule 12 in CLAUDE.md), and then
- glued together via Orthonormal.equiv. See SORRIES.md N5 for the three
+ private lemma to avoid the timeout; see rule 12 in AGENTS.md), and then
+ glued together via Orthonormal.equiv. See MILESTONES.md N5 for the three
  dated attempts.
 
 ## Wigner (W0–W6)
@@ -497,7 +497,7 @@ corresponding section of SORRIES.md for details of the derivation.
  private lemmas were needed for this single sorry, compared with two for
  chidir_dichotomy/chi_dichotomy.
 - W6 (A)/(B) formulated as concrete lemmas rather than through an abstract
- parameterized chi. The initial SORRIES.md plan envisaged exclusivity
+ parameterized chi. The initial MILESTONES.md plan envisaged exclusivity
  as a single result parameterized by an abstract notion of a “compatible U
  in branch chi.” In practice it was formalized as TWO separate lemmas
  (delta_transform_lin/delta_transform_conj), one for each concrete branch
@@ -648,7 +648,7 @@ corresponding section of SORRIES.md for details of the derivation.
  dynamic-stability axiom rather than grain coherence), existence/consistency
  of the axioms (Grain)/(Norm)/(Pos)/(Null) themselves, and intersubjective
  convergence between observers as a corollary of the main theorem—see
- SORRIES.md, section “Out of scope.”
+ MILESTONES.md, section “Out of scope.”
 
 ## Histories (K0–K3)
 
@@ -733,7 +733,7 @@ corresponding section of SORRIES.md for details of the derivation.
  through the pivots key1/key2, not through these four facts. This is NOT
  an omission: they explicitly formalize Watrous Prop. 2.40 (the operators
  of a projection-valued measure are pairwise orthogonal, idempotent, and sum
- to the identity), a mathematical commitment documented in CLAUDE.md and
+ to the identity), a mathematical commitment documented in AGENTS.md and
  independent of the proof path for naimark itself.
 - QuantumFoundations/Uhlhorn/: a specific audit during closure of the block
  identified no residue. The only two public declarations without a
@@ -864,3 +864,50 @@ the user's discretion before publication.
  Witness.lean/ContraryInferences.lean—to avoid ambiguity.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
+
+## Complexity (C0–C2) — exact 2-local interference bound
+
+- **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
+  equivalence on `Branches.Sites N d`, a region `Finset (Fin N)`, the
+  existing proof `IsLocalTo`, and a support-cardinality proof `≤ 2`.
+  `Circuit N d` is a `List`; its chronological convention is
+  `[G₁,G₂,G₃].eval x = G₃ (G₂ (G₁ x))`. Consequently,
+  `eval (C ++ D) = eval D ∘ₗ eval C`.
+- **Representation bridge.** Riedel's branches live on `H (d ^ N)`, whereas
+  locality lives on `Sites N d`. The API therefore requires the same
+  explicit isometry `e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d` already used by
+  `Branches.Local`; `Circuit.evalOnH` conjugates circuit evaluation by `e`.
+- **Reused Riedel facts.** C1 uses `commute_of_disjoint` gate by gate,
+  `branch_wellDefined` plus `rproj_contract_apply` for the two record
+  identities, and `Submodule.starProjection_isSymmetric` for self-adjointness.
+  No general projection theory is reconstructed.
+- **Composition closure.** The circuit commutation proof explicitly combines
+  commuting factors with `Commute.mul_left`; it does not rely on simp to infer
+  closure under composition.
+- **Counting separation.** `Counting.lean` is independent of Hilbert spaces.
+  It injects each pairwise disjoint touched region into the finite union
+  support and then composes this bound with
+  `Circuit.circuit_support_card_le`.
+- **Why `pigeonhole_corollary` is not reused.** Its exact conclusion is
+  `¬ PairCovers recA recB`; it assumes two equally indexed families, requires
+  `3 ≤ R`, and bounds every member of the first family by one site. The C2
+  problem instead has an arbitrary number of gate supports, each of cardinal
+  at most two, and must produce a quantitative inequality for every `R`.
+  Wrapping the old lemma would obscure the stronger generic counting fact.
+- **Proof-engineering friction.** Dot notation for the `Circuit` list abbrev
+  becomes ambiguous inside list induction, so recursive proofs use explicit
+  `Circuit.eval`/`Circuit.support`. The only analytic bridge needed was
+  deconjugating commutation through `e`; the cross-amplitude calculation then
+  follows the four transparent projector equalities directly.
+
+### English summary
+
+The Complexity block keeps circuit syntax, operator locality, and finite
+counting in separate files. Gates are exact unitaries on `Sites N d`, circuit
+lists act head-first, and `evalOnH` explicitly conjugates through the chosen
+site/Hilbert-space isometry. C1 reuses `commute_of_disjoint`,
+`branch_wellDefined`, `rproj_contract_apply`, and
+`Submodule.starProjection_isSymmetric`. C2 uses a new Hilbert-space-free
+injection lemma because `pigeonhole_corollary` concerns `PairCovers`, singleton
+supports, equal family sizes, and `3 ≤ R`, none of which matches the desired
+quantitative bound for arbitrary 2-local circuit lists.
