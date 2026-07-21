@@ -52,6 +52,24 @@ theorem rproj_contract (Λ : LabeledResolution n K) (i i' : Fin K) :
     rw [Submodule.starProjection_apply_eq_zero_iff]
     exact (Λ.ortho i' i (Ne.symm h)) (Submodule.starProjection_apply_mem (Λ.cells i') x)
 
+/-- Application ponctuelle de `Commute` (`Commute S T` est défeq à
+`S ∘ₗ T = T ∘ₗ S`) — utilitaire réutilisé par `TwoObs.lean` et
+`Induction.lean` (relocalisé public dès le second usage). -/
+theorem commute_apply {S T : H n →ₗ[ℂ] H n} (h : Commute S T) (x : H n) :
+    S (T x) = T (S x) := by
+  have := congrArg (fun f => f x) h
+  simpa using this
+
+/-- Forme ponctuelle de `rproj_contract`, sur un vecteur explicite plutôt
+qu'au niveau opérateurs — plus directe à combiner avec les substitutions de
+`TwoObs.lean`/`Induction.lean` (relocalisé public dès le second usage). -/
+theorem rproj_contract_apply (Λ : LabeledResolution n K) (i i' : Fin K) (x : H n) :
+    rproj Λ i (rproj Λ i' x) = (if i = i' then (1 : ℂ) else 0) • rproj Λ i' x := by
+  have h := congrArg (fun T => T x) (rproj_contract Λ i i')
+  split_ifs at h ⊢ with heq
+  · subst heq; simpa using h
+  · simpa using h
+
 /-- **`branch` est indépendant du record choisi**, sous redondance
 (`IsRecordedOn`) — justifie a posteriori le choix arbitraire du record `0`
 dans la définition de `branch`. -/

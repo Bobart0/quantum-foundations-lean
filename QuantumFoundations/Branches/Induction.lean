@@ -51,11 +51,38 @@ de `a` (et de `r`, `r'`) est ESSENTIELLE : la récurrence forte sur
 `L.length` invoque cette même propriété à une cible DIFFÉRENTE sur le
 préfixe `L.tail` (trois appels, cibles différentes — voir note d'en-tête). -/
 theorem tunneling (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
-    (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
-    (L : List (Fin A)) (hnodup : L.Nodup) (ρ : Fin A → Fin R) (f : Fin A → Fin K)
-    (a : Fin A) (ha : a ∉ L) (r r' : Fin R) (i : Fin K) :
-    rproj (Obs a r) i (chainProj Obs L ρ f ψ) = rproj (Obs a r') i (chainProj Obs L ρ f ψ) := by
-  sorry
+    (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs) :
+    ∀ (L : List (Fin A)), L.Nodup → ∀ (ρ : Fin A → Fin R) (f : Fin A → Fin K)
+      (a : Fin A), a ∉ L → ∀ (r r' : Fin R) (i : Fin K),
+      rproj (Obs a r) i (chainProj Obs L ρ f ψ) = rproj (Obs a r') i (chainProj Obs L ρ f ψ) := by
+  intro L
+  induction L using List.reverseRecOn with
+  | nil => intro _ ρ f a _ r r' i; exact hrec a r r' i
+  | append_singleton L' b ih =>
+    intro hnodup ρ f a ha r r' i
+    have hab : a ≠ b := by intro h; apply ha; rw [h]; simp
+    have haL' : a ∉ L' := by intro h; apply ha; simp [h]
+    have hbL' : b ∉ L' := by
+      intro hb
+      exact (List.nodup_append.mp hnodup).2.2 b hb b (List.mem_singleton_self b) rfl
+    have hL'nodup : L'.Nodup := (List.nodup_append.mp hnodup).1
+    show rproj (Obs a r) i (chainProj Obs (L' ++ [b]) ρ f ψ)
+        = rproj (Obs a r') i (chainProj Obs (L' ++ [b]) ρ f ψ)
+    have hunfold : chainProj Obs (L' ++ [b]) ρ f ψ
+        = rproj (Obs b (ρ b)) (f b) (chainProj Obs L' ρ f ψ) :=
+      List.foldl_concat _ ψ b L'
+    rw [hunfold]
+    set X := chainProj Obs L' ρ f ψ with hX
+    obtain ⟨ĝ, hcomm⟩ := hcw a b hab r r'
+    calc rproj (Obs a r) i (rproj (Obs b (ρ b)) (f b) X)
+        = rproj (Obs a r) i (rproj (Obs b ĝ) (f b) X) := by
+          rw [ih hL'nodup ρ f b hbL' (ρ b) ĝ (f b)]
+      _ = rproj (Obs b ĝ) (f b) (rproj (Obs a r) i X) := commute_apply (hcomm i (f b)).1 X
+      _ = rproj (Obs b ĝ) (f b) (rproj (Obs a r') i X) := by
+          rw [ih hL'nodup ρ f a haL' r r' i]
+      _ = rproj (Obs a r') i (rproj (Obs b ĝ) (f b) X) := (commute_apply (hcomm i (f b)).2 X).symm
+      _ = rproj (Obs a r') i (rproj (Obs b (ρ b)) (f b) X) := by
+          rw [ih hL'nodup ρ f b hbL' ĝ (ρ b) (f b)]
 
 /-- **E — Action diagonale.** Pour toute observable `c` déjà présente dans la
 chaîne `L`, la projection de son record `ρ c`, à l'étiquette `k`, agit comme
@@ -63,12 +90,42 @@ chaîne `L`, la projection de son record `ρ c`, à l'étiquette `k`, agit comme
 chaîne, `0` sinon. Récurrence sur le préfixe de `L` avant `c` ; au contact,
 **T** puis contraction opératorielle (`Basic.rproj_contract`). -/
 theorem diagonal (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
-    (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
-    (L : List (Fin A)) (hnodup : L.Nodup) (ρ : Fin A → Fin R) (f : Fin A → Fin K)
-    (c : Fin A) (hc : c ∈ L) (k : Fin K) :
-    rproj (Obs c (ρ c)) k (chainProj Obs L ρ f ψ)
-      = (if k = f c then (1 : ℂ) else 0) • chainProj Obs L ρ f ψ := by
-  sorry
+    (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs) :
+    ∀ (L : List (Fin A)), L.Nodup → ∀ (ρ : Fin A → Fin R) (f : Fin A → Fin K)
+      (c : Fin A), c ∈ L → ∀ (k : Fin K),
+      rproj (Obs c (ρ c)) k (chainProj Obs L ρ f ψ)
+        = (if k = f c then (1 : ℂ) else 0) • chainProj Obs L ρ f ψ := by
+  intro L
+  induction L using List.reverseRecOn with
+  | nil => intro _ ρ f c hc; exact absurd hc List.not_mem_nil
+  | append_singleton L' b ih =>
+    intro hnodup ρ f c hc k
+    have hL'nodup : L'.Nodup := (List.nodup_append.mp hnodup).1
+    have hbL' : b ∉ L' := by
+      intro hb
+      exact (List.nodup_append.mp hnodup).2.2 b hb b (List.mem_singleton_self b) rfl
+    have hunfold : chainProj Obs (L' ++ [b]) ρ f ψ
+        = rproj (Obs b (ρ b)) (f b) (chainProj Obs L' ρ f ψ) :=
+      List.foldl_concat _ ψ b L'
+    rw [hunfold]
+    set X := chainProj Obs L' ρ f ψ with hX
+    rcases List.mem_append.mp hc with hcL' | hcb
+    · -- c ∈ L' : tunnel through b's layer, then use ih
+      have hcb' : c ≠ b := fun h => hbL' (h ▸ hcL')
+      obtain ⟨ĝ, hcomm⟩ := hcw c b hcb' (ρ c) (ρ c)
+      calc rproj (Obs c (ρ c)) k (rproj (Obs b (ρ b)) (f b) X)
+          = rproj (Obs c (ρ c)) k (rproj (Obs b ĝ) (f b) X) := by
+            rw [tunneling Obs ψ hrec hcw L' hL'nodup ρ f b hbL' (ρ b) ĝ (f b)]
+        _ = rproj (Obs b ĝ) (f b) (rproj (Obs c (ρ c)) k X) := commute_apply (hcomm k (f b)).1 X
+        _ = rproj (Obs b ĝ) (f b) ((if k = f c then (1 : ℂ) else 0) • X) := by
+            rw [ih hL'nodup ρ f c hcL' k]
+        _ = (if k = f c then (1 : ℂ) else 0) • rproj (Obs b ĝ) (f b) X := map_smul _ _ _
+        _ = (if k = f c then (1 : ℂ) else 0) • rproj (Obs b (ρ b)) (f b) X := by
+            rw [tunneling Obs ψ hrec hcw L' hL'nodup ρ f b hbL' ĝ (ρ b) (f b)]
+    · -- c = b : direct contact
+      rw [List.mem_singleton] at hcb
+      subst hcb
+      exact rproj_contract_apply (Obs c (ρ c)) k (f c) X
 
 /-- **Somme-à-`ψ` par résolutions itérées.** Corollaire d'une ligne de `E`
 (résolution de l'identité, `Basic.resolution_apply`, itérée `A` fois via le
