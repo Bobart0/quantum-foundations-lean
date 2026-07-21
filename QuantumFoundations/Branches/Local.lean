@@ -193,38 +193,86 @@ theorem commute_of_disjoint {A B : Finset (Fin N)} (hAB : Disjoint A B)
   · simp [hP, mul_comm]
   · simp [hP]
 
-/-- **Pont couche 2 → couche 1 (signature PROVISOIRE, voir avertissement
-d'en-tête).** Si chaque record de chaque observable, transporté via `e` sur
-`Sites N d`, est local à un ensemble de sites, et qu'aucune paire
-d'observables ne se pair-couvre, alors la famille satisfait `CommuteWitness`
-— assemblage direct de `commute_of_disjoint`. -/
+/-- **Dé-conjugaison.** Si les formes conjuguées par une isométrie linéaire
+`e` de deux opérateurs commutent, les opérateurs eux-mêmes commutent —
+`e.toLinearEquiv.conj` est l'équivalence de conjugaison sur les endomorphismes
+(`LinearEquiv.conj`), multiplicative (`conj_comp`) et bijective, donc injective. -/
+private theorem commute_of_conj_commute {E F : Type*} [NormedAddCommGroup E] [NormedAddCommGroup F]
+    [InnerProductSpace ℂ E] [InnerProductSpace ℂ F] (e : E ≃ₗᵢ[ℂ] F) (S T : E →ₗ[ℂ] E)
+    (h : Commute (e.toLinearIsometry.toLinearMap ∘ₗ S ∘ₗ e.symm.toLinearIsometry.toLinearMap)
+                  (e.toLinearIsometry.toLinearMap ∘ₗ T ∘ₗ e.symm.toLinearIsometry.toLinearMap)) :
+    Commute S T := by
+  have hconjS : e.toLinearEquiv.conj S
+      = e.toLinearIsometry.toLinearMap ∘ₗ S ∘ₗ e.symm.toLinearIsometry.toLinearMap := rfl
+  have hconjT : e.toLinearEquiv.conj T
+      = e.toLinearIsometry.toLinearMap ∘ₗ T ∘ₗ e.symm.toLinearIsometry.toLinearMap := rfl
+  rw [← hconjS, ← hconjT] at h
+  show S ∘ₗ T = T ∘ₗ S
+  apply e.toLinearEquiv.conj.injective
+  rw [LinearEquiv.conj_comp, LinearEquiv.conj_comp]
+  exact h
+
+/-- **Pont couche 2 → couche 1.** Si chaque record de chaque observable,
+transporté via `e` sur `Sites N d`, est local à un ensemble de sites, et
+qu'aucune paire d'observables ne se pair-couvre, alors la famille satisfait
+`CommuteWitness` — assemblage de `commute_of_disjoint` (sur `Sites N d`) et
+`commute_of_conj_commute` (rapatrie la commutation sur `H (d ^ N)`).
+**`hR2 : 2 ≤ R`** : hypothèse nécessaire pour le cas `r = r'` de
+`CommuteWitness` (qui quantifie sur TOUS les couples de records d'une même
+observable, y compris confondus), alors que `¬ PairCovers` — issu de
+`PairCovers` qui exige `r ≠ r'` dans sa définition — ne fournit un témoin
+QUE pour les couples distincts. Cas `r = r'` traité en réutilisant le témoin
+d'un couple `(r, r'')` quelconque, `r'' ≠ r` (existe par `hR2`) : ce témoin
+est disjoint de `supp a r`, ce qui suffit puisque les deux conjoncts requis
+coïncident. Coût nul : la redondance de records n'a de sens physique que
+pour `R ≥ 2`. -/
 theorem commuteWitness_of_not_pairCovers {A R K : ℕ}
     (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
     (Obs : Fin A → Fin R → LabeledResolution (d ^ N) K)
-    (supp : Fin A → Fin R → Finset (Fin N))
+    (supp : Fin A → Fin R → Finset (Fin N)) (hR2 : 2 ≤ R)
     (hlocal : ∀ a r i, IsLocalTo
       (e.toLinearIsometry.toLinearMap ∘ₗ rproj (Obs a r) i ∘ₗ e.symm.toLinearIsometry.toLinearMap)
       (supp a r))
     (hnpc : ∀ a b : Fin A, a ≠ b → ¬ PairCovers (supp a) (supp b)) :
     CommuteWitness Obs := by
-  sorry
+  haveI : Nontrivial (Fin R) := Fin.nontrivial_iff_two_le.mpr hR2
+  intro a b hab r r'
+  have hnpc' := hnpc a b hab
+  unfold PairCovers at hnpc'
+  push Not at hnpc'
+  rcases eq_or_ne r r' with hrr' | hrr'
+  · obtain ⟨r'', hr''⟩ := exists_ne r
+    obtain ⟨ĝ, hĝ⟩ := hnpc' r r'' (Ne.symm hr'')
+    subst hrr'
+    refine ⟨ĝ, fun i j => ?_⟩
+    have hcommute := commute_of_conj_commute e _ _
+      (commute_of_disjoint hĝ.1.symm (hlocal a r i) (hlocal b ĝ j))
+    exact ⟨hcommute, hcommute⟩
+  · obtain ⟨ĝ, hĝ⟩ := hnpc' r r' hrr'
+    exact ⟨ĝ, fun i j =>
+      ⟨commute_of_conj_commute e _ _ (commute_of_disjoint hĝ.1.symm (hlocal a r i) (hlocal b ĝ j)),
+       commute_of_conj_commute e _ _
+         (commute_of_disjoint hĝ.2.symm (hlocal a r' i) (hlocal b ĝ j))⟩⟩
 
-/-- **Corollaire local du théorème de Riedel (signature PROVISOIRE).**
-`Induction.riedel`, combiné à `commuteWitness_of_not_pairCovers` : sous
-redondance et non-pair-covering DEUX À DEUX, `ψ` (transporté sur `H (d ^ N)`
-via `e`) se décompose en branches jointes uniques et orthogonales. -/
+/-- **Corollaire local du théorème de Riedel.** Sous redondance
+(`IsRecordedOn`) et non-pair-covering deux à deux, `ψ` se décompose en
+branches jointes uniques et orthogonales. `e`/`hlocal` ne servent qu'à établir
+`CommuteWitness` (via `commuteWitness_of_not_pairCovers`) — `Induction.riedel`
+s'applique ensuite DIRECTEMENT sur `H (d ^ N)`, sans transport de conclusion
+(les `Obs`/`ψ` y vivent depuis le début). -/
 theorem riedel_local {A R K : ℕ}
     (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
     (Obs : Fin A → Fin R → LabeledResolution (d ^ N) K)
-    (supp : Fin A → Fin R → Finset (Fin N)) [NeZero R] (ψ : H (d ^ N))
+    (supp : Fin A → Fin R → Finset (Fin N)) [NeZero R] [NeZero K] (hR2 : 2 ≤ R) (ψ : H (d ^ N))
     (hrec : ∀ a, IsRecordedOn ψ (Obs a))
     (hlocal : ∀ a r i, IsLocalTo
       (e.toLinearIsometry.toLinearMap ∘ₗ rproj (Obs a r) i ∘ₗ e.symm.toLinearIsometry.toLinearMap)
       (supp a r))
     (hnpc : ∀ a b : Fin A, a ≠ b → ¬ PairCovers (supp a) (supp b)) :
     (∑ f : Fin A → Fin K, jointBranch Obs ψ f = ψ) ∧
-    (∀ f f' : Fin A → Fin K, f ≠ f' → ⟪jointBranch Obs ψ f, jointBranch Obs ψ f'⟫_ℂ = 0) := by
-  sorry
+    (∀ f f' : Fin A → Fin K, f ≠ f' → ⟪jointBranch Obs ψ f, jointBranch Obs ψ f'⟫_ℂ = 0) :=
+  let hcw := commuteWitness_of_not_pairCovers e Obs supp hR2 hlocal hnpc
+  ⟨riedel Obs ψ hrec hcw |>.1, riedel Obs ψ hrec hcw |>.2.1⟩
 
 /-- **Corollaire de comptage (Finset.card pur).** Si les records de `recA`
 sont des singletons et que `recB` compte au moins trois records DEUX À DEUX
