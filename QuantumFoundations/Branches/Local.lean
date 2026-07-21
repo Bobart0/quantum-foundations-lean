@@ -238,7 +238,47 @@ theorem pigeonhole_corollary {R : ℕ} (recA recB : Fin R → Finset (Fin N))
     (hR : 3 ≤ R) (hsingleton : ∀ r, (recA r).card ≤ 1)
     (hdisjB : ∀ r r' : Fin R, r ≠ r' → Disjoint (recB r) (recB r')) :
     ¬ PairCovers recA recB := by
-  sorry
+  rintro ⟨r, r', hrr', hcov⟩
+  set BadA : Finset (Fin R) := Finset.univ.filter (fun ĝ => ¬ Disjoint (recB ĝ) (recA r))
+    with hBadA_def
+  set BadB : Finset (Fin R) := Finset.univ.filter (fun ĝ => ¬ Disjoint (recB ĝ) (recA r'))
+    with hBadB_def
+  have hBadA_le : BadA.card ≤ 1 := by
+    rw [Finset.card_le_one]
+    intro a ha b hb
+    simp only [hBadA_def, Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+    by_contra hab
+    obtain ⟨x, hxa, hxr⟩ := Finset.not_disjoint_iff.mp ha
+    obtain ⟨y, hyb, hyr⟩ := Finset.not_disjoint_iff.mp hb
+    have hxy : x = y := Finset.card_le_one.mp (hsingleton r) x hxr y hyr
+    subst hxy
+    exact (Finset.disjoint_left.mp (hdisjB a b hab) hxa) hyb
+  have hBadB_le : BadB.card ≤ 1 := by
+    rw [Finset.card_le_one]
+    intro a ha b hb
+    simp only [hBadB_def, Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+    by_contra hab
+    obtain ⟨x, hxa, hxr⟩ := Finset.not_disjoint_iff.mp ha
+    obtain ⟨y, hyb, hyr⟩ := Finset.not_disjoint_iff.mp hb
+    have hxy : x = y := Finset.card_le_one.mp (hsingleton r') x hxr y hyr
+    subst hxy
+    exact (Finset.disjoint_left.mp (hdisjB a b hab) hxa) hyb
+  have hsub : (Finset.univ : Finset (Fin R)) ⊆ BadA ∪ BadB := by
+    intro ĝ _
+    rw [Finset.mem_union, hBadA_def, hBadB_def, Finset.mem_filter, Finset.mem_filter]
+    have := hcov ĝ
+    rw [not_and_or] at this
+    rcases this with h | h
+    · left; exact ⟨Finset.mem_univ _, h⟩
+    · right; exact ⟨Finset.mem_univ _, h⟩
+  have hcard : R ≤ (BadA ∪ BadB).card := by
+    have := Finset.card_le_card hsub
+    simpa using this
+  have hle2 : (BadA ∪ BadB).card ≤ 2 := by
+    calc (BadA ∪ BadB).card ≤ BadA.card + BadB.card := Finset.card_union_le _ _
+    _ ≤ 1 + 1 := by omega
+    _ = 2 := by norm_num
+  omega
 
 end
 end QuantumFoundations.Branches
