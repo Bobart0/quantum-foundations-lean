@@ -2,7 +2,7 @@ import QuantumFoundations.Wigner.Bessel
 import QuantumFoundations.Wigner.Scalar
 
 /-!
-# W3 — Construction de `V` et propriétés de base (Bargmann §3, eqs 11-12a)
+**FR.** # W3 — Construction de `V` et propriétés de base (Bargmann §3, eqs 11-12a)
 
 Préférer systématiquement les formes multiplicatives croisées dans les hypothèses
 des lemmes (`γ • V z = T w − γ • e'` plutôt que des `⁻¹` dans les buts) — même
@@ -24,6 +24,32 @@ instance `NeZero n` construite localement dans la branche `dite` semble coûteus
 à unifier lors d'une réécriture directe. Remède : `simp only [e, dif_pos h0, ...]`
 referme la même égalité sans jamais timeout (`simp` gère la réduction du `dite`
 plus robustement qu'un `rw`/`show` manuel).
+
+**EN.** # W3 — Construction of V and basic properties (Bargmann §3, Eqs. 11–12a)
+
+Cross-multiplied forms should systematically be preferred in lemma hypotheses
+(γ • V z = T w − γ • e' rather than goals containing ⁻¹), following the
+same discipline as sqrtOp/dilProj on the Naimark side, to avoid fragility
+involving WithLp/⁻¹.
+
+Documented deviation (2026-07-13): all six theorems in this file take
+hn : 2 ≤ n, which was absent from the W0 skeleton statements. This is
+necessary: when n = 0, e n = 0 (junk value) and eImg T = T 0 may be
+zero, in which case γ may vanish and the division γ⁻¹ • T w degenerates.
+The algebraic identities in this file (γ⁻¹ * γ = 1, etc.) assume γ ≠ 0,
+which is guaranteed only by ‖e n‖ = 1, hence by n ≥ 1. The stronger
+choice 2 ≤ n, rather than the technically sufficient 0 < n for W3 alone,
+ensures consistency with Core.lean (W4), which invokes these lemmas under
+exactly that hypothesis.
+
+Lean pitfall encountered (CLAUDE.md rule 12, generalized beyond obtain):
+unfolding e n through unfold e; rw [dif_pos h0], or by an explicit show
+of the unfolded value, causes a deterministic timeout at whnf. A locally
+constructed NeZero n instance in the dite branch appears costly to unify
+during direct rewriting. Remedy:
+simp only [e, dif_pos h0, ...] closes the same equality without timing out;
+simp handles reduction of the dite more robustly than a manual
+rw/show.
 -/
 
 namespace QuantumFoundations.Wigner
@@ -35,7 +61,11 @@ noncomputable section
 
 variable {n : ℕ} {T : H n → H n}
 
-/-! ## Préliminaires privés (réutilisés par les 6 théorèmes publics) -/
+/-!
+**FR.** ## Préliminaires privés (réutilisés par les 6 théorèmes publics)
+
+**EN.** ## Private preliminaries (reused by the six public theorems)
+-/
 
 private theorem he_norm (hn : 2 ≤ n) : ‖e n‖ = 1 := by
   have h0 : 0 < n := by omega
@@ -103,8 +133,13 @@ theorem inner_eImg_V (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp 
     inv_mul_cancel₀ (gamma_ne_zero hT hn hz)]
   ring
 
-/-- Réutilisé par W4 (`Core.lean`, `T_phase`) : `T` préserve la norme des vecteurs
-unitaires — pas seulement les produits scalaires. -/
+/--
+**FR.** Réutilisé par W4 (`Core.lean`, `T_phase`) : `T` préserve la norme des vecteurs
+unitaires — pas seulement les produits scalaires.
+
+**EN.** Reused by W4 (Core.lean, T_phase): T preserves norms of unit
+vectors, not merely inner products.
+-/
 theorem norm_T_unit (hT : IsWignerMap T) {v : H n} (hv : ‖v‖ = 1) : ‖T v‖ = 1 := by
   have h1 : ‖⟪T v, T v⟫_ℂ‖ = ‖⟪v, v⟫_ℂ‖ := hT v v hv hv
   have hvv : ⟪v, v⟫_ℂ = (1 : ℂ) := by rw [inner_self_eq_norm_sq_to_K, hv]; norm_num
@@ -131,8 +166,14 @@ private theorem inner_fz_e (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
   rw [inner_smul_left, inner_z_e hz]
   simp
 
-/-- `{e, f_z}` (avec `f_z` le représentant unitaire de `z`) est orthonormée dès que
-`z ⊥ e` et `z ≠ 0` — le pivot pour appliquer Bessel (9) à `T w` sur cette base. -/
+/--
+**FR.** `{e, f_z}` (avec `f_z` le représentant unitaire de `z`) est orthonormée dès que
+`z ⊥ e` et `z ≠ 0` — le pivot pour appliquer Bessel (9) à `T w` sur cette base.
+
+**EN.** {e, f_z}, with f_z the unit representative of z, is orthonormal
+whenever z ⊥ e and z ≠ 0. This is the pivot for applying Bessel (9) to
+T w on this basis.
+-/
 private theorem orthonormal_e_fz (hn : 2 ≤ n) {z : H n} (hz : InPerp z) (hz0 : z ≠ 0) :
     Orthonormal ℂ ![e n, (‖z‖⁻¹ : ℂ) • z] := by
   constructor
@@ -174,10 +215,18 @@ private theorem ab_sq_one (hn : 2 ≤ n) {z : H n} (hz : InPerp z) :
   field_simp
   linarith [h]
 
-/-- Colinéarité définitionnelle : `V z` est un multiple scalaire de `T` appliqué au
+/--
+**FR.** Colinéarité définitionnelle : `V z` est un multiple scalaire de `T` appliqué au
 représentant unitaire de `z` (Bargmann §3.2 : « Clearly, `Vz = f'β' ∈ (Tf)‖z‖ = Tz` » —
 `β'` a pour MODULE `‖z‖`, pas nécessairement 1). Rend la compatibilité `⟪e,x⟫ = 0` de
-W5 GRATUITE, sans Cauchy-Schwarz. -/
+W5 GRATUITE, sans Cauchy-Schwarz.
+
+**EN.** Definitional collinearity: V z is a scalar multiple of T applied to
+the unit representative of z (Bargmann §3.2:
+“Clearly, Vz = f'β' ∈ (Tf)‖z‖ = Tz”—β' has MODULUS ‖z‖, not
+necessarily 1). This makes the ⟪e,x⟫ = 0 compatibility case in W5 FREE,
+without Cauchy–Schwarz.
+-/
 theorem V_colinear (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp z) (hz0 : z ≠ 0) :
     ∃ δ : ℂ, ‖δ‖ = ‖z‖ ∧ V T z = δ • T ((‖z‖⁻¹ : ℂ) • z) := by
   set w := (‖e n + z‖⁻¹ : ℂ) • (e n + z) with hw_def
@@ -216,7 +265,11 @@ theorem V_colinear (hT : IsWignerMap T) (hn : 2 ≤ n) (z : H n) (hz : InPerp z)
     rw [hTw_eq, smul_add, smul_smul, smul_smul, inv_mul_cancel₀ hγne, one_smul,
       add_sub_cancel_left]
 
-/-- `V` envoie toujours `0` (élément trivial de `𝒫`) sur `0`. -/
+/--
+**FR.** `V` envoie toujours `0` (élément trivial de `𝒫`) sur `0`.
+
+**EN.** V always maps 0, the trivial element of 𝒫, to 0.
+-/
 private theorem V_zero (hT : IsWignerMap T) (hn : 2 ≤ n) : V T (0 : H n) = 0 := by
   show (⟪eImg T, T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0))⟫_ℂ)⁻¹ •
       T ((‖e n + 0‖⁻¹ : ℂ) • (e n + 0)) - eImg T = 0
@@ -237,11 +290,20 @@ private theorem inner_fw_fx_norm {w x : H n} (hw0 : w ≠ 0) (hx0 : x ≠ 0) :
     norm_inv, norm_inv, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
     abs_norm, abs_norm, mul_assoc]
 
-/-- (11) Module du produit scalaire préservé par `V` sur `𝒫`. Preuve directe via la
+/--
+**FR.** (11) Module du produit scalaire préservé par `V` sur `𝒫`. Preuve directe via la
 colinéarité (`V_colinear` ci-dessus) : `Vw,Vx` sont des multiples de `T` appliqué aux
 représentants unitaires, et `T` préserve le module du produit scalaire de deux
 vecteurs unitaires (hypothèse `IsWignerMap`) — aucun besoin de repasser par `w`
-(le vecteur bâti sur `e+z`, contrairement à ce que suggérait le plan initial). -/
+(le vecteur bâti sur `e+z`, contrairement à ce que suggérait le plan initial).
+
+**EN.** (11) V preserves the modulus of the inner product on 𝒫. The proof
+is direct from collinearity (V_colinear above): Vw,Vx are scalar
+multiples of T applied to unit representatives, and T preserves the
+modulus of the inner product of two unit vectors by IsWignerMap. There is
+no need to return to w, the vector built from e+z, contrary to the
+initial plan.
+-/
 theorem norm_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
     (hx : InPerp x) : ‖⟪V T w, V T x⟫_ℂ‖ = ‖⟪w, x⟫_ℂ‖ := by
   by_cases hw0 : w = 0
@@ -256,10 +318,18 @@ theorem norm_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPer
   have hxR : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx0
   field_simp
 
-/-- Identité clé (Bargmann §3, eq. 10) : en développant `V z = γ⁻¹•Tw - e'` sur les
+/--
+**FR.** Identité clé (Bargmann §3, eq. 10) : en développant `V z = γ⁻¹•Tw - e'` sur les
 deux arguments, les termes croisés `⟪Tw,e'⟫`/`⟪e',Tw⟩` s'annulent EXACTEMENT contre
 `⟪e',e'⟫ = 1`, ne laissant que le terme principal moins `1`. C'est cette structure
-« `1 + ...` » qui permet ensuite d'appliquer `re_eq_of_norm_eq` (W1). -/
+« `1 + ...` » qui permet ensuite d'appliquer `re_eq_of_norm_eq` (W1).
+
+**EN.** Key identity (Bargmann §3, Eq. 10): after expanding
+V z = γ⁻¹•Tw - e' in both arguments, the cross terms
+⟪Tw,e'⟫/⟪e',Tw'⟩ cancel EXACTLY against ⟪e',e'⟫ = 1, leaving only the
+principal term minus 1. This 1 + ... structure subsequently makes
+re_eq_of_norm_eq (W1) applicable.
+-/
 private theorem inner_V_eq (hT : IsWignerMap T) (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z)
     (hz' : InPerp z') :
     ⟪V T z, V T z'⟫_ℂ =
@@ -301,10 +371,17 @@ private theorem inner_ew_ewx_eq (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z) (hz'
     inner_add_right, inner_add_right, he_inner_self hn, hz', inner_z_e hz]
   ring
 
-/-- Le module de `⟪Tw,Tw'⟫` (les images des représentants unitaires de `e+z`/`e+z'`)
+/--
+**FR.** Le module de `⟪Tw,Tw'⟫` (les images des représentants unitaires de `e+z`/`e+z'`)
 se calcule en fonction de `⟪z,z'⟫` seul — c'est le pont entre `IsWignerMap` (qui ne
 voit que des vecteurs unitaires) et l'énoncé (12), qui porte sur `z,z' ∈ 𝒫`
-quelconques. -/
+quelconques.
+
+**EN.** The modulus of ⟪Tw,Tw'⟫, for the images of the unit representatives
+of e+z/e+z', can be expressed solely in terms of ⟪z,z'⟫. This is the
+bridge between IsWignerMap, which concerns only unit vectors, and statement
+(12), which concerns arbitrary z,z' ∈ 𝒫.
+-/
 private theorem norm_Tw_Tw' (hT : IsWignerMap T) (hn : 2 ≤ n) {z z' : H n} (hz : InPerp z)
     (hz' : InPerp z') :
     ‖⟪T ((‖e n + z‖⁻¹ : ℂ) • (e n + z)), T ((‖e n + z'‖⁻¹ : ℂ) • (e n + z'))⟫_ℂ‖
@@ -313,11 +390,22 @@ private theorem norm_Tw_Tw' (hT : IsWignerMap T) (hn : 2 ≤ n) {z z' : H n} (hz
     norm_inv, norm_inv, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
     abs_norm, abs_norm]
 
-/-- (12) Partie réelle du produit scalaire préservée par `V` sur `𝒫`. Preuve : via
+/--
+**FR.** (12) Partie réelle du produit scalaire préservée par `V` sur `𝒫`. Preuve : via
 `inner_V_eq`, `⟪Vw,Vx⟫ = M - 1` avec `M := (conj γ)⁻¹γ'⁻¹⟪Tw,Tw'⟫` ; `‖M‖` se
 simplifie en `‖1+⟪w,x⟫‖` (les facteurs `‖e+z‖`/`‖e+z'‖` s'annulent EXACTEMENT
 contre `‖γ‖⁻¹`/`‖γ'‖⁻¹`, cf. `norm_gamma`), donc `‖1+⟪Vw,Vx⟫‖ = ‖1+⟪w,x⟫‖` ; combiné
-à `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` (`norm_inner_V` ci-dessus), `re_eq_of_norm_eq` (W1) conclut. -/
+à `‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖` (`norm_inner_V` ci-dessus), `re_eq_of_norm_eq` (W1) conclut.
+
+**EN.** (12) V preserves the real part of the inner product on 𝒫. Proof:
+by inner_V_eq, ⟪Vw,Vx⟫ = M - 1, where
+M := (conj γ)⁻¹γ'⁻¹⟪Tw,Tw'⟫. The norm ‖M‖ simplifies to
+‖1+⟪w,x⟫‖: the factors ‖e+z‖/‖e+z'‖ cancel EXACTLY against
+‖γ‖⁻¹/‖γ'‖⁻¹ (see norm_gamma). Hence
+‖1+⟪Vw,Vx⟫‖ = ‖1+⟪w,x⟫‖; combined with
+‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖ from norm_inner_V above,
+re_eq_of_norm_eq (W1) concludes.
+-/
 theorem re_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
     (hx : InPerp x) : (⟪V T w, V T x⟫_ℂ).re = (⟪w, x⟫_ℂ).re := by
   have hone : ‖(1 : ℂ) + ⟪V T w, V T x⟫_ℂ‖ = ‖(1 : ℂ) + ⟪w, x⟫_ℂ‖ := by
@@ -334,9 +422,15 @@ theorem re_inner_V (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp 
     field_simp
   exact re_eq_of_norm_eq (norm_inner_V hT hn w x hw hx) hone
 
-/-- (12a) Si `⟪w,x⟫` est déjà réel, `V` le préserve exactement (pas seulement sa
+/--
+**FR.** (12a) Si `⟪w,x⟫` est déjà réel, `V` le préserve exactement (pas seulement sa
 partie réelle ou son module) : (11)+(12) forcent `Im⟪Vw,Vx⟫ = 0` par
-`|z|² = Re(z)² + Im(z)²`. -/
+`|z|² = Re(z)² + Im(z)²`.
+
+**EN.** (12a) If ⟪w,x⟫ is already real, then V preserves it exactly, not
+merely its real part or modulus: (11)+(12) force Im⟪Vw,Vx⟫ = 0 through
+|z|² = Re(z)² + Im(z)².
+-/
 theorem inner_V_eq_of_im_eq_zero (hT : IsWignerMap T) (hn : 2 ≤ n) (w x : H n) (hw : InPerp w)
     (hx : InPerp x) (hreal : (⟪w, x⟫_ℂ).im = 0) : ⟪V T w, V T x⟫_ℂ = ⟪w, x⟫_ℂ := by
   have h11 : ‖⟪V T w, V T x⟫_ℂ‖ = ‖⟪w, x⟫_ℂ‖ := norm_inner_V hT hn w x hw hx

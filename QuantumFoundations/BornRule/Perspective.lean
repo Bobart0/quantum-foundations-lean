@@ -2,7 +2,7 @@ import QuantumFoundations.Wigner.Main
 import Gleason.Operator
 
 /-!
-# B1 — Scaffolding : perspectives, axiomes, Lemme 4 (Définitions 1-3, Lemmes 1-4)
+**FR.** # B1 — Scaffolding : perspectives, axiomes, Lemme 4 (Définitions 1-3, Lemmes 1-4)
 
 Formulé directement pour `V := H n` plutôt que sur un espace abstrait :
 `Gleason.gleason`, utilisé en `BornRule/GleasonBridge.lean`, est spécifique à
@@ -20,6 +20,26 @@ avec `H n`, respectivement via `Submodule.sup_orthogonal_of_hasOrthogonalProject
 (instance `HasOrthogonalProjection` automatique en dimension finie) et
 `Submodule.span_range_eq_iSup` (déjà exploité côté `Gleason.ProjMeasure.
 isCFrameFunction`).
+
+**EN.** # B1 — Scaffolding: perspectives, axioms, Lemma 4 (Definitions 1–3, Lemmas 1–4)
+
+Formulated directly for V := H n rather than for an abstract space:
+Gleason.gleason, used in BornRule/GleasonBridge.lean, is specific to
+H n, and no current use case requires the generality of an arbitrary space
+V. An immediate benefit is that Module.finrank ℂ (H n) = n (simp), so
+bases of the WHOLE space are indexed directly by Fin n rather than by
+Fin (Module.finrank ℂ V)—removing one layer of casts from
+basisPerspective/line_ne_bot/line_ne_top/line_injective. Bases of an
+arbitrary cell c (cellLines, variable dimension) necessarily remain
+indexed by Fin (Module.finrank ℂ c).
+
+No open goals, including in fallback positions: the two fallback proofs
+(Perspective.binary.span, basisPerspective.span) close directly over
+H n, respectively via Submodule.sup_orthogonal_of_hasOrthogonalProjection
+(with HasOrthogonalProjection automatically available in finite dimension)
+and Submodule.span_range_eq_iSup (already used in
+Gleason.ProjMeasure.
+isCFrameFunction).
 -/
 
 namespace QuantumFoundations.BornRule
@@ -32,16 +52,26 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- A perspective: a finite family of pairwise orthogonal, non-zero
-    subspaces of `H n` whose supremum is the whole space (Définition 1). -/
+/--
+**FR.** A perspective: a finite family of pairwise orthogonal, non-zero
+    subspaces of `H n` whose supremum is the whole space (Définition 1).
+
+**EN.** A perspective: a finite family of pairwise orthogonal, nonzero
+ subspaces of H n whose supremum is the whole space (Definition 1).
+-/
 structure Perspective (n : ℕ) where
   cells : Finset (Submodule ℂ (H n))
   nz    : ∀ c ∈ cells, c ≠ ⊥
   ortho : ∀ c ∈ cells, ∀ c' ∈ cells, c ≠ c' → c ≤ c'ᗮ
   span  : sSup (cells : Set (Submodule ℂ (H n))) = ⊤
 
-/-- Refinement: every fine cell is contained in some coarse cell
-    (Définition 2). -/
+/--
+**FR.** Refinement: every fine cell is contained in some coarse cell
+    (Définition 2).
+
+**EN.** Refinement: every fine cell is contained in some coarse cell
+ (Definition 2).
+-/
 def Refines (D' D : Perspective n) : Prop :=
   ∀ c' ∈ D'.cells, ∃ c ∈ D.cells, c' ≤ c
 
@@ -110,8 +140,13 @@ end Perspective
 -- An estimation rule: a real weight per (perspective, cell) pair.
 variable (Est : Perspective n → Submodule ℂ (H n) → ℝ)
 
-/-- (Grain) : coherence of the estimation rule under refinement
-    (Définition 3, premier axiome). -/
+/--
+**FR.** (Grain) : coherence of the estimation rule under refinement
+    (Définition 3, premier axiome).
+
+**EN.** (Grain): coherence of the estimation rule under refinement
+ (Definition 3, first axiom).
+-/
 def AxGrain : Prop :=
   ∀ D' D : Perspective n, Refines D' D →
     ∀ c ∈ D.cells, Est D c = ∑ c' ∈ D'.cells.filter (· ≤ c), Est D' c'
@@ -126,11 +161,18 @@ def AxPos : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, 0 ≤ Est D c
     weight. -/
 def AxNul (v : H n) : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, v ∈ cᗮ → Est D c = 0
 
-/-- **Lemme 4** : under (Grain) alone, the weight of a cell shared by
+/--
+**FR.** **Lemme 4** : under (Grain) alone, the weight of a cell shared by
     two perspectives does not depend on which perspective it is
     evaluated in. Non-contextuality, usually postulated in
     Gleason-type derivations, is here a consequence of grain coherence
-    alone. -/
+    alone.
+
+**EN.** Lemma 4: under (Grain) alone, the weight of a cell shared by
+ two perspectives does not depend on the perspective in which it is
+ evaluated. Non-contextuality, usually postulated in Gleason-type
+ derivations, is here a consequence of grain coherence alone.
+-/
 theorem lemma4_noncontextual (hA : AxGrain Est) (hN : AxNorm Est)
     {D₁ D₂ : Perspective n} {c : Submodule ℂ (H n)}
     (h₁ : c ∈ D₁.cells) (h₂ : c ∈ D₂.cells) :
@@ -415,14 +457,26 @@ theorem refinePerspective_refines (D : Perspective n) : Refines (refinePerspecti
   obtain ⟨c, hc, hx'⟩ := hx
   exact ⟨c, hc, cellLines_le c x hx'⟩
 
-/-- Théorème de Pythagore fini : la norme au carré d'une somme de vecteurs
+/--
+**FR.** Théorème de Pythagore fini : la norme au carré d'une somme de vecteurs
 deux à deux orthogonaux est la somme des normes au carré. Absent tel quel de
 `gleason-theorem-lean` (qui n'a besoin que de l'additivité de `bornValue`,
 pas de `‖·‖²`), dérivé ici directement via l'expansion bilinéaire du produit
 scalaire. Relocalisé depuis `BornRule/Nonvacuity.lean` (public) : fait
 géométrique générique sur les familles orthogonales, indépendant du témoin
 de Born — sa place naturelle est aux côtés de `Perspective`, dans le fichier
-que `Histories` importe déjà. -/
+que `Histories` importe déjà.
+
+**EN.** Finite Pythagorean theorem: the squared norm of a sum of pairwise
+orthogonal vectors is the sum of their squared norms. This result is not
+available in this form in gleason-theorem-lean (which needs only the
+additivity of bornValue, not of ‖·‖²) and is derived here directly from
+the bilinear expansion of the inner product. Moved from
+BornRule/Nonvacuity.lean and made public: it is a generic geometric fact
+about orthogonal families, independent of the Born witness, and therefore
+belongs naturally alongside Perspective, in the file already imported by
+Histories.
+-/
 theorem norm_sq_sum_of_pairwise_orthogonal {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (x : ι → H n) (hortho : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ⟪x i, x j⟫_ℂ = 0) :
     ‖∑ i ∈ s, x i‖ ^ 2 = ∑ i ∈ s, ‖x i‖ ^ 2 := by
@@ -439,11 +493,20 @@ theorem norm_sq_sum_of_pairwise_orthogonal {ι : Type*} [DecidableEq ι] (s : Fi
   rw [Finset.sum_congr rfl (fun i (_ : i ∈ s) => inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (x i))] at hinner
   exact_mod_cast hinner
 
-/-- Combine la résolution de l'identité (`Gleason.projL_sup_of_pairwise_isOrtho`)
+/--
+**FR.** Combine la résolution de l'identité (`Gleason.projL_sup_of_pairwise_isOrtho`)
 et Pythagore fini : la valeur de Born sur le sup d'une famille orthogonale de
 cellules est la somme des valeurs de Born sur chaque cellule. Relocalisé
 depuis `BornRule/Nonvacuity.lean` (public), même raison que
-`norm_sq_sum_of_pairwise_orthogonal` ci-dessus. -/
+`norm_sq_sum_of_pairwise_orthogonal` ci-dessus.
+
+**EN.** Combines the resolution of the identity
+(Gleason.projL_sup_of_pairwise_isOrtho) with the finite Pythagorean theorem:
+the Born value on the supremum of an orthogonal family of cells is the sum
+of the Born values on the individual cells. Moved from
+BornRule/Nonvacuity.lean and made public, for the same reason as
+norm_sq_sum_of_pairwise_orthogonal above.
+-/
 theorem sum_sq_projL_of_pairwise_isOrtho (s : Finset (Submodule ℂ (H n)))
     (hortho : ∀ c' ∈ s, ∀ c'' ∈ s, c' ≠ c'' → c' ⟂ c'') (v : H n) :
     ‖projL (s.sup id) v‖ ^ 2 = ∑ c' ∈ s, ‖projL c' v‖ ^ 2 := by

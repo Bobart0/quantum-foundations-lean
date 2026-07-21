@@ -1,7 +1,7 @@
 import QuantumFoundations.Branches.Defs
 
 /-!
-# R0 — Nonvacuity : témoin GHZ₃ (une observable, trois records redondants)
+**FR.** # R0 — Nonvacuity : témoin GHZ₃ (une observable, trois records redondants)
 
 Habitant concret de `IsRecordedOn`/`LabeledResolution` (règle absolue 3 du
 projet, dans le même commit que `Defs.lean`).
@@ -35,6 +35,43 @@ leurs produits scalaires (singles distincts → 0) ; `projL (cell s b) ψ₀`
 s'accordent toujours) ; orthogonalité par `Submodule.isOrtho_span` ; `covers`
 via la base standard de `H 8` (`EuclideanSpace.basisFun`), scindée par
 `digit s`.
+
+**EN.** # R0 — Nonvacuity: a GHZ₃ witness (one observable, three redundant records)
+
+A concrete inhabitant of IsRecordedOn/LabeledResolution (absolute project
+rule 3, in the same commit as Defs.lean).
+
+## Ambient space: H 8, NOT Sites 3 2 (decision made during reconnaissance)
+
+LabeledResolution n K is structurally tied to Gleason.H n (it reuses
+Gleason.projL, itself typed over H n). Sites 3 2 := EuclideanSpace ℂ
+((Fin 3) → Fin 2) is NOT definitionally equal to H 8, although the two
+spaces have the same complex dimension (8). Since this witness has only ONE
+observable (CommuteWitness is vacuously true—there is no pair a ≠ b to
+check), it structurally requires none of the machinery in Local.lean.
+Accordingly, it is constructed directly on H 8, with three “virtual sites”
+extracted by binary digits on Fin 8
+(digit s g := (g.val / 2 ^ s.val) % 2), rather than by importing Sites.
+This is a pure index bijection (Fin 8 ↔ Fin 3 → Fin 2 through binary
+expansion), with no Hilbert-space LinearIsometryEquiv.
+
+This witness validates NOTHING about the general bridge
+Sites N d ↔ H n. It is a deliberate shortcut for this isolated
+single-observable case (where CommuteWitness is vacuous), NOT a reduced
+model of the work that Local.riedel_local must perform in general. This
+construction must not be reused as a basis for the general bridge.
+
+## Witness discipline (as in Histories.Witness, amplitudes first)
+
+ψ₀ := e 0 + e 7 (the two “all sites equal” configurations, NOT normalized):
+0 = 000₂, 7 = 111₂. The derivation order is: generators and their inner
+products (distinct singletons → 0); projL (cell s b) ψ₀ [projL fixes a
+member and annihilates an orthogonal vector]; immediate IsRecordedOn
+(digit s
+0 = 0 and digit s 7 = 1 for ALL THREE sites s, so the three
+records always agree); orthogonality via Submodule.isOrtho_span; and
+covers via the standard basis of H 8 (EuclideanSpace.basisFun), split
+according to digit s.
 -/
 
 namespace QuantumFoundations.Branches
@@ -47,8 +84,13 @@ noncomputable section
 /-- Base canonique de `H 8`. -/
 def e (g : Fin 8) : H 8 := EuclideanSpace.single g (1 : ℂ)
 
-/-- Digit binaire `s` (site virtuel `s ∈ Fin 3`) de `g ∈ Fin 8`, vu comme
-entier `0 ≤ g < 8` écrit en base 2 sur 3 bits. -/
+/--
+**FR.** Digit binaire `s` (site virtuel `s ∈ Fin 3`) de `g ∈ Fin 8`, vu comme
+entier `0 ≤ g < 8` écrit en base 2 sur 3 bits.
+
+**EN.** Binary digit s (virtual site s ∈ Fin 3) of g ∈ Fin 8, viewed as
+an integer 0 ≤ g < 8 written in base 2 using 3 bits.
+-/
 def digit (s : Fin 3) (g : Fin 8) : Fin 2 := ⟨(g.val / 2 ^ s.val) % 2, by omega⟩
 
 private theorem fin2_cases (x : Fin 2) : x = 0 ∨ x = 1 := by
@@ -58,8 +100,13 @@ theorem digit_zero (s : Fin 3) : digit s 0 = 0 := by fin_cases s <;> decide
 
 theorem digit_seven (s : Fin 3) : digit s 7 = 1 := by fin_cases s <;> decide
 
-/-- Cellule du site `s`, valeur `b` : span des vecteurs de base dont le
-digit `s` vaut `b`. -/
+/--
+**FR.** Cellule du site `s`, valeur `b` : span des vecteurs de base dont le
+digit `s` vaut `b`.
+
+**EN.** Cell at site s with value b: the span of basis vectors whose digit
+s equals b.
+-/
 def cell (s : Fin 3) (b : Fin 2) : Submodule ℂ (H 8) :=
   Submodule.span ℂ (e '' {g | digit s g = b})
 
@@ -94,7 +141,11 @@ theorem cell_covers (s : Fin 3) : cell s 0 ⊔ cell s 1 = ⊤ := by
   rw [heq]
   exact (EuclideanSpace.basisFun (Fin 8) ℂ).toBasis.span_eq
 
-/-- Le record du site `s` : cellules `cell s`, orthogonales et complètes. -/
+/--
+**FR.** Le record du site `s` : cellules `cell s`, orthogonales et complètes.
+
+**EN.** The record at site s: the cells cell s, which are orthogonal and complete.
+-/
 def siteRec (s : Fin 3) : LabeledResolution 8 2 where
   cells := cell s
   ortho := fun i j hij => Submodule.isOrtho_iff_le.mp (cell_ortho s hij)
@@ -106,8 +157,13 @@ def siteRec (s : Fin 3) : LabeledResolution 8 2 where
     rw [hsup]
     exact cell_covers s
 
-/-- État GHZ₃ (non normalisé) : superposition des deux configurations
-« tous les sites égaux ». -/
+/--
+**FR.** État GHZ₃ (non normalisé) : superposition des deux configurations
+« tous les sites égaux ».
+
+**EN.** GHZ₃ state (not normalized): the superposition of the two
+“all sites equal” configurations.
+-/
 def ψ₀ : H 8 := e 0 + e 7
 
 theorem e0_mem_cell (s : Fin 3) : e 0 ∈ cell s 0 :=
@@ -136,8 +192,13 @@ theorem proj_cell1_psi0 (s : Fin 3) : projL (cell s 1) ψ₀ = e 7 := by
     exact (cell_ortho s (by decide : (0:Fin 2) ≠ 1)) (e0_mem_cell s)
   rw [h1, h2, zero_add]
 
-/-- **Témoin de Nonvacuity R0** : les trois records (un par site virtuel)
-enregistrent tous la même branche de `ψ₀` — GHZ₃, redondance maximale. -/
+/--
+**FR.** **Témoin de Nonvacuity R0** : les trois records (un par site virtuel)
+enregistrent tous la même branche de `ψ₀` — GHZ₃, redondance maximale.
+
+**EN.** R0 nonvacuity witness: the three records, one per virtual site, all
+record the same branch of ψ₀—GHZ₃ with maximal redundancy.
+-/
 theorem isRecordedOn_ψ₀ : IsRecordedOn ψ₀ siteRec := by
   intro r r' i
   show projL (cell r i) ψ₀ = projL (cell r' i) ψ₀

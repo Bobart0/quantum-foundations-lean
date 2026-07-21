@@ -1,7 +1,7 @@
 import QuantumFoundations.BornRule.Pinning
 
 /-!
-# B4 — Assemblage final : le Théorème de Cohérence de Grain
+**FR.** # B4 — Assemblage final : le Théorème de Cohérence de Grain
 
 `hker_derivation` relie (Null) à l'hypothèse abstraite `hker` de B3, via un
 argument de recalibrage (`w` non nécessairement unitaire, `u := w/‖w‖`) ;
@@ -17,6 +17,24 @@ l'égalité de sous-espaces `ℂ∙w = ℂ∙u` transportée en égalité de `Pr
 (`Subtype.ext`) : `g` étant une fonction ordinaire de `Proj1 n`, deux
 arguments égaux donnent des images égales sans argument de non-contextualité
 supplémentaire.
+
+**EN.** # B4 — Final assembly: the Grain Coherence Theorem
+
+hker_derivation connects (Null) to the abstract hypothesis hker of B3 through
+a rescaling argument (w not necessarily unit, u := w/‖w‖);
+full_rho_facts combines B2 (exists_rho) and B3 (eq_projL_of_vanishes_on_orthogonal)
+into a single ρ (one application of Gleason.gleason only—two separate
+applications would not necessarily return the same witness, since
+Gleason.gleason is an existence theorem, not a canonical object);
+grainCoherenceTheorem assembles the result via
+refinePerspective/refine_filter_eq_cellLines (B1).
+
+The rescaling step in hker_derivation (showing that the value of g/Est
+at w agrees with its value at the normalized vector u) is an immediate
+congrArg applied to the equality of subspaces ℂ∙w = ℂ∙u, transported to
+an equality in Proj1 n (Subtype.ext): since g is an ordinary function
+on Proj1 n, equal arguments have equal images, with no additional
+non-contextuality argument.
 -/
 
 namespace QuantumFoundations.BornRule
@@ -30,7 +48,8 @@ noncomputable section
 
 variable {n : ℕ} (Est : Perspective n → Submodule ℂ (H n) → ℝ)
 
-/-- L'hypothèse `hker` de B3 (`ρ` s'annule sur l'orthogonal de `v`), dérivée de
+/--
+**FR.** L'hypothèse `hker` de B3 (`ρ` s'annule sur l'orthogonal de `v`), dérivée de
 (Null) : `w` est recalibré en un vecteur unitaire `u` de même droite, sur
 lequel (Null) + B2 donnent directement `g u = 0`, puis
 `Gleason.positive_inner_self_eq_zero` conclut `ρ w = 0`.
@@ -38,7 +57,18 @@ lequel (Null) + B2 donnent directement `g u = 0`, puis
 Ni `hv : ‖v‖ = 1` ni (Grain)/(Norm) ne sont nécessaires ici — `AxNul` ne
 suppose pas `v` unitaire, et le recalibrage `g w = g u` se fait par simple
 `congrArg`/`Subtype.ext` (voir note d'en-tête), sans invoquer
-`lemma4_noncontextual`. -/
+`lemma4_noncontextual`.
+
+**EN.** The B3 hypothesis hker (ρ vanishes on the orthogonal complement of v),
+derived from (Null): w is rescaled to a unit vector u spanning the same
+line, on which (Null) + B2 directly yield g u = 0; then
+Gleason.positive_inner_self_eq_zero gives ρ w = 0.
+
+Neither hv : ‖v‖ = 1 nor (Grain)/(Norm) is needed here—AxNul does not
+assume that v is unit, and the rescaling equality g w = g u follows from
+a simple congrArg/Subtype.ext argument (see the header note), without
+invoking lemma4_noncontextual.
+-/
 theorem hker_derivation (hn3 : 3 ≤ n) {v : H n} (hNul : AxNul Est v)
     {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ)
     (hgleason : ∀ x : H n, ∀ hx : ‖x‖ = 1,
@@ -80,10 +110,16 @@ theorem hker_derivation (hn3 : 3 ≤ n) {v : H n} (hNul : AxNul Est v)
     have hρww0 : ⟪ρ w, w⟫_ℂ = 0 := by rw [hscale, hρuu0, mul_zero]
     exact Gleason.positive_inner_self_eq_zero hρ.symmetric hρ.nonneg hρww0
 
-/-- Combine B2 (`exists_rho`) et B3 (`eq_projL_of_vanishes_on_orthogonal`) via
+/--
+**FR.** Combine B2 (`exists_rho`) et B3 (`eq_projL_of_vanishes_on_orthogonal`) via
 `hker_derivation` : une seule application de `Gleason.gleason` fournit un `ρ`
 qui est À LA FOIS `projL (ℂ∙v)` et compatible avec `g` sur tout vecteur
-unitaire. -/
+unitaire.
+
+**EN.** Combines B2 (exists_rho) and B3 (eq_projL_of_vanishes_on_orthogonal) via
+hker_derivation: a single application of Gleason.gleason provides a ρ
+that is BOTH projL (ℂ∙v) and compatible with g on every unit vector.
+-/
 theorem full_rho_facts (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est) (hPos : AxPos Est)
     {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v) :
     ∃ ρ : H n →ₗ[ℂ] H n, ρ = projL (ℂ ∙ v) ∧
@@ -93,7 +129,8 @@ theorem full_rho_facts (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est) (hPo
   exact eq_projL_of_vanishes_on_orthogonal hρ_dens hv
     (hker_derivation Est hn3 hNul hρ_dens hgleason)
 
-/-- **Théorème de Cohérence de Grain.** Pour une perspective `D` (partition de
+/--
+**FR.** **Théorème de Cohérence de Grain.** Pour une perspective `D` (partition de
 `H n` en cellules orthogonales non nulles) et une cellule `c` de `D`, toute
 règle d'estimation `Est` satisfaisant (Grain), (Norm), (Pos) et, pour un
 vecteur unitaire `v` fixé, (Null), vérifie `Est D c = ∑ᵢ ‖⟪v,fᵢ⟫‖²` sur toute
@@ -103,7 +140,20 @@ forme d'une trace. Résultat composé, pas autonome : s'appuie sur le théorème
 de Gleason (Gleason 1957, *Measures on the closed subspaces of a Hilbert
 space*), importé comme un vrai théorème (`Gleason.gleason`, dépendance externe
 épinglée) plutôt que comme un axiome, ainsi que sur l'infrastructure interne
-du bloc Uhlhorn (U2, U3a). -/
+du bloc Uhlhorn (U2, U3a).
+
+**EN.** Grain Coherence Theorem. For a perspective D (a partition of
+H n into nonzero orthogonal cells) and a cell c of D, every estimation
+rule Est satisfying (Grain), (Norm), (Pos), and, for a fixed unit vector v,
+(Null), satisfies Est D c = ∑ᵢ ‖⟪v,fᵢ⟫‖² for every orthonormal basis (fᵢ)
+of c—the Born rule in full generality, derived from the four coherence
+axioms alone, WITHOUT assuming a priori that Est has trace form. This is a
+composite rather than self-contained result: it relies on Gleason's theorem
+(Gleason 1957, Measures on the closed subspaces of a Hilbert space),
+imported as an actual theorem (Gleason.gleason, pinned external dependency)
+rather than as an axiom, as well as on the internal infrastructure of the
+Uhlhorn block (U2, U3a).
+-/
 theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
     (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
     (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
@@ -134,9 +184,15 @@ theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Es
   rw [mul_comm, Complex.mul_conj, Complex.ofReal_re]
   exact Complex.normSq_eq_norm_sq _
 
-/-- Version en notation projecteur de `grainCoherenceTheorem`. Il s'agit du
+/--
+**FR.** Version en notation projecteur de `grainCoherenceTheorem`. Il s'agit du
 même résultat, la somme des carrés des coefficients dans une base orthonormée
-de `c` étant la norme au carré de la projection orthogonale sur `c`. -/
+de `c` étant la norme au carré de la projection orthogonale sur `c`.
+
+**EN.** Projector-notation version of grainCoherenceTheorem. This is the same
+result, since the sum of the squared coefficients in an orthonormal basis
+of c is the squared norm of the orthogonal projection onto c.
+-/
 theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
     (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
     (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}

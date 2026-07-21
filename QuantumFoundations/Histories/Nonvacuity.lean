@@ -1,7 +1,7 @@
 import QuantumFoundations.Histories.Defs
 
 /-!
-# K0 — Nonvacuity : une famille à un étage est toujours cohérente
+**FR.** # K0 — Nonvacuity : une famille à un étage est toujours cohérente
 
 Habitant concret de `IsConsistent` (règle absolue 3 du projet, dans le même
 commit que `Defs.lean`) : la famille à un seul étage donnée par une
@@ -15,6 +15,21 @@ de la famille diffèrent nécessairement à l'étage `0` (seul étage), donc
 `h 0 ≠ k 0` sont deux cellules distinctes de `D`, orthogonales par `D.ortho` ;
 `projL (h 0) ψ` et `projL (k 0) ψ` tombent dans ces cellules orthogonales,
 d'où `decFunctional ψ h k = 0`.
+
+**EN.** # K0 — Nonvacuity: every one-stage family is consistent
+
+A concrete inhabitant of IsConsistent (absolute project rule 3, in the same
+commit as Defs.lean): the one-stage family defined by an arbitrary
+Perspective D is consistent for every vector ψ. No normalization
+hypothesis is required, since consistency depends only on orthogonality of
+the cells, not on the norm of ψ.
+
+Proof: for L = 1, chainOp h ψ reduces to projL (h 0) ψ
+(Fin.foldl_succ_last + Fin.foldl_zero). Two distinct histories h ≠ k
+in the family must differ at stage 0, the only stage, so h 0 ≠ k 0 are
+distinct cells of D and are orthogonal by D.ortho. The vectors
+projL (h 0) ψ and projL (k 0) ψ lie in these orthogonal cells, hence
+decFunctional ψ h k = 0.
 -/
 
 namespace QuantumFoundations.Histories
@@ -32,8 +47,13 @@ private theorem chainOp_single_stage (h : History n 1) (ψ : H n) :
   rw [Fin.foldl_succ_last, Fin.foldl_zero]
   simp
 
-/-- **Témoin de Nonvacuity K0** : toute `Perspective` `D`, vue comme famille à
-un seul étage, est cohérente pour tout `ψ`. -/
+/--
+**FR.** **Témoin de Nonvacuity K0** : toute `Perspective` `D`, vue comme famille à
+un seul étage, est cohérente pour tout `ψ`.
+
+**EN.** K0 nonvacuity witness: every Perspective D, viewed as a
+one-stage family, is consistent for every ψ.
+-/
 theorem isConsistent_single_stage (D : Perspective n) (ψ : H n) :
     IsConsistent ψ (fun _ : Fin 1 => D) := by
   intro h k hh hk hne
@@ -48,9 +68,16 @@ theorem isConsistent_single_stage (D : Perspective n) (ψ : H n) :
   have hperp : projL (h 0) ψ ∈ (k 0)ᗮ := hortho hmem_h
   exact (Submodule.mem_orthogonal (k 0) (projL (h 0) ψ)).mp hperp (projL (k 0) ψ) hmem_k
 
-/-- Instance concrète (dimension 3, `basisPerspective` de la base canonique
+/--
+**FR.** Instance concrète (dimension 3, `basisPerspective` de la base canonique
 `EuclideanSpace.basisFun`) — confirme que `isConsistent_single_stage` n'est
-pas vacuement vrai faute d'habitant de `Perspective`. -/
+pas vacuement vrai faute d'habitant de `Perspective`.
+
+**EN.** Concrete instance in dimension 3 using basisPerspective for the
+canonical basis EuclideanSpace.basisFun; this confirms that
+isConsistent_single_stage is not vacuously true for lack of an inhabitant
+of Perspective.
+-/
 example : ∃ (D : Perspective 3) (ψ : H 3), IsConsistent ψ (fun _ : Fin 1 => D) :=
   ⟨basisPerspective (EuclideanSpace.basisFun (Fin 3) ℂ), 0, isConsistent_single_stage _ 0⟩
 

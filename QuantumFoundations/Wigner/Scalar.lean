@@ -1,13 +1,21 @@
 import Mathlib.Analysis.Complex.Basic
 
 /-!
-# W1 — Kit scalaire ℂ
+**FR.** # W1 — Kit scalaire ℂ
 
 Trois lemmes purement scalaires (aucune dépendance à `H n` ni à `T`), à prouver en
 premier : ils calibrent le niveau de difficulté réel (`nlinarith`/`Complex.ext`
 territoriaux) et `W4` (`Core.lean`) s'appuie entièrement sur `scalar_dichotomy`.
 Blueprint : Bargmann 1964, §4.6 (la dichotomie tient en trois lignes une fois
 l'identité de partie réelle établie).
+
+**EN.** # W1 — Scalar toolkit over ℂ
+
+Three purely scalar lemmas, with no dependence on H n or T, to be proved
+first. They calibrate the actual level of difficulty, involving local uses of
+nlinarith/Complex.ext, and W4 (Core.lean) relies entirely on
+scalar_dichotomy. Blueprint: Bargmann 1964, §4.6; the dichotomy takes three
+lines once the real-part identity has been established.
 -/
 
 namespace QuantumFoundations.Wigner
@@ -16,8 +24,14 @@ open scoped ComplexConjugate
 
 noncomputable section
 
-/-- Si `u` et `v` ont même norme et `1+u`, `1+v` ont même norme, alors `u` et `v`
-ont même partie réelle. Via `‖1+r‖² = 1+‖r‖²+2Re r`. -/
+/--
+**FR.** Si `u` et `v` ont même norme et `1+u`, `1+v` ont même norme, alors `u` et `v`
+ont même partie réelle. Via `‖1+r‖² = 1+‖r‖²+2Re r`.
+
+**EN.** If u and v have the same norm, and 1+u and 1+v also have the
+same norm, then u and v have the same real part. This follows from
+‖1+r‖² = 1+‖r‖²+2Re r.
+-/
 theorem re_eq_of_norm_eq {u v : ℂ} (h1 : ‖u‖ = ‖v‖) (h2 : ‖(1 : ℂ) + u‖ = ‖(1 : ℂ) + v‖) :
     u.re = v.re := by
   have key : ∀ r : ℂ, ‖(1 : ℂ) + r‖ ^ 2 = 1 + ‖r‖ ^ 2 + 2 * r.re := by
@@ -32,17 +46,28 @@ theorem re_eq_of_norm_eq {u v : ℂ} (h1 : ‖u‖ = ‖v‖) (h2 : ‖(1 : ℂ)
   rw [hv] at h2'
   linarith
 
-/-- Rigidité : un scalaire de norme 1 et de partie réelle 1 vaut 1. -/
+/--
+**FR.** Rigidité : un scalaire de norme 1 et de partie réelle 1 vaut 1.
+
+**EN.** Rigidity: a scalar of norm 1 and real part 1 is equal to 1.
+-/
 theorem eq_one_of_norm_one_re_one {u : ℂ} (h1 : ‖u‖ = 1) (h2 : u.re = 1) : u = 1 := by
   have hns : Complex.normSq u = 1 := by rw [← Complex.sq_norm, h1]; norm_num
   rw [Complex.normSq_apply, h2] at hns
   have him : u.im = 0 := by nlinarith [sq_nonneg u.im]
   exact Complex.ext h2 him
 
-/-- **Dichotomie scalaire** (Bargmann §4.6, abstrait en pur lemme ℂ) : toute fonction
+/--
+**FR.** **Dichotomie scalaire** (Bargmann §4.6, abstrait en pur lemme ℂ) : toute fonction
 `f : ℂ → ℂ` qui préserve la norme, fixe `1`, et préserve la partie réelle du produit
 `conj(f α) * f β` (i.e. la partie réelle de `⟪α,β⟫` vu dans ℂ) est l'identité ou la
-conjugaison. -/
+conjugaison.
+
+**EN.** Scalar dichotomy (Bargmann §4.6, abstracted as a pure lemma over
+ℂ): every function f : ℂ → ℂ that preserves norms, fixes 1, and
+preserves the real part of conj(f α) * f β—that is, the real part of
+⟪α,β⟫ viewed in ℂ—is either the identity or complex conjugation.
+-/
 theorem scalar_dichotomy {f : ℂ → ℂ} (_hnorm : ∀ α, ‖f α‖ = ‖α‖) (hone : f 1 = 1)
     (hre : ∀ α β, (starRingEnd ℂ (f α) * f β).re = (starRingEnd ℂ α * β).re) :
     f = id ∨ f = starRingEnd ℂ := by

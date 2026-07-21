@@ -2,7 +2,7 @@ import QuantumFoundations.BornRule.GleasonBridge
 import QuantumFoundations.Uhlhorn.Spectral
 
 /-!
-# B3 — Pinning : identification de `ρ`
+**FR.** # B3 — Pinning : identification de `ρ`
 
 Lemme de repérage abstrait : si `ρ` est un opérateur densité qui s'annule sur
 l'orthogonal d'un vecteur unitaire `v`, alors `ρ` est EXACTEMENT la projection
@@ -15,6 +15,20 @@ Uhlhorn) : l'hypothèse d'annulation donne directement `⟪ρv,v⟫ = 1`, puis U
 opératorielle COMPLÈTE en une seule application. Le pas « diagonale nulle ⟹
 `ρw = 0` » (`Gleason.positive_inner_self_eq_zero`) est repoussé à B4, qui en a
 de toute façon besoin pour dériver l'hypothèse `hker` à partir de (Null).
+
+**EN.** # B3 — Pinning: identification of ρ
+
+Abstract pinning lemma: if ρ is a density operator that vanishes on the
+orthogonal complement of a unit vector v, then ρ is EXACTLY the rank-one
+projection onto v.
+
+The proof uses a trace decomposition in an orthonormal basis ADAPTED to v
+(exists_orthonormalBasis_extension_complex, already used three times in
+Uhlhorn): the vanishing hypothesis directly gives ⟪ρv,v⟫ = 1, after which
+U2 (eq_projL_of_positive_le_one_trace_one_inner_one) establishes the FULL
+operator equality in a single application. The step “zero diagonal ⟹
+ρw = 0” (Gleason.positive_inner_self_eq_zero) is deferred to B4, which in
+any event needs it to derive the hypothesis hker from (Null).
 -/
 
 namespace QuantumFoundations.BornRule
@@ -28,8 +42,13 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- **Pinning** : un opérateur densité qui s'annule sur l'orthogonal d'un
-vecteur unitaire `v` est exactement la projection de rang 1 sur `v`. -/
+/--
+**FR.** **Pinning** : un opérateur densité qui s'annule sur l'orthogonal d'un
+vecteur unitaire `v` est exactement la projection de rang 1 sur `v`.
+
+**EN.** Pinning: a density operator that vanishes on the orthogonal
+complement of a unit vector v is exactly the rank-one projection onto v.
+-/
 theorem eq_projL_of_vanishes_on_orthogonal {ρ : H n →ₗ[ℂ] H n} (hρ : IsDensityOperator ρ)
     {v : H n} (hv : ‖v‖ = 1) (hker : ∀ w : H n, ⟪v, w⟫_ℂ = 0 → ρ w = 0) :
     ρ = projL (ℂ ∙ v) := by

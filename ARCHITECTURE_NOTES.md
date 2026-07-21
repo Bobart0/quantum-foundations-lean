@@ -418,3 +418,449 @@ laissée à la discrétion de l'utilisateur avant publication.
   `ContraryInferences.lean`) pour ne pas créer d'ambiguïté.
 - Docstrings, préfixe `h` pour les hypothèses, `private` pour les lemmes
   internes : identiques aux quatre blocs précédents, aucune divergence.
+
+---
+
+## English translation
+
+# ARCHITECTURE_NOTES.md — quantum-foundations-lean
+
+Single technical record of deviations between the initial plans (announced at
+the beginning of each milestone, in the skeletons, or in SORRIES.md) and the
+actual state of the code as ultimately proved. Consolidated during the arXiv
+closing pass (Naimark block N0–N5, Wigner block W0–W6). Each entry refers to the
+corresponding section of SORRIES.md for details of the derivation.
+
+## Naimark (N0–N5)
+
+- DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n) was chosen over
+ PiLp 2 (fun _ : Fin m => H n) at N0, at equal proof-engineering cost,
+ because of its single flat index (fewer WithLp/.ofLp layers). See
+ SORRIES.md N0.
+- Hilbert direct sum rather than tensor product (K := ⊕ H n rather than
+ Watrous's X ⊗ ℂ^Σ): at the time of the project, the Mathlib API for
+ PiLp/EuclideanSpace was more mature than that for Hilbert tensor
+ products. Correspondence:
+ 1_X ⊗ E_{a,a} ↦ dilProj a,
+ √μ(a) ⊗ e_a ↦ singleL a ∘ₗ
+ sqrtOp (E a). The mathematical content is
+ identical; only the concrete realization of the dilation space differs
+ (README, section “Documented deviation”).
+- N5 (unitary extension): the sketch in Paris §3.2 Thm 4 (“identity on the
+ orthogonal complement of ω_B”) and the first two attempts (Submodule +
+ orthogonalDecomposition, then orthogonalProjectionOnto) both failed with
+ a deterministic timeout at whnf when composing LinearIsometryEquiv
+ values constructed through .equivRange/.symm.trans on subspaces defined
+ by LinearMap.range. Final route (attempt 3, successful): ZERO Submodule
+ throughout—two orthonormal families in the whole space K, extended to
+ complete bases via
+ Orthonormal.exists_orthonormalBasis_extension_of_card_eq (isolated in a
+ private lemma to avoid the timeout; see rule 12 in CLAUDE.md), and then
+ glued together via Orthonormal.equiv. See SORRIES.md N5 for the three
+ dated attempts.
+
+## Wigner (W0–W6)
+
+- Nested namespace QuantumFoundations.Wigner, unlike the flat
+ QuantumFoundations namespace used throughout Naimark—deliberate: Wigner's
+ internal names (e, V, U, chi, T) are single letters matching
+ Bargmann's notation and would have polluted the flat namespace. wigner is
+ therefore invoked as QuantumFoundations.Wigner.wigner.
+- hn : 2 ≤ n threaded through all signatures from W3 to W6 (absent from
+ the W0 skeleton): for n < 2, eImg T may be zero and the inversion
+ γ⁻¹ • T w degenerates (refVec itself is defined only for n ≥ 2, with a
+ junk value otherwise). 2 ≤ n was selected rather than 0 < n, which is
+ technically sufficient for W3 alone, for consistency with Core.lean (W4).
+- The case n = 1 is handled entirely independently in wigner, with no
+ dependence on W1–W5 (hn : 2 ≤ n is never available in this branch):
+ H 1 has dimension 1 (H1_eq_inner_smul_e), and
+ U₁ x := ⟪e 1, x⟫ • eImg T is directly ℂ-linear, not merely semilinear. By
+ convention it is placed in the chi = id branch (Bargmann §1.4: both
+ branches work and cannot be distinguished in dimension 1).
+- V_colinear (W3): ‖δ‖ = ‖z‖, NOT ‖δ‖ = 1 as initially announced.
+ The skeleton statement asserted ‖δ‖ = 1, refuted by the counterexample
+ T = id (V T z = z has norm ‖z‖, not necessarily 1). It was corrected
+ while proving the result, consistently with norm_V and with the comment
+ from Bargmann §3.2 already present in Defs.lean (“β' has modulus
+ ‖z‖”).
+- chidir_dichotomy generalized to every unit f in 𝒫 already in the
+ W4 skeleton, not only to refVec—a free generalization, since specializing
+ to refVec does not simplify the proof, and it makes chi_dichotomy a
+ trivial corollary with f := refVec.
+- chi_eq_chidir (W4): reduction to a single comparison point.
+ Bargmann's argument in §4.3–§4.5 (w = f₁+f₂, comparison of coefficients in
+ a two-dimensional Bessel expansion) works ONLY for orthogonal directions,
+ which is insufficient when n ≥ 3 and f is neither collinear nor
+ orthogonal to refVec. This was resolved by reducing to the single point
+ i, at which id and conj differ, via chidir_branch_transfer, rather
+ than proving the full functional identity initially envisaged. Eight
+ private lemmas were needed for this single sorry, compared with two for
+ chidir_dichotomy/chi_dichotomy.
+- W6 (A)/(B) formulated as concrete lemmas rather than through an abstract
+ parameterized chi. The initial SORRIES.md plan envisaged exclusivity
+ as a single result parameterized by an abstract notion of a “compatible U
+ in branch chi.” In practice it was formalized as TWO separate lemmas
+ (delta_transform_lin/delta_transform_conj), one for each concrete branch
+ of the theorem wigner (≃ₗᵢ[ℂ] / ≃ₛₗᵢ[starRingEnd ℂ]), without ever
+ introducing an abstract chi, which is closer to the theorem wigner actually delivered.
+- W6 (B) restricted to the effective scope of wigner. Defs.lean fixes
+ eImg T := T (e n) and has no parameter for choosing another unit
+ representative of the same class. Rather than rederiving the full
+ Bargmann §6 Theorem 2 for a completely arbitrary U', uniqueness is proved
+ using a reconstruction parameterized LOCALLY in Uniqueness.lean
+ (Vp/chidirp/chip/Up, with eImg as an explicit argument), related to
+ V/chi/U by rfl bridge lemmas
+ (V_eq_Vp, chi_eq_chip, U_eq_Up)—without any modification of
+ Defs.lean. The scope is intentionally narrower than Bargmann §6: only the
+ freedom actually used by wigner, the choice of representative of eImg,
+ is covered.
+- conj_isometry_inner (W6/A) derived manually.
+ LinearIsometryEquiv.inner_map_map has no Mathlib analogue for semilinear
+ equivalences (≃ₛₗᵢ[σ], σ ≠ id), as confirmed by searching the source of
+ Mathlib/Analysis/InnerProductSpace/*. It was derived manually through the
+ complex polarization identity, treating real and imaginary parts
+ separately from norm_add_sq/norm_sub_sq.
+
+## Uhlhorn (U0–U5)
+
+- Proj1 (n) := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1}, with
+ equality of lines (IsWignerSymmetryProj, Option 1) rather than literal
+ operator equality φ(P) = UPU* (Option 2)—validated during U0
+ reconnaissance: the two formulations are equivalent for rank-one
+ projections, but Option 2 would have required LinearMap.adjoint of a
+ semilinear equivalence (≃ₛₗᵢ[starRingEnd ℂ]), never encountered elsewhere
+ in this project. Option 2 is left as a remark for a later pass if the final
+ paper requires it.
+- U3a isolated as a full submilestone, not an internal detail of U3b.
+ Discovered during U0 reconnaissance: no lemma “frame function on lines →
+ full ProjMeasure” exists in gleason-theorem-lean (exhaustive audit: the
+ only two ProjMeasure construction sites,
+ EffectMeasure.toProjMeasure and pureState, both provide a closed formula
+ directly on every subspace). Decision: this lemma remains in
+ quantum-foundations-lean (namespace Uhlhorn), not in
+ gleason-theorem-lean, although it is a generic Gleason fact; the tagged
+ public repository is not reopened for this need. The final plan therefore
+ has six milestones (U1, U2, U3a, U3b, U4, U5) rather than the five initially
+ sketched.
+- U3a—reuse of Gleason.cframe_sum_invariant rather than a manual
+ reconstruction of basis independence. The anticipated delicate point,
+ independence of the choice of orthonormal basis for the extension, was not
+ reproved from scratch by concatenating
+ Fin k ⊕ Fin l → Fin n (finSumFinEquiv/Fin.append):
+ Gleason.Complex.RealSections already contains this argument in vector
+ form (cframe_sum_invariant, for a frame function H n → ℝ). The only
+ basis concatenation constructed manually in all of U3a is that of
+ add_isOrtho (via Sum.elim), over a much narrower scope than the general
+ construction of the extension.
+- U3b—Sublemma “density ⟹ effect” absent from gleason-theorem-lean,
+ derived locally. Its absence was confirmed during reconnaissance
+ (positivity + trace 1 in finite dimension ⟹ ≤ 1, because the eigenvalues
+ of a density operator are nonnegative and sum to 1); it was derived using
+ the same trace-decomposition-around-a-point technique as U2
+ (isEffect_of_isDensityOperator, GleasonTwice.lean).
+- U3b—the resolution of the identity as an OPERATOR identity
+ (∑ i, projL (ℂ∙(bi)) = 1, via
+ Gleason.projL_sup_of_pairwise_isOrtho) proved UNNECESSARY.
+ LinearMap.trace_eq_sum_inner directly gives the trace of an operator as a
+ sum over ANY orthonormal basis—in particular the image basis under φ,
+ whose completeness is guaranteed by SendsONBToONB—without ever explicitly
+ forming the sum operator.
+- U5—the main uncertainty (behavior of the OrthonormalBasis constructor
+ with respect to pointwise values) was resolved favorably on the first
+ attempt. basisOfOrthonormalOfCardEqFinrank (orthonormal family +
+ cardinality → Basis), followed by Module.Basis.toOrthonormalBasis,
+ preserve values exactly POINTWISE
+ (coe_basisOfOrthonormalOfCardEqFinrank/
+ Module.Basis.coe_toOrthonormalBasis, two existing @[simp] lemmas), not
+ merely up to reindexing. No additional compatibility lemma was needed.
+- exists_unit_vector_of_proj1 and projL_singleton_unit moved to
+ Defs.lean (public, shared) over the course of the milestones rather than
+ duplicated or left private in a single file—the same pattern as
+ one_le_of_norm_eq_one (needed in U2 and U3b). Systematic discipline:
+ whenever the same need reappears in a second file, move it immediately;
+ never copy it.
+- Dual dependency, without axiom leakage. uhlhorn_finite_dim (U5) is the
+ first theorem in the repository to depend both on Gleason.gleason
+ (pinned external dependency) AND on
+ QuantumFoundations.Wigner.wigner (internal block). #print axioms
+ confirms the standard trio despite this dual chain; see README, section
+ “Dependencies.”
+
+## BornRule (B1–B4)
+
+- Formulated directly for V := H n, rather than for a generic abstract
+ space V: Gleason.gleason is specific to H n, and
+ Module.finrank ℂ (H n) = n (simp) eliminates one layer of casts for
+ bases of the whole space (basisPerspective/line_ne_bot/line_ne_top/
+ line_injective).
+- B1—the two potential fallback proofs (Perspective.binary.span,
+ basisPerspective.span) close directly over H n, without
+ reconstruction: respectively through
+ Submodule.sup_orthogonal_of_hasOrthogonalProjection
+ (automatic finite-dimensional HasOrthogonalProjection instance) and
+ Submodule.span_range_eq_iSup (already used in
+ Gleason.ProjMeasure.isCFrameFunction).
+- B2—g : Proj1 n → ℝ constructed directly on lines
+ (Perspective.binary (P:Submodule) ...), without a vector intermediary:
+ the value depends only on the line (P : Submodule), never on a unit
+ representative. This has favorable downstream consequences for B4 (see
+ below).
+- B2—relocation of isEffect_of_isDensityOperator (+
+ density_inner_le_one, sub_nonneg_of_density), previously private in
+ Uhlhorn/GleasonTwice.lean (U3b), to public declarations in
+ Uhlhorn/Defs.lean. This was required by B3, following the same systematic
+ relocation pattern as
+ exists_unit_vector_of_proj1/projL_singleton_unit/one_le_of_norm_eq_one
+ during U1/U2/U3a.
+- B3—identification of ρ by trace decomposition in a basis ADAPTED to
+ v (exists_orthonormalBasis_extension_complex), directly giving
+ ⟪ρv,v⟫ = 1; U2
+ (eq_projL_of_positive_le_one_trace_one_inner_one) then concludes the full
+ operator equality in a single application, with no detour through a
+ Parseval/Bessel identity in an arbitrary basis.
+- B4—the rescaling w → u := w/‖w‖ in hker_derivation does NOT require
+ lemma4_noncontextual: because g (B2) is an ordinary function on
+ Proj1 n, the equality of lines ℂ∙w = ℂ∙u transports directly to an
+ equality in Proj1 n (Subtype.ext), and g(w) = g(u) follows from a
+ simple congrArg. This is a direct consequence of the Proj1-first design
+ of B2.
+- B4—superfluous hypotheses removed from hker_derivation: neither
+ ‖v‖ = 1 nor (Grain)/(Norm) is needed (discovered while writing the proof,
+ not anticipated during reconnaissance). AxNul does not assume that v
+ is unit, and the gluing above does not pass through non-contextuality.
+- Dual dependency, without axiom leakage. grainCoherenceTheorem (B4) is
+ the second theorem in the repository, after uhlhorn_finite_dim, to depend
+ both on an external dependency (Gleason.gleason) and on substantial
+ internal content (Uhlhorn infrastructure U2/U3a). #print axioms confirms
+ the standard trio at both links in this chain; see README, section
+ “Dependencies.”
+- Projector corollary (v2.1-bornrule, 2026-07-20).
+ grainCoherenceTheorem_projector directly reformulates the right-hand side
+ of grainCoherenceTheorem as ‖projL c v‖². This is not a new
+ mathematical route: sum_sq_projL_of_pairwise_isOrtho is applied to
+ cellLines c; Finset.sup_id_eq_sSup and cellLines_sSup identify their
+ supremum with c; cellLines_sum_eq reindexes the sum; and
+ projL_singleton_unit and norm_inner_symm identify each term.
+ The #print axioms audit remains exactly
+ [propext, Classical.choice, Quot.sound].
+- Explicitly out of scope (possible future extensions, not omissions from
+ this milestone): a second derivation route independent of Gleason (using a
+ dynamic-stability axiom rather than grain coherence), existence/consistency
+ of the axioms (Grain)/(Norm)/(Pos)/(Null) themselves, and intersubjective
+ convergence between observers as a corollary of the main theorem—see
+ SORRIES.md, section “Out of scope.”
+
+## Histories (K0–K3)
+
+- Prior relocation of norm_sq_sum_of_pairwise_orthogonal and
+ sum_sq_projL_of_pairwise_isOrtho, previously private in
+ BornRule/Nonvacuity.lean, to public declarations in
+ BornRule/Perspective.lean, in a dedicated commit BEFORE K0 began.
+ Rationale: these are generic geometric facts about Perspective (finite
+ Pythagoras + additivity of the Born value over an orthogonal supremum), not
+ specific to the Born witness constructed in BornRule/Nonvacuity.lean.
+ Their natural location is next to the definition of Perspective, in the
+ file already imported by Histories. This follows the same logic as
+ previous relocations (exists_unit_vector_of_proj1/projL_singleton_unit
+ in Uhlhorn, isEffect_of_isDensityOperator U3b→Uhlhorn/Defs.lean during B2): whenever the same need reappears in a second
+ file/block, relocate it immediately; never copy it. Verified to have no
+ effect on the axioms of BornRule (Histories closing audit, Block 1,
+ specific point 2—35 declarations after adding the projector corollary,
+ with the standard trio and no exceptions).
+- Two corrections to statements (project rule 2), with the same cause,
+ discovered while filling the proofs rather than anticipated during
+ reconnaissance: S_consistent (K2, Witness.lean) and inference
+ (K3, ContraryInferences.lean) were stated in the K0 skeleton for
+ unrestricted i : Fin 3. This is false for i = 2:
+ ⟪φ₀, e i⟫ = 1 for i ∈ {0,1} but = -1 for i = 2
+ (φ₀ := e0+e1-e2 has a negative sign on e2), so the key cancellation
+ ⟪φ₀, ψ₀ - e i⟫ = 1 - ⟪φ₀, e i⟫ holds only for i ∈ {0,1}. The
+ hypothesis i = 0 ∨ i = 1 was added in both cases and committed with an
+ explicit message rather than silently weakened.
+- Documented simp friction point: unconstrained simp spontaneously
+ rewrites ⟪x,x⟫_ℂ as ‖x‖² using a default library lemma, which blocks a
+ calculation that must FIRST expand an inner product bilinearly and ONLY
+ THEN return to a norm. Rule adopted in
+ Witness.lean/ContraryInferences.lean: rewrites by
+ inner_self_eq_norm_sq_to_K (or the full bilinear expansion through
+ constrained simp only) ALWAYS occur after expansion, never before.
+- Ordering convention for chainOp, fixed in Defs.lean and verified by
+ explicit calculation: the class operator of a history
+ h : Fin L → Submodule ℂ (H n) is
+ C_h = P_{h(L-1)} ∘ ⋯ ∘ P_{h(0)}, with the FINAL stage APPLIED LAST. It is
+ implemented by
+ Fin.foldl L (fun acc
+ t => projL (h t) ∘ₗ acc) LinearMap.id, whose
+ unfolding was explicitly checked for L = 1, 2 using
+ Fin.foldl_succ_last/Fin.foldl_zero
+ (chainOp_two_stage at L = 2:
+ projL (h 1) ∘ₗ projL (h 0), exactly the standard physical convention).
+- Orientation of decFunctional, fixed in Defs.lean:
+ decFunctional ψ h k := ⟪chainOp k ψ, chainOp h ψ⟫_ℂ has k conjugated,
+ consistently with Mathlib's LEFT-conjugate-linear inner-product convention
+ used throughout the repository (confirmed through
+ LinearMap.adjoint_inner_left/right during reconnaissance).
+- One parameterized open goal rather than two in BOTH K2 and K3:
+ S_consistent (i : Fin 3) rather than
+ S₁_consistent/S₂_consistent, and inference (i : Fin 3) rather than
+ inference_S₁/inference_S₂. The two proofs differ only in the index
+ i ∈ {0,1} and are structurally identical. This option was explicitly
+ permitted by the initial plan (“if duplication is substantial, factor it
+ out”). A downstream consequence is that contrary_inferences (K3b) proved
+ to assemble MECHANICALLY once inference was closed: a simple anonymous
+ term, with no tactics or new mathematics, as confirmed during
+ reconnaissance before the skeleton was written and verified upon closure.
+
+## Documentary residues identified during the closing audit
+
+- QuantumFoundations/Wigner/Uniqueness.lean: the private bridge lemmas
+ V_eq_Vp and chi_eq_chip, intended to document that Vp/chip reproduce
+ V/chi at the canonical representative, are in fact invoked by no proof;
+ only U_eq_Up is consumed by U_alt_eq_smul. They nevertheless remain the
+ only machine verification of the claim made in the comment for section (B).
+ chidir_eq_chidirp in the same file goes further: it is neither consumed
+ nor mentioned in the comment and is a natural candidate for deletion, but
+ was not deleted here (decision left to the user).
+- QuantumFoundations/Wigner/VConstruction.lean:340,
+ inner_V_eq_of_im_eq_zero (Bargmann's Eq. 12a): proved but never used in a
+ later proof. The route ultimately taken in Core.lean (W4) proceeds through
+ inner_V_eq_chi_inner, which does not rederive this corollary. It remains
+ faithful to the blueprint, since Bargmann explicitly states 12a, and is
+ retained for that reason despite having no internal consumer.
+- QuantumFoundations/Naimark/DilSpace.lean: dilProj_isSymmetric,
+ dilProj_idempotent, dilProj_orthogonal, and dilProj_sum_eq_one are not
+ used by any later proof in Main.lean; naimark/naimark_born proceed
+ through the pivots key1/key2, not through these four facts. This is NOT
+ an omission: they explicitly formalize Watrous Prop. 2.40 (the operators
+ of a projection-valued measure are pairwise orthogonal, idempotent, and sum
+ to the identity), a mathematical commitment documented in CLAUDE.md and
+ independent of the proof path for naimark itself.
+- QuantumFoundations/Uhlhorn/: a specific audit during closure of the block
+ identified no residue. The only two public declarations without a
+ second point of use in the directory (isWignerSymmetryProj_id,
+ uhlhorn_finite_dim) are respectively a terminal nonvacuity witness and the
+ final theorem of the block—both expected entry points, not orphans.
+ sendsONBToONB_of_preservesOrthogonality is private as intended and is
+ consumed only by uhlhorn_finite_dim in the same file.
+- QuantumFoundations/Histories/Basic.lean,
+ histProb_additivity_two_stage: proved (K1(b), as requested by the roadmap:
+ “minimal version sufficient for K3”) but never consumed by a later proof.
+ The route ultimately taken by inference (K3a) proceeds directly through
+ projL_F_eq/w_ortho on the concrete witness, without returning to generic
+ additivity of history probabilities. It is retained for the same reason as
+ inner_V_eq_of_im_eq_zero in Wigner: it is the explicitly requested echo of
+ AxGrain (BornRule), an independently documented mathematical commitment
+ regardless of the proof route ultimately followed by K3. The rest of
+ Histories was audited with no additional residue: every other public
+ declaration has at least a second use (directly or through
+ S1_consistent/S2_consistent, themselves not consumed internally but
+ explicitly requested by the roadmap as terminal specializations of
+ S_consistent, in the same way as isWignerSymmetryProj_id in Uhlhorn).
+
+## Naimark ↔ Wigner naming-convention divergences (listed, not corrected)
+
+- Style of central-object identifiers. Naimark uses implementation-oriented
+ compound camelCase names (dilV, dilProj, singleL, coordL, sqrtOp).
+ Wigner uses isolated letters directly matching Bargmann's notation
+ (e, V, U, T, chi, eImg). Both styles are internally coherent
+ but sharply differ between the two blocks. This reflects the fact that
+ Naimark has no single source notation to preserve—Watrous does not
+ introduce such short symbols—whereas Wigner follows Bargmann letter for
+ letter.
+- Structure vs Prop for the principal hypothesis. Naimark bundles its three
+ properties in a structure POVM, accessed through projections P.pos and
+ P.sum_eq_one. Wigner uses a single
+ def IsWignerMap (T) : Prop, since there is only one property, threaded as
+ hypothesis hT. The difference is dictated by the number of properties to
+ bundle, not by an arbitrary stylistic choice.
+- Everything else (docstrings /-- ... -/ immediately above declarations,
+ French throughout, prefix h for hypotheses, and private for internal
+ lemmas) is identical between the two blocks.
+
+These two naming points are cosmetic and break no external references, since
+no other repository currently imports this project. Harmonization is left to
+the user's discretion before publication.
+
+## Uhlhorn naming consistency relative to Naimark/Wigner
+
+- Nested namespace QuantumFoundations.Uhlhorn, as in Wigner rather than
+ flat as in Naimark—consistent with the established rule “new mathematical
+ block = its own namespace.”
+- Identifier style: neither Naimark's implementation-oriented camelCase
+ (dilV, singleL) nor Wigner's isolated Bargmann-style letters
+ (e, V, U). Uhlhorn uses full descriptive names
+ (SendsONBToONB, PreservesOrthogonality, TraceProd,
+ exists_projMeasure_of_frameFunctionOnLines). This is consistent with the
+ fact that Uhlhorn has no source notation to reproduce letter for letter
+ (Šemrl 2021 does not introduce symbols as short as Bargmann's)—a THIRD
+ style, but each block is internally coherent and justified by its source.
+- Docstrings (/-- ... -/), milestone comments
+ (/-! # Ux — titre ... -/ with documented deviations at the beginning of
+ the file), French throughout, prefix h for hypotheses, and private for
+ internal lemmas are identical to the two preceding blocks, with no
+ divergence.
+
+## BornRule naming consistency relative to Naimark/Wigner/Uhlhorn
+
+- Nested namespace QuantumFoundations.BornRule, as in Wigner/Uhlhorn—
+ consistent.
+- Identifier style: hybrid, a FOURTH style. g, a single letter, follows
+ the Bargmann/Wigner style; Perspective, Refines, hker_derivation, and
+ full_rho_facts follow Uhlhorn's descriptive style; but
+ AxGrain/AxNorm/AxPos/AxNul introduce an Ax* prefix not previously
+ used in this repository. The previous three blocks name hypothesis Prop
+ values either with an Is* prefix (IsWignerMap,
+ IsWignerSymmetryProj, IsFrameFunctionOnLines) or with a bare descriptive
+ name (PreservesOrthogonality, SendsONBToONB). This is not harmonized
+ here (listed, not corrected), because the reference source for this block
+ has no natural Is* prefix for numbered axioms.
+- grainCoherenceTheorem (camelCase) differs from the snake_case convention
+ of the other chapter-level theorems (naimark, naimark_born, wigner,
+ uhlhorn_finite_dim). This was a deliberate choice—an ASCII name for a
+ mathematical object denoted by a non-ASCII symbol—and is listed but not
+ corrected.
+- Docstrings, prefix h for hypotheses, and private for internal lemmas are
+ identical to the three preceding blocks, with no divergence.
+- Deviation from compliance with rule 3 (Nonvacuity), identified during the
+ closing audit—RESOLVED (2026-07-15,
+ BornRule/Nonvacuity.lean).
+ E₀ v D c := ‖projL c v‖², the Born rule for a fixed unit vector v,
+ simultaneously inhabits AxGrain/AxNorm/AxPos/AxNul. The central
+ technical point (refine_filter_sup_eq, generalizing
+ refine_filter_eq_cellLines from B1 to an arbitrary refinement) reuses
+ Gleason.projL_sup_of_pairwise_isOrtho (resolution of the identity as an
+ operator, already available in gleason-theorem-lean). Only the finite
+ Pythagorean theorem for ‖·‖², absent in that exact form because
+ gleason-theorem-lean covers only additivity of bornValue, had to be
+ derived, in ~15 lines.
+
+## Histories naming consistency relative to Naimark/Wigner/Uhlhorn/BornRule
+
+- Nested namespace QuantumFoundations.Histories, as in
+ Wigner/Uhlhorn/BornRule—consistent.
+- Identifier style: hybrid, as in BornRule, but along a different divide.
+ The structural definitions in Defs.lean follow the descriptive
+ Uhlhorn/BornRule style (History, IsHistoryOf, chainOp,
+ decFunctional, IsConsistent, histProb); the concrete witness in
+ Witness.lean switches to isolated Bargmann/Wigner-style letters and
+ symbols (e, ψ₀, φ₀, P, F, S). Here, however, the divide follows
+ a clear boundary—generic infrastructure versus concrete numerical data for
+ an example—unlike the BornRule mixture, where isolated g appears among
+ descriptive names without a file boundary. IsHistoryOf/IsConsistent
+ follow the Is* prefix already established by Uhlhorn (IsWignerMap,
+ IsWignerSymmetryProj), NOT the Ax* prefix introduced by BornRule for its
+ four hypotheses, restoring consistency with the predominant repository
+ style rather than with the immediately preceding block.
+- ψ₀/φ₀ (explicit zero subscript) rather than bare psi/phi:
+ notation borrowed from quantum-state physics, where initial states are
+ indexed, and absent from the preceding blocks because none introduced a
+ concrete state vector named by a Greek letter. It is internally coherent
+ and newly required here, since this is the first block to construct an
+ explicit numerical witness rather than reason only about generic objects.
+- S (a single letter) for the history family, with
+ D1/Dstage/DF for stage perspectives: a same-file mixture of the
+ Bargmann style (S) and descriptive style (Dstage, DF). It is not
+ harmonized further, but each identifier is sufficiently local—used only in
+ Witness.lean/ContraryInferences.lean—to avoid ambiguity.
+- Docstrings, prefix h for hypotheses, and private for internal lemmas are
+ identical to the four preceding blocks, with no divergence.

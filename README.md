@@ -567,3 +567,594 @@ pour l'ensemble des règles.
 ## Licence
 
 [Apache License 2.0](LICENSE).
+
+---
+
+## English translation
+
+# quantum-foundations-lean — Lean 4 formalizations: Naimark, Wigner, Uhlhorn, BornRule, and Histories
+
+Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
+with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
+COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
+(v2.0-bornrule, 2026-07-15), AND Histories COMPLETE
+(v1.0-histories, 2026-07-16). Five mechanized formalizations,
+without axioms in the sense of the project rules, apart from the three
+standard Lean kernel axioms described below, in finite dimension over ℂ.
+
+By the numbers (computed, not estimated): 32 .lean files, 5,088 lines,
+173 public declarations (structures, definitions, theorems), 0 sorry, and
+0 project-specific axioms. All 155 content-bearing declarations, excluding
+structure/Prop/abbrev, were checked individually by #print axioms and
+depend on exactly [propext, Classical.choice, Quot.sound], the standard
+Lean/Mathlib trio, without exception.
+
+The Naimark dilation theorem for finite POVMs
+(Watrous, The Theory of Quantum Information, Theorem 2.42): every POVM
+E : Fin m → (H n →ₗ[ℂ] H n) is realized as a projection-valued measure
+(dilProj) under an isometry dilV, with preservation of the Born formula.
+
+Wigner's theorem (Bargmann 1964, Note on Wigner's Theorem on Symmetry
+Operations): every transformation on pure states preserving transition
+probabilities |⟨φ|ψ⟩|² is induced by a unitary or antiunitary operator—
+formulation (A), without a bijectivity hypothesis on the initial
+transformation (strictly stronger than Simon–Mukunda–Chaturvedi–Srinivasan
+2008, Eq. 2.8, which assumes it). It is supplemented in optional W6 by
+unitary/antiunitary exclusivity and uniqueness up to a global phase
+in a restricted form, following Bargmann §1.5 and §6.
+
+Šemrl's Corollary 1.2 (Šemrl 2021, Wigner symmetries and Gleason's
+theorem, arXiv:2106.06182): in finite dimension n ≥ 3, every map on
+rank-one projections that preserves orthogonality in one direction only
+(with neither injectivity nor surjectivity assumed) is automatically a Wigner
+symmetry. Unlike Naimark and Wigner, this is NOT a self-contained result: it
+composes Gleason's theorem (gleason-theorem-lean, pinned external
+dependency) with Wigner's theorem (the internal block above). See the
+dedicated section below for details of this dual dependency and its axiom
+audit.
+
+The Grain Coherence Theorem (with Gleason 1957, Measures on the closed
+subspaces of a Hilbert space, as the underlying theorem): for a
+“perspective,” an orthogonal partition of H n into cells, and an estimation
+rule satisfying four purely combinatorial axioms (Grain, Norm, Pos, Null),
+the rule's value on every cell is EXACTLY the Born rule
+(∑ᵢ ‖⟨v,fᵢ⟩‖² over an orthonormal basis of the cell), without ever assuming
+a priori that the rule has trace form. Like Uhlhorn, this result composes
+an internal block (Uhlhorn infrastructure U2 and U3a) with an external
+dependency (Gleason.gleason, imported as an actual theorem rather than as
+an axiom). See the dedicated section below.
+
+The contrary-inferences theorem (Kent 1997, Quasiclassical Dynamics in a
+Closed Quantum System, PRL 78, 2874, arXiv:gr-qc/9604012), in the
+finite-dimensional consistent-histories framework: two consistent sets of
+histories can share the same preparation and postselection while each
+implying with CERTAINTY a different proposition, the two propositions being
+mutually orthogonal. A temporal stage of a history set directly reuses
+BornRule.Perspective, with no redefinition. As Uhlhorn and BornRule already
+do for other components, Histories composes the repository's internal
+infrastructure (BornRule → Uhlhorn/Gleason) rather than starting over.
+The generic profusion theorem of Dowker–Kent (1996), which would show that the
+witness is not an isolated contrary-inference example, is explicitly outside
+the scope of this block.
+
+This repository relies on
+gleason-theorem-lean
+(tag v1.0-gleason). Naimark reuses only IsPositiveOp
+(Gleason.Busch.Effects); Uhlhorn and BornRule, by contrast, invoke
+Gleason.gleason itself as well as part of its internal machinery. Histories
+does not invoke Gleason.gleason directly but inherits it transitively
+through BornRule.Perspective/projL. See “Dependencies” below for details
+and verification that no additional axioms leak through the dependency
+chain.
+
+## Statements
+
+lean
+structure POVM (n m : ℕ) where
+ E : Fin m → (H n →ₗ[ℂ] H n)
+ pos : ∀ i, IsPositiveOp (E i)
+ sum_eq_one : ∑ i, E i = 1
+
+theorem naimark (P : POVM n m) :
+ ∃ V : H n →ₗ[ℂ] DilSpace n m, LinearMap.adjoint V ∘ₗ V = LinearMap.id ∧
+ ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i
+
+theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
+ ⟪x, P.E i x⟫_ℂ = ⟪dilV P x, dilProj n m i (dilV P x)⟫_ℂ
+
+
+DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n), and dilProj i is the
+orthogonal projection onto the ith block.
+
+N5 (optional, closed): dilV extends to a genuine unitary on
+DilSpace n m, not merely an isometry, for every fixed ancilla index i₀
+(Watrous Cor. 2.43 / Paris §3.2 Thm 4):
+
+lean
+theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
+ ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, U.toLinearMap ∘ₗ singleL n m i₀ = dilV P
+
+theorem naimark_projective_form (P : POVM n m) (i₀ : Fin m) :
+ ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, ∀ (i : Fin m) (x : H n),
+ ⟪x, P.E i x⟫_ℂ = ⟪U (singleL n m i₀ x), dilProj n m i (U (singleL n m i₀ x))⟫_ℂ
+
+
+## Documented deviation from Watrous
+
+Watrous dilates in a tensor product X ⊗ ℂ^Σ. We dilate in the
+Hilbert direct sum K := ⊕_{i<m} H n, which is canonically isomorphic
+(the Mathlib API for PiLp/EuclideanSpace was more mature at the time than
+the Hilbert tensor-product API). Correspondence:
+1_X ⊗ E_{a,a} becomes dilProj a; √μ(a) ⊗ e_a becomes
+singleL a ∘ₗ sqrtOp (E a). The mathematical content (isometry + Born formula) is identical; only the concrete realization of the dilation
+space differs.
+
+DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n) was selected in step 0,
+milestone N0, over PiLp 2 (fun _ : Fin m => H n) at equal proof-engineering
+cost, because of its single flat index. See SORRIES.md for details of the
+two tested routes.
+
+## Wigner's theorem
+
+lean
+def IsWignerMap (T : H n → H n) : Prop :=
+ ∀ x y : H n, ‖x‖ = 1 → ‖y‖ = 1 → ‖⟪T x, T y⟫_ℂ‖ = ‖⟪x, y⟫_ℂ‖
+
+theorem wigner (n : ℕ) (T : H n → H n) (hT : IsWignerMap T) :
+ (∃ U' : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
+ ∨ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
+
+
+There is no bijectivity hypothesis on T: in finite dimension, the
+constructed isometry U' is automatically bijective (U_bijective), and
+injectivity at the ray level follows from hT alone. Mathematical blueprint:
+Bargmann 1964, §1–§5, followed almost verbatim; Simon–Mukunda–Chaturvedi–
+Srinivasan 2008 is used only as a cross-check and rejected as the primary
+blueprint because of its trigonometric/Real.Angle approach.
+
+Construction (Bargmann §3–§5): first V—definitional collinearity on
+𝒫 := e⊥, W3—then χ—the id/conj dichotomy established independently
+on EACH direction and then globalized without an orthogonal-frame
+hypothesis, W4—and finally
+U := χ⟨e,·⟩•e' + V(· − ⟨e,·⟩•e), extending V/χ to the whole space,
+W5. No coordinates, no extension of an orthonormal basis, and no Submodule
+for 𝒫, which is represented by the simple Prop InPerp.
+
+Documented deviations from the initial plan (see SORRIES.md, sections
+W3–W5, for full details):
+- W3 (V_colinear): the initial skeleton asserted ‖δ‖ = 1 for the
+ collinearity coefficient—FALSE in general, as refuted by T = id; corrected
+ to ‖δ‖ = ‖z‖.
+- W4 (chi_eq_chidir): Bargmann's argument in §4.3–§4.5
+ (w = f₁+f₂, orthogonal case only) is insufficient when n ≥ 3 and the
+ second vector is neither collinear nor orthogonal to refVec. This was
+ resolved by reduction to a single comparison point (i, where id and
+ conj differ) rather than by proving the full functional identity.
+- W5 (U_bijective): there is no direct Mathlib lemma for semilinear
+ bijectivity in the antiunitary branch. The result was obtained by
+ restriction to the real scalars (starRingEnd ℂ is ℝ-linear), where
+ LinearMap.injective_iff_surjective applies unchanged.
+
+See ARCHITECTURE_NOTES.md for the consolidated list of all documented
+deviations from N0–N5 and W0–W6.
+
+## W6 (optional) — Exclusivity and uniqueness (Bargmann §1.5, restricted §6)
+
+lean
+def Delta (a b c : H n) : ℂ := ⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ
+
+theorem exclusivity (hT : IsWignerMap T) (hn : 2 ≤ n) :
+ ¬ ((∃ U : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+ ∧ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x))
+
+theorem U_alt_eq_smul (T : H n → H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (a : H n) :
+ Up T (lam • eImg T) a = lam • U T a
+
+
+**(A) Exclusivity** (Bargmann §1.5): the same T can never be compatible with
+both a unitary and an antiunitary equivalence when n ≥ 2. The proof uses an
+explicit witness: the triple
+e, e₂ := (e−refVec)/√2,
+e₃ := (e+refVec(1−i))/√3 gives
+Delta(e,e₂,e₃) = i/6 ∉ ℝ
+(bargmann_delta_witness, confirmed exactly by Lean). But Delta is
+invariant in the unitary branch and conjugated in the antiunitary branch
+(delta_transform_lin/delta_transform_conj), which would force
+i/6 = -i/6.
+
+**(B) Uniqueness up to a global phase—RESTRICTED version**: reconstructing
+U after replacing, in the formulas of Defs.lean, the unit representative
+eImg T := T(e n) with another unit representative λ • eImg T of the same
+class (‖λ‖ = 1) produces a new U exactly equal to λ • U (U_alt_eq_smul). This is
+strictly weaker than the full Bargmann §6 Theorem 2, which would cover a
+completely arbitrary U', not merely freedom in the representative of
+eImg, but it is sufficient for the repository's actual use case.
+Defs.lean is unchanged: the parameterized reconstruction
+(Vp, chidirp, chip, Up) is local to Uniqueness.lean and is connected
+to V/chi/U by bridge lemmas proved by rfl.
+
+## Šemrl's Corollary 1.2 (Uhlhorn)
+
+lean
+def PreservesOrthogonality (φ : Proj1 n → Proj1 n) : Prop :=
+ ∀ P Q : Proj1 n, (P : Submodule ℂ (H n)) ⟂ (Q : Submodule ℂ (H n)) →
+ (φ P : Submodule ℂ (H n)) ⟂ (φ Q : Submodule ℂ (H n))
+
+theorem uhlhorn_finite_dim (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
+ (hφ : PreservesOrthogonality φ) : IsWignerSymmetryProj φ
+
+
+Proj1 n := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1} represents a
+rank-one projection, with no dedicated rankOne wrapper, in accordance with
+gleason-theorem-lean. Every map on rank-one projections that preserves
+orthogonality in one direction only
+(PQ = 0 ⟹ φ(P)φ(Q) = 0, with neither injectivity nor surjectivity assumed)
+is, in finite dimension n ≥ 3, a Wigner symmetry—Šemrl 2021,
+Wigner symmetries and Gleason's theorem (arXiv:2106.06182),
+Corollary 1.2.
+
+This result COMPOSES two theorems rather than introducing self-contained
+mathematical content: the core proof applies Gleason.gleason, an external
+dependency, TWICE—first to construct, from a test density D and the
+preservation hypothesis, a second density E; and a second time implicitly
+by specializing D := projL(φQ) to identify E = projL Q through the
+elementary spectral lemma U2. It then concludes with wigner, the internal
+block above, through Wigner's Corollary (B) in projection language (U1), which
+had never been constructed before this milestone. The full decomposition
+has six submilestones: U1, Wigner's corollary in projection language; U2,
+the spectral lemma; U3a, extension of a frame function on lines to a full
+ProjMeasure, absent from gleason-theorem-lean and therefore derived in
+this repository; U3b, “Gleason applied twice”; U4, assembly; and U5, the
+finite-dimensional cardinality-counting reduction. Full details are in
+SORRIES.md.
+
+## Grain Coherence Theorem (BornRule)
+
+lean
+structure Perspective (n : ℕ) where
+ cells : Finset (Submodule ℂ (H n))
+ nz : ∀ c ∈ cells, c ≠ ⊥
+ ortho : ∀ c ∈ cells, ∀ c' ∈ cells, c ≠ c' → c ≤ c'ᗮ
+ span : sSup (cells : Set (Submodule ℂ (H n))) = ⊤
+
+theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
+ (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
+ (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
+ Est D c = ∑ i : Fin (Module.finrank ℂ c),
+ ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
+
+theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
+ (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
+ (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}
+ (hc : c ∈ D.cells) :
+ Est D c = ‖projL c v‖ ^ 2
+
+
+For a perspective D, an orthogonal partition of H n into nonzero cells,
+and a cell c of D, every estimation rule Est satisfying (Grain), (Norm),
+(Pos), and, for a fixed unit vector v, (Null), satisfies
+Est D c = ∑ᵢ ‖⟨v,fᵢ⟩‖² over every orthonormal basis (fᵢ) of c: the Born
+rule in full generality, derived from the four coherence axioms alone, without
+assuming a priori that Est has trace form. This covers the descriptive
+route through Gleason's theorem. A second independent derivation route, using
+a dynamic-stability axiom rather than grain coherence, the
+existence/consistency of the four axioms themselves, and intersubjective
+convergence between observers as a corollary are possible future extensions
+and are not attempted here.
+
+This result COMPOSES Gleason with the Uhlhorn infrastructure rather than
+introducing self-contained mathematical content: B2 constructs a frame
+function on lines directly from the estimation rule through
+Perspective.binary, then invokes U3a + Gleason.gleason, an actual theorem
+rather than an axiom, to obtain a density ρ; B3 reuses U2 to show that a
+density operator vanishing on the orthogonal complement of a unit vector v
+is exactly projL (ℂ∙v); and B4 connects (Null) to this vanishing hypothesis
+and assembles the result through
+refinePerspective/refine_filter_eq_cellLines, already proved in B1. The
+full decomposition has four milestones: B1, scaffolding—perspectives, axioms,
+non-contextuality; B2, bridge to Gleason; B3, pinning; and B4, final assembly.
+Full details and favorable deviations are in SORRIES.md.
+
+#print axioms grainCoherenceTheorem depends only on
+[propext,
+Classical.choice, Quot.sound]: Gleason's theorem is imported as an
+actual theorem (Gleason.gleason), never postulated.
+
+grainCoherenceTheorem_projector is only the projector-notation version of
+the preceding theorem: Parseval's identity identifies its orthonormal-basis
+sum with ‖projL c v‖². It is not a new independent mathematical result.
+
+## Kent's contrary-inferences theorem (Histories)
+
+lean
+abbrev History (n L : ℕ) := Fin L → Submodule ℂ (H n)
+
+def IsConsistent (ψ : H n) (Ps : Fin L → Perspective n) : Prop :=
+ ∀ h k : History n L, IsHistoryOf Ps h → IsHistoryOf Ps k → h ≠ k →
+ decFunctional ψ h k = 0
+
+def histProb (ψ : H n) (h : History n L) : ℝ := ‖chainOp h ψ‖ ^ 2
+
+theorem contrary_inferences :
+ ∃ (Ps Ps' : Fin 2 → Perspective 3) (ψ : H 3),
+ P 0 ⟂ P 1 ∧
+ IsConsistent ψ Ps ∧ IsConsistent ψ Ps' ∧
+ (histProb ψ (![(P 0)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 0, F] : History 3 2) ≠ 0) ∧
+ (histProb ψ (![(P 1)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 1, F] : History 3 2) ≠ 0)
+
+
+In words: there exist two consistent families of two-stage histories on
+H 3, sharing the same preparation ψ and the same final postselection
+stage F, such that the first implies proposition P 0 with certainty, the
+second implies P 1 with certainty, and P 0 is orthogonal to P 1—Kent
+1997, PRL 78, 2874, arXiv:gr-qc/9604012. A temporal stage of a history set
+is a BornRule.Perspective, reused unchanged. The consistency notion is
+Kent's “medium/strong” version (decFunctional ψ h k = 0 for every pair of
+distinct histories in the family, not merely vanishing of its real part).
+The explicit witness is constructed in dimension 3:
+ψ₀ := e₀+e₁+e₂, φ₀ := e₀+e₁−e₂ (not normalized),
+P i :=
+ℂ∙(e i), and F := ℂ∙φ₀. The key cancellation is
+⟪φ₀, e i⟫ = 1 for i ∈ {0,1} (= -1 for i = 2, outside the witness).
+
+Neutrality note. The mathematical content above—two consistent sets each
+implying with certainty a proposition, with the two propositions
+orthogonal—is undisputed. Its interpretation as an objection to the
+predictability of consistent histories is debated: the standard response
+(Griffiths) invokes the “single-framework rule,” under which the two
+inferences are valid only within their respective frameworks and may never
+be combined in one argument. This repository fixes the mathematical
+statement without adjudicating the interpretive debate.
+
+The generic profusion theorem of Dowker–Kent
+(J. Stat. Phys. 82, 1575 (1996), using parameter/dimension counting on
+manifolds to show that contrary inferences are not isolated) is explicitly
+outside the scope of this block. It remains a possible future extension; see
+SORRIES.md.
+
+## AI assistance
+
+This development—skeleton, proofs, and architectural choices—was carried out
+with assistance from Claude (Anthropic), under human supervision at every
+stage: every uncertain Mathlib API was checked through stdin before use
+(lake env lean --stdin), every milestone began with a validated skeleton
+containing sorry before being filled, and lake build +
+./scripts/guard.sh were run after every closed proof. See CLAUDE.md for
+the exact rules followed and the commit history for milestone-by-milestone
+details.
+
+## Getting started
+
+bash
+./setup.sh # toolchain + mathlib + cache + build (~10 min avec cache)
+./scripts/guard.sh # audit : 0 axiome, 0 native_decide, compte des sorry
+
+
+## Verifying the proofs
+
+bash
+lake build # doit terminer vert
+./scripts/guard.sh # 0 axiome, 0 native_decide, 0 sorry (cinq blocs)
+
+
+#print axioms for the chapter-level theorems (the exhaustive list of 155
+content-bearing public declarations is in ARCHITECTURE_NOTES.md/the closing
+report; all depend on the same trio):
+
+
+'QuantumFoundations.naimark' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.naimark_born' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.exists_unitary_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.naimark_projective_form' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Wigner.wigner' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Wigner.exclusivity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Wigner.bargmann_delta_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Wigner.U_alt_eq_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Uhlhorn.uhlhorn_finite_dim' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Uhlhorn.wignerSymmetryProj_of_sendsONBToONB' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Uhlhorn.traceProd_preserved_of_sendsONBToONB' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Uhlhorn.exists_projMeasure_of_frameFunctionOnLines' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.grainCoherenceTheorem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.grainCoherenceTheorem_projector' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.full_rho_facts' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Histories.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Histories.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Histories.S_consistent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.Histories.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+
+These are the three standard axioms accepted by Lean/Mathlib itself:
+propositional extensionality, choice, and quotient soundness. There is no
+sorryAx and no project-specific axiom. Points checked specifically:
+uhlhorn_finite_dim is the first theorem in the repository to depend both on
+Gleason.gleason, an external dependency, AND on
+QuantumFoundations.Wigner.wigner, an internal block;
+grainCoherenceTheorem depends both on Gleason.gleason AND on the internal
+Uhlhorn infrastructure U2/U3a. In both cases, the dual dependency chain leaks
+no additional axioms, as confirmed above. contrary_inferences depends
+transitively on a THREE-level chain
+(Histories → BornRule.Perspective → external Uhlhorn/Gleason); the
+same trio was confirmed when Histories was closed on 2026-07-16, as was the
+absence of any BornRule axiom regression following the relocation of
+norm_sq_sum_of_pairwise_orthogonal/sum_sq_projL_of_pairwise_isOrtho
+(from private in Nonvacuity.lean to public declarations in
+Perspective.lean). The 34 PUBLIC BornRule declarations—the previous 32 +
+the two relocated, now public lemmas—were rechecked individually; none
+was affected.
+
+## Repository map
+
+| File | Content | Lines |
+|---|---|---:|
+| QuantumFoundations/Naimark/Defs.lean | POVM n m (reuses Gleason.IsPositiveOp) | 26 |
+| QuantumFoundations/Naimark/SqrtOp.lean | Positive square root (spectral construction) | 123 |
+| QuantumFoundations/Naimark/DilSpace.lean | Dilation space K, singleL/coordL/dilProj | 138 |
+| QuantumFoundations/Naimark/Main.lean | dilV, isometry, Naimark theorem, Born corollary | 114 |
+| QuantumFoundations/Naimark/Unitary.lean | N5 (optional): unitary extension, ancilla form | 137 |
+| QuantumFoundations/Wigner/Defs.lean | e, eImg, InPerp, V, refVec, chidir, chi, U, IsWignerMap | 70 |
+| QuantumFoundations/Wigner/Scalar.lean | Scalar toolkit over ℂ (rigidity, id/conj dichotomy) | 92 |
+| QuantumFoundations/Wigner/Bessel.lean | Bessel identity (equality); orthonormal images | 100 |
+| QuantumFoundations/Wigner/VConstruction.lean | Bargmann's Construction B: V, collinearity, (11)–(12a) | 355 |
+| QuantumFoundations/Wigner/Core.lean | Core: dichotomy of chi, additivity/homogeneity of V | 690 |
+| QuantumFoundations/Wigner/Main.lean | U, bijectivity, compatibility with T, theorem wigner | 356 |
+| QuantumFoundations/Wigner/Uniqueness.lean | W6 (optional): exclusivity (A), restricted uniqueness (B) | 335 |
+| QuantumFoundations/Wigner/Nonvacuity.lean | Wigner witnesses: id (unitary branch), conjCoords (antiunitary branch) | 79 |
+| QuantumFoundations/Uhlhorn/Defs.lean | Proj1, TraceProd, PreservesOrthogonality, IsWignerSymmetryProj, IsFrameFunctionOnLines, SendsONBToONB | 121 |
+| QuantumFoundations/Uhlhorn/WignerProjectionForm.lean | U1: Wigner's Corollary (B) in projection language | 86 |
+| QuantumFoundations/Uhlhorn/Spectral.lean | U2: elementary spectral lemma | 108 |
+| QuantumFoundations/Uhlhorn/GleasonExtend.lean | U3a: extension of a frame function on lines to a full ProjMeasure | 194 |
+| QuantumFoundations/Uhlhorn/GleasonTwice.lean | U3b: “Gleason applied twice” | 189 |
+| QuantumFoundations/Uhlhorn/Assembly.lean | U4 (assembly) + U5 (finite-dimensional reduction), theorem uhlhorn_finite_dim | 83 |
+| QuantumFoundations/Uhlhorn/Nonvacuity.lean | Uhlhorn witness: φ := id | 37 |
+| QuantumFoundations/BornRule/Perspective.lean | B1: Perspective, Refines, AxGrain/AxNorm/AxPos/AxNul, lemma4_noncontextual, basisPerspective, cellLines, refinePerspective | 445 |
+| QuantumFoundations/BornRule/GleasonBridge.lean | B2: g, g_isFrameFunctionOnLines, exists_rho (replaces axiom gleason) | 81 |
+| QuantumFoundations/BornRule/Pinning.lean | B3: eq_projL_of_vanishes_on_orthogonal (identification of ρ via U2) | 70 |
+| QuantumFoundations/BornRule/Assembly.lean | B4 (assembly), final theorem grainCoherenceTheorem | 136 |
+| QuantumFoundations/BornRule/Nonvacuity.lean | BornRule witness: E₀ v (Born rule) satisfies Grain+Norm+Pos+Null simultaneously | 180 |
+| QuantumFoundations/Nonvacuity.lean | Naimark witness: uniform POVM with n=2, m=2 | 55 |
+| QuantumFoundations/Histories/Defs.lean | History, IsHistoryOf, chainOp, decFunctional, IsConsistent, histProb | 84 |
+| QuantumFoundations/Histories/Nonvacuity.lean | Histories witness: every one-stage Perspective is consistent | 58 |
+| QuantumFoundations/Histories/Basic.lean | K1: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | 80 |
+| QuantumFoundations/Histories/Witness.lean | K2: explicit Kent witness in H 3, S_consistent | 333 |
+| QuantumFoundations/Histories/ContraryInferences.lean | K3: inference, final theorem contrary_inferences | 97 |
+| QuantumFoundations.lean | Root import aggregator | 35 |
+| Total | 32 files | 5088 |
+
+Documentation: CLAUDE.md (rules for the AI agent, to be read at startup),
+SORRIES.md (detailed milestone-by-milestone tracking), and
+ARCHITECTURE_NOTES.md (consolidated record of all deviations from the
+initial plans).
+
+## Milestones — Naimark
+
+| Milestone | Content | Status |
+|-----------|------------------------------------------------------------|--------|
+| N0 | Skeleton (POVM, DilSpace, Nonvacuity) | ✅ |
+| N1 | sqrtOp (spectral positive square root) | ✅ |
+| N2 | Dilation-space components (singleL/coordL/dilProj) | ✅ |
+| N3 | Dilation (dilV, naimark, naimark_born) | ✅ |
+| N4 | Closure (README, #print axioms, tag) | ✅ |
+| N5 | Optional: unitary/ancilla version (tag v2.0-naimark) | ✅ |
+
+## Milestones — Wigner
+
+| Milestone | Content | Status |
+|-----------|----------------------------------------------------------------------------|--------|
+| W0 | Skeleton (Defs, Nonvacuity, 24 sorry) | ✅ |
+| W1 | Scalar toolkit (Scalar.lean: rigidity, scalar_dichotomy) | ✅ |
+| W2 | Bessel identity (equality), orthonormal images | ✅ |
+| W3 | Construction of V (collinearity, Eqs. 11–12a) | ✅ |
+| W4 | Core: dichotomy of chi, additivity/homogeneity of V | ✅ |
+| W5 | Assembly (U, bijectivity, compatibility, wigner) | ✅ |
+| W6 | Optional: exclusivity (A) + restricted uniqueness (B) (tag v2.0-wigner) | ✅ |
+
+## Milestones — Uhlhorn
+
+| Milestone | Content | Status |
+|-----------|--------------------------------------------------------------------------------|--------|
+| U0 | Reconnaissance + skeleton (Defs.lean, 6 sorry) | ✅ |
+| U1 | Wigner's Corollary (B) in projection language (wigner_projection_form) | ✅ |
+| U2 | Elementary spectral lemma (eq_projL_of_positive_le_one_trace_one_inner_one) | ✅ |
+| U3a | Extension of a frame function on lines to a full ProjMeasure | ✅ |
+| U3b | “Gleason applied twice” (traceProd_preserved_of_sendsONBToONB) | ✅ |
+| U4 | Direct assembly of U1 and U3b | ✅ |
+| U5 | Finite-dimensional reduction, final theorem (tag v1.0-uhlhorn) | ✅ |
+
+## Milestones — BornRule
+
+| Milestone | Content | Status |
+|-----------|----------------------------------------------------------------------------------|--------|
+| B1 | Scaffolding: Perspective, axioms, lemma4_noncontextual, refinePerspective | ✅ |
+| B2 | Bridge to Gleason: g, IsFrameFunctionOnLines, exists_rho | ✅ |
+| B3 | Pinning: eq_projL_of_vanishes_on_orthogonal (identification of ρ via U2) | ✅ |
+| B4 | Final assembly, theorem grainCoherenceTheorem | ✅ |
+| Nonvacuity | E₀ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | ✅ |
+
+## Milestones — Histories
+
+| Milestone | Content | Status |
+|-----------|--------------------------------------------------------------------------------------------------|--------|
+| K0 | Skeleton (History, chainOp, decFunctional, IsConsistent, Nonvacuity) | ✅ |
+| K1 | General lemmas: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | ✅ |
+| K2 | Explicit Kent witness in H 3 (Witness.lean), S_consistent | ✅ |
+| K3 | inference, final theorem contrary_inferences (tag v1.0-histories) | ✅ |
+
+## Main theorems — reference table
+
+| Theorem | Informal statement | Reference | File (lines) | Status | Tag |
+|---|---|---|---:|---|---|
+| naimark | Every finite POVM dilates to a projection-valued measure under an isometry | Watrous Thm 2.42 | Naimark/Main.lean (114) | 0 sorry, 0 axioms | v2.0-naimark |
+| naimark_born | The Born formula is preserved by this dilation | Watrous Thm 2.42 | Naimark/Main.lean (114) | 0 sorry, 0 axioms | v2.0-naimark |
+| exists_unitary_extension / naimark_projective_form | The dilation isometry extends to a global unitary (ancilla form) | Paris §3.2 Thm 4 / Watrous Cor. 2.43 | Naimark/Unitary.lean (137) | 0 sorry, 0 axioms | v2.0-naimark |
+| wigner | Every transformation preserving \|⟨φ\|ψ⟩\|² is induced by a unitary or antiunitary, without a bijectivity hypothesis | Bargmann 1964 §1–§5 | Wigner/Main.lean (356) | 0 sorry, 0 axioms | v1.0-wigner |
+| exclusivity | The same T cannot be compatible with both a unitary and an antiunitary equivalence (n ≥ 2) | Bargmann 1964 §1.5 | Wigner/Uniqueness.lean (335) | 0 sorry, 0 axioms | v2.0-wigner |
+| U_alt_eq_smul | U is unique up to a global phase relative to the choice of representative of eImg (restricted version) | Bargmann 1964 §6 (restricted) | Wigner/Uniqueness.lean (335) | 0 sorry, 0 axioms | v2.0-wigner |
+| uhlhorn_finite_dim | In dimension n ≥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (83) | 0 sorry, 0 axioms | v1.0-uhlhorn |
+| grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (∑ᵢ‖⟨v,fᵢ⟩‖²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (136) | 0 sorry, 0 axioms | v2.0-bornrule |
+| grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
+| contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | Histories/ContraryInferences.lean (97) | 0 sorry, 0 axioms | v1.0-histories |
+
+“0 axioms” means dependence only on
+[propext, Classical.choice, Quot.sound], verified by #print axioms for
+each theorem; see the preceding section and the closing report for the
+exhaustive list of 155 checked declarations.
+
+## Dependencies
+
+This repository pins two Lake dependencies to fixed, resolvable revisions
+(lakefile.toml/lake-manifest.json), never to a floating branch:
+
+- gleason-theorem-lean,
+ rev = "v1.0-gleason" (resolved to
+ 876aa7390b5d831cd81415d55493a1c0c3bae31e, a fixed revision unchanged
+ since Naimark). Usage expanded from Uhlhorn and reused by BornRule
+ (unlike Naimark, which reuses only Gleason.IsPositiveOp, a simple Prop):
+ Uhlhorn AND BornRule invoke Gleason.gleason itself—the full Gleason
+ theorem, not merely a definition—as well as part of its internal machinery
+ (Gleason.positive_inner_self_eq_zero, Gleason.cframe_sum_invariant,
+ Gleason.ProjMeasure/bornValue/projL,
+ Gleason.exists_orthonormalBasis_extension_complex,
+ Submodule.starProjection_isSymmetric/re_inner_starProjection_nonneg).
+ This is deliberate and expected: Uhlhorn (Šemrl's Corollary 1.2) and
+ BornRule (grainCoherenceTheorem) compose Gleason—and, for Uhlhorn,
+ Wigner—by construction; they are not self-contained results, as explained
+ in the dedicated sections above. Despite this substantially broader
+ dependency, there is no transitive axiom leakage: this was confirmed
+ directly by #print axioms for every theorem in this repository, including
+ uhlhorn_finite_dim, which depends both on external
+ Gleason.gleason and internal QuantumFoundations.Wigner.wigner, and
+ grainCoherenceTheorem, which depends both on external
+ Gleason.gleason and internal Uhlhorn infrastructure U2/U3a. Neither case
+ introduces an additional axiom. BornRule also reuses directly from Uhlhorn
+ eq_projL_of_positive_le_one_trace_one_inner_one (U2),
+ exists_projMeasure_of_frameFunctionOnLines (U3a), and
+ isEffect_of_isDensityOperator (moved from U3b to Uhlhorn/Defs.lean
+ during B3); no Gleason/Uhlhorn content is reproved. Histories does not
+ invoke Gleason.gleason or
+ Gleason.projL/Submodule.starProjection directly, but inherits them
+ transitively through BornRule.Perspective (the three-level chain
+ Histories → BornRule → external Uhlhorn/Gleason). The same absence of axiom
+ leakage was confirmed for contrary_inferences and the other 35 public
+ declarations in the block.
+- mathlib, rev = "8bba4200986270d3b30be2bb2f8840af47a7854f".
+
+./setup.sh (lake exe cache get, then lake build) reproduces the exact
+repository state on a fresh clone without manual intervention. This was
+tested during every closing pass (lake clean + lake exe cache get +
+lake build), most recently including Histories on 2026-07-16.
+
+## Rules
+
+No axiom, no native_decide (blocking CI, scripts/guard.sh). Every new
+hypothesis structure receives a concrete inhabitant in Nonvacuity.lean in
+the same commit. Use an honest sorry rather than silently weakening a
+statement; see CLAUDE.md for the complete rules.
+
+## License
+
+Apache License 2.0.

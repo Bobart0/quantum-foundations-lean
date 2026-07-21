@@ -1,7 +1,7 @@
 import QuantumFoundations.Wigner.Defs
 
 /-!
-# Nonvacuity — l'énoncé `wigner` n'est ni vacueux ni mal câblé
+**FR.** # Nonvacuity — l'énoncé `wigner` n'est ni vacueux ni mal câblé
 
 Contrairement à Naimark (`POVM` est une structure), `wigner` est un théorème avec
 hypothèse `IsWignerMap T` : la discipline de non-vacuité ici consiste à exhiber,
@@ -10,6 +10,16 @@ deux branches de la conclusion — preuve que la disjonction n'est pas mal câbl
 (p.ex. qu'une seule branche ne serait jamais atteignable). `T := id` habite la
 branche unitaire ; `T := conjCoords` (conjugaison composante par composante)
 habite la branche antiunitaire.
+
+**EN.** # Nonvacuity — the statement wigner is neither vacuous nor miswired
+
+Unlike Naimark, where POVM is a structure, wigner is a theorem with
+hypothesis IsWignerMap T. The nonvacuity discipline here is to exhibit, for
+a concrete T satisfying IsWignerMap, a direct witness for EACH branch of
+the conclusion, thereby proving that the disjunction is not miswired—for
+example, that one branch is not unreachable. T := id inhabits the unitary
+branch; T := conjCoords, componentwise conjugation, inhabits the
+antiunitary branch.
 -/
 
 namespace QuantumFoundations.Wigner
@@ -19,7 +29,11 @@ open Gleason
 
 noncomputable section
 
-/-- Conjugaison composante par composante sur `H n`. -/
+/--
+**FR.** Conjugaison composante par composante sur `H n`.
+
+**EN.** Componentwise conjugation on H n.
+-/
 def conjCoords (n : ℕ) (x : H n) : H n := WithLp.toLp 2 (fun i => starRingEnd ℂ (x i))
 
 @[simp] theorem conjCoords_apply (n : ℕ) (x : H n) (i : Fin n) :
@@ -33,7 +47,11 @@ theorem inner_conjCoords (n : ℕ) (x y : H n) :
   intro i _
   simp [mul_comm]
 
-/-- `conjCoords` comme application conj-semilinéaire. -/
+/--
+**FR.** `conjCoords` comme application conj-semilinéaire.
+
+**EN.** conjCoords as a conjugate-semilinear map.
+-/
 def conjCoordsLM (n : ℕ) : H n →ₛₗ[starRingEnd ℂ] H n where
   toFun := conjCoords n
   map_add' x y := by
@@ -50,22 +68,37 @@ theorem norm_conjCoords (n : ℕ) (x : H n) : ‖conjCoords n x‖ = ‖x‖ := 
     simp
   nlinarith [norm_nonneg (conjCoords n x), norm_nonneg x, sq_nonneg (‖conjCoords n x‖ - ‖x‖)]
 
-/-- `conjCoords`, bundlé en isométrie conj-semilinéaire (antiunitaire). -/
+/--
+**FR.** `conjCoords`, bundlé en isométrie conj-semilinéaire (antiunitaire).
+
+**EN.** conjCoords, bundled as a conjugate-semilinear isometry (antiunitary).
+-/
 noncomputable def conjCoordsEquiv (n : ℕ) : H n ≃ₛₗᵢ[starRingEnd ℂ] H n where
   toLinearEquiv := LinearEquiv.ofBijective (conjCoordsLM n) (conjCoordsLM_involutive n).bijective
   norm_map' x := norm_conjCoords n x
 
-/-- Témoin branche unitaire : l'identité préserve trivialement les probabilités
-de transition. -/
+/--
+**FR.** Témoin branche unitaire : l'identité préserve trivialement les probabilités
+de transition.
+
+**EN.** Witness for the unitary branch: the identity trivially preserves
+transition probabilities.
+-/
 example : IsWignerMap (id : H 2 → H 2) := fun _ _ _ _ => rfl
 
 example :
     ∃ U' : H 2 ≃ₗᵢ[ℂ] H 2, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ (id : H 2 → H 2) x = c • U' x :=
   ⟨LinearIsometryEquiv.refl ℂ (H 2), fun x _ => ⟨1, by norm_num, by simp⟩⟩
 
-/-- Témoin branche antiunitaire : la conjugaison composante par composante
+/--
+**FR.** Témoin branche antiunitaire : la conjugaison composante par composante
 préserve les probabilités de transition (`⟪conj x, conj y⟫ = conj ⟪x,y⟫`, même
-module). -/
+module).
+
+**EN.** Witness for the antiunitary branch: componentwise conjugation preserves
+transition probabilities
+(⟪conj x, conj y⟫ = conj ⟪x,y⟫, hence the same modulus).
+-/
 example : IsWignerMap (conjCoords 2) := by
   intro x y hx hy
   rw [inner_conjCoords, RCLike.norm_conj]

@@ -1,7 +1,7 @@
 import QuantumFoundations.Branches.Basic
 
 /-!
-# R2 — Cas `A = 2` : dé-risquage de la mécanique `CommuteWitness`/chaîne
+**FR.** # R2 — Cas `A = 2` : dé-risquage de la mécanique `CommuteWitness`/chaîne
 
 Jalon volontairement réduit : valider au coût minimal la mécanique de
 tunneling (chaîne à cinq étapes, éqs. (13)-(15) de Riedel) et le mécanisme
@@ -41,6 +41,46 @@ Aucune manipulation de permutations.
 relocalisés publics dans `Basic.lean` dès leur second usage — nécessaires
 aussi à `Induction.lean` — plutôt que dupliqués `private` dans les deux
 fichiers.
+
+**EN.** # R2 — Case A = 2: reducing risk in the CommuteWitness/chain mechanism
+
+A deliberately limited milestone: validate, at minimal cost, the tunneling
+mechanism (the five-step chain, Riedel's Eqs. (13)–(15)) and the
+diagonal-action mechanism BEFORE the general induction in Induction.lean.
+The COMPLETE two-observable decomposition and uniqueness results are NOT
+separate theorems here; they follow as the instance A = 2 of the general
+theorem Induction.riedel.
+
+## Deviation from the R0 skeleton: twoObs_eigen restricted to record 0
+
+The R0 skeleton stated twoObs_eigen for an ARBITRARY record r : Fin R of
+the target observable a. During the proof attempt, this turned out to be
+STRICTLY STRONGER than the diagonal-action mechanism itself, which concerns
+only the record ρ c actually used to construct the chain, here 0.
+Generalization to an arbitrary r would additionally require composing
+Basic.branch_wellDefined/IsRecordedOn on top, without contributing to the
+validation of the mechanism targeted by this milestone. The statement is
+therefore restricted to record 0, the record used by
+chainProj/jointBranch, in accordance with the actual form of
+Induction.diagonal. This is not a concealed weakening: the generalization
+remains an immediate corollary and is not needed here.
+
+## Confirmed validation
+
+The three proofs below follow EXACTLY the five-step mechanism described in
+the design prompt. For chain_two_0/chain_two_1: target-record identity by
+redundancy, commutation with witness ĝ, record identity for the OTHER target
+by redundancy, commutation, and target-record identity by redundancy
+(restoration). chain_two is the direct instance (L = [1], a = 0);
+swap_two combines two applications of this mechanism, one for each
+observable, with ONE additional commutation; twoObs_eigen combines the same
+mechanism with operator contraction (Basic.rproj_contract, here in
+pointwise form) at the point of contact. No permutation manipulation is used.
+
+The pointwise utilities commute_apply and rproj_contract_apply were moved
+to Basic.lean and made public upon their second use—because they are also
+needed by Induction.lean—rather than being duplicated as private in both
+files.
 -/
 
 namespace QuantumFoundations.Branches
@@ -55,9 +95,15 @@ variable {n K R : ℕ}
 private theorem fin2_cases (x : Fin 2) : x = 0 ∨ x = 1 := by
   fin_cases x <;> simp
 
-/-- Cible `0`, autre observable `1` : substituer le record de `0` (`r → r'`)
+/--
+**FR.** Cible `0`, autre observable `1` : substituer le record de `0` (`r → r'`)
 est invisible après application de la projection de `1` (au record
-quelconque `ρ₁`) à `ψ` — le cœur du mécanisme de tunneling, à `A = 2`. -/
+quelconque `ρ₁`) à `ψ` — le cœur du mécanisme de tunneling, à `A = 2`.
+
+**EN.** Target 0, other observable 1: replacing the record of 0
+(r → r') is invisible after applying the projection of 1 (at an arbitrary
+record ρ₁) to ψ—the core of the tunneling mechanism for A = 2.
+-/
 private theorem chain_two_0 (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     (r r' ρ₁ : Fin R) (i j : Fin K) :
@@ -65,7 +111,11 @@ private theorem chain_two_0 (Obs : Fin 2 → Fin R → LabeledResolution n K) (�
   obtain ⟨ĝ, hcomm⟩ := hcw 0 1 (by decide) r r'
   rw [hrec 1 ρ₁ ĝ j, commute_apply (hcomm i j).1, hrec 0 r r' i, ← commute_apply (hcomm i j).2]
 
-/-- Symétrique de `chain_two_0` : cible `1`, autre observable `0`. -/
+/--
+**FR.** Symétrique de `chain_two_0` : cible `1`, autre observable `0`.
+
+**EN.** Symmetric counterpart of chain_two_0: target 1, other observable 0.
+-/
 private theorem chain_two_1 (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     (s s' ρ₀ : Fin R) (j i : Fin K) :
@@ -73,9 +123,15 @@ private theorem chain_two_1 (Obs : Fin 2 → Fin R → LabeledResolution n K) (�
   obtain ⟨ĝ, hcomm⟩ := hcw 1 0 (by decide) s s'
   rw [hrec 0 ρ₀ ĝ i, commute_apply (hcomm j i).1, hrec 1 s s' j, ← commute_apply (hcomm j i).2]
 
-/-- **R2(a), chaîne à cinq étapes (éqs. (13)-(14)), cas minimal `A = 2`.**
+/--
+**FR.** **R2(a), chaîne à cinq étapes (éqs. (13)-(14)), cas minimal `A = 2`.**
 Instance directe de `chain_two_0` (`i = j`, correspondant à `L = [1]`,
-`f := fun _ => i` dans `chainProj`). -/
+`f := fun _ => i` dans `chainProj`).
+
+**EN.** R2(a), five-step chain (Eqs. (13)–(14)), minimal case A = 2.
+Direct instance of chain_two_0 (i = j, corresponding to L = [1] and
+f := fun _ => i in chainProj).
+-/
 theorem chain_two (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     (r r' : Fin R) (ρ₁ : Fin R) (i : Fin K) :
@@ -84,13 +140,23 @@ theorem chain_two (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
   show rproj (Obs 0 r) i (rproj (Obs 1 ρ₁) i ψ) = rproj (Obs 0 r') i (rproj (Obs 1 ρ₁) i ψ)
   exact chain_two_0 Obs ψ hrec hcw r r' ρ₁ i i
 
-/-- **R2(b), échange d'ordre (éq. (15)), cas `A = 2`.** Appliquer d'abord
+/--
+**FR.** **R2(b), échange d'ordre (éq. (15)), cas `A = 2`.** Appliquer d'abord
 l'observable `0` puis l'observable `1` (aux records `0` de chacune) donne le
 même vecteur que l'ordre inverse. Preuve : substituer le record de `1` par un
 témoin `ĝ` (invisible sur la chaîne partant de l'observable `0`, via
 `chain_two_1`), commuter directement à `ĝ` fixé (`CommuteWitness` en
 `r = r' = 0`), puis restaurer le record `0` (redondance de l'observable
-`1` sur `ψ`). -/
+`1` sur `ψ`).
+
+**EN.** R2(b), order exchange (Eq. (15)), case A = 2. Applying observable
+0 first and observable 1 second (using record 0 for each) yields the
+same vector as the reverse order. Proof: replace the record of 1 by a
+witness ĝ (invisible on the chain beginning with observable 0, via
+chain_two_1), commute directly for the fixed ĝ (CommuteWitness with
+r = r' = 0), and then restore record 0 (redundancy of observable 1 on
+ψ).
+-/
 theorem swap_two [NeZero R] (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     (f : Fin 2 → Fin K) :
@@ -106,12 +172,22 @@ theorem swap_two [NeZero R] (Obs : Fin 2 → Fin R → LabeledResolution n K) (�
     _ = rproj (Obs 0 0) (f 0) (rproj (Obs 1 w) (f 1) ψ) := hF.symm
     _ = rproj (Obs 0 0) (f 0) (rproj (Obs 1 0) (f 1) ψ) := by rw [hrec 1 w 0 (f 1)]
 
-/-- **R2(c), action diagonale, cas `A = 2`.** La branche jointe `f` (construite
+/--
+**FR.** **R2(c), action diagonale, cas `A = 2`.** La branche jointe `f` (construite
 au record `0` de chaque observable) est état propre de la projection de
 CHAQUE observable, AU RECORD `0` (voir écart signalé en en-tête). Cas `a = 1`
 (contact direct) : `Basic.rproj_contract` pointwise. Cas `a = 0` (traverser la
 couche de l'observable `1`) : substitution vers un témoin (`chain_two_1`),
-commutation, contraction, restauration — même schéma que `swap_two`. -/
+commutation, contraction, restauration — même schéma que `swap_two`.
+
+**EN.** R2(c), diagonal action, case A = 2. The joint branch f
+(constructed using record 0 for each observable) is an eigenstate of the
+projection of EACH observable AT RECORD 0 (see the documented deviation in
+the header). Case a = 1 (direct contact): pointwise
+Basic.rproj_contract. Case a = 0 (crossing the layer for observable 1):
+substitution to a witness (chain_two_1), commutation, contraction, and
+restoration—the same pattern as in swap_two.
+-/
 theorem twoObs_eigen [NeZero R] (Obs : Fin 2 → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     (f : Fin 2 → Fin K) (a : Fin 2) (k : Fin K) :

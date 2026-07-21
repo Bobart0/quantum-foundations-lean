@@ -1,7 +1,7 @@
 import QuantumFoundations.Branches.Induction
 
 /-!
-# R4 — Couche 2 : modèle multi-sites plat, localité, disjonction spatiale
+**FR.** # R4 — Couche 2 : modèle multi-sites plat, localité, disjonction spatiale
 
 Modèle CONCRET : `Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d)` — route K₂
 du TODO mémoire, JAMAIS le `TensorProduct` abstrait de Mathlib. Cette brique
@@ -27,6 +27,35 @@ construction), CE pont est le VRAI travail de ce jalon : les signatures
 ci-dessous le rendent explicite via un paramètre `e : H (d ^ N) ≃ₗᵢ[ℂ]
 Sites N d` plutôt que de le construire à la volée — **signature la MOINS
 stabilisée de tout le squelette R0**, à raffiner en remplissant R4.
+
+**EN.** # R4 — Layer 2: flat multisite model, locality, and spatial disjointness
+
+CONCRETE model: Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d)—route K₂
+from the memory TODO, NEVER Mathlib's abstract TensorProduct. This component
+will also be used later for Stinespring.
+
+## IsLocalTo: existential kernel on matrix elements (decision F)
+
+IsLocalTo is a Prop with an EXISTENTIAL KERNEL on matrix elements (not an
+operator constructor localLift, which is relegated to the optional R5
+tool). A configuration g : Fin N → Fin d is restricted to a subset of
+sites A : Finset (Fin N) by simple COMPOSITION:
+g ∘ Subtype.val : ({x // x ∈ A} → Fin d). Reconnaissance confirmed that no
+additional plumbing is needed.
+
+## Layer-2 ↔ layer-1 bridge: NOT constructed here (warning)
+
+commuteWitness_of_not_pairCovers and riedel_local below require an
+identification of Sites N d with some H n (layer 1), necessarily so
+because LabeledResolution/CommuteWitness are typed over H n
+(Module.finrank ℂ (Sites N d) = d ^ N, hence n := d ^ N). Unlike the
+witness in Nonvacuity.lean (a single observable, with the bridge avoided by
+construction), THIS bridge is the ACTUAL work of this milestone. The
+signatures below make it explicit through a parameter
+e : H (d ^ N) ≃ₗᵢ[ℂ]
+Sites N d rather than constructing it on the fly—
+the LEAST stable signature in the entire R0 skeleton, to be refined while
+completing R4.
 -/
 
 namespace QuantumFoundations.Branches
@@ -41,42 +70,76 @@ variable {N d : ℕ}
 /-- Espace plat multi-sites : `N` sites, chacun de dimension `d`. -/
 abbrev Sites (N d : ℕ) := EuclideanSpace ℂ ((Fin N) → Fin d)
 
-/-- Deux configurations coïncident HORS de `A`. -/
+/--
+**FR.** Deux configurations coïncident HORS de `A`.
+
+**EN.** Two configurations agree OUTSIDE A.
+-/
 def AgreesOff (A : Finset (Fin N)) (g k : Fin N → Fin d) : Prop := ∀ s ∉ A, g s = k s
 
-/-- `T` est LOCAL à `A` : ses éléments de matrice, dans la base des
+/--
+**FR.** `T` est LOCAL à `A` : ses éléments de matrice, dans la base des
 configurations, ne dépendent que des restrictions à `A` des deux
-configurations, et s'annulent dès qu'elles diffèrent HORS de `A`. -/
+configurations, et s'annulent dès qu'elles diffèrent HORS de `A`.
+
+**EN.** T is LOCAL to A: in the configuration basis, its matrix elements
+depend only on the restrictions of the two configurations to A, and vanish
+whenever the configurations differ OUTSIDE A.
+-/
 def IsLocalTo (T : Sites N d →ₗ[ℂ] Sites N d) (A : Finset (Fin N)) : Prop :=
   ∃ s : ({x // x ∈ A} → Fin d) → ({x // x ∈ A} → Fin d) → ℂ, ∀ g k : Fin N → Fin d,
     ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), T (EuclideanSpace.single k (1 : ℂ))⟫_ℂ =
       if AgreesOff A g k then s (g ∘ Subtype.val) (k ∘ Subtype.val) else 0
 
-/-- **Pair-covering** (transcription de la définition de Riedel via
+/--
+**FR.** **Pair-covering** (transcription de la définition de Riedel via
 `Finset.Disjoint`) : `recA` pair-couvre `recB` s'il existe une paire de
 records DISTINCTS de `recA` qu'AUCUN record de `recB` ne peut départager par
 disjonction spatiale. La négation `¬ PairCovers recA recB` donne exactement
 la forme requise par `CommuteWitness` (`∀ r r', ∃ ĝ, …`) une fois transportée
-via `commute_of_disjoint`. -/
+via `commute_of_disjoint`.
+
+**EN.** Pair-covering (a transcription of Riedel's definition using
+Finset.Disjoint): recA pair-covers recB if there is a pair of DISTINCT
+records of recA that NO record of recB can separate by spatial
+disjointness. Once transported through commute_of_disjoint, the negation
+¬ PairCovers recA recB has exactly the form required by CommuteWitness
+(∀ r r', ∃ ĝ, …).
+-/
 def PairCovers {R : ℕ} (recA recB : Fin R → Finset (Fin N)) : Prop :=
   ∃ r r' : Fin R, r ≠ r' ∧
     ∀ ĝ : Fin R, ¬ (Disjoint (recB ĝ) (recA r) ∧ Disjoint (recB ĝ) (recA r'))
 
-/-- Toute `v : Sites N d` se développe dans la base canonique des
-configurations (`Pi.single`/`EuclideanSpace.single`), coefficient = coordonnée. -/
+/--
+**FR.** Toute `v : Sites N d` se développe dans la base canonique des
+configurations (`Pi.single`/`EuclideanSpace.single`), coefficient = coordonnée.
+
+**EN.** Every v : Sites N d expands in the canonical configuration basis
+(Pi.single/EuclideanSpace.single), with coefficient = coordinate.
+-/
 private theorem euclid_expand (v : Sites N d) :
     v = ∑ k, v k • (EuclideanSpace.single k (1 : ℂ) : Sites N d) := by
   apply PiLp.ext
   intro j
   simp [Pi.single_apply, mul_ite, mul_one, mul_zero]
 
-/-- Le produit scalaire avec un vecteur de base extrait la coordonnée. -/
+/--
+**FR.** Le produit scalaire avec un vecteur de base extrait la coordonnée.
+
+**EN.** The inner product with a basis vector extracts the corresponding coordinate.
+-/
 private theorem euclid_coord (g : Fin N → Fin d) (x : Sites N d) :
     ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), x⟫_ℂ = x g := by
   simp [PiLp.inner_apply]
 
-/-- Élément de matrice d'une composée : `⟨g|S T|h⟩ = ∑ₖ ⟨k|T|h⟩ · ⟨g|S|k⟩`,
-obtenu en développant `T (single h 1)` dans la base canonique. -/
+/--
+**FR.** Élément de matrice d'une composée : `⟨g|S T|h⟩ = ∑ₖ ⟨k|T|h⟩ · ⟨g|S|k⟩`,
+obtenu en développant `T (single h 1)` dans la base canonique.
+
+**EN.** Matrix element of a composition:
+⟨g|S T|h⟩ = ∑ₖ ⟨k|T|h⟩ · ⟨g|S|k⟩, obtained by expanding
+T (single h 1) in the canonical basis.
+-/
 private theorem matrixElem_comp (S T : Sites N d →ₗ[ℂ] Sites N d) (g h : Fin N → Fin d) :
     ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (T (EuclideanSpace.single h 1))⟫_ℂ
       = ∑ k, ⟪(EuclideanSpace.single k (1 : ℂ) : Sites N d), T (EuclideanSpace.single h 1)⟫_ℂ
@@ -87,9 +150,16 @@ private theorem matrixElem_comp (S T : Sites N d →ₗ[ℂ] Sites N d) (g h : F
   funext k
   rw [map_smul, inner_smul_right, ← euclid_coord k (T (EuclideanSpace.single h 1))]
 
-/-- **Le témoin `k` unique** forcé par `AgreesOff A g k ∧ AgreesOff B k h` sous
+/--
+**FR.** **Le témoin `k` unique** forcé par `AgreesOff A g k ∧ AgreesOff B k h` sous
 `Disjoint A B` : `h` sur `A`, `g` sur `B` (et hors `A ∪ B`, cohérent ssi
-`g = h` là-bas — voir `agreesOff_union_iff_kStar_B`). -/
+`g = h` là-bas — voir `agreesOff_union_iff_kStar_B`).
+
+**EN.** The unique witness k forced by
+AgreesOff A g k ∧ AgreesOff B k h under Disjoint A B: it equals h on
+A and g on B (and outside A ∪ B this is consistent iff g = h
+there; see agreesOff_union_iff_kStar_B).
+-/
 private def kStar (A : Finset (Fin N)) (g h : Fin N → Fin d) : Fin N → Fin d :=
   fun x => if x ∈ A then h x else g x
 
@@ -134,9 +204,15 @@ private theorem agreesOff_union_iff_kStar_B {A B : Finset (Fin N)} (g h : Fin N 
     · have := hu x (by rw [Finset.mem_union, not_or]; exact ⟨hxA, hxB⟩)
       simpa [kStar, hxA] using this
 
-/-- Formule fermée pour l'élément de matrice d'une composée d'opérateurs
+/--
+**FR.** Formule fermée pour l'élément de matrice d'une composée d'opérateurs
 locaux à des ensembles disjoints : le seul témoin `k` qui contribue est
-`kStar A g h`, ce qui collapse la somme sur `Fin N → Fin d` à un unique terme. -/
+`kStar A g h`, ce qui collapse la somme sur `Fin N → Fin d` à un unique terme.
+
+**EN.** Closed formula for the matrix element of a composition of operators
+local to disjoint sets: the only contributing witness k is
+kStar A g h, which collapses the sum over Fin N → Fin d to a single term.
+-/
 private theorem matrixElem_localComp {A B : Finset (Fin N)} (hAB : Disjoint A B)
     {S T : Sites N d →ₗ[ℂ] Sites N d}
     {s : ({x : Fin N // x ∈ A} → Fin d) → ({x : Fin N // x ∈ A} → Fin d) → ℂ}
@@ -163,14 +239,28 @@ private theorem matrixElem_localComp {A B : Finset (Fin N)} (hAB : Disjoint A B)
       · simp [hs, hcond]
       · simp [ht, hcond]
 
-/-- **LA brique neuve (R4).** Deux opérateurs locaux à des ensembles de sites
+/--
+**FR.** **LA brique neuve (R4).** Deux opérateurs locaux à des ensembles de sites
 DISJOINTS commutent. Stratégie vérifiée à la main (voir prompt de conception) :
 égalité des éléments de matrice — dans `(S ∘ T)_{g,h} = ∑ₖ S_{g,k} T_{k,h}`,
 les deltas d'`AgreesOff` forcent un `k` unique cohérent (`k = g` hors `A`,
 `k = h` hors `B`, compatible car `g = h` hors `A ∪ B` sinon les deux membres
 sont nuls) ; les deux côtés valent alors `s(g|A,h|A) · t(g|B,h|B) · [g = h
 hors A∪B]` — symétrique en `S,T`. Pure comptabilité de deltas sur des sommes
-de base (calibration : `Naimark/SqrtOp.lean`, N2). -/
+de base (calibration : `Naimark/SqrtOp.lean`, N2).
+
+**EN.** THE new component (R4). Two operators local to DISJOINT sets of
+sites commute. The strategy was checked by hand (see the design prompt):
+equality of matrix elements. In
+(S ∘ T)_{g,h} = ∑ₖ S_{g,k} T_{k,h}, the AgreesOff deltas force a unique
+consistent k (k = g outside A, k = h outside B; these conditions
+are compatible because g = h outside A ∪ B, and otherwise both sides
+vanish). Both sides therefore equal
+s(g|A,h|A) · t(g|B,h|B) · [g = h
+hors A∪B], which is symmetric in
+S,T. This is pure delta bookkeeping over basis sums (calibration:
+Naimark/SqrtOp.lean, N2).
+-/
 theorem commute_of_disjoint {A B : Finset (Fin N)} (hAB : Disjoint A B)
     {S T : Sites N d →ₗ[ℂ] Sites N d} (hS : IsLocalTo S A) (hT : IsLocalTo T B) :
     Commute S T := by
@@ -193,10 +283,18 @@ theorem commute_of_disjoint {A B : Finset (Fin N)} (hAB : Disjoint A B)
   · simp [hP, mul_comm]
   · simp [hP]
 
-/-- **Dé-conjugaison.** Si les formes conjuguées par une isométrie linéaire
+/--
+**FR.** **Dé-conjugaison.** Si les formes conjuguées par une isométrie linéaire
 `e` de deux opérateurs commutent, les opérateurs eux-mêmes commutent —
 `e.toLinearEquiv.conj` est l'équivalence de conjugaison sur les endomorphismes
-(`LinearEquiv.conj`), multiplicative (`conj_comp`) et bijective, donc injective. -/
+(`LinearEquiv.conj`), multiplicative (`conj_comp`) et bijective, donc injective.
+
+**EN.** Deconjugation. If the forms of two operators conjugated by a linear
+isometry e commute, then the operators themselves commute:
+e.toLinearEquiv.conj is the conjugation equivalence on endomorphisms
+(LinearEquiv.conj), is multiplicative (conj_comp) and bijective, and is
+therefore injective.
+-/
 private theorem commute_of_conj_commute {E F : Type*} [NormedAddCommGroup E] [NormedAddCommGroup F]
     [InnerProductSpace ℂ E] [InnerProductSpace ℂ F] (e : E ≃ₗᵢ[ℂ] F) (S T : E →ₗ[ℂ] E)
     (h : Commute (e.toLinearIsometry.toLinearMap ∘ₗ S ∘ₗ e.symm.toLinearIsometry.toLinearMap)
@@ -212,7 +310,8 @@ private theorem commute_of_conj_commute {E F : Type*} [NormedAddCommGroup E] [No
   rw [LinearEquiv.conj_comp, LinearEquiv.conj_comp]
   exact h
 
-/-- **Pont couche 2 → couche 1.** Si chaque record de chaque observable,
+/--
+**FR.** **Pont couche 2 → couche 1.** Si chaque record de chaque observable,
 transporté via `e` sur `Sites N d`, est local à un ensemble de sites, et
 qu'aucune paire d'observables ne se pair-couvre, alors la famille satisfait
 `CommuteWitness` — assemblage de `commute_of_disjoint` (sur `Sites N d`) et
@@ -225,7 +324,24 @@ QUE pour les couples distincts. Cas `r = r'` traité en réutilisant le témoin
 d'un couple `(r, r'')` quelconque, `r'' ≠ r` (existe par `hR2`) : ce témoin
 est disjoint de `supp a r`, ce qui suffit puisque les deux conjoncts requis
 coïncident. Coût nul : la redondance de records n'a de sens physique que
-pour `R ≥ 2`. -/
+pour `R ≥ 2`.
+
+**EN.** Layer-2 → layer-1 bridge. Suppose every record of every observable,
+transported through e to Sites N d, is local to a set of sites, and no
+pair of observables pair-covers the other. Then the family satisfies
+CommuteWitness, by combining commute_of_disjoint on Sites N d with
+commute_of_conj_commute, which transports commutation back to
+H (d ^ N).
+**hR2 : 2 ≤ R** is required for the case r = r' of CommuteWitness
+(which quantifies over ALL pairs of records of the same observable, including
+equal ones), whereas ¬ PairCovers—arising from PairCovers, whose definition
+requires r ≠ r'—provides a witness ONLY for distinct pairs. The case
+r = r' is handled by reusing the witness for an arbitrary pair
+(r, r'') with r'' ≠ r (which exists by hR2): that witness is disjoint
+from supp a r, which suffices because the two required conjuncts then
+coincide. This has no physical cost, since record redundancy is meaningful
+only for R ≥ 2.
+-/
 theorem commuteWitness_of_not_pairCovers {A R K : ℕ}
     (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
     (Obs : Fin A → Fin R → LabeledResolution (d ^ N) K)
@@ -254,12 +370,21 @@ theorem commuteWitness_of_not_pairCovers {A R K : ℕ}
        commute_of_conj_commute e _ _
          (commute_of_disjoint hĝ.2.symm (hlocal a r' i) (hlocal b ĝ j))⟩⟩
 
-/-- **Corollaire local du théorème de Riedel.** Sous redondance
+/--
+**FR.** **Corollaire local du théorème de Riedel.** Sous redondance
 (`IsRecordedOn`) et non-pair-covering deux à deux, `ψ` se décompose en
 branches jointes uniques et orthogonales. `e`/`hlocal` ne servent qu'à établir
 `CommuteWitness` (via `commuteWitness_of_not_pairCovers`) — `Induction.riedel`
 s'applique ensuite DIRECTEMENT sur `H (d ^ N)`, sans transport de conclusion
-(les `Obs`/`ψ` y vivent depuis le début). -/
+(les `Obs`/`ψ` y vivent depuis le début).
+
+**EN.** Local corollary of Riedel's theorem. Under redundancy
+(IsRecordedOn) and pairwise non-pair-covering, ψ decomposes into unique
+orthogonal joint branches. e/hlocal are used only to establish
+CommuteWitness (via commuteWitness_of_not_pairCovers); Induction.riedel
+then applies DIRECTLY on H (d ^ N), without transporting the conclusion,
+since Obs/ψ live there from the outset.
+-/
 theorem riedel_local {A R K : ℕ}
     (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
     (Obs : Fin A → Fin R → LabeledResolution (d ^ N) K)
@@ -274,14 +399,26 @@ theorem riedel_local {A R K : ℕ}
   let hcw := commuteWitness_of_not_pairCovers e Obs supp hR2 hlocal hnpc
   ⟨riedel Obs ψ hrec hcw |>.1, riedel Obs ψ hrec hcw |>.2.1⟩
 
-/-- **Corollaire de comptage (Finset.card pur).** Si les records de `recA`
+/--
+**FR.** **Corollaire de comptage (Finset.card pur).** Si les records de `recA`
 sont des singletons et que `recB` compte au moins trois records DEUX À DEUX
 disjoints, `recA` ne peut pas pair-couvrir `recB` — pour toute paire `(r,r')`
 de `recA`, au plus deux des records de `recB` peuvent chacun intersecter
 `r ∪ r'` (`|r|,|r'| ≤ 1`), donc au moins un des trois est disjoint des deux.
 **Énoncé PROVISOIRE, restreint aux records singletons** : l'instanciation
 métrique générale (boules/distances, records de taille bornée quelconque) est
-HORS SCOPE de ce bloc — extension future possible, voir `SORRIES.md`. -/
+HORS SCOPE de ce bloc — extension future possible, voir `SORRIES.md`.
+
+**EN.** Counting corollary (pure Finset.card). If the records of recA
+are singletons and recB has at least three PAIRWISE disjoint records, then
+recA cannot pair-cover recB: for any pair (r,r') of records of recA,
+at most two records of recB can each intersect r ∪ r'
+(|r|,|r'| ≤ 1), so at least one of the three is disjoint from both.
+PROVISIONAL statement, restricted to singleton records: the general
+metric instantiation (balls/distances, records of arbitrary bounded size) is
+OUT OF SCOPE for this block; a future extension is possible, as noted in
+SORRIES.md.
+-/
 theorem pigeonhole_corollary {R : ℕ} (recA recB : Fin R → Finset (Fin N))
     (hR : 3 ≤ R) (hsingleton : ∀ r, (recA r).card ≤ 1)
     (hdisjB : ∀ r r' : Fin R, r ≠ r' → Disjoint (recB r) (recB r')) :

@@ -1351,3 +1351,1182 @@ bloque sur une forme déjà repliée.
   l'objection de Kent) : mentionnée en note de neutralité
   (`ContraryInferences.lean`), non formalisée — c'est un argument
   interprétatif, pas un énoncé mathématique supplémentaire à prouver.
+
+---
+
+## English translation
+
+# SORRIES.md — quantum-foundations-lean
+
+Progress tracking, following the model of gleason-theorem-lean. Checked = lake build
+green, 0 axioms (guard.sh), commit + push completed. Sources: Watrous TQI Thm 2.42
+(core), Paris §3.2 Thm 4 (physical context, optional N5).
+
+Expected total count (Naimark, excluding N5): 13 sorry upon completion of N0 — 0 sorry
+remaining since the completion of N3, and still 0 sorry after the completion of N5
+(optional) on 2026-07-11. Wigner (W0) adds 24 sorry on 2026-07-12 (repository
+total: 24) — 21 sorry after completion of W1, 19 sorry after completion of W2,
+13 sorry after completion of W3, 7 sorry after completion of W4,
+0 sorry after completion of W5 (2026-07-13) — Wigner's theorem fully
+proved, 0 axioms, 0 sorry throughout the repository. W6 (optional, (A)+(B)) completed on
+2026-07-13 without ever introducing any sorry (each lemma written directly with a
+complete proof, skeleton-sorry-first unnecessary given the size of the steps) —
+0 sorry throughout the repository, including W6.
+
+Uhlhorn (U0, skeleton) adds 6 sorry on 2026-07-13 (repository total: 6) —
+5 sorry after completion of U3a (2026-07-13, addressed first because it was the
+most uncertain component after reconnaissance), 4 sorry after completion of U1
+(2026-07-13), 3 sorry after completion of U2 (2026-07-14), 2 sorry after
+completion of U3b (2026-07-14), 1 sorry after completion of U4 (2026-07-14),
+0 sorry after completion of U5 (2026-07-14) — Šemrl's Corollary 1.2
+fully proved, 0 axioms, 0 sorry throughout the repository.
+
+BornRule (B1–B4, 2026-07-14): each milestone written directly with a complete
+proof (skeleton-sorry-first unnecessary, as for W6) — 0 sorry
+introduced, 0 sorry throughout the repository during the entire development.
+grainCoherenceTheorem fully proved, with Gleason.gleason imported
+as an actual theorem (rather than as a separate axiom as in the former
+tstar-born-rule-lean). Nonvacuity.lean (2026-07-15) closes the gap
+identified during the final audit: E₀ v simultaneously satisfies the
+four axioms (Grain)/(Norm)/(Pos)/(Null) — 0 sorry introduced.
+The corollary grainCoherenceTheorem_projector was added on 2026-07-20 and
+released under v2.1-bornrule: it is simply the projector form of the final theorem,
+with no additional assumption or independent mathematical content. Its audit
+depends only on [propext, Classical.choice, Quot.sound].
+
+Histories (K0, 2026-07-16) adds 5 sorry (Defs/Nonvacuity skeleton with
+0 sorry + K1/K2/K3 containing sorry; initial estimate 5–7, reduced by two
+parameterized factorizations documented in the files themselves) —
+3 sorry after completion of K1 (2026-07-16), 2 sorry after completion of
+K2 (2026-07-16), 0 sorry after completion of K3 (2026-07-16) —
+Kent's contrary-inferences theorem fully proved, 0
+axioms, 0 sorry throughout the repository (five blocks).
+
+---
+
+## N0 — Skeleton (Defs, SqrtOp, DilSpace, Main, Nonvacuity)
+- [x] Step 0 validated: spectral signatures, existing square roots,
+ and choice of dilation space (nested K₁ PiLp vs flat K₂) settled.
+ Decisions: (b) no CFC.sqrt shortcut retained — in-house spectral
+ construction (eigenvectorBasis + rankOne), faithful to the project's
+ LinearMap convention and to the internal pattern of
+ ContinuousLinearMap.isPositive_iff_eq_sum_rankOne.
+ (d) K₂ := EuclideanSpace ℂ (Fin m × Fin n) retained over K₁ (equal proof
+ friction, but a single flat index and fewer WithLp/.ofLp layers).
+- [x] POVM n m defined (reuses IsPositiveOp from gleason)
+- [x] Nonvacuity: uniform POVM (n=2, m=2) proved inhabited
+- [x] Skeleton compiles, 13 sorry, 0 axioms, CI/guard.sh adapted to the new name
+
+## N1 — sqrtOp (the only new mathematical content)
+- [x] sqrtOp_isPositive : IsPositiveOp T → IsPositiveOp (sqrtOp T)
+- [x] sqrtOp_mul_self : IsPositiveOp T → sqrtOp T ∘ₗ sqrtOp T = T
+ (extensionality on the eigenbasis, no double sum; 3 private auxiliary
+ lemmas: sqrtOp_apply, sqrtOp_apply_basis, eigenvalues_nonneg)
+- [x] 11 sorry remaining, lake build green, guard.sh: 0 axioms
+
+## N2 — Building blocks of the dilated space K
+- [x] Step 0 validated: LinearMap.adjoint exists between two distinct
+ finite-dimensional Hilbert spaces (E →ₗ[𝕜] F, with
+ [FiniteDimensional 𝕜 E] and [FiniteDimensional 𝕜 F] separately) —
+ confirmed in stdin, with no Mathlib restriction to endomorphisms (only
+ gleason's IsSymmetric is endomorphism-only, but it is unnecessary here
+ except for dilProj).
+- [x] inner_singleL : ⟪singleL i x, w⟫ = ⟪x, coordL i w⟫
+- [x] adjoint_singleL : adjoint (singleL i) = coordL i (via LinearMap.eq_adjoint_iff)
+- [x] adjoint_coordL : adjoint (coordL i) = singleL i (auxiliary lemma added,
+ proved via LinearMap.adjoint_adjoint, not assumed for free)
+- [x] coordL_singleL : coordL i ∘ₗ singleL j = if i = j then id else 0
+- [x] dilProj_isSymmetric
+- [x] dilProj_idempotent
+- [x] dilProj_orthogonal : i ≠ j → dilProj i ∘ₗ dilProj j = 0
+- [x] dilProj_sum_eq_one : ∑ i, dilProj i = 1 (resolution of the identity via
+ Finset.sum_ite_eq, with no dedicated Pi/PiLp reconstruction lemma required)
+- [x] 4 sorry remaining (N3 only), lake build green, guard.sh: 0 axioms
+
+## N3 — The dilation (Watrous Thm 2.42)
+- [x] Step 0 validated: adjoint conventions confirmed (adjoint_inner_left,
+ adjoint_inner_right, adjoint_comp, map_sum for the adjoint of a finite
+ sum) — cited, not rederived.
+- [x] key1, key2: single-sum pivots (never a double sum; see rule 7 in
+ CLAUDE.md / lesson from riesz_rep_assembly)
+- [x] dilV_isometry : adjoint (dilV P) ∘ₗ dilV P = LinearMap.id
+- [x] naimark_dilation : ∀ i, adjoint (dilV P) ∘ₗ dilProj i ∘ₗ dilV P = P.E i
+- [x] theorem naimark (direct assembly of the preceding two results)
+- [x] naimark_born (statistical corollary: the probabilities coincide)
+- [x] 0 sorry remaining in Naimark v1, lake build green, guard.sh: 0 axioms,
+ 0 native_decide (latent bug fixed: grep with no match under
+ set -e -o pipefail terminated the script precisely upon reaching 0 sorry)
+
+## N4 — Completion
+- [x] SORRIES.md updated, #print axioms checked:
+ QuantumFoundations.naimark and QuantumFoundations.naimark_born depend
+ only on [propext, Classical.choice, Quot.sound]
+- [x] README: statement, documented difference from Watrous (direct sum vs ⊗),
+ explicit mention of AI assistance
+- [x] git tag v1.0-naimark, push --tags
+
+## N5 — OPTIONAL: unitary/ancilla version (Paris Thm 4 / Watrous Cor. 2.43) — ✅ CLOSED
+It required a nontrivial lemma that was not available at the time: extension of a
+partial isometry H n →ₗ K to a global unitary on K. Paris's sketch
+("identity on the orthogonal complement of ω_B") was insufficient as stated — see
+CLAUDE.md. Resolved on attempt 3 (below) through an approach that uses no
+Submodule, different from both Paris's sketch and the initial plan for
+attempts 1/2.
+
+Attempt of 2026-07-11 (30-minute budget, inconclusive — stopped as a precaution,
+NO sorry added, nothing committed for N5). Search for Mathlib building blocks:
+no direct “extend isometry to unitary” lemma found, but the construction route
+is clear and rests on building blocks that DO EXIST:
+- Submodule.orthogonalDecomposition (K : Submodule 𝕜 E) [K.HasOrthogonalProjection] :
+ E ≃ₗᵢ[𝕜] WithLp 2 (K × Kᗮ) (Mathlib.Analysis.InnerProductSpace.ProdL2) — decomposes
+ the ambient space into the L² product of the subspace and its orthogonal complement.
+- Orthonormal.equiv {v : Basis ι 𝕜 E} (hv) {v' : Basis ι' 𝕜 E'} (hv') (e : ι ≃ ι') :
+ E ≃ₗᵢ[𝕜] E' (Mathlib.Analysis.InnerProductSpace.Orthonormal) — constructs a
+ linear isometry between two spaces from two orthonormal bases indexed by
+ equivalent types.
+- stdOrthonormalBasis 𝕜 A : OrthonormalBasis (Fin (finrank 𝕜 A)) 𝕜 A — provides a
+ canonical orthonormal basis indexed by Fin k for any subspace.
+
+Proof plan (not implemented): let A ≤ K be the domain subspace (A ≅ H n via
+singleL 0, for example) and B := range V₀ its isometric image. dim A = dim B
+(isometry) ⟹ dim Aᗮ = dim K - dim A = dim K - dim B = dim Bᗮ ⟹ via
+stdOrthonormalBasis + Orthonormal.equiv (with e := Equiv.refl (Fin k)), an
+isometry Aᗮ ≃ₗᵢ Bᗮ. Gluing V₀ : A ≃ₗᵢ B and this isometry via
+orthogonalDecomposition A and orthogonalDecomposition B (both ≃ₗᵢ WithLp 2 (_ × _ᗮ))
+yields the desired unitary on K.
+
+Why the attempt stopped here: the assembly (corestriction of V₀ to its range as a
+LinearIsometryEquiv, navigation through WithLp 2 (_ × _), final gluing) is a
+substantial proof component in its own right — the WithLp/.ofLp friction already
+encountered in N0–N3 for much simpler statements suggested that actual completion
+would far exceed the allotted 30 minutes.
+
+Attempt 2 of 2026-07-11 (60-minute budget, inconclusive — stopped, no sorry or
+broken code committed). New architecture: direct orthogonal projections
+(Submodule.orthogonalProjectionOnto), without orthogonalDecomposition/WithLp.
+Step 0 confirmed in stdin:
+- Submodule.HasOrthogonalProjection: automatic instance for every subspace
+ of a finite-dimensional space — OK.
+- Submodule.orthogonalProjectionOnto (K) : E →L[𝕜] ↥K (orthogonalProjection is
+ deprecated, an alias for orthogonalProjectionOnto); direct decomposition obtained via
+ Submodule.starProjection_add_starProjection_orthogonal + starProjection_apply
+ (K.starProjection v = ↑(K.orthogonalProjectionOnto v)), NOT through a single
+ ready-made lemma under that exact name.
+- Submodule.norm_sq_eq_add_norm_sq_projection (x) (S) [HasOrthogonalProjection] :
+ ‖x‖² = ‖S.orthogonalProjectionOnto x‖² + ‖Sᗮ.orthogonalProjectionOnto x‖² — Pythagoras,
+ name confirmed.
+- LinearMap.injective_iff_surjective [FiniteDimensional K V] {f : V →ₗ[K] V} :
+ Injective f ↔ Surjective f — confirmed (Mathlib.LinearAlgebra.FiniteDimensional.Basic).
+- No LinearIsometryEquiv.ofBijective; the correct building block is
+ LinearIsometryEquiv.ofSurjective (f : F →ₛₗᵢ E) (hf : Surjective f) : F ≃ₛₗᵢ E, and
+ to construct a LinearIsometry from a LinearMap + a norm proof:
+ LinearIsometry.mk (toLinearMap) (∀ x, ‖toLinearMap x‖ = ‖x‖).
+- LinearIsometry.equivRange (f : F →ₛₗᵢ E) : F ≃ₛₗᵢ (LinearMap.range f.toLinearMap)
+ exists (corestriction of an isometry to its range) — confirmed.
+- Orthonormal.equiv/stdOrthonormalBasis: unchanged (attempt 1).
+
+Obstruction encountered — not mathematical, but a Lean PERFORMANCE issue: as early as N5-1/N5-2
+(expected to be mechanical), composing two LinearIsometryEquiv values obtained via
+.equivRange with .symm.trans on subspaces defined by
+LinearMap.range (...).toLinearMap (A := range(singleL i₀), B := range(dilV P))
+causes a deterministic timeout at whnf (maxHeartbeats), even when raised to
+1,000,000 and then 4,000,000 — the elaborator appears to attempt deeply unfolding
+these definitions when type-checking the composition, without completing in a
+reasonable time. An alternative approach was tested successfully: construct the
+projectors proj_B := dilV P ∘ₗ adjoint(dilV P) directly as endomorphisms of
+K (the standard VV* formula for the orthogonal projection onto range V when
+V*V = id — idempotence and symmetry follow immediately from dilV_isometry), which
+entirely avoids composed Submodule/↥A/LinearIsometryEquiv objects and compiles
+without timeout. One unresolved hard point remained within the allotted time: constructing W
+(the isometry between the orthogonal complements Aᗮ/Bᗮ) still requires at least
+some subspace structure (to apply Orthonormal.equiv), so the
+“100% operators, zero submodules” route is not fully practicable as stated —
+but limiting the use of submodules to THIS single location (rather than throughout
+the A/B architecture) is the first avenue to explore in a future attempt.
+
+Attempt 3 of 2026-07-11 (2-hour budget, SUCCESSFUL — N5 completed, 0 sorry).
+Final architecture, radically different from the first two: ZERO
+Submodule/↥A from beginning to end. Instead of decomposing the space into a
+subspace + its orthogonal complement, work with two orthonormal families of the
+entire space K, indexed by Fin m × Fin n (the canonical index of
+DilSpace n m):
+- v p := singleL i₀ (eₚ.₂) and w p := dilV P (eₚ.₂) (e = standard basis of H n),
+ each orthonormal on the block sSlice i₀ := {p | p.1 = i₀} (immediate from
+ inner_singleL/coordL_singleL/dilV_isometry, with no subspace structure).
+- Orthonormal.exists_orthonormalBasis_extension_of_card_eq (new, not identified
+ in the preceding attempts) extends EACH partial family to a COMPLETE
+ orthonormal basis of K (finrank K = Fintype.card (Fin m × Fin n) via
+ finrank_euclideanSpace, generic version — no _fin suffix needed).
+- Orthonormal.equiv glues the two complete bases into a single
+ U : K ≃ₗᵢ[ℂ] K, with e := Equiv.refl (Fin m × Fin n) (same index on both
+ sides) ⟹ U (singleL i₀ (eₖ)) = dilV P (eₖ) for every k.
+- Conclusion by extensionality on the standard basis of H n (Basis.ext):
+ U.toLinearMap ∘ₗ singleL i₀ = dilV P.
+
+Exact cause of the timeout in attempts 1/2, confirmed to be independent of
+Submodule: composing (orthonormal_family ...).exists_orthonormalBasis_extension_of_card_eq
+... inline in an obtain triggers the SAME deterministic timeout at whnf
+as the preceding attempts (verified by isolating the phenomenon: the first
+obtain alone succeeds, while the second — with dilV P, a much deeper term — times out again).
+The fix: isolate the combined statement in a separate private lemma
+(orthonormalBasisExtension), then invoke it by ordinary function application in
+the two concrete cases (singleL n m i₀ and dilV P). General lesson: when an
+obtain/refine composing several lemmas with metavariables times out at whnf
+despite a mathematically immediate proof, do not persist with inlining —
+extract an intermediate lemma with a fully explicit statement (rule 7 in CLAUDE.md,
+generalized beyond indexed sums).
+
+- [x] exists_unitary_extension (P) (i₀) : ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m,
+ U.toLinearMap ∘ₗ singleL n m i₀ = dilV P
+- [x] naimark_projective_form (P) (i₀) : ∃ U, ∀ i x, ⟪x, P.E i x⟫ =
+ ⟪U (singleL i₀ x), dilProj i (U (singleL i₀ x))⟫ (complete “ancilla” form:
+ preparation in block i₀ + global unitary + projective measurement)
+- [x] QuantumFoundations/Naimark/Unitary.lean created, imported, lake build green
+- [x] #print axioms: exists_unitary_extension and naimark_projective_form
+ depend only on [propext, Classical.choice, Quot.sound]
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry (Naimark v1 + N5)
+
+---
+
+## Wigner — plan (strategy established with Fable 5, 2026-07-12)
+
+Statement. Every transformation on pure states (unit vectors of H n)
+that preserves transition probabilities |⟨φ|ψ⟩|² is induced by a unitary
+or antiunitary operator, unique up to a global phase. Sources: Bargmann,
+Note on Wigner's Theorem on Symmetry Operations (J. Math. Phys. 1964) — main
+blueprint, almost “proof-assistant ready” (finite, pointwise §§3–5, purely
+inner-product algebra); Simon et al. — cross-check and plan B for
+globalization (Step 6, invariant c_jc_k·c_kc_ℓ·(c_jc_ℓ)), rejected as the main
+blueprint (trigonometry on circles of vectors, Real.Angle, known friction).
+
+Upstream Mathlib verdict (complete scan of mathlib4 master, July 2026, by Fable
+5): entirely open ground. No Wigner, antiunitary, or Kadison
+file/declaration. The only relevant asset is Mathlib.Analysis.Complex.Isometry
+(linear_isometry_complex : ∀ f : ℂ ≃ₗᵢ[ℝ] ℂ, f = rotation a ∨ f = conjLIE.trans
+(rotation a)) — an optional asset for W1, not a precedent. PhysLean/PhysLib and
+Lean-QuantumInfo (merged) do not cover Wigner. A first-rate candidate for Mathlib:
+the semilinear machinery (≃ₛₗᵢ[starRingEnd ℂ]) exists without any theorem
+instantiating it on the antiunitary side.
+
+Retained formulation — (A) in the core, (B) as an optional corollary (W6).
+Reasons for rejecting alternatives: (C) quotient Projectivization — purely
+algebraic API, no metric API, everything would pass through constant lifts for
+no benefit (a cosmetic wrapper remains possible in optional W6); (D) ∃ σ
+quantified over the RingHom — dependent-RingHomInvPair instance hell,
+replaced by a disjunction ∨ of two concrete existentials (both target types
+type-check, confirmed in stdin).
+
+lean
+theorem wigner (n : ℕ) (T : H n → H n)
+ (hT : ∀ x y, ‖x‖ = 1 → ‖y‖ = 1 → ‖⟪T x, T y⟫_ℂ‖ = ‖⟪x, y⟫_ℂ‖) :
+ (∃ U : H n ≃ₗᵢ[ℂ] H n,
+ ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+ ∨ (∃ U : H n ≃ₛₗᵢ[starRingEnd ℂ] H n,
+ ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+
+
+Design decisions (in order of importance):
+- No bijectivity assumption. Bargmann §1.2: injectivity at the ray level
+ follows from hT (Cauchy–Schwarz: two unit rays coincide iff their inner
+ product has modulus 1); in finite dimension U is automatically bijective
+ (isometry). The statement is strictly stronger than Simon et al. (who assume
+ Ω bijective, eq. 2.8), and is exactly Bargmann's Main Theorem §1.3
+ specialized — to be emphasized in the final README.
+- ∀ n, with no threshold. n = 0 is vacuous, n = 1 is trivial (both
+ branches work, Bargmann §1.4), and the core is uniform for n ≥ 2. Unlike
+ Gleason (n ≥ 3), there is no dimensional restriction in the core.
+- Construct U; never extend T. U is defined by a closed formula from
+ finite data (§W3/W5); no “extension from the sphere” problem arises in this
+ architecture.
+- Defunctionalized χ. Internally: a bare function χ : ℂ → ℂ (explicit
+ extraction formula, W4) + Prop values. Bundling into ≃ₗᵢ/≃ₛₗᵢ occurs
+ only at the boundary (the two branches of the final rcases in W5).
+- Phases = pairs (c : ℂ) + ‖c‖ = 1, never Circle/unitary ℂ.
+- 𝒫 = e⊥ as a Prop condition (⟪e, z⟫ = 0), never the Submodule type —
+ the Submodule/WithLp lesson from Naimark (N5, attempts 1–2) applies in full.
+- (B) only as a corollary, in the form
+ S (rankOne x x) = rankOne (U x) (U x) — never U ∘ P ∘ U⁻¹ (avoids all
+ RingHomCompTriple friction with semilinear conjugation). Reuses the
+ rankOne machinery already tested in gleason, providing a “Kadison-style”
+ bridge for a future paper.
+- Zero trigonometry, zero angles — the criterion distinguishing Bargmann
+ (retained) from Simon et al. (rejected as the main blueprint, kept as a
+ cross-check).
+
+Expected total count: ~24–26 sorry upon completion of W0. The only new
+mathematical content is W4 (as sqrtOp was for N1); W2–W3–W5 are disciplined
+plumbing (as N2–N3 were for Naimark). Order of attack:
+W0 → W1 → W2 → W3 → W4 → W5 (→ W6). W1 first, because it calibrates the
+actual difficulty level (territorial nlinarith/Complex.ext) and W4 depends
+on it throughout.
+
+### W0 — Skeleton (Defs, main statement, Nonvacuity) — ✅ CLOSED (2026-07-12)
+- [x] Step 0 validated in stdin (exact results below)
+- [x] Definitions by closed formulas (junk outside the domain, no proof passed
+ as an argument — dite pattern on 0 < n/2 ≤ n, as for sqrtOp):
+ e, eImg (=e'), InPerp (=𝒫, a Prop), V, refVec, chidir,
+ chi, U, IsWignerMap — QuantumFoundations/Wigner/Defs.lean
+- [x] Main statement wigner + all W1–W5 lemmas introduced with sorry.
+ Difference from the plan, explicitly reported: case n = 0 PROVED
+ directly (vacuity — H 0 is Subsingleton, with no unit vector); case
+ n = 1 left as sorry (short and self-contained — no dependency on
+ W1–W5 — but not addressed at this stage, so as not to delay validation
+ of the skeleton).
+- [x] Nonvacuity: T = id inhabits the unitary branch, while
+ T = conjCoords (coordinatewise conjugation, bundled as a
+ conjugate-semilinear isometry via LinearEquiv.ofBijective +
+ involutivity) inhabits the antiunitary branch — fully proved, 0 sorry,
+ with no exotic manual fallback required.
+ QuantumFoundations/Wigner/Nonvacuity.lean
+- [x] lake build green, guard.sh: 0 axioms, 0 native_decide, 24 sorry
+ (Naimark remains at 0; repository total 24 — within the expected 24–26 range)
+
+Architectural difference, reported: namespace QuantumFoundations.Wigner
+(nested), unlike the flat namespace QuantumFoundations used for all of Naimark —
+deliberate, because Wigner's internal names (e, V, U, chi) are generic and
+would have polluted the flat namespace. wigner is therefore invoked as
+QuantumFoundations.Wigner.wigner.
+
+Files created:
+
+QuantumFoundations/Wigner/Scalar.lean W1 : 3 sorry (kit scalaire ℂ)
+QuantumFoundations/Wigner/Defs.lean e, eImg, InPerp, V, refVec, chidir, chi, U, IsWignerMap
+QuantumFoundations/Wigner/Bessel.lean W2 : 2 sorry
+QuantumFoundations/Wigner/VConstruction.lean W3 : 6 sorry
+QuantumFoundations/Wigner/Core.lean W4 : 6 sorry (seul contenu mathématique neuf)
+QuantumFoundations/Wigner/Main.lean W5 : 5 sorry + théorème wigner (n=0 prouvé, n=1 et n≥2 sorry)
+QuantumFoundations/Wigner/Nonvacuity.lean 0 sorry, témoins id/conjCoords complets
+
+
+Step 0 results (stdin, all confirmed):
+- EuclideanSpace.single (i) (a) : EuclideanSpace 𝕜 ι + EuclideanSpace.inner_single_left/right
+ — confirmed (names PiLp.norm_single/PiLp.single_apply now preferred over
+ deprecated aliases EuclideanSpace.*).
+- ‖1+r‖² = 1+‖r‖²+2Re r: NO direct lemma under that name — derived in 2 lines via
+ Complex.sq_norm (‖z‖² = normSq z) + Complex.normSq_add + Complex.normSq_one.
+- orthonormal_iff_ite confirmed (Orthonormal 𝕜 v ↔ ∀ i j, ⟪v i,v j⟫ = if i=j then 1 else 0).
+- Bessel equality (Bargmann's lemma (9)): no exported lemma, but the proof of
+ Orthonormal.sum_inner_products_le (Bessel INEQUALITY,
+ Mathlib.Analysis.InnerProductSpace.Orthonormal) contains EXACTLY the
+ unconditional identity sought as an internal step
+ (hbf : ‖x − Σ⟪vᵢ,x⟫•vᵢ‖² = ‖x‖² − Σ‖⟪vᵢ,x⟫‖²), not exported — fully reusable
+ proof recipe: norm_sub_sq, InnerProductSpace.norm_sq_eq_re_inner,
+ inner_sum/sum_inner, inner_smul_left/right, inner_conj_symm,
+ Orthonormal.inner_left_right_finset.
+- LinearMap.injective_iff_surjective [FiniteDimensional K V] {f : V →ₗ[K] V} confirmed
+ (already used in N5) — will require restriction to an ℝ-linear map for the
+ antiunitary branch (conjugate-semilinear ⟹ ℝ-linear by restriction of scalars).
+- LinearIsometryEquiv.mk (toLinearEquiv : E ≃ₛₗ[σ] E₂) (norm_map) : E ≃ₛₗᵢ[σ] E₂ and
+ LinearEquiv.ofBijective (f : M →ₛₗ[σ] M₂) (hf : Bijective f) : M ≃ₛₗ[σ] M₂ — both
+ generic in σ (confirmed, tested with σ = starRingEnd ℂ directly on
+ EuclideanSpace ℂ (Fin n)), with no direct LinearIsometryEquiv.ofBijective.
+- Complex.conjLIE : ℂ ≃ₗᵢ[ℝ] ℂ and linear_isometry_complex confirmed present
+ (Mathlib.Analysis.Complex.Isometry, ROOT name, not namespaced under Complex.) —
+ retained as an optional shortcut for W1, not used in the skeleton (would first
+ require proving ℝ-linearity of f, additional nontrivial work).
+- conjCoords (Nonvacuity witness) constructed entirely by hand
+ (WithLp.toLp/WithLp.ext_iff, LinearEquiv.ofBijective using its involutivity) —
+ no sorry, with no need for a more complex fallback than anticipated.
+
+### W1 — ℂ scalar kit (zero dependencies, de-risks everything, to prove first) — ✅ CLOSED (2026-07-13)
+- [x] re_eq_of_norm_eq : ‖u‖ = ‖v‖ → ‖1+u‖ = ‖1+v‖ → u.re = v.re — derived via
+ Complex.sq_norm/Complex.normSq_add/Complex.normSq_one (2 lines), then
+ linarith
+- [x] eq_one_of_norm_one_re_one : ‖u‖ = 1 → u.re = 1 → u = 1 — normSq u = 1
+ + re = 1 ⟹ im² = 0 (nlinarith) ⟹ im = 0 ⟹ Complex.ext
+- [x] scalar_dichotomy: for f : ℂ → ℂ with (∀ α, ‖f α‖ = ‖α‖), f 1 = 1,
+ (∀ α β, (conj (f α) * f β).re = (conj α * β).re), then f = id ∨ f = conj
+ — Bargmann §4.6 transposed line by line (Eq A via α := 1; Step B via
+ Complex.normSq/sq_eq_one_iff; Step C via hre α I); key identities
+ established as local have statements (reI, conjMulSelf), with no
+ direct Mathlib lemma for Re(conj w * I) = w.im or
+ Re(conj z * z) = normSq z (targeted simp suffices)
+- [x] Reported difference: the hypothesis hnorm (norm preservation) turns
+ out to be UNUSED in the proof of scalar_dichotomy — confirmed by the
+ compiler (unused-variable warning) and consistent with the supplied
+ Bargmann derivation; retained in the signature (renamed _hnorm,
+ statement unchanged)
+- [x] guard.sh: 0 axioms, 0 native_decide, 21 sorry (24 − 3)
+
+### W2 — Inner-product plumbing — ✅ CLOSED (2026-07-13)
+- [x] bessel_eq_of_norm_sq_eq (Bargmann's lemma (9), centerpiece): finite
+ orthonormal family g ({ι : Type*} [Fintype ι], not only Fin m),
+ ‖u‖² = Σ ‖⟪g p, u⟫‖² → u = Σ ⟪g p, u⟫ • g p — Bessel identity with
+ equality, removes exists_orthonormalBasis_extension from the critical
+ path, with no basis extension, cardinality count, or surjectivity.
+ Proof: key : ⟪g p,y⟫=⟪g p,u⟫ (simple collapse) reused for
+ hyy/hyu (each a single-sum calculation, never an inlined double sum),
+ then norm_sub_sq + hypothesis ⟹ ‖u-y‖=0.
+- [x] orthonormal_image: moduli δ_pq + norms 1 ⇒ Orthonormal (case p = q:
+ ⟪Tf,Tf⟫ = (↑‖Tf‖:ℂ)² via inner_self_eq_norm_sq_to_K, modulus 1 ⇒
+ ‖Tf‖²=1) — signature completed with [DecidableEq ι] (required by
+ orthonormal_iff_ite, a purely logical additional hypothesis imposing no
+ genuine restriction in use)
+- [x] Bullet “homogeneity/scaling identities” from the initial plan: ABSORBED
+ into V_colinear (W3) — not a separate lemma, no dedicated sorry
+- [x] guard.sh: 0 axioms, 0 native_decide, 19 sorry (21 − 2)
+
+Lean pitfall encountered and documented (in Bessel.lean): an rw targeting
+a term WITHOUT a metavariable (⟪g p,u⟫ fixed, not a pattern) rewrites ALL
+syntactically identical occurrences simultaneously — after substituting
+⟪g p,y⟫ with ⟪g p,u⟫ via key p, the goal contained two syntactically
+identical copies of ⟪g p,u⟫, and rw [← inner_conj_symm ...] rewrote both
+instead of only one (double conj). Workaround: use mul_comm, then apply the
+lemma directly to conj(z)*z; never use rw targeting a duplicated subterm
+without a metavariable that distinguishes it from other identical occurrences.
+
+Documented ℝ→ℂ cast frictions (nonblocking, but costly in trial and error):
+inner_self_eq_norm_sq_to_K x : ⟪x,x⟫ = ↑‖x‖ ^ 2 elaborates as (↑‖x‖ : ℂ) ^ 2
+(cast BEFORE exponentiation, not ↑(‖x‖^2)) — simpa/simp handle the
+conversion ‖(↑r)^2‖ → r^2 effortlessly, but to close in the other direction
+(r^2=1 → (↑r)^2=1), neither exact_mod_cast nor push_cast alone sufficed;
+norm_cast (normalizes to ↑(r^2)) followed by explicit rw [h2]; norm_num
+worked reliably.
+
+### W3 — Construction of V + basic properties (Bargmann §3, eqs. 11–12a) — CLOSED (2026-07-13)
+- [x] inner_eImg_V: ⟪e', V z⟫ = 0 — direct calculation from the unfolded
+ formula for V, ⟪e',e'⟫=1 (heImg_inner_self), and γ⁻¹*γ=1
+- [x] V_colinear: reported and corrected discrepancy — the skeleton
+ statement asserted ‖δ‖ = 1, which is FALSE in general (counterexample:
+ T = id gives V T z = z, whereas δ • T(‖z‖⁻¹•z) always has norm 1, so ‖δ‖=1 would force ‖z‖=1 for every z ⊥ e). Corrected to
+ ‖δ‖ = ‖z‖, consistently with norm_V and with the Bargmann §3.2
+ comment already present in the file (“β' has modulus ‖z‖”, not
+ necessarily 1). Proof: orthonormalize {e, f_z}
+ (f_z := ‖z‖⁻¹•z), send it through orthonormal_image (W2) to
+ {eImg T, T f_z}, establish Bessel equality (9, W2) for T w (w the
+ unit representative of e+z) using transition-probability preservation
+ on each basis vector, solve for
+ T w = γ•eImg T + μ•T f_z, hence V T z = (γ⁻¹μ) • T f_z
+- [x] norm_V: ‖V z‖ = ‖z‖ — case z=0 trivial (V T 0 = 0 by direct
+ calculation), case z≠0 via V_colinear
+- [x] norm_inner_V (eq. 11): ‖⟪Vw,Vx⟫‖ = ‖⟪w,x⟫‖ — direct proof via
+ V_colinear (Vw,Vx are scalar multiples of T applied to their unit
+ representatives; IsWignerMap directly gives the modulus of the inner
+ product of these images; the factors ‖w‖,‖x‖ cancel their inverses) —
+ NO need to return through the vector built from e+z, contrary to the
+ initially suggested approach
+- [x] re_inner_V (eq. 12): real part preserved — key identity
+ ⟪Vw,Vx⟫ = (conj γ)⁻¹γ'⁻¹⟪Tw,Tw'⟫ − 1 (the cross terms
+ ⟪Tw,e'⟫/⟪e',Tw'⟩ cancel EXACTLY against ⟪e',e'⟫=1 when expanding
+ V z = γ⁻¹•Tw − e' in both arguments); the modulus of ⟪Tw,Tw'⟫ is
+ computed solely in terms of ⟪w,x⟫ (the dependence on e+z cancels
+ completely after simplification), yielding
+ ‖1+⟪Vw,Vx⟫‖ = ‖1+⟪w,x⟫‖; combined with eq. 11,
+ re_eq_of_norm_eq (W1, Scalar.lean) concludes directly
+- [x] inner_V_eq_of_im_eq_zero (eq. 12a): exact equality in the real case —
+ (11)+(12) force Im⟪Vw,Vx⟫=0 via |z|²=Re(z)²+Im(z)² (same pattern as
+ eq_one_of_norm_one_re_one, W1)
+- [x] hn : 2 ≤ n added to all 6 signatures (absent from the W0 skeleton):
+ for n=0, e n = 0 (junk value) and eImg T may be zero, in which case
+ γ may vanish and the inversion γ⁻¹•Tw degenerates; 2 ≤ n was chosen
+ (rather than 0 < n, technically sufficient for W3 alone) for
+ consistency with Core.lean (W4), which invokes these lemmas under the
+ same hypothesis
+- [x] Reported discrepancy: the formula for V in Defs.lean has NO
+ separate dite branch for z = 0 (contrary to the initial plan) — a
+ single uniform formula covers all cases because e n + z ≠ 0 is
+ guaranteed as soon as n ≥ 1 and z ⊥ e (otherwise z = −e n would
+ give ⟪e n,z⟫=−1≠0, a contradiction); no by_cases z = 0 is needed in
+ the general algebraic derivations
+- [x] guard.sh: 0 axioms, 0 native_decide, 13 sorry (16 − 3,
+ cumulatively 19 − 6 over all of W3)
+
+Lean pitfall encountered and documented (rule 12 in CLAUDE.md, generalized):
+unfolding e n via unfold e; rw [dif_pos h0] (or an explicit show of the
+unfolded value) triggers a deterministic timeout at whnf — the presence of a
+locally constructed NeZero n instance in the dite branch is expensive to
+unify during direct rewriting. Remedy: simp only [e, dif_pos h0, ...] closes
+the same equality without ever timing out (simp handles reduction of the
+dite more robustly than a manual rw/show).
+
+Instance diamond encountered and documented (new, specific to
+EuclideanSpace/Gleason.H n): inner_self_eq_norm_sq_to_K produces a term
+(↑‖x‖ : ℂ) ^ 2 via RCLike.ofReal + a SeminormedAddCommGroup instance
+derived from PiLp.seminormedAddCommGroup, DIFFERENT (syntactically, although
+definitionally equal) from Complex.ofReal + PiLp.instNorm used elsewhere
+in the same calculations — an rw/ring/exact_mod_cast targeting this term
+silently fails, leaving a goal displayed as trivial
+(↑‖z‖ ^ 2 = ↑‖z‖ ^ 2 but not closed by implicit rfl). Reliable workaround:
+isolate the conversion in a dedicated have closed by
+rw [inner_self_eq_norm_sq_to_K]; norm_cast (the combination rw then
+norm_cast, never exact/exact_mod_cast directly on the lemma, closes the
+diamond), then reuse this have — never reason about the diamond after the
+fact using ring/field_simp on the raw term.
+
+### W4 — THE core: analysis of V (Bargmann §4 — the analogue of sqrtOp for N1) — CLOSED (2026-07-13)
+- [x] chidir_dichotomy: chidir T f (for an ARBITRARY unit f of 𝒫, not
+ only refVec — free generalization) satisfies the hypotheses of
+ scalar_dichotomy (W1). Two private preliminaries: T_phase (Step 1,
+ equality case of Cauchy–Schwarz — norm_inner_eq_norm_tfae, index 0↔2 —
+ applied to T f, T(c•f)) and V_dir_colinear (Step 2, generalized to an
+ arbitrary f: V(α•f) = chidir T f α • V f, coefficient identified by
+ uniqueness against V f ≠ 0)
+- [x] chi_dichotomy: trivial corollary of chidir_dichotomy at
+ f := refVec
+- [x] chi_eq_chidir (globalization, reported and resolved discrepancy —
+ generalized to NONorthogonal frames; see note below):
+ chi T α = chidir T f α for every unit f of 𝒫, NOT only refVec
+- [x] V_chi_homogeneous (18b): generalizes V_dir_colinear/chi_eq_chidir
+ from a unit f to an arbitrary z, via
+ z = ‖z‖•(‖z‖⁻¹•z) + chi_real (chi fixes real numbers in both
+ id/conj branches)
+- [x] V_additive (18a): collinear case directly via chi_add_real
+ (chi(r+a) =
+ r+chi(a), r real); general case via Gram–Schmidt
+ (f₂ := component of z orthogonal to f₁ := y/‖y‖, normalized) +
+ V_two_dir (private, key preliminary:
+ V(a₁f₁+a₂f₂) = chi(a₁)•Vf₁+chi(a₂)•Vf₂ for f₁⊥f₂ — DIRECT proof
+ without Bessel/orthonormal_image, via rigidity
+ eq_of_norm_eq_re_eq applied to ⟪V(a_p f_p), V x⟫, unlike the
+ initially contemplated approach with 3 orthonormal vectors)
+- [x] inner_V_eq_chi_inner (18c): reduces to the unit case
+ (V_inner_eq_chi_of_unit, the same rigidity as V_two_dir but without a
+ second direction) via y = ‖y‖•f₁, V_chi_homogeneous,
+ chi_mul_real (chi(r*w) = r*chi(w), r real)
+- [x] guard.sh: 0 axioms, 0 native_decide, 7 sorry (10 − 3,
+ cumulatively 13 − 6 over all of W4)
+
+Reported and resolved discrepancy (chi_eq_chidir, generalization to
+nonorthogonal frames): the argument in Bargmann §§4.3–4.5 (w = f₁+f₂,
+comparison of coefficients in a 2D Bessel expansion) works ONLY for ORTHOGONAL
+directions — insufficient when n ≥ 3 and f is neither collinear nor
+orthogonal to refVec. Retained route (after user confirmation): reduce
+chi_eq_chidir to a comparison at a SINGLE point (i, where id and conj
+differ), via chidir_branch_transfer — for unit f1,f2 with
+⟪f1,f2⟫ ≠ 0 (NO orthogonality needed), two test vectors
+c1 := i·a/‖a‖, c1' := a/‖a‖ (a := ⟪f1,f2⟫) make
+⟪c1•f1,i•f2⟫ and ⟪c1'•f1,f2⟫ BOTH exactly ‖a‖ (positive real, by
+algebraic construction — no real/nonreal case split on a), which determines
+chidir f2 at the point i through the rigidity eq_of_norm_eq_re_eq. The
+only degenerate case is f = -refVec (collinear), handled separately by
+chidir_colinear_refVec. A total of 8 private lemmas for this single sorry
+(eq_of_norm_eq_re_eq, inner_I_smul_eq_norm, inner_smul_eq_norm,
+chidir_branch_transfer, chidir_colinear_refVec, eq_branch_of_eq_at_I,
+chi_real, sq_norm_eq_mul_conj), versus the 2 (T_phase, V_dir_colinear)
+that sufficed for chidir_dichotomy/chi_dichotomy.
+
+Lean pitfalls encountered and documented:
+- (rule 12 in CLAUDE.md, new instance) applying norm_cast/Complex.mul_conj
+ directly to an expression such as chi T b (enormous once chidir is
+ unfolded through V/⟪·,·⟫) triggers a whnf timeout. Remedy: extract the
+ purely ℂ identity into a private lemma with a minimal context
+ (sq_norm_eq_mul_conj) — never use inline generalize in the large context;
+ it does not prevent the timeout (contrary to expectation).
+- An rw on a goal/hypothesis containing BOTH a variable z and an expression
+ ‖z‖ depending on it rewrites BOTH simultaneously as soon as z is
+ substituted (hyf1 : z = ‖z‖•f), producing an absurd term of the form
+ ‖‖z‖•f‖. Systematic workaround: conv_lhs => rw [...] to restrict the
+ rewrite to the single side that must change; never use an unconstrained rw
+ on a goal that mentions the norm of the substituted term elsewhere.
+
+### W5 — Assembly (Bargmann §5) + main theorem — CLOSED (2026-07-13)
+- [x] U_additive, U_chi_semilinear: direct algebra on
+ U a := chi⟪e,a⟫•eImg +
+ V(a−⟪e,a⟫•e), via chi_add/chi_mul (NEW,
+ general over all of ℂ — distinct from chi_add_real/chi_mul_real
+ from W4, which cover only a real factor) +
+ V_additive/V_chi_homogeneous (W4)
+- [x] inner_U_eq_chi_inner: standard decomposition
+ ⟪a,b⟫ = conj(αₐ)·α_b +
+ ⟪zₐ,z_b⟫ + inner_eImg_V (W3, cross terms
+ vanish) + inner_V_eq_chi_inner (W4) + new identity chi_conj_mul
+ (conj(chi a)·chi b = chi(conj(a)·b), true in both branches)
+- [x] U_bijective: advantageous discrepancy — unlike the initial plan,
+ the actual file separates Function.Bijective (U T) (a plain function)
+ from bundling into ≃ₗᵢ/≃ₛₗᵢ, deferred to wigner itself. Injectivity
+ is BRANCH-INDEPENDENT via U_norm_eq (‖Ua‖=‖a‖, a direct consequence
+ of inner_U_eq_chi_inner + chi_real, valid simultaneously in both
+ branches). Surjectivity: rcases chi_dichotomy, literal LinearMap
+ ({toFun:=U T, map_add':=..., map_smul':=...} — confirmed to work
+ without a named constructor), branch chi=id → direct →ₗ[ℂ], branch
+ chi=conj → →ₗ[ℝ] (restriction to real scalars, THE actual unknown of
+ the milestone: confirmed that NO direct semilinear lemma exists in
+ Mathlib, restriction to ℝ is the only route, and
+ LinearMap.injective_iff_surjective applies unchanged with K:=ℝ)
+- [x] exists_phase_U: confirmed — the case ⟪e,x⟫=0 is indeed FREE (just
+ V_colinear, W3, applied directly to x), with no Cauchy–Schwarz. Case
+ ⟪e,x⟫≠0: full derivation via T_phase (W4) + DEFINITIONAL unfolding of
+ V ζ (by rfl, no dedicated lemma needed) + V_chi_homogeneous
+- [x] wigner for n≥2: unsurprising assembly — LinearEquiv.ofBijective +
+ LinearIsometryEquiv.mk, coercion of the bundled equivalence reduces to
+ U T by rfl (confirmed by stdin test)
+- [x] wigner for n=1: SELF-CONTAINED derivation (independent of W1–W5,
+ hn:2≤n never available) — H 1 has dimension 1
+ (H1_eq_inner_smul_e, via Fin 1 being a subsingleton),
+ U₁ x := ⟪e 1,x⟫•eImg T directly ℂ-LINEAR (not merely semilinear), placed
+ in the chi=id branch by convention (Bargmann §1.4: both branches work,
+ with no way to distinguish them in dimension 1)
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry (7 − 7,
+ cumulatively 24 − 24 over all of Wigner) — WIGNER'S THEOREM CLOSED.
+ #print axioms wigner: [propext, Classical.choice, Quot.sound]
+ (standard kernel trio, no added axiom)
+
+Lean pitfalls encountered and documented:
+- (RCLike/Complex diamond, 3rd occurrence) applying
+ inner_self_eq_norm_sq_to_K TWICE in the same rw ... at h (once to
+ ⟪Ua,Ua⟫, once to ⟪a,a⟫ nested under chi T) produces syntactically
+ distinct forms although they display identically, breaking every subsequent
+ rw. Definitive remedy: isolate EACH application in its own have closed
+ by rw [...]; norm_cast; never apply it twice in the same rw ... at h.
+- Cast: after substituting ‖e n+ζ‖ (real) with ‖α‖⁻¹ INSIDE a coefficient
+ already cast to ℂ, the resulting term is (↑(‖α‖⁻¹))⁻¹ (double inverse
+ with an intervening cast) — inv_inv alone does not match; apply
+ push_cast before inv_inv to push the cast inside the inverse and unblock.
+- simpa using h may oversimplify a goal/hypothesis of the form x^2=1 into
+ the disjunction x=1 ∨ x=-1 (through a sq_eq_one_iff-like lemma in the
+ default simp set), instead of closing it directly against an already
+ available equation-shaped hypothesis — this appears unexpectedly when two
+ nearly identical derivations of the SAME fact are written separately in
+ different tactic contexts. Remedy: merge the two redundant derivations into
+ one instead of trying to debug the duplication.
+
+### W6 — OPTIONAL (in the style of v2.0-naimark) — CLOSED (2026-07-13), 0 sorry, QuantumFoundations/Wigner/Uniqueness.lean
+
+**(A) Unitary/antiunitary exclusivity for n ≥ 2** — ✅ implemented exactly as
+planned, through the ray invariant
+Delta(a,b,c) := ⟪a,b⟫⟪b,c⟫⟪c,a⟫ (Bargmann §1.5):
+- [x] delta_transform_lin/delta_transform_conj: invariance/conjugation of
+ Delta under T, one lemma per CONCRETE branch of theorem wigner
+ (≃ₗᵢ[ℂ] / ≃ₛₗᵢ[starRingEnd ℂ]) rather than an abstract parameterized
+ chi — discrepancy from the initial plan reported; see
+ ARCHITECTURE_NOTES.md. conj_isometry_inner (complex polarization)
+ derived manually: Mathlib has no analogue of
+ LinearIsometryEquiv.inner_map_map for ≃ₛₗᵢ[σ].
+- [x] bargmann_delta_witness: explicit finite witness confirmed by Lean —
+ e₁=e, e₂=(e−refVec)/√2, e₃=(e+refVec(1−i))/√3 indeed give
+ Delta = i/6 ∉ ℝ
+- [x] exclusivity: assembly — i/6 = -(i/6) gives i = 0, contradiction
+
+**(B) Uniqueness of U up to a global phase — RESTRICTED version** (not the
+full Theorem 2 of Bargmann §6) — ✅:
+- [x] Defs.lean fixes eImg T := T (e n), with no parameter for choosing a
+ representative: LOCAL introduction (in Uniqueness.lean only,
+ Defs.lean untouched) of a parameterized reconstruction
+ Vp/chidirp/chip/Up with explicit eImg, related to
+ V/chi/U by rfl bridge lemmas (V_eq_Vp, chi_eq_chip, U_eq_Up)
+- [x] Vp_smul_eImg, chip_smul_eImg, Up_smul_eImg: V/chi/U
+ recomputed at the representative λ • eImg (‖λ‖ = 1) equal
+ λ • V/chi/λ • U — chi UNCHANGED (not merely its branch), with no
+ case split
+- [x] U_alt_eq_smul: conclusion, Up T (λ • eImg T) = λ • U T
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry. #print axioms on
+ exclusivity/bargmann_delta_witness/U_alt_eq_smul:
+ [propext, Classical.choice, Quot.sound]
+
+Not addressed (out of scope, reported from the outset): Bargmann §6's full
+Theorem 2 (U' completely arbitrary, not merely another representative of
+eImg) would require rederiving real homogeneity from additivity + isometry —
+unnecessary for the repository's actual use case. Corollary (B)
+rankOne/Projectivization wrapper (mentioned as low priority in the initial
+plan): not implemented.
+
+### What will NOT be a blocker (contrary to initial concerns)
+Extension of orthonormal bases (eliminated by lemma (9) of W2); management of
+global phase (phases remain LOCAL scalars c with ‖c‖=1, never a globally
+coherent choice to construct); quotients (none, formulation (A));
+linearity-from-metric (additivity of V is proved componentwise through (16),
+never extracted from an abstract metric hypothesis).
+
+### Lean friction to budget for (analogous to the Naimark lessons)
+Unfolding PiLp/WithLp norms in W3 calculations (γ⁻¹, ‖e+z‖) — same
+patterns as in gleason/N0–N3, with private lemmas in a minimal context if
+a whnf timeout occurs (rule 12 in CLAUDE.md); junk values of total definitions
+(V outside 𝒫, chi outside its domain) — each lemma carries its side
+conditions, following the discipline already established for
+sqrtOp/dilProj.
+
+---
+
+## Uhlhorn — Šemrl's Corollary 1.2 (arXiv:2106.06182)
+
+Statement. In finite dimension n ≥ 3, every map φ on rank-one
+projections that preserves orthogonality IN ONE DIRECTION only (PQ = 0 ⟹
+φ(P)φ(Q) = 0; with neither injectivity nor surjectivity assumed) is
+automatically a Wigner symmetry (∃ U unitary or antiunitary,
+φ(P) = UPU*). Source: Šemrl, Wigner symmetries and Gleason's theorem,
+2021 (arXiv:2106.06182), Corollary 1.2. Reuses wigner (W0–W6, already
+completed) and Gleason.gleason (pinned dependency v1.0-gleason) as black
+boxes.
+
+Proof decomposition (U1–U5, with U3a inserted during U0 reconnaissance;
+see below):
+- U1 — Wigner corollary (B) (not previously constructed): if φ preserves
+ tr(φ(P)φ(Q)) = tr(PQ) for every pair, then it is a Wigner symmetry. This
+ follows from wigner by choosing a unit representative for each projection.
+- U2 — elementary spectral lemma (pure linear algebra): E positive,
+ E ≤ I, tr(E) = 1, and ⟨Ex,x⟩ = 1 for unit x ⟹ E = P_x.
+- U3a — extension of a frame function on lines to a complete
+ ProjMeasure (component isolated during reconnaissance; see U0 below).
+- U3b — “Gleason applied twice”: combines Gleason.gleason, U3a, and U2.
+- U4 — assembly: U1 + U3b.
+- U5 — finite-dimensional reduction (cardinality counting) + final theorem
+ uhlhorn_finite_dim, combined with U4.
+
+### U0 — Reconnaissance + skeleton — ✅ CLOSED (2026-07-13)
+
+Part A (reconnaissance, mandatory before any code):
+- [x] Gleason.gleason {n} (hn : 3 ≤ n) (m : ProjMeasure n) : ∃! ρ, IsDensityOperator ρ
+ ∧ ∀ A, m.μ A = bornValue ρ A — confirmed sufficiently general to apply
+ to a ProjMeasure constructed from
+ φ_D(P) := tr(D·φ(P)) (ProjMeasure is a generic Prop bundle over
+ Submodule ℂ (H n) → ℝ, with no reference to a specific
+ Busch/Gleason context)
+- [x] Representation of rank-one projections on the gleason side: NO
+ rankOne wrapper/bundled structure — always either
+ Submodule ℂ (H n) (ProjMeasure, bornValue, projL) or Mathlib's
+ InnerProductSpace.rankOne operator (already used on the Naimark side,
+ sqrtOp), never both mixed in a dedicated type
+- [x] Signature of wigner reconfirmed unchanged since W6
+- [x] No preexisting sketch of Wigner corollary (B) (projection form)
+- [x] Spectral API confirmed: IsPositiveOp, IsEffect T := IsPositiveOp T ∧
+ IsPositiveOp (1-T) (= 0 ≤ T ≤ 1), LinearMap.trace, and especially
+ Gleason.positive_inner_self_eq_zero (already proved on the gleason
+ side and directly reusable as the central building block of U2)
+- [x] Validated design: Proj1 (n) := {A : Submodule ℂ (H n) //
+ finrank ℂ A = 1} (reuses Submodule, with no new wrapper);
+ IsWignerSymmetryProj, Option 1 retained — equality of lines
+ φ(ℂ∙x) = ℂ∙(Ux), NOT literal operator equality φ(P) = UPU*
+ (Option 2, mathematically equivalent in rank one, but would have
+ required LinearMap.adjoint for a semilinear equivalence — never
+ encountered in this project, left as a remark for a later pass if needed)
+- [x] Additional reconnaissance point, before the skeleton: exhaustive
+ audit of all ProjMeasure construction sites in gleason
+ (EffectMeasure.toProjMeasure, pureState) — neither extends a frame
+ function defined only on lines; both provide a closed formula directly
+ on every subspace. This extension lemma does not exist anywhere in
+ gleason-theorem-lean: isolated as a full submilestone U3a (not an
+ internal detail of U3b), with its own estimate (~100–150 lines, 4–6
+ subgoals). Decision: U3a remains in quantum-foundations-lean
+ (namespace Uhlhorn), not in gleason-theorem-lean — despite being
+ generic, the tagged public repository will not be reopened for this need
+
+Part B (skeleton, QuantumFoundations/Uhlhorn/):
+- [x] Defs.lean: Proj1, Proj1.mk_unit, TraceProd,
+ PreservesOrthogonality, IsWignerSymmetryProj,
+ IsFrameFunctionOnLines, SendsONBToONB — 0 sorry
+- [x] WignerProjectionForm.lean (U1, wigner_projection_form) — 1 sorry
+- [x] Spectral.lean (U2,
+ eq_projL_of_positive_le_one_trace_one_inner_one) — 1 sorry
+- [x] GleasonExtend.lean (U3a,
+ exists_projMeasure_of_frameFunctionOnLines, complete signature
+ introduced without splitting the 5 internal subgoals into separate
+ sorry declarations) — 1 sorry
+- [x] GleasonTwice.lean (U3b,
+ traceProd_preserved_of_sendsONBToONB) — 1 sorry
+- [x] Assembly.lean (U4 wignerSymmetryProj_of_sendsONBToONB, U5
+ uhlhorn_finite_dim) — 2 sorry
+- [x] Nonvacuity.lean (0 sorry): witness φ := id inhabits
+ PreservesOrthogonality and the unitary branch of
+ IsWignerSymmetryProj (U := refl, proof by rfl); antiunitary witness
+ (conjCoords) NOT immediate (would have required Submodule.map for a
+ semilinear equivalence, never exercised in this project) — omitted in
+ accordance with the instruction (one witness suffices)
+- [x] lake build green, guard.sh: 0 axioms, 0 native_decide, 6 sorry
+ (one per milestone U1/U2/U3a/U3b/U4/U5)
+
+Minor discrepancy reported and corrected: the first draft of the
+GleasonExtend.lean docstring literally used the word “sorry” to describe the
+estimated size of the milestone, causing the guard.sh count to rise to 7
+through a false positive (the script does not distinguish comments from code)
+— rephrased as “intermediate subgoals.”
+
+### U3a — Extension of a frame function → complete ProjMeasure — ✅ CLOSED (2026-07-13)
+
+Addressed first, independently of the rest (U1/U2/U3b/U4/U5), because this was
+the component whose actual difficulty remained most uncertain after U0
+reconnaissance.
+
+- [x] gv (bridge from Proj1 n → ℝ to H n → ℝ, junk value 0 outside the
+ unit sphere) + isCFrameFunction_gv: gv g satisfies
+ Gleason.IsCFrameFunction (gv g) 1
+- [x] orthonormal_stdBasis_coe/span_stdBasis_coe: the standard
+ orthonormal basis of ↥A (stdOrthonormalBasis ℂ A), coerced into
+ H n, is orthonormal and spans A
+ (LinearIsometry.orthonormal_comp_iff, Submodule.map_subtype_top)
+- [x] frameSum (μ A := ∑ i, gv g (stdOrthonormalBasis ℂ A i)) +
+ frameSum_eq_sum_of_orthonormal_spanning (Sublemma 1,
+ basis-independence in generic form — any Fintype ι of the correct
+ cardinality, not only Fin (finrank A), via Fintype.equivFinOfCardEq +
+ Equiv.sum_comp)
+- [x] frameSum_top (Sublemma 3), frameSum_nonneg (Sublemma 4),
+ frameSum_add_isOrtho (Sublemma 5, via Sum.elim — the only
+ concatenation of bases constructed by hand in the entire file)
+- [x] exists_unit_vector_of_proj1 + frameSum_proj1: μ agrees with g
+ on every line
+- [x] exists_projMeasure_of_frameFunctionOnLines assembled, 0 sorry
+- [x] guard.sh: 0 axioms, 0 native_decide, 5 sorry (6 − 1)
+
+Major discrepancy reported (changes the anticipated difficulty of the
+milestone): the reconnaissance strategy contemplated reproving
+basis-independence (Sublemma 1) from scratch by concatenating
+Fin k ⊕ Fin l → Fin n (finSumFinEquiv/Fin.append). Upon reading
+Gleason.Complex.RealSections (transitively imported but never examined in
+detail before this milestone), I found that this argument is already fully
+proved there in vector form: Gleason.cframe_sum_invariant (for a frame
+function g : H n → ℝ satisfying IsCFrameFunction g W, two orthonormal
+families of the same size spanning the same subspace yield the same sum).
+Retained strategy: bridge to this already proved machinery
+(gv/isCFrameFunction_gv) rather than independently reimplementing it —
+the only basis concatenation actually constructed by hand in the entire file
+is that for add_isOrtho (Sublemma 5), over a much narrower scope (only A
+and B) than the general construction of the extension itself.
+
+Lean pitfall encountered and documented: Module.finrank ℂ (A ⊔ B)
+(without explicit coercion to the underlying type) makes elaboration fail
+(failed to synthesize instance Max Type) — Lean propagates the expected
+type Type into the application of ⊔ before realizing that it must first
+elaborate A ⊔ B : Submodule ℂ (H n) and then coerce the result. Systematic
+remedy: write Module.finrank ℂ ↥(A ⊔ B) with explicit coercion ↥ whenever
+the argument to Module.finrank/any function expecting a Type is a compound
+expression (rather than a simple variable) built with a lattice operator on
+Submodule values.
+
+### U1 — Wigner corollary (B) in the language of projections — ✅ CLOSED (2026-07-13)
+
+Addressed immediately after U3a, independently of U2/U3a/U3b:
+wigner_projection_form depends only on wigner (W0–W6, already completed)
+and on TraceProd/Proj1 (Defs.lean), not on Gleason.gleason or
+ProjMeasure.
+
+- [x] projL_singleton_unit (private): projL (ℂ∙x) y = ⟪x,y⟫•x for unit x,
+ via Submodule.starProjection_singleton
+- [x] Step 1 traceProd_mk_unit_eq:
+ TraceProd (mk_unit x) (mk_unit y) =
+ ‖⟪x,y⟫‖² —
+ bornValue_span_singleton sufficed unchanged once
+ projL_singleton_unit had been established, with no additional
+ intermediate lemma
+- [x] Step 2 T/T_unit/T_repr: construction of T : H n → H n by
+ choosing (Classical.choose) a canonical unit representative of
+ φ (mk_unit x hx), via exists_unit_vector_of_proj1
+- [x] Step 3 isWignerMap_T: T satisfies IsWignerMap, by applying
+ Step 1 in both directions around hypothesis hφ (preservation of
+ TraceProd), then a²=b² ∧ a,b≥0 ⟹ a=b by nlinarith
+ (sq_nonneg (a-b)/sq_nonneg (a+b))
+- [x] Steps 4–5 wigner_projection_form:
+ rcases wigner n T (isWignerMap_T
+ hφ), reconstruction of
+ IsWignerSymmetryProj φ by equality of lines
+ (Submodule.span_singleton_smul_eq, c ≠ 0 from ‖c‖=1) in the two
+ symmetric branches
+- [x] guard.sh: 0 axioms, 0 native_decide, 4 sorry (5 − 1)
+
+Reported discrepancy (Step 0 decision, point 3):
+exists_unit_vector_of_proj1 is needed both here (U1) and in U3a
+(GleasonExtend.lean, where it was private). Rather than (a) making it
+public there and importing all of GleasonExtend.lean into
+WignerProjectionForm.lean (which would create a file dependency from U1 —
+intended to be independent of the rest — to U3a), or (b) duplicating it
+locally, it was relocated to Defs.lean (public, shared) — a third option
+not explicitly listed among the two proposed, judged superior to both: no
+duplication and no superfluous file dependency. GleasonExtend.lean was
+updated accordingly (private copy removed, proof unchanged).
+
+### U2 — Elementary spectral lemma — ✅ CLOSED (2026-07-14)
+
+Pure linear algebra, independent of Gleason.gleason/wigner/U3a. Reference
+strategy directly inspired by Šemrl §2 (proof of the Claim): E fixes x,
+then use the block decomposition [[1,0],[0,T]] over
+H = span{x} ⊕ x⊥.
+
+- [x] one_le_of_norm_eq_one (private): ‖x‖=1 ⟹ 1 ≤ n (H 0 is
+ Subsingleton)
+- [x] Sublemma 1 E_fixes_x: E x = x, via
+ Gleason.positive_inner_self_eq_zero applied to 1 - E (positive by
+ hE.2, symmetric — the IsPositiveOp bundle already contains
+ LinearMap.IsSymmetric as its first component, confirmed in Step 0, so
+ no separate self-adjointness derivation is needed) at x:
+ ⟪(1-E)x,x⟫ = ⟪x,x⟫-⟪Ex,x⟫ =
+ 1-1 = 0 (hEx is directly a COMPLEX
+ equality = 1, not merely an equality of real parts — no detour needed)
+- [x] Final assembly
+ eq_projL_of_positive_le_one_trace_one_inner_one: extend x to a
+ COMPLETE orthonormal basis of H n
+ (exists_orthonormalBasis_extension_complex, already used 3× in
+ Uhlhorn), decompose the trace to obtain ⟪ρv,v⟫ = 1, and apply U2
+ directly via isEffect_of_isDensityOperator
+- [x] guard.sh: 0 axioms, 0 sorry. #print axioms:
+ [propext, Classical.choice, Quot.sound]
+
+Major advantageous discrepancy: the prototype reconstructs lam = 1
+through a Parseval/Bessel identity on an ARBITRARY orthonormal basis
+(symmetric_pos_zero_of_diag_zero + ~100 lines). Here, starting from the
+hypothesis “ρ vanishes on v⊥” (strong form, not merely zero real part) and
+extending v to an ADAPTED basis, the trace decomposition directly gives
+⟪ρv,v⟫ = 1, and U2 establishes the COMPLETE operator equality in one
+application — without ever reformulating the Parseval argument. The step
+“zero diagonal ⟹ ρw = 0” (Gleason.positive_inner_self_eq_zero) is deferred
+to B4, which needs it in any event to derive hker from (Null).
+
+### B4 — Assembly.lean (final theorem) — ✅ CLOSED (2026-07-14)
+
+- [x] hker_derivation: derives B3 hypothesis hker from AxNul, through a
+ rescaling w → u := w/‖w‖. Advantageous difference: gluing
+ g(w) = g(u) is a simple congrArg/Subtype.ext on equality of lines
+ ℂ∙w = ℂ∙u — NOT another application of lemma4_noncontextual as in
+ the prototype (gline there recomputed a distinct Perspective.binary
+ for each vector, requiring Lemma 4 to glue two perspectives; since g
+ is an ordinary function of Proj1 n, equal arguments have equal images
+ with no additional noncontextuality argument). Further discrepancy
+ discovered while writing the proof: neither ‖v‖=1 nor (Grain)/(Norm)
+ is needed for this lemma — hypotheses removed from the signature
+- [x] full_rho_facts: a single application of Gleason.gleason (B2)
+ supplies a ρ that is both projL(ℂ∙v) (B3 + hker_derivation) AND
+ compatible with g on every unit vector
+- [x] grainCoherenceTheorem: final theorem, named exactly this way (NOT 𝒢
+ as a Lean identifier — see docstring). Assembly via
+ refinePerspective/refine_filter_eq_cellLines (B1, already proved —
+ no new counting content needed here, unlike the prototype, which
+ develops it at the same location as B4)
+- [x] grainCoherenceTheorem_projector (v2.1-bornrule, 2026-07-20):
+ direct public corollary Est D c = ‖projL c v‖². The sum produced by
+ grainCoherenceTheorem is identified with the squared norm of the
+ projection via sum_sq_projL_of_pairwise_isOrtho (cellLines c),
+ cellLines_sSup, cellLines_sum_eq, and projL_singleton_unit;
+ no new hypothesis and no duplication of a long Parseval proof
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry throughout the
+ repository. #print axioms grainCoherenceTheorem /
+ grainCoherenceTheorem_projector / full_rho_facts /
+ hker_derivation: [propext, Classical.choice, Quot.sound] —
+ gleason NEVER appears as a separate axiom, unlike in
+ tstar-born-rule-lean, where #print axioms theorem1_general
+ additionally lists gleason.
+
+No substantive discrepancy from the reconnaissance strategy — both
+advantageous differences (gluing by congrArg rather than Lemma 4;
+superfluous hv/(Grain)/(Norm) hypotheses in hker_derivation) were
+discovered while writing the proof, not anticipated during reconnaissance.
+
+### Nonvacuity — the Born rule satisfies all 4 axioms — ✅ CLOSED (2026-07-15)
+
+Closes the gap identified during the final audit (departure from absolute
+rule 3 of CLAUDE.md, since BornRule was then the only repository block
+without Nonvacuity.lean): E₀ v D c := ‖projL c v‖² (Born rule for a fixed
+unit vector v, ignores D — as does g in B2) SIMULTANEOUSLY satisfies
+AxGrain, AxNorm, AxPos, AxNul — hence grainCoherenceTheorem is not
+vacuously true.
+
+- [x] refine_filter_sup_eq (Lemma 3, generalizes
+ refine_filter_eq_cellLines from B1 to an ARBITRARY refinement D'
+ rather than only the canonical refinePerspective D): the cells of
+ D' below c cover exactly c. Nontrivial direction (c ≤ sup) via
+ the resolution of the identity restricted to D'.cells
+ (Gleason.projL_sup_of_pairwise_isOrtho): every x ∈ c is the sum of
+ its projections onto the cells of D', while those outside c
+ (parent ≠ c in D, via unique_parent) contribute 0 because they are
+ orthogonal to c
+- [x] norm_sq_sum_of_pairwise_orthogonal (private): finite Pythagorean
+ theorem by direct bilinear expansion of the inner product
+ (sum_inner/inner_sum + diagonal collapse via
+ Finset.sum_eq_single)
+- [x] sum_sq_projL_of_pairwise_isOrtho (private): combines resolution of
+ the identity and finite Pythagoras — additivity of ‖projL · v‖² over
+ an orthogonal family of cells
+- [x] E₀_isPos, E₀_isNul: immediate (nonnegativity of a square;
+ Submodule.starProjection_apply_eq_zero_iff for vanishing)
+- [x] E₀_isNorm, E₀_isGrain: direct applications of
+ sum_sq_projL_of_pairwise_isOrtho, respectively to D.cells
+ (supremum =
+ ⊤ via D.span) and to D'.cells.filter (· ≤ c)
+ (supremum = c via refine_filter_sup_eq)
+- [x] E₀_satisfies_axioms, combined witness, plus an example of concrete
+ inhabitation on H 3
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry throughout the
+ repository. #print axioms on the 32 content-bearing declarations of
+ BornRule (25 preceding + 7 new): [propext, Classical.choice,
+ Quot.sound], without exception
+
+Actual cost (explicitly answers the question raised during
+reconnaissance): Gleason.projL_sup_of_pairwise_isOrtho (resolution of the
+identity as an OPERATOR identity for a finite orthogonal family) was ALREADY
+available in gleason-theorem-lean (Gleason/Operator.lean, O2a(ii)) — NOT
+rederived here, unlike what U3b initially anticipated and then found
+unnecessary for its own purpose (resolution directly through bornValue).
+The finite Pythagorean theorem for ‖·‖² (rather than for bornValue, the
+only case already covered in gleason-theorem-lean through
+bornValue_sum_of_pairwise_isOrtho) was, however, not available as stated
+and had to be derived here (norm_sq_sum_of_pairwise_orthogonal, ~15 lines,
+direct bilinear expansion — not a heavy reconstruction).
+
+### Out of scope (possible future extensions, not deficiencies of this milestone)
+
+- A second derivation route, independent of Gleason: through a dynamical
+ stability axiom rather than grain coherence. This development covers ONLY
+ the descriptive route (Gleason).
+- Intersubjective convergence between observers as a corollary of the main
+ theorem: not addressed.
+
+### Comparison with tstar-born-rule-lean
+
+| | tstar-born-rule-lean (theorem1_general_en.lean) | quantum-foundations-lean (BornRule) |
+|---|---|---|
+| Space | abstract V (finite-dimensional) | directly H n := EuclideanSpace ℂ (Fin n) |
+| Gleason | axiom gleason (unproved) | Gleason.gleason — actual theorem, pinned dependency |
+| Axioms of theorem1_general/grainCoherenceTheorem | propext, Classical.choice, Quot.sound, gleason | propext, Classical.choice, Quot.sound |
+| pinning | approximately 100 lines (Parseval/Bessel on arbitrary basis) | approximately 45 lines (trace decomposition on adapted basis + U2) |
+| Rescaling in hker_derivation | lemma4_noncontextual (two distinct binary perspectives to glue) | congrArg/Subtype.ext (ordinary function of Proj1 n) |
+| Fallbacks (Perspective.binary.span, basisPerspective.span) | first/sorry (2 potential sorry) | closed directly, 0 sorry |
+| Sorries | 2 (fallback) | 0 |
+
+Conclusion: strictly stronger — the same mathematical results (the same
+final statement, with grainCoherenceTheorem equivalent to
+theorem1_general), one fewer axiom (gleason proved rather than postulated),
+and a shorter proof at several points thanks to reuse of the Uhlhorn
+infrastructure (U2, U3a) and the Proj1-first design of g.
+
+## Histories — Kent's contrary-inferences theorem
+
+Statement. Kent, Quasiclassical Dynamics in a Closed Quantum System,
+PRL 78, 2874 (1997), arXiv:gr-qc/9604012: within the finite-dimensional
+consistent-histories framework, two consistent sets of histories may share
+the same preparation ψ and the same postselection F, while each implies
+with CERTAINTY a different proposition, the two propositions being mutually
+ORTHOGONAL. A temporal stage of a history set IS a Perspective
+(BornRule/Perspective.lean) — reused unchanged, with no redefinition
+(confirmed during K0 reconnaissance). The generic profusion theorem of
+Dowker–Kent (J. Stat. Phys. 82, 1575 (1996), parameter/dimension counting on
+manifolds) is explicitly OUT OF SCOPE for this block — see “Out of scope”
+below.
+
+Proof decomposition (K0–K3):
+- K0 — skeleton: History, IsHistoryOf, chainOp (ordered product of
+ the projL values, with the final stage applied last), decFunctional
+ (conjugate-linear on the left, with k conjugated), IsConsistent,
+ histProb; Nonvacuity.lean (every Perspective, regarded as a one-stage
+ family, is consistent) — 0 sorry, proved immediately (absolute rule 3).
+- K1 — Basic.lean: decFunctional_last_stage_orthogonal (two histories
+ differing at the last stage automatically have zero decoherence
+ functional) and histProb_additivity_two_stage (finite Pythagoras, echoing
+ AxGrain).
+- K2 — Witness.lean: Kent's explicit witness in H 3 (ψ₀, φ₀
+ unnormalized, P i := ℂ∙(e i), F := ℂ∙φ₀), S_consistent.
+- K3 — ContraryInferences.lean: inference (conditional certainty,
+ formulated without a quotient) and contrary_inferences (final theorem).
+
+### K0 — Defs.lean + Nonvacuity.lean + K1–K3 skeleton — ✅ CLOSED (2026-07-16)
+
+- [x] Reconnaissance (Part A): Perspective/Perspective.binary reusable as
+ is; projL_singleton_unit (Uhlhorn/Defs.lean) confirmed for a unit
+ vector, and Submodule.starProjection_singleton (Mathlib) confirmed for
+ the general nonunit formula (ratio, avoids Real.sqrt);
+ LinearMap.adjoint_inner_left/right confirmed (conjugate-linear-on-the-
+ left convention); self-adjointness/idempotence of projL derivable in
+ one line (Submodule.starProjection_isSymmetric,
+ Submodule.isIdempotentElem_starProjection) — no preexisting
+ “histories”/“decoherence functional” content (exhaustive grep).
+- [x] History (n L : ℕ) := Fin L → Submodule ℂ (H n), IsHistoryOf,
+ chainOp (Fin.foldl, with Fin.foldl_succ_last/Fin.foldl_zero
+ checked for L = 1, 2), decFunctional, IsConsistent, histProb
+- [x] isConsistent_single_stage: 0 sorry, immediate from orthogonality of
+ the cells of a Perspective
+- [x] PRIOR relocation (dedicated commit):
+ norm_sq_sum_of_pairwise_orthogonal and
+ sum_sq_projL_of_pairwise_isOrtho, private in
+ BornRule/Nonvacuity.lean, moved to public scope in
+ BornRule/Perspective.lean — generic geometric facts about
+ Perspective, not specific to the Born witness of B-Nonvacuity, needed
+ by K1(b). Same relocation pattern as
+ exists_unit_vector_of_proj1/projL_singleton_unit (Uhlhorn) and
+ isEffect_of_isDensityOperator (BornRule/B2).
+- [x] K1 skeleton (2 sorry), K2 (1 sorry), K3 (2 sorry) — discrepancy from the
+ initial estimate (3+2+2=7) justified by two parameterized factorizations
+ (see K2/K3 below)
+- [x] guard.sh: 0 axioms, 0 native_decide, 5 sorry (K0 itself: 0)
+
+Reported discrepancy: guard.sh counts \bsorry\b by naive grep,
+including in docstrings — the first versions of the K1–K3 files discussed the
+“skeleton-sorry-first” discipline using the word “sorry” literally in prose,
+inflating the count to 13. Repository convention (confirmed: zero occurrence
+elsewhere): never write the word in comments; use “open goal” — corrected
+before the K0 commit.
+
+### K1 — Basic.lean — ✅ CLOSED (2026-07-16)
+
+- [x] decFunctional_last_stage_orthogonal: through a private lemma
+ chainOp_mem_last (the operator chain of a history with L+1 stages
+ always lands in the cell at the final stage, with
+ Fin.foldl_succ_last unfolded once)
+- [x] histProb_additivity_two_stage: same recipe as E₀_isNorm
+ (BornRule/Nonvacuity.lean) —
+ sum_sq_projL_of_pairwise_isOrtho (now public) + resolution of the
+ identity (D1.span, projL ⊤ = id)
+- [x] guard.sh: 3 sorry remaining (K2, K3(a), K3(b))
+
+Reported discrepancy: the third goal planned in the roadmap
+(self-adjointness/idempotence of projL) was removed — derivable in one line
+from Mathlib/gleason (reconnaissance A.2), never cited as a separate lemma for
+lack of a second consumer before K2/K3.
+
+### K2 — Witness.lean — ✅ CLOSED (2026-07-16)
+
+- [x] Explicit data in H 3: e i := EuclideanSpace.single i 1,
+ ψ₀ := e0+e1+e2, φ₀ := e0+e1-e2 (unnormalized — all contrary behavior
+ is expressed through ratios in which 1/√3 cancels),
+ P i := ℂ∙(e i), F := ℂ∙φ₀
+- [x] STATEMENT CORRECTION (project rule 2). The K0 skeleton stated
+ S_consistent (i : Fin 3) WITHOUT restricting i. False for i = 2:
+ the key cancellation ⟪φ₀, ψ₀ - e i⟫ = 1 - ⟪φ₀, e i⟫ occurs only for
+ i ∈ {0,1} (⟪φ₀,e 0⟫ = ⟪φ₀,e 1⟫ = 1, but
+ ⟪φ₀,e 2⟫ = -1; φ₀ carries a negative sign on e2). Added the
+ hypothesis i = 0 ∨ i = 1, the only domain in which the witness is used.
+- [x] S_consistent: by decFunctional_last_stage_orthogonal (K1a), only
+ pairs differing at stage 0 remain to be examined. Core calculation:
+ P_proj_psi0 (projL (P i) ψ₀ = e i), projL_compl
+ (projL Aᗮ = 1 - projL A, via
+ Submodule.starProjection_orthogonal'), w_ortho (the vector
+ w := ψ₀ - e i is orthogonal both to e i and to φ₀ — the latter is
+ THE KEY CANCELLATION), projL_proj_absorb (absorption via
+ self-adjointness + idempotence). The 4 residual cases
+ (c1 ∈ {F, Fᗮ} × the two orders of {P i, (P i)ᗮ}) all close through
+ w_ortho_projLc1_u/u_ortho_projLc1_w.
+- [x] Difference from the roadmap: one parameterized open goal
+ (S_consistent (i : Fin 3)) rather than two
+ (S₁_consistent/S₂_consistent) — an option explicitly permitted by
+ the plan “if duplication is burdensome.” S1_consistent/S2_consistent
+ instantiate it without additional sorry.
+- [x] guard.sh: 2 sorry remaining (K3(a), K3(b))
+
+Documented simp friction point: unconstrained simp spontaneously rewrites
+⟪x,x⟫_ℂ as ‖x‖² (default lemma) — in norm calculations, retain the
+inner_self_eq_norm_sq_to_K rewrites (or the full bilinear expansion) UNTIL
+AFTER expansion, never before, otherwise the calculation becomes stuck on an
+already folded form.
+
+### K3 — ContraryInferences.lean — ✅ CLOSED (2026-07-16)
+
+- [x] STATEMENT CORRECTION (rule 2), for the same reason as in K2:
+ inference (i : Fin 3) restricted to i = 0 ∨ i = 1, with the same
+ cancellation failing at i = 2.
+- [x] inference: branch (P i)ᗮ followed by F has ZERO probability
+ (key cancellation w_ortho, reused from Witness.lean — made public on
+ this occasion), while branch P i followed by F has NONZERO
+ probability (projL F (e i) = (1/‖φ₀‖²) • φ₀ ≠ 0, via the new public
+ lemmas φ₀_norm_sq and φ₀_ne_zero)
+- [x] contrary_inferences: mechanical assembly, direct anonymous term from
+ P_ortho, S_consistent 0/1 (K2), and inference 0/1 (K3a) —
+ confirmed during reconnaissance before the skeleton was written, with
+ no new mathematics at completion
+- [x] Made public in Witness.lean (needed by K3, previously private):
+ projL_compl, P_proj_psi0, projL_F_eq, w_ortho,
+ chainOp_two_stage, phi0_inner_e01, and the new φ₀_norm_sq
+- [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry throughout the
+ repository (five blocks). #print axioms on the 36 content-bearing
+ declarations of Histories: [propext, Classical.choice, Quot.sound],
+ without exception, including through the three-level chain
+ Histories → BornRule (Perspective,
+ projL_sup_of_pairwise_isOrtho relocated) → external Uhlhorn/Gleason.
+
+### Out of scope (possible future extensions, not deficiencies of this milestone)
+
+- The generic profusion theorem of Dowker–Kent (J. Stat. Phys. 82,
+ 1575 (1996)): parameter counting showing that the contrary behavior of the
+ K2 witness is not an isolated case but generic in the space of consistent
+ sets — not addressed, EXPLICITLY excluded by the initial request for this
+ block.
+- Weak consistency (only the real part of decFunctional, rather than the
+ medium/strong consistency used here): mentioned in the docstring
+ (Defs.lean), not formalized.
+- Griffiths's “single-framework rule” (the usual response to Kent's
+ objection): mentioned in the neutrality note
+ (ContraryInferences.lean), not formalized — it is an interpretive
+ argument, not an additional mathematical statement to prove.

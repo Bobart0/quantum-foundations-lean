@@ -2,12 +2,19 @@ import QuantumFoundations.Uhlhorn.WignerProjectionForm
 import QuantumFoundations.Uhlhorn.GleasonTwice
 
 /-!
-# U4/U5 — Assemblage final et Corollaire 1.2 de Šemrl
+**FR.** # U4/U5 — Assemblage final et Corollaire 1.2 de Šemrl
 
 U4 combine U1 et U3b. U5 réduit `PreservesOrthogonality` (orthogonalité préservée
 dans un seul sens, ni injectivité ni surjectivité supposées) à `SendsONBToONB` par
 un argument de comptage de cardinalité valable en dimension finie, puis conclut via
 U4 — c'est le théorème final.
+
+**EN.** # U4/U5 — Final assembly and Šemrl's Corollary 1.2
+
+U4 combines U1 and U3b. U5 reduces PreservesOrthogonality—orthogonality
+preserved in one direction only, with neither injectivity nor surjectivity
+assumed—to SendsONBToONB by a finite-dimensional cardinality-counting
+argument, and then concludes via U4. This is the final theorem.
 -/
 
 namespace QuantumFoundations.Uhlhorn
@@ -19,19 +26,34 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- **U4** (assemblage) : U1 + U3b — si `φ` envoie tout COSP sur un COSP, `φ` est
-une symétrie de Wigner. -/
+/--
+**FR.** **U4** (assemblage) : U1 + U3b — si `φ` envoie tout COSP sur un COSP, `φ` est
+une symétrie de Wigner.
+
+**EN.** U4 (assembly): U1 + U3b—if φ sends every COSP to a COSP, then
+φ is a Wigner symmetry.
+-/
 theorem wignerSymmetryProj_of_sendsONBToONB (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
     (hφ : SendsONBToONB φ) : IsWignerSymmetryProj φ :=
   wigner_projection_form n φ (traceProd_preserved_of_sendsONBToONB hn φ hφ)
 
-/-- **Sous-lemme A + B** : si `φ` préserve l'orthogonalité dans un seul sens,
+/--
+**FR.** **Sous-lemme A + B** : si `φ` préserve l'orthogonalité dans un seul sens,
 l'image d'une base orthonormée `b` par des représentants unitaires choisis
 (`exists_unit_vector_of_proj1`) est elle-même une famille orthonormée
 (Sous-lemme A) ; en dimension finie, une famille orthonormée de cardinal `n`
 forme automatiquement une base (Sous-lemme B,
 `basisOfOrthonormalOfCardEqFinrank` + `Module.Basis.toOrthonormalBasis`, tous
-deux préservant les valeurs POINTWISE — pas seulement à un reindexing près). -/
+deux préservant les valeurs POINTWISE — pas seulement à un reindexing près).
+
+**EN.** Sublemmas A + B: if φ preserves orthogonality in one direction,
+then the image of an orthonormal basis b, represented by chosen unit vectors
+(exists_unit_vector_of_proj1), is itself an orthonormal family (Sublemma A).
+In finite dimension, an orthonormal family of cardinality n automatically
+forms a basis (Sublemma B,
+basisOfOrthonormalOfCardEqFinrank + Module.Basis.toOrthonormalBasis, both
+preserving values POINTWISE, not merely up to reindexing).
+-/
 private theorem sendsONBToONB_of_preservesOrthogonality (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
     (hφ : PreservesOrthogonality φ) : SendsONBToONB φ := by
   intro b
@@ -72,9 +94,15 @@ private theorem sendsONBToONB_of_preservesOrthogonality (hn : 3 ≤ n) (φ : Pro
       from rfl, heq, hbas_eq]
   rw [hx_repr i, hbi]
 
-/-- **U5 — Corollaire 1.2 de Šemrl** (Šemrl 2021, arXiv:2106.06182) : en dimension
+/--
+**FR.** **U5 — Corollaire 1.2 de Šemrl** (Šemrl 2021, arXiv:2106.06182) : en dimension
 finie `n ≥ 3`, toute application sur les projections de rang 1 qui préserve
-l'orthogonalité DANS UN SEUL SENS est automatiquement une symétrie de Wigner. -/
+l'orthogonalité DANS UN SEUL SENS est automatiquement une symétrie de Wigner.
+
+**EN.** U5 — Šemrl's Corollary 1.2 (Šemrl 2021, arXiv:2106.06182): in
+finite dimension n ≥ 3, every map on rank-one projections that preserves
+orthogonality IN ONE DIRECTION is automatically a Wigner symmetry.
+-/
 theorem uhlhorn_finite_dim (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
     (hφ : PreservesOrthogonality φ) : IsWignerSymmetryProj φ :=
   wignerSymmetryProj_of_sendsONBToONB hn φ (sendsONBToONB_of_preservesOrthogonality hn φ hφ)
