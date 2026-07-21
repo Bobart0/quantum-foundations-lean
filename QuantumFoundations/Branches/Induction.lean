@@ -127,14 +127,133 @@ theorem diagonal (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
       subst hcb
       exact rproj_contract_apply (Obs c (ρ c)) k (f c) X
 
-/-- **Somme-à-`ψ` par résolutions itérées.** Corollaire d'une ligne de `E`
-(résolution de l'identité, `Basic.resolution_apply`, itérée `A` fois via le
-split tête/reste `Fin.consEquiv`/`Fintype.sum_prod_type`) — PAS de
-manipulation de permutations. -/
-theorem jointBranch_sum [NeZero R] (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
-    (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs) :
-    ∑ f : Fin A → Fin K, jointBranch Obs ψ f = ψ := by
-  sorry
+/-- `chainProj` ne dépend de `f` que via sa restriction à `L` — direct par
+récurrence structurelle sur `L` (le fold ne lit `f a` que pour `a ∈ L`). -/
+private theorem foldl_congr {α β : Type*} (L : List α) (F G : α → β → β) (init : β)
+    (h : ∀ a ∈ L, F a = G a) :
+    L.foldl (fun acc a => F a acc) init = L.foldl (fun acc a => G a acc) init := by
+  induction L generalizing init with
+  | nil => rfl
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    rw [h hd List.mem_cons_self]
+    exact ih (G hd init) (fun a ha => h a (List.mem_cons_of_mem hd ha))
+
+private theorem chainProj_indep_outside (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
+    (L : List (Fin A)) (ρ : Fin A → Fin R) (f g : Fin A → Fin K) (h : ∀ a ∈ L, f a = g a) :
+    chainProj Obs L ρ f ψ = chainProj Obs L ρ g ψ := by
+  show L.foldl (fun acc a => rproj (Obs a (ρ a)) (f a) acc) ψ
+      = L.foldl (fun acc a => rproj (Obs a (ρ a)) (g a) acc) ψ
+  exact foldl_congr L _ _ ψ (fun a ha => by rw [h a ha])
+
+/-- **Relation à un pas, sans division** (spécification exacte de l'utilisateur) :
+`K • (∑ f, chainProj (L++[a])) = ∑ f, chainProj L`. Preuve : `Equiv.piSplitAt a`
+scinde la somme sur `f : Fin A → Fin K` en `(v : Fin K) × (f' : {j // j ≠ a} →
+Fin K)` ; côté gauche, `resolution_apply` élimine directement la somme sur `v`
+(la partie `chainProj Obs L ρ (…, f')` ne dépend PAS de `v` car `a ∉ L`,
+`chainProj_indep_outside`) ; côté droit, la même scission donne `K` copies
+identiques du même terme. Cas `K = 0` trivial (domaine `Fin A → Fin K` vide
+dès que `A ≥ 1`, ce qui est le cas puisque `a : Fin A` existe). -/
+private theorem chainProj_onestep (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
+    (L : List (Fin A)) (ρ : Fin A → Fin R) (a : Fin A) (ha : a ∉ L) :
+    (K : ℂ) • (∑ f : Fin A → Fin K, chainProj Obs (L ++ [a]) ρ f ψ)
+      = ∑ f : Fin A → Fin K, chainProj Obs L ρ f ψ := by
+  rcases Nat.eq_zero_or_pos K with hK0 | hKpos
+  · subst hK0
+    have : IsEmpty (Fin A → Fin 0) := by
+      have : Nonempty (Fin A) := ⟨a⟩
+      infer_instance
+    rw [Fintype.sum_empty, Fintype.sum_empty, smul_zero]
+  · set v0 : Fin K := ⟨0, hKpos⟩
+    set e := Equiv.piSplitAt a (fun _ : Fin A => Fin K) with he
+    have hZ : ∀ (v v' : Fin K) (f' : {j : Fin A // j ≠ a} → Fin K),
+        chainProj Obs L ρ (e.symm (v, f')) ψ = chainProj Obs L ρ (e.symm (v', f')) ψ := by
+      intro v v' f'
+      apply chainProj_indep_outside
+      intro x hx
+      have hxa : x ≠ a := fun h => ha (h ▸ hx)
+      show e.symm (v, f') x = e.symm (v', f') x
+      simp [he, Equiv.piSplitAt, hxa]
+    have hLHS : ∑ f : Fin A → Fin K, chainProj Obs (L ++ [a]) ρ f ψ
+        = ∑ f' : {j : Fin A // j ≠ a} → Fin K, chainProj Obs L ρ (e.symm (v0, f')) ψ := by
+      have step1 : ∑ f : Fin A → Fin K, chainProj Obs (L ++ [a]) ρ f ψ
+          = ∑ v : Fin K, ∑ f' : {j : Fin A // j ≠ a} → Fin K,
+              chainProj Obs (L ++ [a]) ρ (e.symm (v, f')) ψ := by
+        have hcomp := Equiv.sum_comp e.symm (fun f => chainProj Obs (L ++ [a]) ρ f ψ)
+        rw [← hcomp, Fintype.sum_prod_type]
+      rw [step1]
+      have step2 : ∀ v : Fin K, ∀ f' : {j : Fin A // j ≠ a} → Fin K,
+          chainProj Obs (L ++ [a]) ρ (e.symm (v, f')) ψ
+            = rproj (Obs a (ρ a)) v (chainProj Obs L ρ (e.symm (v, f')) ψ) := by
+        intro v f'
+        have hav : e.symm (v, f') a = v := by simp [he, Equiv.piSplitAt]
+        rw [show chainProj Obs (L ++ [a]) ρ (e.symm (v, f')) ψ
+            = rproj (Obs a (ρ a)) (e.symm (v,f') a) (chainProj Obs L ρ (e.symm (v, f')) ψ) from
+            List.foldl_concat _ ψ a L, hav]
+      simp_rw [step2]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro f' _
+      rw [Finset.sum_congr rfl (fun v (_ : v ∈ (Finset.univ : Finset (Fin K))) => by
+        rw [hZ v v0] : ∀ v ∈ (Finset.univ : Finset (Fin K)),
+          rproj (Obs a (ρ a)) v (chainProj Obs L ρ (e.symm (v, f')) ψ)
+            = rproj (Obs a (ρ a)) v (chainProj Obs L ρ (e.symm (v0, f')) ψ))]
+      exact resolution_apply (Obs a (ρ a)) (chainProj Obs L ρ (e.symm (v0, f')) ψ)
+    have hRHS : ∑ f : Fin A → Fin K, chainProj Obs L ρ f ψ
+        = (K : ℂ) • ∑ f' : {j : Fin A // j ≠ a} → Fin K, chainProj Obs L ρ (e.symm (v0, f')) ψ := by
+      have step1 : ∑ f : Fin A → Fin K, chainProj Obs L ρ f ψ
+          = ∑ v : Fin K, ∑ f' : {j : Fin A // j ≠ a} → Fin K,
+              chainProj Obs L ρ (e.symm (v, f')) ψ := by
+        have hcomp := Equiv.sum_comp e.symm (fun f => chainProj Obs L ρ f ψ)
+        rw [← hcomp, Fintype.sum_prod_type]
+      rw [step1]
+      rw [Finset.sum_congr rfl (fun v (_ : v ∈ (Finset.univ : Finset (Fin K))) =>
+        Finset.sum_congr rfl (fun f' _ => hZ v v0 f'))]
+      rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, ← Nat.cast_smul_eq_nsmul ℂ]
+    rw [hLHS, hRHS]
+
+/-- Chaîne la relation à un pas sur toute la longueur de `L`, sans jamais
+diviser : `K^(L.length) • (∑ f, chainProj L) = K^A • ψ`. -/
+private theorem sum_pow_relation (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n) :
+    ∀ (L : List (Fin A)), L.Nodup → ∀ (ρ : Fin A → Fin R),
+      (K : ℂ) ^ L.length • (∑ f : Fin A → Fin K, chainProj Obs L ρ f ψ)
+        = (K : ℂ) ^ A • ψ := by
+  intro L
+  induction L using List.reverseRecOn with
+  | nil =>
+    intro _ ρ
+    simp only [List.length_nil, pow_zero, one_smul]
+    have hval : ∑ f : Fin A → Fin K, chainProj Obs ([] : List (Fin A)) ρ f ψ
+        = ∑ _f : Fin A → Fin K, ψ := rfl
+    rw [hval, Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+      Fintype.card_fin, ← Nat.cast_smul_eq_nsmul ℂ, ← Nat.cast_pow]
+  | append_singleton L' b ih =>
+    intro hnodup ρ
+    have hL'nodup : L'.Nodup := (List.nodup_append.mp hnodup).1
+    have hbL' : b ∉ L' := by
+      intro hb
+      exact (List.nodup_append.mp hnodup).2.2 b hb b (List.mem_singleton_self b) rfl
+    have honestep := chainProj_onestep Obs ψ L' ρ b hbL'
+    have hlen : (L' ++ [b]).length = L'.length + 1 := by simp
+    rw [hlen, pow_succ, mul_smul, honestep]
+    exact ih hL'nodup ρ
+
+/-- **Somme-à-`ψ` par résolutions itérées.** ÉCART vs le squelette R0 : ni
+`IsRecordedOn` ni `CommuteWitness` ne sont nécessaires — c'est un fait de
+résolution de l'identité PUR (`sum_pow_relation` + annulation de `K^A`),
+indépendant de la redondance ou de la commutation. Hypothèses superflues
+retirées de la signature (découvert en écrivant la preuve, comme
+`BornRule.hker_derivation` en son temps). `[NeZero K]` est nécessaire UNE
+SEULE FOIS, ici, pour l'annulation finale de `K^A` — cas dégénéré `K = 0`
+sans usage réel dans le projet, coût minimal, non filé dans `Defs.lean`. -/
+theorem jointBranch_sum [NeZero R] [NeZero K] (Obs : Fin A → Fin R → LabeledResolution n K)
+    (ψ : H n) : ∑ f : Fin A → Fin K, jointBranch Obs ψ f = ψ := by
+  have hrel := sum_pow_relation Obs ψ (List.finRange A) (List.nodup_finRange A) 0
+  rw [List.length_finRange] at hrel
+  have hcast : ∀ f, chainProj Obs (List.finRange A) 0 f ψ = jointBranch Obs ψ f := fun f => rfl
+  simp_rw [hcast] at hrel
+  have hKA : ((K : ℂ) ^ A) ≠ 0 := pow_ne_zero A (Nat.cast_ne_zero.mpr (NeZero.ne K))
+  exact smul_right_injective (H n) hKA hrel
 
 /-- **Orthogonalité des branches jointes.** Corollaire de `E` appliqué deux
 fois (aux deux branches `f ≠ f'`, sur l'étiquette où elles diffèrent) et de
@@ -143,7 +262,82 @@ theorem jointBranch_orthogonal [NeZero R] (Obs : Fin A → Fin R → LabeledReso
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs)
     {f f' : Fin A → Fin K} (hff : f ≠ f') :
     ⟪jointBranch Obs ψ f, jointBranch Obs ψ f'⟫_ℂ = 0 := by
-  sorry
+  obtain ⟨a₀, ha₀⟩ := Function.ne_iff.mp hff
+  have hE1 := diagonal Obs ψ hrec hcw (List.finRange A) (List.nodup_finRange A) 0 f a₀
+    (List.mem_finRange a₀) (f' a₀)
+  rw [if_neg (Ne.symm ha₀), zero_smul] at hE1
+  have hE2 := diagonal Obs ψ hrec hcw (List.finRange A) (List.nodup_finRange A) 0 f' a₀
+    (List.mem_finRange a₀) (f' a₀)
+  rw [if_pos rfl, one_smul] at hE2
+  set Λ := Obs a₀ ((0 : Fin A → Fin R) a₀)
+  have hmem2 : jointBranch Obs ψ f' ∈ Λ.cells (f' a₀) := by
+    show chainProj Obs (List.finRange A) 0 f' ψ ∈ Λ.cells (f' a₀)
+    rw [← hE2]; exact Submodule.starProjection_apply_mem _ _
+  have hzero1 : jointBranch Obs ψ f ∈ (Λ.cells (f' a₀))ᗮ := by
+    show chainProj Obs (List.finRange A) 0 f ψ ∈ (Λ.cells (f' a₀))ᗮ
+    exact (Submodule.starProjection_apply_eq_zero_iff (Λ.cells (f' a₀))).mp hE1
+  have hswapped := (Submodule.mem_orthogonal (Λ.cells (f' a₀)) _).mp hzero1 _ hmem2
+  rw [← inner_conj_symm (jointBranch Obs ψ f) (jointBranch Obs ψ f'), hswapped]
+  simp
+
+/-- Pour tout `w` satisfaisant la propriété d'état propre de `heig`,
+`chainProj Obs L 0 f (w g)` isole `w g` si `f` et `g` coïncident sur `L`,
+et l'annule sinon — récurrence structurelle simple sur `L` (PAS
+`List.reverseRecOn` : un seul pas de `List.foldl`, pas besoin de tunneling
+ici puisque `heig` porte directement sur `w`, pas sur une chaîne à
+reconstruire). Ingrédient clé de l'unicité. -/
+private theorem chainProj_apply_w [NeZero R] (Obs : Fin A → Fin R → LabeledResolution n K)
+    (w : (Fin A → Fin K) → H n)
+    (heig : ∀ (f : Fin A → Fin K) (a : Fin A) (k : Fin K),
+      rproj (Obs a 0) k (w f) = (if k = f a then (1 : ℂ) else 0) • w f) :
+    ∀ (L : List (Fin A)) (f g : Fin A → Fin K),
+      chainProj Obs L 0 f (w g) = (if ∀ a ∈ L, f a = g a then w g else 0) := by
+  intro L
+  induction L with
+  | nil => intro f g; simp [chainProj]
+  | cons hd tl ih =>
+    intro f g
+    show chainProj Obs tl 0 f (rproj (Obs hd 0) (f hd) (w g)) = _
+    rw [heig g hd (f hd)]
+    by_cases hfg : f hd = g hd
+    · rw [if_pos hfg, one_smul, ih f g]
+      have hcond : (∀ a ∈ hd :: tl, f a = g a) ↔ (∀ a ∈ tl, f a = g a) := by
+        constructor
+        · intro h a ha; exact h a (List.mem_cons_of_mem hd ha)
+        · intro h a ha
+          rcases List.mem_cons.mp ha with rfl | ha'
+          · exact hfg
+          · exact h a ha'
+      simp only [hcond]
+    · rw [if_neg hfg, zero_smul]
+      have hcondfalse : ¬ (∀ a ∈ hd :: tl, f a = g a) := fun h => hfg (h hd List.mem_cons_self)
+      rw [if_neg hcondfalse]
+      have hzero : ∀ (L' : List (Fin A)) (x : H n), x = 0 → chainProj Obs L' 0 f x = 0 := by
+        intro L' x hx
+        subst hx
+        induction L' with
+        | nil => simp [chainProj]
+        | cons hd' tl' ih' =>
+          show chainProj Obs tl' 0 f (rproj (Obs hd' 0) (f hd') 0) = 0
+          rw [map_zero]
+          exact ih'
+      exact hzero tl 0 rfl
+
+/-- `chainProj` distribue sur les sommes finies — récurrence structurelle
+directe (chaque étape est un `LinearMap`, `map_sum`). -/
+private theorem chainProj_sum {ι : Type*} (s : Finset ι)
+    (Obs : Fin A → Fin R → LabeledResolution n K)
+    (L : List (Fin A)) (ρ : Fin A → Fin R) (f : Fin A → Fin K) (v : ι → H n) :
+    chainProj Obs L ρ f (∑ i ∈ s, v i) = ∑ i ∈ s, chainProj Obs L ρ f (v i) := by
+  show L.foldl (fun acc a => rproj (Obs a (ρ a)) (f a) acc) (∑ i ∈ s, v i)
+      = ∑ i ∈ s, L.foldl (fun acc a => rproj (Obs a (ρ a)) (f a) acc) (v i)
+  induction L generalizing s v with
+  | nil => rfl
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    rw [show (rproj (Obs hd (ρ hd)) (f hd)) (∑ i ∈ s, v i)
+        = ∑ i ∈ s, rproj (Obs hd (ρ hd)) (f hd) (v i) from map_sum _ _ _]
+    exact ih s (fun i => rproj (Obs hd (ρ hd)) (f hd) (v i))
 
 /-- **Théorème de Riedel (Main Result, PRL 118, 120402 (2017)).** Sous
 redondance (`IsRecordedOn` de chaque observable) et témoin de commutation
@@ -164,19 +358,55 @@ elle s'obtient en une ligne (deux branches jointes construites par des
 toutes deux la propriété d'état propre ci-dessous pour le MÊME `f`, donc
 coïncident par le volet unicité) — à ajouter comme corollaire sans but
 ouvert supplémentaire une fois ce jalon fermé, pas comme but ouvert séparé
-du squelette. -/
-theorem riedel [NeZero R] (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
+du squelette.
+
+## Écart vs le squelette R0 : état propre et unicité restreints au record `0`
+
+Testé explicitement avant de choisir : l'invariance par choix de record
+arbitraire `r` (au lieu du seul `0` utilisé par `chainProj`/`jointBranch`)
+n'est PAS immédiate depuis `E`/`T` seuls — `T` ne s'applique qu'à une
+observable ABSENTE de la liste, et ici l'observable cible `a` est déjà
+présente dans `List.finRange A` ; substituer son propre record demanderait
+de composer deux projections de records DIFFÉRENTS de la MÊME observable en
+un point de contact interne à la chaîne, ce que `rproj_contract` ne couvre
+pas (il ne couvre que deux étiquettes du MÊME record). Restreint au record
+`0`, comme `TwoObs.twoObs_eigen`. La version forte (`∀ r`) est une extension
+séparée, à tenter une fois l'invariance de choix de record établie pour
+elle-même — non bloquante ici. -/
+theorem riedel [NeZero R] [NeZero K] (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs) :
     (∑ f : Fin A → Fin K, jointBranch Obs ψ f = ψ) ∧
     (∀ f f' : Fin A → Fin K, f ≠ f' → ⟪jointBranch Obs ψ f, jointBranch Obs ψ f'⟫_ℂ = 0) ∧
-    (∀ (f : Fin A → Fin K) (a : Fin A) (r : Fin R) (k : Fin K),
-      rproj (Obs a r) k (jointBranch Obs ψ f)
+    (∀ (f : Fin A → Fin K) (k : Fin K) (a : Fin A),
+      rproj (Obs a 0) k (jointBranch Obs ψ f)
         = (if k = f a then (1 : ℂ) else 0) • jointBranch Obs ψ f) ∧
     (∀ w : (Fin A → Fin K) → H n, (∑ f : Fin A → Fin K, w f = ψ) →
-      (∀ (f : Fin A → Fin K) (a : Fin A) (r : Fin R) (k : Fin K),
-        rproj (Obs a r) k (w f) = (if k = f a then (1 : ℂ) else 0) • w f) →
+      (∀ (f : Fin A → Fin K) (a : Fin A) (k : Fin K),
+        rproj (Obs a 0) k (w f) = (if k = f a then (1 : ℂ) else 0) • w f) →
       ∀ f : Fin A → Fin K, w f = jointBranch Obs ψ f) := by
-  sorry
+  refine ⟨jointBranch_sum Obs ψ, fun f f' => jointBranch_orthogonal Obs ψ hrec hcw, ?_, ?_⟩
+  · intro f k a
+    exact diagonal Obs ψ hrec hcw (List.finRange A) (List.nodup_finRange A) 0 f a
+      (List.mem_finRange a) k
+  · intro w hsum heig f
+    have hkey := chainProj_apply_w Obs w heig (List.finRange A) f f
+    have hcond : ∀ a ∈ List.finRange A, f a = f a := fun a _ => rfl
+    rw [if_pos hcond] at hkey
+    have hlin : chainProj Obs (List.finRange A) 0 f (∑ g : Fin A → Fin K, w g) = w f := by
+      rw [chainProj_sum]
+      have hcongr : ∀ g : Fin A → Fin K,
+          chainProj Obs (List.finRange A) 0 f (w g) = (if g = f then w g else 0) := by
+        intro g
+        rw [chainProj_apply_w Obs w heig (List.finRange A) f g]
+        have hiff : (∀ a ∈ List.finRange A, f a = g a) ↔ g = f := by
+          constructor
+          · intro h; funext a; exact (h a (List.mem_finRange a)).symm
+          · intro h a _; rw [h]
+        simp only [hiff]
+      simp_rw [hcongr]
+      exact (Finset.sum_ite_eq' (Finset.univ : Finset (Fin A → Fin K)) f w).trans (by simp)
+    rw [hsum] at hlin
+    exact hlin.symm
 
 end
 end QuantumFoundations.Branches
