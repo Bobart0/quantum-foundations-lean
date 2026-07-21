@@ -1,7 +1,7 @@
 import QuantumFoundations.Uhlhorn.Defs
 
 /-!
-# U1 — Corollaire (B) de Wigner en langage de projections
+**FR.** # U1 — Corollaire (B) de Wigner en langage de projections
 
 Jamais construit jusqu'ici (mis de côté au tout début du projet Wigner, W0). Se
 déduit de `QuantumFoundations.Wigner.wigner` en choisissant un représentant
@@ -10,6 +10,17 @@ unitaire par projection (`T`, Étape 2), après avoir établi que `T` satisfait
 Indépendant de U2/U3a/U3b — `exists_unit_vector_of_proj1` (utilisé ici) vit dans
 `Defs.lean`, pas dans `GleasonExtend.lean` (U3a), précisément pour éviter cette
 dépendance de fichier.
+
+**EN.** # U1 — Wigner's Corollary (B) in projection language
+
+This form had never previously been constructed, having been set aside at
+the beginning of the Wigner project (W0). It follows from
+QuantumFoundations.Wigner.wigner by choosing a unit representative for
+each projection (T, Step 2), after establishing that T satisfies
+IsWignerMap (Step 3, from the hypothesis that TraceProd is preserved).
+It is independent of U2/U3a/U3b:
+exists_unit_vector_of_proj1, used here, resides in Defs.lean rather than
+in GleasonExtend.lean (U3a), precisely to avoid such a file dependency.
 -/
 
 namespace QuantumFoundations.Uhlhorn
@@ -22,8 +33,13 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- **Étape 1** : `TraceProd` sur deux droites est le module au carré du produit
-scalaire des représentants unitaires. -/
+/--
+**FR.** **Étape 1** : `TraceProd` sur deux droites est le module au carré du produit
+scalaire des représentants unitaires.
+
+**EN.** Step 1: TraceProd for two lines is the squared modulus of the inner
+product of their unit representatives.
+-/
 theorem traceProd_mk_unit_eq (x y : H n) (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
     TraceProd (Proj1.mk_unit x hx) (Proj1.mk_unit y hy) = ‖⟪x, y⟫_ℂ‖ ^ 2 := by
   show bornValue (projL (ℂ ∙ x)) (ℂ ∙ y) = ‖⟪x, y⟫_ℂ‖ ^ 2
@@ -32,8 +48,13 @@ theorem traceProd_mk_unit_eq (x y : H n) (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) :
   norm_cast
   rw [← Complex.sq_norm]
 
-/-- **Étape 2** : construction de `T` par choix d'un représentant unitaire de
-`φ (mk_unit x hx)`, junk `0` hors de la sphère unité. -/
+/--
+**FR.** **Étape 2** : construction de `T` par choix d'un représentant unitaire de
+`φ (mk_unit x hx)`, junk `0` hors de la sphère unité.
+
+**EN.** Step 2: construction of T by choosing a unit representative of
+φ (mk_unit x hx), with junk value 0 outside the unit sphere.
+-/
 private noncomputable def T (φ : Proj1 n → Proj1 n) (x : H n) : H n :=
   if hx : ‖x‖ = 1 then Classical.choose (exists_unit_vector_of_proj1 (φ (Proj1.mk_unit x hx)))
   else 0
@@ -49,8 +70,13 @@ private theorem T_repr (φ : Proj1 n → Proj1 n) {x : H n} (hx : ‖x‖ = 1) :
   rw [dif_pos hx]
   exact (Classical.choose_spec (exists_unit_vector_of_proj1 (φ (Proj1.mk_unit x hx)))).2
 
-/-- **Étape 3** : `T` satisfait `IsWignerMap`, à partir de l'hypothèse de
-préservation de `TraceProd`. -/
+/--
+**FR.** **Étape 3** : `T` satisfait `IsWignerMap`, à partir de l'hypothèse de
+préservation de `TraceProd`.
+
+**EN.** Step 3: T satisfies IsWignerMap, from the hypothesis that
+TraceProd is preserved.
+-/
 private theorem isWignerMap_T {φ : Proj1 n → Proj1 n}
     (hφ : ∀ P Q : Proj1 n, TraceProd (φ P) (φ Q) = TraceProd P Q) :
     IsWignerMap (T φ) := by
@@ -66,9 +92,14 @@ private theorem isWignerMap_T {φ : Proj1 n → Proj1 n}
     sq_nonneg (‖⟪T φ x, T φ y⟫_ℂ‖ + ‖⟪x, y⟫_ℂ‖), h1,
     norm_nonneg (⟪T φ x, T φ y⟫_ℂ), norm_nonneg (⟪x, y⟫_ℂ)]
 
-/-- **U1** : une application `φ : Proj1 n → Proj1 n` (PAS supposée bijective)
+/--
+**FR.** **U1** : une application `φ : Proj1 n → Proj1 n` (PAS supposée bijective)
 préservant `tr(φ(P)φ(Q)) = tr(PQ)` pour TOUTE paire `P, Q` est une symétrie de
-Wigner. -/
+Wigner.
+
+**EN.** U1: a map φ : Proj1 n → Proj1 n, NOT assumed bijective, that
+preserves tr(φ(P)φ(Q)) = tr(PQ) for EVERY pair P, Q is a Wigner symmetry.
+-/
 theorem wigner_projection_form (n : ℕ) (φ : Proj1 n → Proj1 n)
     (hφ : ∀ P Q : Proj1 n, TraceProd (φ P) (φ Q) = TraceProd P Q) :
     IsWignerSymmetryProj φ := by

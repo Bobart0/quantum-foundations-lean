@@ -3,7 +3,7 @@ import QuantumFoundations.Uhlhorn.Spectral
 import Gleason.Main
 
 /-!
-# U3b — L'argument « Gleason appliqué deux fois »
+**FR.** # U3b — L'argument « Gleason appliqué deux fois »
 
 Combine `Gleason.gleason` (importé comme boîte noire), U3a
 (`exists_projMeasure_of_frameFunctionOnLines`) et U2
@@ -19,6 +19,24 @@ former explicitement l'opérateur `∑ i, projL (ℂ ∙ (b' i))`. Un « Sous-le
 (densité ⟹ effet, absent de `gleason-theorem-lean`, confirmé en reconnaissance)
 a en revanche bien été nécessaire, dérivé ici par la même technique de
 décomposition de trace que U2.
+
+**EN.** # U3b — The “Gleason applied twice” argument
+
+Combines Gleason.gleason (imported as a black box), U3a
+(exists_projMeasure_of_frameFunctionOnLines), and U2
+(eq_projL_of_positive_le_one_trace_one_inner_one).
+
+Deviation from the reconnaissance strategy: the proposed “Sublemma 1,” a
+resolution of the identity as an OPERATOR identity
+∑ i, projL (ℂ ∙ (b i)) = 1 via
+Gleason.projL_sup_of_pairwise_isOrtho, proved UNNECESSARY.
+LinearMap.trace_eq_sum_inner directly expresses the trace of D as a sum
+over ANY orthonormal basis—in particular the image basis b' under φ,
+whose completeness is guaranteed by SendsONBToONB—without ever explicitly
+forming the operator ∑ i, projL (ℂ ∙ (b' i)). By contrast, “Sublemma 0”
+(density ⟹ effect), absent from gleason-theorem-lean as confirmed during
+reconnaissance, was necessary and was derived here by the same
+trace-decomposition technique as U2.
 -/
 
 namespace QuantumFoundations.Uhlhorn
@@ -30,10 +48,18 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- **Sous-lemme 2** (première application de `Gleason.gleason`) : pour toute
+/--
+**FR.** **Sous-lemme 2** (première application de `Gleason.gleason`) : pour toute
 densité `D` fixée, `P ↦ bornValue D (φ P : Submodule)` est une fonction-cadre
 sur les droites (U3a s'applique), d'où une densité `E` (dépendant de `D`) telle
-que `bornValue D (φ P) = bornValue E P` pour tout `P`. -/
+que `bornValue D (φ P) = bornValue E P` pour tout `P`.
+
+**EN.** Sublemma 2 (first application of Gleason.gleason): for every fixed
+density operator D, the map
+P ↦ bornValue D (φ P : Submodule) is a frame function on lines, so U3a
+applies. Hence there exists a density operator E, depending on D, such
+that bornValue D (φ P) = bornValue E P for every P.
+-/
 private theorem exists_density_born_eq (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
     (hφ : SendsONBToONB φ) (D : H n →ₗ[ℂ] H n) (hD : IsDensityOperator D) :
     ∃ E : H n →ₗ[ℂ] H n, IsDensityOperator E ∧
@@ -93,7 +119,8 @@ private theorem isDensityOperator_projL_of_proj1 (P : Proj1 n) :
     rw [inner_self_eq_norm_sq_to_K, hx]
     norm_num
 
-/-- **U3b** : si `φ` envoie tout COSP (système orthonormé complet — en dimension
+/--
+**FR.** **U3b** : si `φ` envoie tout COSP (système orthonormé complet — en dimension
 finie, toute base orthonormée) sur un COSP, alors `φ` préserve
 `tr(φ(P)φ(Q)) = tr(PQ)` pour TOUTE paire `P, Q` — pas seulement les paires
 orthogonales.
@@ -103,7 +130,22 @@ premier argument du but), applique `exists_density_born_eq` à
 `D := projL (φ P)`, obtient `E`. Spécialise l'égalité `(*)` en `P` lui-même :
 `bornValue D (φ P) = TraceProd (φ P) (φ P) = 1`, d'où `bornValue E P = 1` puis,
 via U2, `E = projL P`. Réinjecte dans `(*)` en `Q` : `TraceProd (φ P) (φ Q) =
-bornValue D (φ Q) = bornValue E Q = bornValue (projL P) Q = TraceProd P Q`. -/
+bornValue D (φ Q) = bornValue E Q = bornValue (projL P) Q = TraceProd P Q`.
+
+**EN.** U3b: if φ sends every COSP—a complete orthonormal system, hence in
+finite dimension every orthonormal basis—to a COSP, then φ preserves
+tr(φ(P)φ(Q)) = tr(PQ) for EVERY pair P, Q, not only for orthogonal
+pairs.
+
+Strategy (Sous-lemme 3 + the reconnaissance assembly): fix P, the first
+argument of the goal, and apply exists_density_born_eq with
+D := projL (φ P) to obtain E. Specialize equality (*) to P itself:
+bornValue D (φ P) = TraceProd (φ P) (φ P) = 1, hence
+bornValue E P = 1; U2 then gives E = projL P. Substitute this into (*)
+at Q:
+TraceProd (φ P) (φ Q) =
+bornValue D (φ Q) = bornValue E Q = bornValue (projL P) Q = TraceProd P Q.
+-/
 theorem traceProd_preserved_of_sendsONBToONB (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
     (hφ : SendsONBToONB φ) :
     ∀ P Q : Proj1 n, TraceProd (φ P) (φ Q) = TraceProd P Q := by

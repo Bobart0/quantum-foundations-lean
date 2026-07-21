@@ -2,7 +2,7 @@ import QuantumFoundations.Uhlhorn.Defs
 import Gleason.Complex.RealSections
 
 /-!
-# U3a — Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet
+**FR.** # U3a — Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet
 
 Pièce à part entière, PAS un détail interne de U3b (`GleasonTwice.lean`) : pour
 appliquer `Gleason.gleason`, qui prend un `ProjMeasure` complet (défini et additif
@@ -33,6 +33,39 @@ refaire la construction indépendamment — le seul travail de concaténation de
 bases nécessaire ici reste `Sous-lemme 5` (`add_isOrtho`, via `Sum.elim`), sur un
 sous-ensemble bien plus restreint du problème (juste `A` et `B`, pas la
 construction générale de l'extension elle-même).
+
+**EN.** # U3a — Extending a frame function on lines to a full ProjMeasure
+
+A component in its own right, NOT an internal detail of U3b
+(GleasonTwice.lean): to apply Gleason.gleason, which takes a full
+ProjMeasure defined and additive on EVERY subspace (see Gleason.Defs), to
+the frame function φ_D(P) := tr(D · φ(P)) in Šemrl's proof, which is a priori
+defined only on the lines Proj1 n, the function must first be extended.
+
+Confirmed by auditing the gleason repository (Step 0 of U0): no lemma of
+this form exists in gleason-theorem-lean. The only two construction sites
+for a ProjMeasure in that repository (EffectMeasure.toProjMeasure,
+pureState) both provide a CLOSED formula valid directly on every subspace,
+and never extend partial data defined only on lines. Decision: this lemma
+remains in quantum-foundations-lean (namespace Uhlhorn), not in
+gleason-theorem-lean. Although it is a generic Gleason fact, the tagged
+public repository is not reopened for this need.
+
+Major deviation from the initial reconnaissance strategy: the anticipated
+delicate point—independence from the choice of orthonormal basis, Sublemma
+1—was NOT reproved from first principles by concatenating bases
+(Fin k ⊕ Fin l → Fin n through finSumFinEquiv/Fin.append).
+Internally, Gleason.Complex.RealSections already contains EXACTLY this
+argument in vector form: Gleason.cframe_sum_invariant (for a frame function
+g : H n → ℝ satisfying IsCFrameFunction g W, two orthonormal families of
+the same size spanning the same subspace have equal sums). The strategy
+adopted here bridges Proj1 n to this already-proved machinery
+(gv : H n → ℝ, the vector version of g, with isCFrameFunction_gv
+showing that gv satisfies IsCFrameFunction) rather than rebuilding the
+construction independently. The only basis-concatenation work still needed
+here is Sous-lemme 5 (add_isOrtho, via Sum.elim), for a much narrower part
+of the problem—only A and B, rather than the general construction of the
+extension itself.
 -/
 
 namespace QuantumFoundations.Uhlhorn
@@ -44,15 +77,25 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- Version vectorielle de `g`, valeur poubelle `0` hors de la sphère unité. -/
+/--
+**FR.** Version vectorielle de `g`, valeur poubelle `0` hors de la sphère unité.
+
+**EN.** Vector version of g, with junk value 0 outside the unit sphere.
+-/
 private noncomputable def gv (g : Proj1 n → ℝ) : H n → ℝ :=
   fun x => if h : ‖x‖ = 1 then g (Proj1.mk_unit x h) else 0
 
 private theorem gv_of_norm_one {g : Proj1 n → ℝ} {x : H n} (hx : ‖x‖ = 1) :
     gv g x = g (Proj1.mk_unit x hx) := dif_pos hx
 
-/-- `gv g` est une fonction-cadre complexe de poids `1`, au sens de
-`Gleason.IsCFrameFunction` — pont vers `Gleason.cframe_sum_invariant`. -/
+/--
+**FR.** `gv g` est une fonction-cadre complexe de poids `1`, au sens de
+`Gleason.IsCFrameFunction` — pont vers `Gleason.cframe_sum_invariant`.
+
+**EN.** gv g is a complex frame function of weight 1 in the sense of
+Gleason.IsCFrameFunction, providing the bridge to
+Gleason.cframe_sum_invariant.
+-/
 private theorem isCFrameFunction_gv {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLines g) :
     IsCFrameFunction (gv g) 1 := by
   intro b
@@ -79,14 +122,27 @@ private theorem span_stdBasis_coe (A : Submodule ℂ (H n)) :
   rw [h1, ← LinearMap.map_span, ← OrthonormalBasis.coe_toBasis,
     (stdOrthonormalBasis ℂ A).toBasis.span_eq, Submodule.map_subtype_top]
 
-/-- Somme cadre sur la base orthonormée standard de `A` (`stdOrthonormalBasis`). -/
+/--
+**FR.** Somme cadre sur la base orthonormée standard de `A` (`stdOrthonormalBasis`).
+
+**EN.** Frame sum over the standard orthonormal basis of A
+(stdOrthonormalBasis).
+-/
 private noncomputable def frameSum (g : Proj1 n → ℝ) (A : Submodule ℂ (H n)) : ℝ :=
   ∑ i, gv g ((stdOrthonormalBasis ℂ A) i : H n)
 
-/-- **Sous-lemme 1 (indépendance du choix de base)**, sous forme générique (tout
+/--
+**FR.** **Sous-lemme 1 (indépendance du choix de base)**, sous forme générique (tout
 `Fintype ι` de bon cardinal, pas seulement `Fin (finrank A)`) : réutilise
 directement `Gleason.cframe_sum_invariant`, déjà prouvé dans la dépendance
-épinglée pour l'énoncé analogue sur les frame functions vectorielles. -/
+épinglée pour l'énoncé analogue sur les frame functions vectorielles.
+
+**EN.** Sublemma 1 (independence from the choice of basis), in generic form
+(for any Fintype ι of the correct cardinality, not only
+Fin (finrank A)): directly reuses Gleason.cframe_sum_invariant, already
+proved in the pinned dependency for the analogous statement about
+vector-valued frame functions.
+-/
 private theorem frameSum_eq_sum_of_orthonormal_spanning {g : Proj1 n → ℝ}
     (hg : IsFrameFunctionOnLines g) {A : Submodule ℂ (H n)} {ι : Type*} [Fintype ι]
     (hcard : Fintype.card ι = Module.finrank ℂ A) (v : ι → H n) (hv : Orthonormal ℂ v)
@@ -119,10 +175,18 @@ private theorem frameSum_nonneg {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLin
     (A : Submodule ℂ (H n)) : 0 ≤ frameSum g A :=
   Finset.sum_nonneg (fun _ _ => gv_nonneg hg _)
 
-/-- **Sous-lemme 5** (`add_isOrtho`) : seul point où une concaténation de bases
+/--
+**FR.** **Sous-lemme 5** (`add_isOrtho`) : seul point où une concaténation de bases
 orthonormées est réellement construite à la main dans ce fichier (via `Sum.elim`,
 pas `Fin.append`/`finSumFinEquiv` — le passage `Fin kA ⊕ Fin kB → Fin (kA+kB)` est
-géré automatiquement par la version générique du Sous-lemme 1). -/
+géré automatiquement par la version générique du Sous-lemme 1).
+
+**EN.** Sublemma 5 (add_isOrtho): the only point in this file where an
+orthonormal-basis concatenation is actually constructed by hand, using
+Sum.elim rather than Fin.append/finSumFinEquiv. The passage
+Fin kA ⊕ Fin kB → Fin (kA+kB) is handled automatically by the generic
+version of Sublemma 1.
+-/
 private theorem frameSum_add_isOrtho {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLines g)
     (A B : Submodule ℂ (H n)) (hAB : A ⟂ B) :
     frameSum g (A ⊔ B) = frameSum g A + frameSum g B := by
@@ -161,7 +225,11 @@ private theorem frameSum_add_isOrtho {g : Proj1 n → ℝ} (hg : IsFrameFunction
   simp only [Sum.elim_inl, Sum.elim_inr]
   rfl
 
-/-- La restriction de `μ := frameSum g` à `Proj1 n` redonne exactement `g`. -/
+/--
+**FR.** La restriction de `μ := frameSum g` à `Proj1 n` redonne exactement `g`.
+
+**EN.** The restriction of μ := frameSum g to Proj1 n is exactly g.
+-/
 private theorem frameSum_proj1 {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLines g)
     (P : Proj1 n) : frameSum g (P : Submodule ℂ (H n)) = g P := by
   obtain ⟨x, hx, hxP⟩ := exists_unit_vector_of_proj1 P
@@ -181,9 +249,15 @@ private theorem frameSum_proj1 {g : Proj1 n → ℝ} (hg : IsFrameFunctionOnLine
   have : Proj1.mk_unit x hx = P := Subtype.ext hxP.symm
   rw [this]
 
-/-- **U3a** : une fonction-cadre définie seulement sur les droites, additive sur
+/--
+**FR.** **U3a** : une fonction-cadre définie seulement sur les droites, additive sur
 toute base orthonormée, s'étend en un `ProjMeasure n` complet qui coïncide avec
-elle sur chaque droite. -/
+elle sur chaque droite.
+
+**EN.** U3a: a frame function defined only on lines and additive over every
+orthonormal basis extends to a full ProjMeasure n that agrees with it on
+every line.
+-/
 theorem exists_projMeasure_of_frameFunctionOnLines (n : ℕ) (g : Proj1 n → ℝ)
     (hg : IsFrameFunctionOnLines g) :
     ∃ m : ProjMeasure n, ∀ P : Proj1 n, m.μ (P : Submodule ℂ (H n)) = g P :=

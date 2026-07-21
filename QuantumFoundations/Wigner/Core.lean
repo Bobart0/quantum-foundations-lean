@@ -2,7 +2,7 @@ import QuantumFoundations.Wigner.VConstruction
 import QuantumFoundations.Wigner.Scalar
 
 /-!
-# W4 — LE cœur : analyse de `V` (Bargmann §4, l'analogue de `sqrtOp` pour N1)
+**FR.** # W4 — LE cœur : analyse de `V` (Bargmann §4, l'analogue de `sqrtOp` pour N1)
 
 Seul contenu mathématique réellement neuf du dépôt Wigner (le reste est de la
 plomberie disciplinée, comme N2-N3-N5 l'étaient pour Naimark).
@@ -11,6 +11,18 @@ Le case split de la construction du repère adapté (`V_additive` etc.) porte su
 **dépendance linéaire** de la paire de vecteurs, PAS sur `n` : `n = 2` est absorbé
 automatiquement (la dépendance y est forcée), aucune disjonction `n = 2` vs `n ≥ 3`
 n'apparaît dans le cœur — contrairement à Gleason.
+
+**EN.** # W4 — THE core: analysis of V (Bargmann §4, the analogue of sqrtOp in N1)
+
+This is the only genuinely new mathematical content in the Wigner repository;
+the remainder is disciplined infrastructure, just as N2–N3–N5 were for
+Naimark.
+
+The case split in the construction of the adapted frame (V_additive, etc.)
+concerns linear dependence of the pair of vectors, NOT n: the case
+n = 2 is absorbed automatically because dependence is forced there. No
+split between n = 2 and n ≥ 3 appears in the core, unlike in Gleason's
+theorem.
 -/
 
 namespace QuantumFoundations.Wigner
@@ -22,11 +34,19 @@ noncomputable section
 
 variable {n : ℕ} {T : H n → H n}
 
-/-- Étape 1 de Bargmann §4.2 : si `T` préserve les probabilités de transition, une
+/--
+**FR.** Étape 1 de Bargmann §4.2 : si `T` préserve les probabilités de transition, une
 rotation de phase `c • f` sur un vecteur unitaire `f` induit une rotation de phase
 sur `T f` — cas d'égalité de Cauchy-Schwarz appliqué à `T f, T(c•f)` (tous deux
 unitaires, produit scalaire de module 1). Réutilisé par W5 (`Main.lean`,
-`exists_phase_U`). -/
+`exists_phase_U`).
+
+**EN.** Step 1 of Bargmann §4.2: if T preserves transition probabilities, a
+phase rotation c • f of a unit vector f induces a phase rotation of
+T f. This is the equality case of Cauchy–Schwarz applied to
+T f, T(c•f), both unit vectors with inner product of modulus 1. Reused by
+W5 (Main.lean, exists_phase_U).
+-/
 theorem T_phase (hT : IsWignerMap T) {f : H n} (hf : ‖f‖ = 1) {c : ℂ} (hc : ‖c‖ = 1) :
     ∃ lam : ℂ, ‖lam‖ = 1 ∧ T (c • f) = lam • T f := by
   have hcf : ‖c • f‖ = 1 := by rw [norm_smul, hc, hf, mul_one]
@@ -46,10 +66,18 @@ theorem T_phase (hT : IsWignerMap T) {f : H n} (hf : ‖f‖ = 1) {c : ℂ} (hc 
     rw [hTcf, hTf, mul_one] at hrnorm
     exact hrnorm.symm
 
-/-- Étape 2 de Bargmann §4.2, généralisée à un `f` unitaire QUELCONQUE de `𝒫` (pas
+/--
+**FR.** Étape 2 de Bargmann §4.2, généralisée à un `f` unitaire QUELCONQUE de `𝒫` (pas
 seulement `refVec`) : `V` restreinte à la direction de `f` est colinéaire à `V f`,
 avec le coefficient IDENTIFIÉ comme `chidir T f α` (unicité du coefficient de
-colinéarité contre `V f ≠ 0`, cf. `norm_V`). -/
+colinéarité contre `V f ≠ 0`, cf. `norm_V`).
+
+**EN.** Step 2 of Bargmann §4.2, generalized to an ARBITRARY unit vector f in
+𝒫, not only refVec: the restriction of V to the direction of f is
+collinear with V f, with the coefficient IDENTIFIED as chidir T f α
+through uniqueness of the collinearity coefficient against V f ≠ 0
+(see norm_V).
+-/
 private theorem V_dir_colinear (hT : IsWignerMap T) (hn : 2 ≤ n) {f : H n} (hf : InPerp f)
     (hfu : ‖f‖ = 1) (α : ℂ) : V T (α • f) = chidir T f α • V T f := by
   by_cases hα0 : α = 0
@@ -94,8 +122,13 @@ private theorem V_dir_colinear (hT : IsWignerMap T) (hn : 2 ≤ n) {f : H n} (hf
       rw [hVfVf, mul_one]
     rw [hVz, hchidir]
 
-/-- (14)(15)(15a)(15b) : `chidir T f` est une fonction scalaire qui vérifie les
-hypothèses de `scalar_dichotomy` pour tout `f` unitaire de `𝒫`. -/
+/--
+**FR.** (14)(15)(15a)(15b) : `chidir T f` est une fonction scalaire qui vérifie les
+hypothèses de `scalar_dichotomy` pour tout `f` unitaire de `𝒫`.
+
+**EN.** (14)(15)(15a)(15b): chidir T f is a scalar function satisfying the
+hypotheses of scalar_dichotomy for every unit vector f in 𝒫.
+-/
 theorem chidir_dichotomy (hT : IsWignerMap T) (hn : 2 ≤ n) (f : H n) (hf : InPerp f)
     (hfu : ‖f‖ = 1) :
     (fun α => chidir T f α) = id ∨ (fun α => chidir T f α) = starRingEnd ℂ := by
@@ -132,9 +165,16 @@ private theorem refVec_InPerp (hn : 2 ≤ n) : InPerp (refVec n) := by
     PiLp.single_apply]
   simp
 
-/-- Rigidité générale (généralise `eq_one_of_norm_one_re_one`, W1, au cas `M`
+/--
+**FR.** Rigidité générale (généralise `eq_one_of_norm_one_re_one`, W1, au cas `M`
 quelconque) : un scalaire dont le module ET la partie réelle valent tous deux `M`
-(réel) est EXACTEMENT `M` — aucune ambiguïté de signe sur la partie imaginaire. -/
+(réel) est EXACTEMENT `M` — aucune ambiguïté de signe sur la partie imaginaire.
+
+**EN.** General rigidity lemma, extending eq_one_of_norm_one_re_one (W1) to
+arbitrary M: a scalar whose modulus AND real part are both equal to the
+real number M is EXACTLY M, with no ambiguity in the sign of the
+imaginary part.
+-/
 private theorem eq_of_norm_eq_re_eq {z : ℂ} {M : ℝ} (h1 : ‖z‖ = M) (h2 : z.re = M) :
     z = (M : ℂ) := by
   have hns : Complex.normSq z = M ^ 2 := by rw [← Complex.sq_norm, h1]
@@ -142,9 +182,16 @@ private theorem eq_of_norm_eq_re_eq {z : ℂ} {M : ℝ} (h1 : ‖z‖ = M) (h2 :
   have him : z.im = 0 := by nlinarith [sq_nonneg z.im]
   exact Complex.ext h2 (by rw [him]; simp)
 
-/-- Isolé en lemme `ℂ` pur (contexte minimal) pour éviter le timeout `whnf` documenté
+/--
+**FR.** Isolé en lemme `ℂ` pur (contexte minimal) pour éviter le timeout `whnf` documenté
 règle 12 : appliqué inline à `chi T b` (une expression énorme, `chidir` déplié via
-`V`/`⟪·,·⟫`), `norm_cast` explore le terme et dépasse `maxHeartbeats`. -/
+`V`/`⟪·,·⟫`), `norm_cast` explore le terme et dépasse `maxHeartbeats`.
+
+**EN.** Isolated as a pure ℂ lemma with minimal context to avoid the whnf
+timeout documented in rule 12: when applied inline to chi T b—a very large
+expression with chidir unfolded through V/⟪·,·⟫—norm_cast explores
+the term and exceeds maxHeartbeats.
+-/
 private theorem sq_norm_eq_mul_conj {b c : ℂ} (h : ‖c‖ = ‖b‖) :
     (‖b‖ : ℂ) ^ 2 = c * (starRingEnd ℂ) c := by
   rw [← h, Complex.mul_conj]
@@ -170,7 +217,8 @@ private theorem inner_smul_eq_norm {a : ℂ} (ha : a ≠ 0) :
   field_simp
   rw [hconj]
 
-/-- Le point-clé de la généralisation aux repères non orthogonaux (Bargmann §4,
+/--
+**FR.** Le point-clé de la généralisation aux repères non orthogonaux (Bargmann §4,
 écart signalé dans le plan initial) : pour DEUX vecteurs unitaires `f1,f2 ∈ 𝒫`
 avec `⟪f1,f2⟫ ≠ 0` (PAS besoin d'orthogonalité), les fonctions `chidir T f1` et
 `chidir T f2` coïncident au point `i` — ce qui, combiné à `chidir_dichotomy` de
@@ -179,7 +227,20 @@ l'égalité FONCTIONNELLE complète. Coup de pouce : `c1 := i·a/‖a‖`, `c1' 
 (`a := ⟪f1,f2⟫`) sont choisis pour que `⟪c1•f1, i•f2⟫` et `⟪c1'•f1, f2⟫` soient
 TOUS DEUX exactement `‖a‖` (réel positif, par construction algébrique — AUCUNE
 disjonction réel/non-réel sur `a` n'est nécessaire, contrairement à l'approche
-initialement envisagée). -/
+initialement envisagée).
+
+**EN.** The key point in the generalization to nonorthogonal frames (Bargmann
+§4, a deviation documented in the initial plan): for TWO unit vectors
+f1,f2 ∈ 𝒫 with ⟪f1,f2⟫ ≠ 0—orthogonality is NOT required—the functions
+chidir T f1 and chidir T f2 agree at i. Combined with
+chidir_dichotomy on each side (each function is GLOBALLY either id or
+conj, and id i ≠ conj i), this forces complete FUNCTIONAL equality.
+The useful choice is c1 := i·a/‖a‖, c1' := a/‖a‖
+(a := ⟪f1,f2⟫), so that ⟪c1•f1, i•f2⟫ and
+⟪c1'•f1, f2⟫ are BOTH exactly ‖a‖, a positive real number by algebraic
+construction. Hence NO real/nonreal case split on a is needed, contrary
+to the initially proposed approach.
+-/
 private theorem chidir_branch_transfer (hT : IsWignerMap T) (hn : 2 ≤ n) {f1 f2 : H n}
     (hf1 : InPerp f1) (hf1u : ‖f1‖ = 1) (hf2 : InPerp f2) (hf2u : ‖f2‖ = 1)
     (ha : ⟪f1, f2⟫_ℂ ≠ 0) : chidir T f2 Complex.I = chidir T f1 Complex.I := by
@@ -249,11 +310,20 @@ private theorem chidir_branch_transfer (hT : IsWignerMap T) (hn : 2 ≤ n) {f1 f
       linear_combination -Complex.I_sq, one_mul, mul_one] at h4
     rw [h4, congrFun hconjb Complex.I, Complex.conj_I]
 
-/-- Cas dégénéré de la généralisation aux repères non orthogonaux : quand `f` est
+/--
+**FR.** Cas dégénéré de la généralisation aux repères non orthogonaux : quand `f` est
 COLINÉAIRE à `refVec` (`f = c • refVec`, `c` unitaire), `chidir T f` coïncide avec
 `chi` au point `i` directement (sans avoir besoin de `chidir_branch_transfer`, qui
 exige `⟪refVec,f⟫ ≠ 0` — colinéaire couvre en particulier `f = -refVec`, le seul
-point où le pont `f_w := (refVec+f)/‖refVec+f‖` de `chi_eq_chidir` dégénère). -/
+point où le pont `f_w := (refVec+f)/‖refVec+f‖` de `chi_eq_chidir` dégénère).
+
+**EN.** Degenerate case in the generalization to nonorthogonal frames: when f
+is COLLINEAR with refVec (f = c • refVec, with unit c),
+chidir T f agrees with chi at i directly, without invoking
+chidir_branch_transfer, which requires ⟪refVec,f⟫ ≠ 0. The collinear case
+includes in particular f = -refVec, the only point at which the bridge
+f_w := (refVec+f)/‖refVec+f‖ used in chi_eq_chidir degenerates.
+-/
 private theorem chidir_colinear_refVec (hT : IsWignerMap T) (hn : 2 ≤ n) {c : ℂ}
     (hc : ‖c‖ = 1) : chidir T (c • refVec n) Complex.I = chi T Complex.I := by
   have hrefu := refVec_norm hn
@@ -282,10 +352,17 @@ private theorem chidir_colinear_refVec (hT : IsWignerMap T) (hn : 2 ≤ n) {c : 
     rw [e1, e2, e3, Complex.conj_I, map_mul, Complex.conj_I, Complex.conj_conj]
     linear_combination (-Complex.I) * hcc
 
-/-- Deux fonctions GLOBALEMENT `id` ou `conj` (chacune, indépendamment) qui
+/--
+**FR.** Deux fonctions GLOBALEMENT `id` ou `conj` (chacune, indépendamment) qui
 coïncident en `i` (le point où `id` et `conj` se distinguent) coïncident
 partout — c'est ce qui permet de réduire `chi_eq_chidir` à une seule valeur
-comparée plutôt qu'à une identité fonctionnelle complète. -/
+comparée plutôt qu'à une identité fonctionnelle complète.
+
+**EN.** Two functions that are each GLOBALLY either id or conj, independently
+of one another, and that agree at i—the point distinguishing id from
+conj—agree everywhere. This reduces chi_eq_chidir to comparison at a
+single value rather than a full functional identity.
+-/
 private theorem eq_branch_of_eq_at_I {g h : ℂ → ℂ} (hg : g = id ∨ g = starRingEnd ℂ)
     (hh : h = id ∨ h = starRingEnd ℂ) (hI : g Complex.I = h Complex.I) : g = h := by
   rcases hg with hg | hg <;> rcases hh with hh | hh <;> subst hg <;> subst hh
@@ -294,11 +371,19 @@ private theorem eq_branch_of_eq_at_I {g h : ℂ → ℂ} (hg : g = id ∨ g = st
   · exfalso; norm_num [Complex.ext_iff] at hI
   · rfl
 
-/-- `chi` (calculé le long de `refVec`) coïncide avec `chidir` le long de
+/--
+**FR.** `chi` (calculé le long de `refVec`) coïncide avec `chidir` le long de
 n'importe quel autre vecteur unitaire de `𝒫` — GÉNÉRALISATION aux repères non
 orthogonaux (écart signalé dans le plan initial, résolu via `chidir_branch_transfer`
 + `chidir_colinear_refVec` plutôt que par l'argument `w = f₁ + f₂` de Bargmann
-§4.3-4.5, qui n'est PAS nécessaire ici). -/
+§4.3-4.5, qui n'est PAS nécessaire ici).
+
+**EN.** chi, computed along refVec, agrees with chidir along every other
+unit vector in 𝒫: the GENERALIZATION to nonorthogonal frames documented as
+a deviation in the initial plan. It is resolved using
+chidir_branch_transfer + chidir_colinear_refVec, rather than Bargmann's
+argument with w = f₁ + f₂ in §4.3–4.5, which is NOT needed here.
+-/
 theorem chi_eq_chidir (hT : IsWignerMap T) (hn : 2 ≤ n) (f : H n) (hf : InPerp f)
     (hfu : ‖f‖ = 1) (α : ℂ) : chi T α = chidir T f α := by
   have hrefu := refVec_norm hn
@@ -349,24 +434,41 @@ theorem chi_eq_chidir (hT : IsWignerMap T) (hn : 2 ≤ n) (f : H n) (hf : InPerp
   show chidir T (refVec n) α = chidir T f α
   exact congrFun hbranchEq α
 
-/-- `chi` est globalement l'identité ou la conjugaison (conséquence directe de
-`chidir_dichotomy` appliqué à `refVec`). -/
+/--
+**FR.** `chi` est globalement l'identité ou la conjugaison (conséquence directe de
+`chidir_dichotomy` appliqué à `refVec`).
+
+**EN.** chi is globally either the identity or complex conjugation, as a direct
+consequence of applying chidir_dichotomy to refVec.
+-/
 theorem chi_dichotomy (hT : IsWignerMap T) (hn : 2 ≤ n) :
     (fun α => chi T α) = id ∨ (fun α => chi T α) = starRingEnd ℂ :=
   chidir_dichotomy hT hn (refVec n) (refVec_InPerp hn) (refVec_norm hn)
 
-/-- `chi` fixe les réels dans les DEUX branches (`id r = r` ; `conj r = r` pour
+/--
+**FR.** `chi` fixe les réels dans les DEUX branches (`id r = r` ; `conj r = r` pour
 `r` réel) — outil réutilisé pour l'homogénéité de `V` et la formule à deux
-directions, et pour W5 (`Main.lean`). -/
+directions, et pour W5 (`Main.lean`).
+
+**EN.** chi fixes real numbers in BOTH branches (id r = r; conj r = r for
+real r). This utility is reused for homogeneity of V, for the
+two-direction formula, and in W5 (Main.lean).
+-/
 theorem chi_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) :
     chi T (r : ℂ) = (r : ℂ) := by
   rcases chi_dichotomy hT hn with h | h
   · rw [congrFun h]; rfl
   · rw [congrFun h]; exact Complex.conj_ofReal r
 
-/-- (18b) `V` est `χ`-homogène sur `𝒫` (généralise `V_dir_colinear`/`chi_eq_chidir`
+/--
+**FR.** (18b) `V` est `χ`-homogène sur `𝒫` (généralise `V_dir_colinear`/`chi_eq_chidir`
 d'un `f` unitaire à un `z` quelconque de `𝒫`, via `z = ‖z‖ • (‖z‖⁻¹•z)` et
-`chi_real`, puisque `‖z‖` est réel). -/
+`chi_real`, puisque `‖z‖` est réel).
+
+**EN.** (18b) V is χ-homogeneous on 𝒫. This generalizes
+V_dir_colinear/chi_eq_chidir from a unit vector f to an arbitrary
+z in 𝒫, using z = ‖z‖ • (‖z‖⁻¹•z) and chi_real, since ‖z‖ is real.
+-/
 theorem V_chi_homogeneous (hT : IsWignerMap T) (hn : 2 ≤ n) (c : ℂ) (z : H n)
     (hz : InPerp z) : V T (c • z) = chi T c • V T z := by
   by_cases hz0 : z = 0
@@ -396,12 +498,22 @@ theorem V_chi_homogeneous (hT : IsWignerMap T) (hn : 2 ≤ n) (c : ℂ) (z : H n
     · rw [congrFun h, congrFun h]; rfl
     · rw [congrFun h, congrFun h, map_mul, Complex.conj_ofReal]
 
-/-- Formule de décomposition à deux directions ORTHOGONALES (Bargmann §4.6-4.7,
+/--
+**FR.** Formule de décomposition à deux directions ORTHOGONALES (Bargmann §4.6-4.7,
 préliminaire à l'additivité). Preuve DIRECTE (pas de Bessel/`orthonormal_image`
 nécessaire) : le candidat `chi a1 • V f1 + chi a2 • V f2` a même norme que `V x`
 (Pythagore + `‖chi c‖ = ‖c‖`) et la partie réelle de leur produit scalaire croisé
 vaut EXACTEMENT cette norme commune — rigidité `eq_of_norm_eq_re_eq` appliquée à
-`⟪V(a_p f_p), V x⟫`, qui isole `⟪V f_p, V x⟫ = chi a_p` pour chaque `p`. -/
+`⟪V(a_p f_p), V x⟫`, qui isole `⟪V f_p, V x⟫ = chi a_p` pour chaque `p`.
+
+**EN.** Two-ORTHOGONAL-direction decomposition formula (Bargmann §4.6–4.7),
+preliminary to additivity. The proof is DIRECT and requires neither Bessel
+nor orthonormal_image: the candidate
+chi a1 • V f1 + chi a2 • V f2 has the same norm as V x (Pythagoras +
+‖chi c‖ = ‖c‖), while the real part of their cross inner product is EXACTLY
+this common norm. Applying eq_of_norm_eq_re_eq to
+⟪V(a_p f_p), V x⟫ isolates ⟪V f_p, V x⟫ = chi a_p for each p.
+-/
 private theorem V_two_dir (hT : IsWignerMap T) (hn : 2 ≤ n) {f1 f2 : H n} (hf1 : InPerp f1)
     (hf1u : ‖f1‖ = 1) (hf2 : InPerp f2) (hf2u : ‖f2‖ = 1) (horth : ⟪f1, f2⟫_ℂ = 0)
     (a1 a2 : ℂ) : V T (a1 • f1 + a2 • f2) = chi T a1 • V T f1 + chi T a2 • V T f2 := by
@@ -514,17 +626,30 @@ private theorem V_two_dir (hT : IsWignerMap T) (hn : 2 ≤ n) {f1 f2 : H n} (hf1
     exact norm_eq_zero.mp h0
   exact sub_eq_zero.mp hsub
 
-/-- `chi` fixe les réels ADDITIVEMENT décalés : `chi (r + a) = r + chi a` pour `r`
-réel, dans les deux branches (`id` trivial ; `conj` additive + fixe les réels). -/
+/--
+**FR.** `chi` fixe les réels ADDITIVEMENT décalés : `chi (r + a) = r + chi a` pour `r`
+réel, dans les deux branches (`id` trivial ; `conj` additive + fixe les réels).
+
+**EN.** chi fixes additive shifts by real numbers:
+chi (r + a) = r + chi a for real r, in both branches (id is trivial;
+conj is additive + fixes the reals).
+-/
 private theorem chi_add_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) (a : ℂ) :
     chi T ((r : ℂ) + a) = (r : ℂ) + chi T a := by
   rcases chi_dichotomy hT hn with h | h
   · rw [congrFun h, congrFun h]; rfl
   · rw [congrFun h, congrFun h, map_add, Complex.conj_ofReal]
 
-/-- (18a) `V` est additive sur `𝒫`. Preuve : cas colinéaire (`z = a•f1`) direct via
+/--
+**FR.** (18a) `V` est additive sur `𝒫`. Preuve : cas colinéaire (`z = a•f1`) direct via
 `chi_add_real` ; cas général via Gram-Schmidt (`f2` := composante de `z`
-orthogonale à `f1 := y/‖y‖`, normalisée) puis `V_two_dir`. -/
+orthogonale à `f1 := y/‖y‖`, normalisée) puis `V_two_dir`.
+
+**EN.** (18a) V is additive on 𝒫. Proof: the collinear case
+(z = a•f1) follows directly from chi_add_real; the general case uses
+Gram–Schmidt (f2 := the normalized component of z orthogonal to
+f1 := y/‖y‖) followed by V_two_dir.
+-/
 theorem V_additive (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n) (hy : InPerp y)
     (hz : InPerp z) : V T (y + z) = V T y + V T z := by
   by_cases hy0 : y = 0
@@ -595,17 +720,29 @@ theorem V_additive (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n) (hy : InPerp 
     rw [hVsum, hVy, hVz, hchi0, hchiy, chi_add_real hT hn, zero_smul, add_zero, add_smul]
     abel
 
-/-- `chi` fixe les réels MULTIPLICATIVEMENT : `chi (r * w) = r * chi w` pour `r`
-réel (`id` trivial ; `conj` multiplicative + fixe les réels). -/
+/--
+**FR.** `chi` fixe les réels MULTIPLICATIVEMENT : `chi (r * w) = r * chi w` pour `r`
+réel (`id` trivial ; `conj` multiplicative + fixe les réels).
+
+**EN.** chi fixes real factors multiplicatively:
+chi (r * w) = r * chi w for real r (id is trivial; conj is
+multiplicative + fixes the reals).
+-/
 private theorem chi_mul_real (hT : IsWignerMap T) (hn : 2 ≤ n) (r : ℝ) (w : ℂ) :
     chi T ((r : ℂ) * w) = (r : ℂ) * chi T w := by
   rcases chi_dichotomy hT hn with h | h
   · rw [congrFun h, congrFun h]; rfl
   · rw [congrFun h, congrFun h, map_mul, Complex.conj_ofReal]
 
-/-- Cas particulier de (18c) avec `g` unitaire — même argument de rigidité que
+/--
+**FR.** Cas particulier de (18c) avec `g` unitaire — même argument de rigidité que
 `V_two_dir`, mais sans besoin d'une seconde direction orthogonale : `z`
-quelconque de `𝒫` joue directement le rôle de `x`. -/
+quelconque de `𝒫` joue directement le rôle de `x`.
+
+**EN.** Special case of (18c) with unit g: the same rigidity argument as in
+V_two_dir, but without requiring a second orthogonal direction, since an
+arbitrary z in 𝒫 directly plays the role of x.
+-/
 private theorem V_inner_eq_chi_of_unit (hT : IsWignerMap T) (hn : 2 ≤ n) {g : H n}
     (hg : InPerp g) (hgu : ‖g‖ = 1) {z : H n} (hz : InPerp z) :
     ⟪V T g, V T z⟫_ℂ = chi T ⟪g, z⟫_ℂ := by
@@ -656,9 +793,15 @@ private theorem V_inner_eq_chi_of_unit (hT : IsWignerMap T) (hn : 2 ≤ n) {g : 
     rw [hsq, mul_comm (chi T b)] at e1
     exact mul_left_cancel₀ hconjne e1
 
-/-- (18c) `V` transporte le produit scalaire via `χ` sur `𝒫`. Réduction au cas
+/--
+**FR.** (18c) `V` transporte le produit scalaire via `χ` sur `𝒫`. Réduction au cas
 unitaire (`V_inner_eq_chi_of_unit`) via `y = ‖y‖ • f1`, `V_chi_homogeneous` et
-`chi_mul_real`. -/
+`chi_mul_real`.
+
+**EN.** (18c) V transports the inner product through χ on 𝒫. Reduction to
+the unit case (V_inner_eq_chi_of_unit) uses
+y = ‖y‖ • f1, V_chi_homogeneous, and chi_mul_real.
+-/
 theorem inner_V_eq_chi_inner (hT : IsWignerMap T) (hn : 2 ≤ n) (y z : H n)
     (hy : InPerp y) (hz : InPerp z) : ⟪V T y, V T z⟫_ℂ = chi T ⟪y, z⟫_ℂ := by
   by_cases hy0 : y = 0

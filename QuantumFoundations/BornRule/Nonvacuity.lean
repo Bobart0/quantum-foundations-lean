@@ -2,7 +2,7 @@ import QuantumFoundations.BornRule.Perspective
 import Gleason.Operator
 
 /-!
-# Nonvacuity — la règle de Born satisfait (Grain), (Norm), (Pos), (Null)
+**FR.** # Nonvacuity — la règle de Born satisfait (Grain), (Norm), (Pos), (Null)
 
 `Perspective` seule est trivialement habitée (`basisPerspective`, déjà utilisé
 dans `Perspective.lean`). Le point non trivial est de montrer que les quatre
@@ -25,6 +25,29 @@ l'identité + théorème de Pythagore fini (`sum_sq_projL_of_pairwise_isOrtho`,
 dérivé ici par récurrence sur le Finset — absent tel quel de
 `gleason-theorem-lean`, qui n'a besoin de l'additivité que sur `bornValue`,
 pas sur `‖·‖²`). (Pos) et (Null) sont immédiats.
+
+**EN.** # Nonvacuity — the Born rule satisfies (Grain), (Norm), (Pos), and (Null)
+
+Perspective alone is trivially inhabited (basisPerspective, already used
+in Perspective.lean). The nontrivial point is to show that the four axioms
+AxGrain/AxNorm/AxPos/AxNul SIMULTANEOUSLY admit a witness:
+E₀ v D c := ‖projL c v‖², the Born rule for a fixed unit vector v.
+
+Key lemma (refine_filter_sup_eq): if D' refines D and c ∈
+D.cells, then the cells of D' contained in c
+(D'.cells.filter (· ≤ c)) have supremum exactly c—not merely ≤ c. The
+nontrivial direction (c ≤ sup) uses the resolution of the identity
+restricted to D' (Gleason.projL_sup_of_pairwise_isOrtho, already available
+in gleason-theorem-lean and therefore NOT rederived here): every x ∈ c is
+the sum of its projections onto the cells of D', while the cells OUTSIDE
+c (those whose parent in D differs from c, via unique_parent)
+contribute 0 because they are orthogonal to c.
+
+(Grain) and (Norm) then follow from the same mechanism: resolution of the
+identity + the finite Pythagorean theorem
+(sum_sq_projL_of_pairwise_isOrtho, derived here by induction on the Finset—
+not available in this form in gleason-theorem-lean, which needs additivity
+only for bornValue, not for ‖·‖²). (Pos) and (Null) are immediate.
 -/
 
 namespace QuantumFoundations.BornRule
@@ -37,9 +60,15 @@ noncomputable section
 
 variable {n : ℕ}
 
-/-- **Lemme 3** (généralisation de `refine_filter_eq_cellLines`, B1, à un
+/--
+**FR.** **Lemme 3** (généralisation de `refine_filter_eq_cellLines`, B1, à un
 raffinement `D'` ARBITRAIRE plutôt qu'au seul `refinePerspective D`
-canonique) : les cellules de `D'` sous `c` couvrent exactement `c`. -/
+canonique) : les cellules de `D'` sous `c` couvrent exactement `c`.
+
+**EN.** Lemma 3 (generalization of refine_filter_eq_cellLines, B1, to an
+ARBITRARY refinement D' rather than only the canonical
+refinePerspective D): the cells of D' below c cover exactly c.
+-/
 theorem refine_filter_sup_eq (D' D : Perspective n) (hD' : Refines D' D)
     (c : Submodule ℂ (H n)) (hc : c ∈ D.cells) :
     (D'.cells.filter (· ≤ c)).sup id = c := by
@@ -80,9 +109,15 @@ theorem refine_filter_sup_eq (D' D : Perspective n) (hD' : Refines D' D)
     have hc''le : c'' ≤ (D'.cells.filter (· ≤ c)).sup id := Finset.le_sup (f := id) hc''
     exact hc''le (Submodule.starProjection_apply_mem c'' x)
 
-/-- **Témoin** : la règle de Born pour un vecteur unitaire `v` fixé,
+/--
+**FR.** **Témoin** : la règle de Born pour un vecteur unitaire `v` fixé,
 `E₀ v D c := ‖projL c v‖²` (ignore `D`, comme `g` en B2 : ne dépend que de
-la cellule). -/
+la cellule).
+
+**EN.** Witness: the Born rule for a fixed unit vector v,
+E₀ v D c := ‖projL c v‖² (it ignores D, as does g in B2: it depends
+only on the cell).
+-/
 noncomputable def E₀ (v : H n) : Perspective n → Submodule ℂ (H n) → ℝ :=
   fun _ c => ‖projL c v‖ ^ 2
 
@@ -123,9 +158,14 @@ theorem E₀_isGrain (v : H n) : AxGrain (E₀ v) := by
   rw [hsup] at hpyth
   exact hpyth
 
-/-- La règle de Born pour n'importe quel vecteur unitaire `v` satisfait
+/--
+**FR.** La règle de Born pour n'importe quel vecteur unitaire `v` satisfait
 SIMULTANÉMENT les quatre axiomes — `grainCoherenceTheorem` n'est donc pas
-vacuement vrai. -/
+vacuement vrai.
+
+**EN.** The Born rule for any unit vector v SIMULTANEOUSLY satisfies all four
+axioms—hence grainCoherenceTheorem is not vacuously true.
+-/
 theorem E₀_satisfies_axioms (v : H n) (hv : ‖v‖ = 1) :
     AxGrain (E₀ v) ∧ AxNorm (E₀ v) ∧ AxPos (E₀ v) ∧ AxNul (E₀ v) v :=
   ⟨E₀_isGrain v, E₀_isNorm v hv, E₀_isPos v, E₀_isNul v⟩

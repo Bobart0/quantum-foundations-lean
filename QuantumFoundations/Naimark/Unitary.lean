@@ -1,7 +1,7 @@
 import QuantumFoundations.Naimark.Main
 
 /-!
-# N5 (optionnel) — forme unitaire/ancilla (Paris §3.2 Thm 4, Watrous Cor. 2.43)
+**FR.** # N5 (optionnel) — forme unitaire/ancilla (Paris §3.2 Thm 4, Watrous Cor. 2.43)
 
 `dilV P` est une isométrie `H n →ₗᵢ K`, pas un unitaire de `K`. Ce fichier construit
 un unitaire `U : K ≃ₗᵢ K` qui ÉTEND `dilV P` au sens `U ∘ₗ singleL i₀ = dilV P`, pour
@@ -26,6 +26,35 @@ d'implicites lors de la composition directe de lemmes lourds. Isoler l'énoncé
 combiné dans un lemme `private` à part entière (`orthonormalBasisExtension` ici),
 appliqué ensuite par simple application de fonction aux deux cas concrets
 (`singleL n m i₀` et `dilV P`), supprime le timeout.
+
+**EN.** # N5 (optional) — unitary/ancilla form (Paris §3.2 Thm 4, Watrous Cor. 2.43)
+
+dilV P is an isometry H n →ₗᵢ K, not a unitary on K. This file
+constructs a unitary U : K ≃ₗᵢ K that EXTENDS dilV P in the sense that
+U ∘ₗ singleL i₀ = dilV P, for an arbitrarily fixed ancilla index
+i₀ : Fin m (Watrous Cor. 2.43 / Paris Thm 4).
+
+## Architecture (two previous attempts documented in SORRIES.md)
+
+Neither Submodule.orthogonalDecomposition/WithLp (attempt 1), nor
+Submodule + LinearIsometryEquiv.equivRange + .trans (attempt 2, which
+causes a deterministic Lean timeout at whnf during assembly, independently
+of the mathematical difficulty), is used. The chosen route COMPLETELY avoids
+independent types Submodule/↥A by working with two orthonormal families in
+K indexed by the entire type Fin m × Fin n, the canonical index of
+DilSpace n m. These are extended to complete orthonormal bases via
+Orthonormal.exists_orthonormalBasis_extension_of_card_eq, and then glued
+into a single unitary on K via Orthonormal.equiv.
+
+Technical point to reuse if the symptom reappears: composing
+(orthonormal_family ...).exists_orthonormalBasis_extension_of_card_eq ...
+INLINE in an obtain triggers the same whnf timeout as attempt 2, EVEN
+WITHOUT Submodule. Thus the cause is not Submodule itself but implicit
+inference during direct composition of heavyweight lemmas. Isolating the
+combined statement in a separate full-fledged private lemma
+(orthonormalBasisExtension here), then applying it as an ordinary function
+to the two concrete cases (singleL n m i₀ and dilV P), eliminates the
+timeout.
 -/
 
 namespace QuantumFoundations
@@ -37,7 +66,11 @@ noncomputable section
 
 variable {n m : ℕ}
 
-/-- Si `adjoint f ∘ₗ f = id` alors `f` préserve la norme. -/
+/--
+**FR.** Si `adjoint f ∘ₗ f = id` alors `f` préserve la norme.
+
+**EN.** If adjoint f ∘ₗ f = id, then f preserves norms.
+-/
 private theorem isometry_of_adjoint_comp_self {E F : Type*} [NormedAddCommGroup E]
     [NormedAddCommGroup F] [InnerProductSpace ℂ E] [InnerProductSpace ℂ F]
     [FiniteDimensional ℂ E] [FiniteDimensional ℂ F] {f : E →ₗ[ℂ] F}
@@ -48,7 +81,11 @@ private theorem isometry_of_adjoint_comp_self {E F : Type*} [NormedAddCommGroup 
     rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← inner_self_eq_norm_sq (𝕜 := ℂ), h1]
   nlinarith [norm_nonneg (f x), norm_nonneg x, sq_nonneg (‖f x‖ - ‖x‖)]
 
-/-- Si `adjoint f ∘ₗ f = id` alors `f` préserve le produit scalaire. -/
+/--
+**FR.** Si `adjoint f ∘ₗ f = id` alors `f` préserve le produit scalaire.
+
+**EN.** If adjoint f ∘ₗ f = id, then f preserves the inner product.
+-/
 private theorem inner_of_adjoint_comp_self {E F : Type*} [NormedAddCommGroup E]
     [NormedAddCommGroup F] [InnerProductSpace ℂ E] [InnerProductSpace ℂ F]
     [FiniteDimensional ℂ E] [FiniteDimensional ℂ F] {f : E →ₗ[ℂ] F}
@@ -59,15 +96,29 @@ private theorem singleL_adjoint_comp_self (i : Fin m) :
     LinearMap.adjoint (singleL n m i) ∘ₗ singleL n m i = LinearMap.id := by
   rw [adjoint_singleL, coordL_singleL, if_pos rfl]
 
-/-- Base orthonormée standard de `H n`. -/
+/--
+**FR.** Base orthonormée standard de `H n`.
+
+**EN.** Standard orthonormal basis of H n.
+-/
 private noncomputable def stdBasisH (n : ℕ) : OrthonormalBasis (Fin n) ℂ (H n) :=
   EuclideanSpace.basisFun (Fin n) ℂ
 
-/-- Le bloc `i₀` de `Fin m × Fin n`, vu comme sous-ensemble d'indices. -/
+/--
+**FR.** Le bloc `i₀` de `Fin m × Fin n`, vu comme sous-ensemble d'indices.
+
+**EN.** The block i₀ of Fin m × Fin n, viewed as a subset of indices.
+-/
 private def sSlice (m n : ℕ) (i₀ : Fin m) : Set (Fin m × Fin n) := {p | p.1 = i₀}
 
-/-- Pour toute isométrie `f : H n →ₗᵢ K`, la famille `p ↦ f (eₚ.₂)` est orthonormée sur
-le bloc `sSlice i₀` (les vecteurs de base de `H n` transportés par `f`). -/
+/--
+**FR.** Pour toute isométrie `f : H n →ₗᵢ K`, la famille `p ↦ f (eₚ.₂)` est orthonormée sur
+le bloc `sSlice i₀` (les vecteurs de base de `H n` transportés par `f`).
+
+**EN.** For every isometry f : H n →ₗᵢ K, the family
+p ↦ f (eₚ.₂) is orthonormal on the block sSlice i₀ (the basis vectors of
+H n transported by f).
+-/
 private theorem orthonormal_family (f : H n →ₗ[ℂ] DilSpace n m)
     (hf : LinearMap.adjoint f ∘ₗ f = LinearMap.id) (i₀ : Fin m) :
     Orthonormal ℂ ((sSlice m n i₀).restrict (fun p : Fin m × Fin n => f (stdBasisH n p.2))) := by
@@ -84,9 +135,16 @@ private theorem orthonormal_family (f : H n →ₗ[ℂ] DilSpace n m)
       exact hpq (by simp only [Subtype.mk.injEq]; exact Prod.ext (hp.trans hq.symm) h)
     exact (stdBasisH n).orthonormal.2 hpq2
 
-/-- Complétion de la famille orthonormée `p ↦ f (eₚ.₂)` (définie sur le bloc `i₀`) en
+/--
+**FR.** Complétion de la famille orthonormée `p ↦ f (eₚ.₂)` (définie sur le bloc `i₀`) en
 une base orthonormée complète de `DilSpace n m`. Isolé en lemme à part (plutôt que
-composé inline) : voir la note d'architecture en tête de fichier. -/
+composé inline) : voir la note d'architecture en tête de fichier.
+
+**EN.** Completion of the orthonormal family p ↦ f (eₚ.₂), defined on the
+block i₀, to a complete orthonormal basis of DilSpace n m. Isolated as a
+separate lemma rather than composed inline; see the architecture note in the
+file header.
+-/
 private theorem orthonormalBasisExtension (f : H n →ₗ[ℂ] DilSpace n m)
     (hf : LinearMap.adjoint f ∘ₗ f = LinearMap.id) (i₀ : Fin m) :
     ∃ b : OrthonormalBasis (Fin m × Fin n) ℂ (DilSpace n m),
@@ -98,11 +156,19 @@ private theorem orthonormal_toBasis {ι E : Type*} [Fintype ι] [NormedAddCommGr
     [InnerProductSpace ℂ E] (b : OrthonormalBasis ι ℂ E) : Orthonormal ℂ ⇑b.toBasis := by
   rw [OrthonormalBasis.coe_toBasis]; exact b.orthonormal
 
-/-- **Extension unitaire** (Watrous Cor. 2.43 / Paris Thm 4) : pour tout indice ancilla
+/--
+**FR.** **Extension unitaire** (Watrous Cor. 2.43 / Paris Thm 4) : pour tout indice ancilla
 `i₀`, `dilV P` s'étend en un unitaire `U` de `DilSpace n m` (`U ∘ₗ singleL i₀ = dilV P`).
 Construction : deux bases orthonormées complètes de `K`, l'une prolongeant
 `singleL i₀ ∘ (base de H n)`, l'autre `dilV P ∘ (base de H n)`, recollées par
-`Orthonormal.equiv`. -/
+`Orthonormal.equiv`.
+
+**EN.** Unitary extension (Watrous Cor. 2.43 / Paris Thm 4): for every
+ancilla index i₀, dilV P extends to a unitary U on DilSpace n m
+(U ∘ₗ singleL i₀ = dilV P). Construction: two complete orthonormal bases of
+K, one extending singleL i₀ ∘ (base de H n) and the other extending
+dilV P ∘ (base de H n), glued together by Orthonormal.equiv.
+-/
 theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
     ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, U.toLinearMap ∘ₗ singleL n m i₀ = dilV P := by
   obtain ⟨b, hb⟩ := orthonormalBasisExtension (singleL n m i₀) (singleL_adjoint_comp_self i₀) i₀
@@ -121,10 +187,17 @@ theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
     rw [OrthonormalBasis.coe_toBasis]; exact hb' (i₀, k) rfl
   rw [← hbp, hU, Orthonormal.equiv_apply, Equiv.refl_apply, hbp']
 
-/-- **Forme "ancilla" complète** : la POVM `P` se réalise en préparant l'ancilla dans
+/--
+**FR.** **Forme "ancilla" complète** : la POVM `P` se réalise en préparant l'ancilla dans
 le bloc `i₀` (`singleL i₀`), en appliquant un unitaire global `U` de `DilSpace n m`,
 puis en mesurant la mesure projective `dilProj` — corollaire direct de
-`exists_unitary_extension` et `naimark_born`. -/
+`exists_unitary_extension` et `naimark_born`.
+
+**EN.** Complete “ancilla” form: the POVM P is realized by preparing the
+ancilla in block i₀ (singleL i₀), applying a global unitary U on
+DilSpace n m, and then measuring the projection-valued measure dilProj.
+This is a direct corollary of exists_unitary_extension and naimark_born.
+-/
 theorem naimark_projective_form (P : POVM n m) (i₀ : Fin m) :
     ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, ∀ (i : Fin m) (x : H n),
       ⟪x, P.E i x⟫_ℂ = ⟪U (singleL n m i₀ x), dilProj n m i (U (singleL n m i₀ x))⟫_ℂ := by

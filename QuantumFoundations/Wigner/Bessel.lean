@@ -1,7 +1,7 @@
 import QuantumFoundations.Wigner.Defs
 
 /-!
-# W2 — Plomberie produit-scalaire (Bargmann §3.1)
+**FR.** # W2 — Plomberie produit-scalaire (Bargmann §3.1)
 
 Le lemme (9) de Bargmann élimine deux blocages anticipés d'un coup : sa preuve
 n'utilise qu'une identité de Bessel AVEC ÉGALITÉ (`‖u − Σ⟪gₚ,u⟫•gₚ‖² = ‖u‖² −
@@ -11,6 +11,20 @@ cette identité est la preuve (non exportée) de `Orthonormal.sum_inner_products
 (`Mathlib.Analysis.InnerProductSpace.Orthonormal`) : `norm_sub_sq`,
 `InnerProductSpace.norm_sq_eq_re_inner`, `inner_sum`/`sum_inner`,
 `inner_smul_left`/`right`, `inner_conj_symm`, `Orthonormal.inner_left_right_finset`.
+
+**EN.** # W2 — Inner-product infrastructure (Bargmann §3.1)
+
+Bargmann's Lemma (9) eliminates two anticipated obstacles at once: its proof
+uses only a Bessel identity WITH EQUALITY
+(‖u − Σ⟪gₚ,u⟫•gₚ‖² = ‖u‖² −
+Σ‖⟪gₚ,u⟫‖²), valid without any hypothesis.
+No extension of an orthonormal family to a basis, no cardinality counting,
+and no surjectivity are required. The Mathlib blueprint for this identity is
+the unexported proof of Orthonormal.sum_inner_products_le
+(Mathlib.Analysis.InnerProductSpace.Orthonormal): norm_sub_sq,
+InnerProductSpace.norm_sq_eq_re_inner, inner_sum/sum_inner,
+inner_smul_left/right, inner_conj_symm, and
+Orthonormal.inner_left_right_finset.
 -/
 
 namespace QuantumFoundations.Wigner
@@ -22,9 +36,16 @@ noncomputable section
 
 variable {n : ℕ} {T : H n → H n}
 
-/-- **Lemme (9) de Bargmann.** Si `‖u‖² = Σₚ ‖⟪gₚ,u⟫‖²` pour une famille orthonormée
+/--
+**FR.** **Lemme (9) de Bargmann.** Si `‖u‖² = Σₚ ‖⟪gₚ,u⟫‖²` pour une famille orthonormée
 finie `g`, alors `u = Σₚ ⟪gₚ,u⟫ • gₚ` — `u` est entièrement déterminé par ses
-coefficients contre `g`, sans supposer que `g` engendre l'espace. -/
+coefficients contre `g`, sans supposer que `g` engendre l'espace.
+
+**EN.** Bargmann's Lemma (9). If
+‖u‖² = Σₚ ‖⟪gₚ,u⟫‖² for a finite orthonormal family g, then
+u = Σₚ ⟪gₚ,u⟫ • gₚ: u is completely determined by its coefficients
+against g, without assuming that g spans the space.
+-/
 theorem bessel_eq_of_norm_sq_eq {ι : Type*} [Fintype ι] {g : ι → H n} (hg : Orthonormal ℂ g)
     (u : H n) (h : ‖u‖ ^ 2 = ∑ p, ‖⟪g p, u⟫_ℂ‖ ^ 2) :
     u = ∑ p, ⟪g p, u⟫_ℂ • g p := by
@@ -72,8 +93,13 @@ theorem bessel_eq_of_norm_sq_eq {ι : Type*} [Fintype ι] {g : ι → H n} (hg :
     exact norm_eq_zero.mp h0
   exact sub_eq_zero.mp huy
 
-/-- Si `T` préserve les probabilités de transition, l'image par `T` d'une famille
-orthonormée (finie) reste orthonormée. -/
+/--
+**FR.** Si `T` préserve les probabilités de transition, l'image par `T` d'une famille
+orthonormée (finie) reste orthonormée.
+
+**EN.** If T preserves transition probabilities, then the image under T of
+a finite orthonormal family remains orthonormal.
+-/
 theorem orthonormal_image (hT : IsWignerMap T) {ι : Type*} [Fintype ι] [DecidableEq ι]
     {g : ι → H n} (hg : Orthonormal ℂ g) : Orthonormal ℂ (fun p => T (g p)) := by
   rw [orthonormal_iff_ite]

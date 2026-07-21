@@ -2,10 +2,16 @@ import QuantumFoundations.Naimark.SqrtOp
 import QuantumFoundations.Naimark.DilSpace
 
 /-!
-# Dilatation de Naimark (Watrous, *TQI*, Theorem 2.42)
+**FR.** # Dilatation de Naimark (Watrous, *TQI*, Theorem 2.42)
 
 `dilV P := Σᵢ singleL i ∘ √(E i)` réalise la POVM `P` comme mesure projective sur
 `DilSpace n m` : `dilV` est une isométrie, et `adjoint (dilV P) ∘ dilProj i ∘ dilV P = E i`.
+
+**EN.** # Naimark dilation (Watrous, TQI, Theorem 2.42)
+
+dilV P := Σᵢ singleL i ∘ √(E i) realizes the POVM P as a
+projection-valued measure on DilSpace n m: dilV is an isometry, and
+adjoint (dilV P) ∘ dilProj i ∘ dilV P = E i.
 -/
 
 namespace QuantumFoundations
@@ -17,13 +23,23 @@ noncomputable section
 
 variable {n m : ℕ}
 
-/-- L'isométrie de dilatation de Naimark : `V := Σᵢ singleL i ∘ √(E i)`. -/
+/--
+**FR.** L'isométrie de dilatation de Naimark : `V := Σᵢ singleL i ∘ √(E i)`.
+
+**EN.** The Naimark dilation isometry: V := Σᵢ singleL i ∘ √(E i).
+-/
 noncomputable def dilV (P : POVM n m) : H n →ₗ[ℂ] DilSpace n m :=
   ∑ i, singleL n m i ∘ₗ sqrtOp (P.E i)
 
-/-- **Pivot 1.** `coordL i` récupère `√(E i)` depuis `dilV P` : une seule somme sur
+/--
+**FR.** **Pivot 1.** `coordL i` récupère `√(E i)` depuis `dilV P` : une seule somme sur
 l'indice de bloc, effondrée par `coordL_singleL` (N2) — jamais de double somme
-(cf. CLAUDE.md règle 7 / leçon `riesz_rep_assembly`). -/
+(cf. CLAUDE.md règle 7 / leçon `riesz_rep_assembly`).
+
+**EN.** Pivot 1. coordL i recovers √(E i) from dilV P: a single sum
+over the block index, collapsed by coordL_singleL (N2)—never a double sum
+(see CLAUDE.md rule 7 / the riesz_rep_assembly lesson).
+-/
 private theorem key1 (P : POVM n m) (i : Fin m) :
     coordL n m i ∘ₗ dilV P = sqrtOp (P.E i) := by
   apply LinearMap.ext
@@ -39,10 +55,17 @@ private theorem key1 (P : POVM n m) (i : Fin m) :
   simp only [step]
   rw [Finset.sum_ite_eq Finset.univ i (fun j => sqrtOp (P.E j) x), if_pos (Finset.mem_univ i)]
 
-/-- **Pivot 2.** `singleL i` "retrouve" `√(E i)` via l'adjoint de `dilV P` : adjoint
+/--
+**FR.** **Pivot 2.** `singleL i` "retrouve" `√(E i)` via l'adjoint de `dilV P` : adjoint
 d'une somme finie (`map_sum`) + `adjoint_comp` (ordre inversé) + symétrie de
 `sqrtOp (E i)` (N1) + `adjoint_singleL` (N2), puis une seule somme sur l'indice de
-bloc effondrée par `coordL_singleL`. -/
+bloc effondrée par `coordL_singleL`.
+
+**EN.** Pivot 2. singleL i “recovers” √(E i) through the adjoint of
+dilV P: the adjoint of a finite sum (map_sum) + adjoint_comp (reversed
+order) + symmetry of sqrtOp (E i) (N1) + adjoint_singleL (N2), followed
+by a single sum over the block index collapsed by coordL_singleL.
+-/
 private theorem key2 (P : POVM n m) (i : Fin m) :
     LinearMap.adjoint (dilV P) ∘ₗ singleL n m i = sqrtOp (P.E i) := by
   have hadj : LinearMap.adjoint (dilV P) = ∑ j, sqrtOp (P.E j) ∘ₗ coordL n m j := by
@@ -67,8 +90,14 @@ private theorem key2 (P : POVM n m) (i : Fin m) :
   simp only [step]
   rw [Finset.sum_ite_eq' Finset.univ i (fun j => sqrtOp (P.E j) x), if_pos (Finset.mem_univ i)]
 
-/-- `dilV P` est une isométrie : `adjoint (dilV P) ∘ dilV P = id`. Une seule somme
-sur l'indice de bloc (via `key2` puis `sqrtOp_mul_self`), jamais de double somme. -/
+/--
+**FR.** `dilV P` est une isométrie : `adjoint (dilV P) ∘ dilV P = id`. Une seule somme
+sur l'indice de bloc (via `key2` puis `sqrtOp_mul_self`), jamais de double somme.
+
+**EN.** dilV P is an isometry:
+adjoint (dilV P) ∘ dilV P = id. Only one sum over the block index is used
+(via key2 and then sqrtOp_mul_self), never a double sum.
+-/
 theorem dilV_isometry (P : POVM n m) :
     LinearMap.adjoint (dilV P) ∘ₗ dilV P = LinearMap.id := by
   apply LinearMap.ext
@@ -84,8 +113,14 @@ theorem dilV_isometry (P : POVM n m) :
   rw [← LinearMap.sum_apply, P.sum_eq_one]
   rfl
 
-/-- La mesure projective `dilProj` réalise `P` via `dilV` : `adjoint V ∘ dilProj i ∘ V = E i`.
-Aucune somme à développer — tout vient de `key1`/`key2` déjà fermés. -/
+/--
+**FR.** La mesure projective `dilProj` réalise `P` via `dilV` : `adjoint V ∘ dilProj i ∘ V = E i`.
+Aucune somme à développer — tout vient de `key1`/`key2` déjà fermés.
+
+**EN.** The projection-valued measure dilProj realizes P through dilV:
+adjoint V ∘ dilProj i ∘ V = E i. No sum needs to be expanded; the result
+follows entirely from the already established key1/key2.
+-/
 theorem naimark_dilation (P : POVM n m) (i : Fin m) :
     LinearMap.adjoint (dilV P) ∘ₗ dilProj n m i ∘ₗ dilV P = P.E i := by
   apply LinearMap.ext
@@ -96,13 +131,21 @@ theorem naimark_dilation (P : POVM n m) (i : Fin m) :
     ← LinearMap.comp_apply (LinearMap.adjoint (dilV P)) (singleL n m i), key2,
     ← LinearMap.comp_apply (sqrtOp (P.E i)) (sqrtOp (P.E i)), sqrtOp_mul_self (P.pos i)]
 
-/-- **Théorème de dilation de Naimark** (dimension finie, somme directe). -/
+/--
+**FR.** **Théorème de dilation de Naimark** (dimension finie, somme directe).
+
+**EN.** Naimark dilation theorem (finite-dimensional, direct-sum form).
+-/
 theorem naimark (P : POVM n m) :
     ∃ V : H n →ₗ[ℂ] DilSpace n m, LinearMap.adjoint V ∘ₗ V = LinearMap.id ∧
       ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i :=
   ⟨dilV P, dilV_isometry P, naimark_dilation P⟩
 
-/-- Corollaire statistique : les probabilités de Born coïncident sous la dilatation. -/
+/--
+**FR.** Corollaire statistique : les probabilités de Born coïncident sous la dilatation.
+
+**EN.** Statistical corollary: Born probabilities are preserved under the dilation.
+-/
 theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
     ⟪x, P.E i x⟫_ℂ = ⟪dilV P x, dilProj n m i (dilV P x)⟫_ℂ := by
   rw [← LinearMap.adjoint_inner_right (dilV P) x (dilProj n m i (dilV P x))]
