@@ -62,6 +62,107 @@ def PairCovers {R : ℕ} (recA recB : Fin R → Finset (Fin N)) : Prop :=
   ∃ r r' : Fin R, r ≠ r' ∧
     ∀ ĝ : Fin R, ¬ (Disjoint (recB ĝ) (recA r) ∧ Disjoint (recB ĝ) (recA r'))
 
+/-- Toute `v : Sites N d` se développe dans la base canonique des
+configurations (`Pi.single`/`EuclideanSpace.single`), coefficient = coordonnée. -/
+private theorem euclid_expand (v : Sites N d) :
+    v = ∑ k, v k • (EuclideanSpace.single k (1 : ℂ) : Sites N d) := by
+  apply PiLp.ext
+  intro j
+  simp [Pi.single_apply, mul_ite, mul_one, mul_zero]
+
+/-- Le produit scalaire avec un vecteur de base extrait la coordonnée. -/
+private theorem euclid_coord (g : Fin N → Fin d) (x : Sites N d) :
+    ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), x⟫_ℂ = x g := by
+  simp [PiLp.inner_apply]
+
+/-- Élément de matrice d'une composée : `⟨g|S T|h⟩ = ∑ₖ ⟨k|T|h⟩ · ⟨g|S|k⟩`,
+obtenu en développant `T (single h 1)` dans la base canonique. -/
+private theorem matrixElem_comp (S T : Sites N d →ₗ[ℂ] Sites N d) (g h : Fin N → Fin d) :
+    ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (T (EuclideanSpace.single h 1))⟫_ℂ
+      = ∑ k, ⟪(EuclideanSpace.single k (1 : ℂ) : Sites N d), T (EuclideanSpace.single h 1)⟫_ℂ
+          * ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (EuclideanSpace.single k 1)⟫_ℂ := by
+  conv_lhs => rw [euclid_expand (T (EuclideanSpace.single h 1))]
+  rw [map_sum, inner_sum]
+  congr 1
+  funext k
+  rw [map_smul, inner_smul_right, ← euclid_coord k (T (EuclideanSpace.single h 1))]
+
+/-- **Le témoin `k` unique** forcé par `AgreesOff A g k ∧ AgreesOff B k h` sous
+`Disjoint A B` : `h` sur `A`, `g` sur `B` (et hors `A ∪ B`, cohérent ssi
+`g = h` là-bas — voir `agreesOff_union_iff_kStar_B`). -/
+private def kStar (A : Finset (Fin N)) (g h : Fin N → Fin d) : Fin N → Fin d :=
+  fun x => if x ∈ A then h x else g x
+
+private theorem kStar_agreesOff_left (A : Finset (Fin N)) (g h : Fin N → Fin d) :
+    AgreesOff A g (kStar A g h) := by
+  intro x hx
+  simp [kStar, hx]
+
+private theorem kStar_restrict_A (A : Finset (Fin N)) (g h : Fin N → Fin d) :
+    (kStar A g h) ∘ (Subtype.val : {x // x ∈ A} → Fin N) = h ∘ Subtype.val := by
+  funext x
+  simp [kStar, x.2]
+
+private theorem kStar_restrict_B {A B : Finset (Fin N)} (hAB : Disjoint A B)
+    (g h : Fin N → Fin d) :
+    (kStar A g h) ∘ (Subtype.val : {x // x ∈ B} → Fin N) = g ∘ Subtype.val := by
+  funext x
+  have hxA : (x : Fin N) ∉ A := fun hxA => (Finset.disjoint_left.mp hAB) hxA x.2
+  simp [kStar, hxA]
+
+private theorem kStar_unique {A B : Finset (Fin N)} (hAB : Disjoint A B) (g h k : Fin N → Fin d)
+    (h1 : AgreesOff A g k) (h2 : AgreesOff B k h) : k = kStar A g h := by
+  funext x
+  by_cases hxA : x ∈ A
+  · have hxB : x ∉ B := fun hxB => (Finset.disjoint_left.mp hAB) hxA hxB
+    simp only [kStar, hxA, if_true]
+    exact h2 x hxB
+  · simp only [kStar, hxA, if_false]
+    exact (h1 x hxA).symm
+
+private theorem agreesOff_union_iff_kStar_B {A B : Finset (Fin N)} (g h : Fin N → Fin d) :
+    AgreesOff B (kStar A g h) h ↔ AgreesOff (A ∪ B) g h := by
+  constructor
+  · intro hb x hx
+    rw [Finset.mem_union, not_or] at hx
+    obtain ⟨hxA, hxB⟩ := hx
+    have := hb x hxB
+    simpa [kStar, hxA] using this
+  · intro hu x hxB
+    by_cases hxA : x ∈ A
+    · simp [kStar, hxA]
+    · have := hu x (by rw [Finset.mem_union, not_or]; exact ⟨hxA, hxB⟩)
+      simpa [kStar, hxA] using this
+
+/-- Formule fermée pour l'élément de matrice d'une composée d'opérateurs
+locaux à des ensembles disjoints : le seul témoin `k` qui contribue est
+`kStar A g h`, ce qui collapse la somme sur `Fin N → Fin d` à un unique terme. -/
+private theorem matrixElem_localComp {A B : Finset (Fin N)} (hAB : Disjoint A B)
+    {S T : Sites N d →ₗ[ℂ] Sites N d}
+    {s : ({x : Fin N // x ∈ A} → Fin d) → ({x : Fin N // x ∈ A} → Fin d) → ℂ}
+    {t : ({x : Fin N // x ∈ B} → Fin d) → ({x : Fin N // x ∈ B} → Fin d) → ℂ}
+    (hs : ∀ g k : Fin N → Fin d,
+      ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (EuclideanSpace.single k 1)⟫_ℂ
+        = if AgreesOff A g k then s (g ∘ Subtype.val) (k ∘ Subtype.val) else 0)
+    (ht : ∀ g k : Fin N → Fin d,
+      ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), T (EuclideanSpace.single k 1)⟫_ℂ
+        = if AgreesOff B g k then t (g ∘ Subtype.val) (k ∘ Subtype.val) else 0)
+    (g h : Fin N → Fin d) :
+    ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (T (EuclideanSpace.single h 1))⟫_ℂ
+      = s (g ∘ Subtype.val) (h ∘ Subtype.val)
+        * (if AgreesOff (A ∪ B) g h then t (g ∘ Subtype.val) (h ∘ Subtype.val) else 0) := by
+  rw [matrixElem_comp]
+  rw [Fintype.sum_eq_single (kStar A g h) ?_]
+  · rw [ht, hs, if_pos (kStar_agreesOff_left A g h), kStar_restrict_A, mul_comm]
+    simp only [agreesOff_union_iff_kStar_B, kStar_restrict_B hAB]
+  · intro k hk
+    by_cases hcond : AgreesOff A g k ∧ AgreesOff B k h
+    · exact absurd (kStar_unique hAB g h k hcond.1 hcond.2) hk
+    · rw [not_and_or] at hcond
+      rcases hcond with hcond | hcond
+      · simp [hs, hcond]
+      · simp [ht, hcond]
+
 /-- **LA brique neuve (R4).** Deux opérateurs locaux à des ensembles de sites
 DISJOINTS commutent. Stratégie vérifiée à la main (voir prompt de conception) :
 égalité des éléments de matrice — dans `(S ∘ T)_{g,h} = ∑ₖ S_{g,k} T_{k,h}`,
@@ -73,7 +174,24 @@ de base (calibration : `Naimark/SqrtOp.lean`, N2). -/
 theorem commute_of_disjoint {A B : Finset (Fin N)} (hAB : Disjoint A B)
     {S T : Sites N d →ₗ[ℂ] Sites N d} (hS : IsLocalTo S A) (hT : IsLocalTo T B) :
     Commute S T := by
-  sorry
+  obtain ⟨s, hs⟩ := hS
+  obtain ⟨t, ht⟩ := hT
+  show S ∘ₗ T = T ∘ₗ S
+  apply Module.Basis.ext (EuclideanSpace.basisFun (Fin N → Fin d) ℂ).toBasis
+  intro h
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  apply PiLp.ext
+  intro g
+  rw [← euclid_coord g, ← euclid_coord g]
+  show ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), (S ∘ₗ T) (EuclideanSpace.single h 1)⟫_ℂ
+      = ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), (T ∘ₗ S) (EuclideanSpace.single h 1)⟫_ℂ
+  show ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), S (T (EuclideanSpace.single h 1))⟫_ℂ
+      = ⟪(EuclideanSpace.single g (1 : ℂ) : Sites N d), T (S (EuclideanSpace.single h 1))⟫_ℂ
+  rw [matrixElem_localComp hAB hs ht g h, matrixElem_localComp hAB.symm ht hs g h,
+      Finset.union_comm B A]
+  by_cases hP : AgreesOff (A ∪ B) g h
+  · simp [hP, mul_comm]
+  · simp [hP]
 
 /-- **Pont couche 2 → couche 1 (signature PROVISOIRE, voir avertissement
 d'en-tête).** Si chaque record de chaque observable, transporté via `e` sur
