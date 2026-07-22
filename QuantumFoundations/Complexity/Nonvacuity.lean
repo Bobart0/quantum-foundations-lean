@@ -1,9 +1,10 @@
 import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Models.Repetition.Persistence
 import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
+import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
 
 /-!
-# C0/C6/C7/C8/C9/C10 — Non-vacuity
+# C0/C6/C7/C8/C9/C10/C11 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -20,6 +21,12 @@ genuinely inhabited by nonzero error), yet the robust threshold
 constant-cost readout, a linear-length interference witness, and a proxy gap
 growing with the record count.  C10 does not claim identity with the C9
 model: it uses `R + 1` sites because of the extra source qubit.
+C11 supplies an explicit finite circuit of 1- and 2-local gates that
+*dynamically generates* the source-record branching from an initially
+uncorrelated source qubit and blank record qubits, rather than assuming the
+branched state as given: a concrete nonzero-amplitude source profile, paired
+with C10's concrete nonzero-noise profile, exhibits the full
+generation-to-persistence pipeline with no side hypotheses.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -222,6 +229,85 @@ example (R : ℕ) [NeZero R] :
   exactProfile_approxRecordedPairOn_zero R
 
 end NoisyRepetitionModel
+
+namespace MeasurementGeneration
+
+open QuantumFoundations.Complexity.Gates
+open QuantumFoundations.Complexity.RepetitionModel
+open QuantumFoundations.Complexity.NoisyRepetitionModel
+
+/-- The controlled-bit-flip gate is a genuine `2`-local gate: its declared
+support really does have cardinality at most two, with the locality witness
+constructed explicitly rather than assumed. -/
+example (control target : Fin N) (hne : control ≠ target) :
+    (controlledBitFlipGate control target hne).support.card ≤ 2 :=
+  (controlledBitFlipGate control target hne).support_card_le_two
+
+/-- The ideal source-controlled fanout circuit unitarily turns a blank-record
+source superposition into the branching decomposition: computational-basis
+fanout, not cloning of an arbitrary state. -/
+example (α β : ℂ) (R : ℕ) :
+    Circuit.evalOnH (idealFanoutCircuit R) (sitesEquivR (R + 1)) (idealInputState α β R) =
+      idealOutputState α β R :=
+  idealFanout_generates_branching α β R
+
+/-- The canonical amplitude-mixing preparation gate is constructed for every
+`NoiseProfile`, with no supplied-gate hypothesis anywhere. -/
+example (p : NoiseProfile) (R : ℕ) [NeZero R] : ImplementsNoisePreparation p R :=
+  profilePreparationImplementation p R
+
+/-- Amplitude preservation: the two squared component weights extracted from
+the ideal generated state sum to one, for the concrete equal-norm source
+profile. -/
+example (R : ℕ) :
+    ‖rproj (sourceResolution R) 0 (idealGeneratedState equalSourceProfile R)‖ ^ 2 +
+        ‖rproj (sourceResolution R) 1 (idealGeneratedState equalSourceProfile R)‖ ^ 2 = 1 :=
+  component_norm_squares_sum_one equalSourceProfile R
+
+/-- The fully concrete generation circuit — built from the `3/5, 4/5`
+source profile and C10's `99/101, 20/101` noise profile — unitarily turns
+blank records into the noisy branching decomposition. -/
+example (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit rationalNoiseProfile R) (sitesEquivR (R + 1))
+        (noisySourceInputState concreteSourceProfile R) =
+      noisySourceGeneratedState concreteSourceProfile rationalNoiseProfile R :=
+  concrete_unitary_generation_produces_noisy_branches R
+
+/-- Zero-leak regression: at the exact profile, the noisy generation
+circuit's action collapses to the ideal fanout's branching. -/
+example (α β : ℂ) (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit exactProfile R) (sitesEquivR (R + 1))
+        (noisyInputState α β R) =
+      idealOutputState α β R :=
+  noisyMeasurement_exactProfile α β R
+
+/-- The concretely generated branches carry a nonzero robust proxy gap: e.g.
+`R = 3` record qubits already give gap `1`. -/
+example :
+    HasProxyGapAtLeast (sitesEquivR (3 + 1))
+      (Circuit.evalOnH (noisyMeasurementCircuit rationalNoiseProfile 3) (sitesEquivR (3 + 1))
+        (basis00 3))
+      (Circuit.evalOnH (noisyMeasurementCircuit rationalNoiseProfile 3) (sitesEquivR (3 + 1))
+        (basis10 3))
+      (1 / 2 : ℝ) 1 :=
+  concrete_generated_branches_have_gap 3 1 (by unfold ceilHalf; omega)
+
+/-- That concrete robust proxy gap persists conditionally through a
+supplied finite further circuit, as long as the record budget also covers
+the conjugation overhead. -/
+example (R : ℕ) [NeZero R] (E : Circuit (R + 1) 2) (g : ℕ)
+    (hbudget : 1 + 4 * E.length + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      (Circuit.evalOnH E (sitesEquivR (R + 1))
+        (Circuit.evalOnH (noisyMeasurementCircuit rationalNoiseProfile R) (sitesEquivR (R + 1))
+          (basis00 R)))
+      (Circuit.evalOnH E (sitesEquivR (R + 1))
+        (Circuit.evalOnH (noisyMeasurementCircuit rationalNoiseProfile R) (sitesEquivR (R + 1))
+          (basis10 R)))
+      (1 / 2 : ℝ) g :=
+  concrete_generated_branches_persist R E g hbudget
+
+end MeasurementGeneration
 
 end
 
