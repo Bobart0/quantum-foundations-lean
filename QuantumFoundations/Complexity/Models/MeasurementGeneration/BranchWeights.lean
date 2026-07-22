@@ -129,6 +129,103 @@ theorem component_norm_squares_sum_one (q : SourceAmplitudeProfile) (R : ℕ) :
 #print axioms norm_sq_source_zero_component
 #print axioms norm_sq_source_one_component
 
+/-! ## C11h.1 — Normalized noisy source states -/
+
+/-- Pre-generation state built from a normalized `SourceAmplitudeProfile`:
+source superposition, all records blank. -/
+def noisySourceInputState (q : SourceAmplitudeProfile) (R : ℕ) [NeZero R] : H (2 ^ (R + 1)) :=
+  q.amp0 • basis00 R + q.amp1 • basis10 R
+
+/-- Post-generation state: each source branch carries its own noisy
+redundant-record tail, weighted by the normalized source amplitudes. -/
+def noisySourceGeneratedState (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    H (2 ^ (R + 1)) :=
+  q.amp0 • noisyZeroBranch p R + q.amp1 • noisyOneBranch p R
+
+theorem noisySourceInputState_norm (q : SourceAmplitudeProfile) (R : ℕ) [NeZero R] :
+    ‖noisySourceInputState q R‖ = 1 := by
+  apply norm_eq_one_of_mul_self_eq_one
+  rw [noisySourceInputState, norm_mul_self_keep_leak_combo (basis00 R) (basis10 R) q.amp0 q.amp1
+    (basis00_norm R) (basis10_norm R) (basis00_inner_basis10 R)]
+  nlinarith [q.norm_sq]
+
+theorem noisySourceGeneratedState_norm (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    ‖noisySourceGeneratedState q p R‖ = 1 := by
+  apply norm_eq_one_of_mul_self_eq_one
+  rw [noisySourceGeneratedState, norm_mul_self_keep_leak_combo (noisyZeroBranch p R)
+    (noisyOneBranch p R) q.amp0 q.amp1 (noisyZeroBranch_norm p R) (noisyOneBranch_norm p R)
+    (noisyBranches_inner p R)]
+  nlinarith [q.norm_sq]
+
+theorem noisySourceInputState_ne_zero (q : SourceAmplitudeProfile) (R : ℕ) [NeZero R] :
+    noisySourceInputState q R ≠ 0 :=
+  ne_zero_of_norm_ne_zero (by rw [noisySourceInputState_norm]; norm_num)
+
+theorem noisySourceGeneratedState_ne_zero (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    noisySourceGeneratedState q p R ≠ 0 :=
+  ne_zero_of_norm_ne_zero (by rw [noisySourceGeneratedState_norm]; norm_num)
+
+/-! ## C11h.2 — Component extraction from the noisy generated state -/
+
+theorem sourceProj_zero_noisyGenerated (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R) =
+      q.amp0 • noisyZeroBranch p R := by
+  simp [noisySourceGeneratedState, map_add, map_smul,
+    sourceProj_zero_fixes_noisyZeroBranch p R, sourceProj_zero_kills_noisyOneBranch p R]
+
+theorem sourceProj_one_noisyGenerated (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R) =
+      q.amp1 • noisyOneBranch p R := by
+  simp [noisySourceGeneratedState, map_add, map_smul,
+    sourceProj_one_kills_noisyZeroBranch p R, sourceProj_one_fixes_noisyOneBranch p R]
+
+theorem norm_sq_noisy_source_zero_component (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    ‖rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R)‖ ^ 2 = ‖q.amp0‖ ^ 2 := by
+  rw [sourceProj_zero_noisyGenerated, norm_smul, noisyZeroBranch_norm]
+  ring
+
+theorem norm_sq_noisy_source_one_component (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ)
+    [NeZero R] :
+    ‖rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R)‖ ^ 2 = ‖q.amp1‖ ^ 2 := by
+  rw [sourceProj_one_noisyGenerated, norm_smul, noisyOneBranch_norm]
+  ring
+
+/-- Amplitude preservation for the noisy generation: the two squared
+component weights extracted from the noisy generated state sum to one,
+regardless of the noise profile `p`. -/
+theorem noisy_component_norm_squares_sum_one (q : SourceAmplitudeProfile) (p : NoiseProfile)
+    (R : ℕ) [NeZero R] :
+    ‖rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R)‖ ^ 2 +
+        ‖rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R)‖ ^ 2 = 1 := by
+  rw [norm_sq_noisy_source_zero_component, norm_sq_noisy_source_one_component]
+  exact q.norm_sq
+
+/-! ## C11h.3 — Nontriviality of the extracted components -/
+
+/-- If the source-`0` amplitude is nonzero, so is its extracted noisy
+component (the noisy zero branch itself is never zero). -/
+theorem noisy_source_zero_component_ne_zero (q : SourceAmplitudeProfile) (p : NoiseProfile)
+    (R : ℕ) [NeZero R] (h0 : q.amp0 ≠ 0) :
+    rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R) ≠ 0 := by
+  rw [sourceProj_zero_noisyGenerated]
+  exact smul_ne_zero h0 (noisyZeroBranch_ne_zero p R)
+
+/-- If the source-`1` amplitude is nonzero, so is its extracted noisy
+component (the noisy one branch itself is never zero). -/
+theorem noisy_source_one_component_ne_zero (q : SourceAmplitudeProfile) (p : NoiseProfile)
+    (R : ℕ) [NeZero R] (h1 : q.amp1 ≠ 0) :
+    rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R) ≠ 0 := by
+  rw [sourceProj_one_noisyGenerated]
+  exact smul_ne_zero h1 (noisyOneBranch_ne_zero p R)
+
+#print axioms noisySourceGeneratedState_norm
+#print axioms noisy_component_norm_squares_sum_one
+
 end
 
 end QuantumFoundations.Complexity.MeasurementGeneration
