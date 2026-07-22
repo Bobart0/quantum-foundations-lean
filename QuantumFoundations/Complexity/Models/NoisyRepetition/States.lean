@@ -150,8 +150,10 @@ def noisyOneBranch (p : NoiseProfile) (R : ℕ) : H (2 ^ (R + 1)) :=
   p.leak • basis10 R + p.keep • basis11 R
 
 /-- Pythagorean norm identity for a `keep`/`leak` combination of two
-orthogonal unit vectors: the generic fact underlying both branch norms. -/
-private theorem norm_mul_self_keep_leak_combo {n : ℕ} (x y : H n) (a b : ℂ)
+orthogonal unit vectors: the generic fact underlying both branch norms.
+Not `private`: also reused directly by the `MeasurementGeneration` block
+(C11) for the source-amplitude combinations. -/
+theorem norm_mul_self_keep_leak_combo {n : ℕ} (x y : H n) (a b : ℂ)
     (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) (hxy : ⟪x, y⟫_ℂ = 0) :
     ‖a • x + b • y‖ * ‖a • x + b • y‖ = ‖a‖ * ‖a‖ + ‖b‖ * ‖b‖ := by
   have hxy' : ⟪a • x, b • y⟫_ℂ = 0 := by
@@ -160,7 +162,9 @@ private theorem norm_mul_self_keep_leak_combo {n : ℕ} (x y : H n) (a b : ℂ)
   rw [norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ hxy',
     norm_smul, norm_smul, hx, hy, mul_one, mul_one]
 
-private theorem norm_eq_one_of_mul_self_eq_one {n : ℕ} {x : H n}
+/-- Not `private`: also reused directly by the `MeasurementGeneration`
+block (C11). -/
+theorem norm_eq_one_of_mul_self_eq_one {n : ℕ} {x : H n}
     (h : ‖x‖ * ‖x‖ = 1) : ‖x‖ = 1 := by
   have hx2 : (‖x‖ - 1) * (‖x‖ + 1) = 0 := by nlinarith
   rcases mul_eq_zero.mp hx2 with h1 | h1
