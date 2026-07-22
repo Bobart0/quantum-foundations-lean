@@ -175,6 +175,8 @@ theorem exactProfile_approxRecordedPairOn_zero (R : ℕ) [NeZero R] :
   have h := noisy_repetition_approxRecordedPairOn exactProfile R
   simpa using h
 
+#print axioms noisy_repetition_approxRecordedPairOn
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

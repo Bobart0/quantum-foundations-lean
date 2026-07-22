@@ -115,6 +115,9 @@ theorem noisy_repetition_positive_gap
   unfold ceilHalf
   omega
 
+#print axioms noisy_repetition_has_proxy_gap
+#print axioms noisy_repetition_gap_persists_under_circuit
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

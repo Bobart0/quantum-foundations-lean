@@ -52,6 +52,8 @@ theorem noisyReadoutCircuit_approximatesRecordPhaseFlipOn
     (sitesEquivR (R + 1)) (noisyReadoutCircuit R) (noisyRecords R 0) 1
     (noisyZeroBranch p R) (noisyOneBranch p R) (noisyReadoutCircuit_implements R)
 
+#print axioms noisyReadoutCircuit_implements
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

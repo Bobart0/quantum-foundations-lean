@@ -87,6 +87,9 @@ theorem concrete_noisy_interferenceComplexity_bounds
   noisy_repetition_interference_bounds
     rationalNoiseProfile R rationalNoiseProfile_isRobust
 
+#print axioms rationalNoiseProfile_isRobust
+#print axioms concrete_noisy_repetition_has_proxy_gap
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

@@ -207,6 +207,9 @@ its records are approximate by construction. -/
 def noisyRepetitionState (p : NoiseProfile) (R : ℕ) : H (2 ^ (R + 1)) :=
   noisyZeroBranch p R + noisyOneBranch p R
 
+#print axioms noisyZeroBranch_norm
+#print axioms noisyOneBranch_norm
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

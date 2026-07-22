@@ -144,6 +144,8 @@ theorem noisy_repetition_interference_ne_top (p : NoiseProfile) (R : ℕ) [NeZer
         (noisyZeroBranch p R) (noisyOneBranch p R) (1 / 2 : ℝ) ≠ ⊤ :=
   ne_top_of_le_ne_top WithTop.coe_ne_top (noisy_repetition_interference_upper p R)
 
+#print axioms noisy_repetition_interference_upper
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel

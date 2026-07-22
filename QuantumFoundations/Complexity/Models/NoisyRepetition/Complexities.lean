@@ -81,6 +81,9 @@ theorem noisy_repetition_distinguishabilityComplexity
       (noisyZeroBranch p R) (noisyOneBranch p R)
       (noisyZeroBranch_norm p R) (noisyOneBranch_norm p R) (1 / 2 : ℝ) (by norm_num))
 
+#print axioms noisy_repetition_interference_lower
+#print axioms noisy_repetition_distinguishabilityComplexity
+
 end
 
 end QuantumFoundations.Complexity.NoisyRepetitionModel
