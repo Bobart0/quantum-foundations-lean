@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact redundant-record proxy gap (C0–C6)
+## Complexity — exact redundant-record proxy gap and persistence (C0–C7)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2617,24 +2617,57 @@ those branches, then `R ≤ 2 * C.length`.
 - [x] Requested main-theorem axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C6 (future extensions, not deficiencies)
+### C7 — conditional finite-circuit persistence — ✅ CLOSED
+
+- [x] **C7a:** `ReversibleCircuitEvolution` records explicit forward and
+  backward circuits with mutual-inverse evaluation; `pushForward` and
+  `pullBack` follow the repository's append convention and have exact
+  additive length formulas.
+- [x] **C7a canonical layer:** inverse locality was proved from the existing
+  `IsLocalTo` kernel witness. Gate and reversed circuit inverses were
+  constructed, with length/support/involution/cancellation theorems and
+  `ofCircuit E` overhead `2 * E.length`.
+- [x] **C7b:** exact complex matrix elements, both proxy predicates, norms,
+  nonzeroness, and unit norm are transported under circuit evolution.
+- [x] **C7c:** distinguishability upper bounds gain at most one overhead;
+  interference lower bounds lose at most one overhead; the subtraction-free
+  proxy-gap certificate loses at most `2 * overhead`.
+- [x] **C7d:** redundant records give the general budget
+  `D.length + 2 * Evo.overhead + g ≤ ceilHalf R`; the canonical inverse
+  specializes it to `D.length + 4 * E.length + g ≤ ceilHalf R`. The `g = 1`
+  corollary asserts only nontrivial separation, not macroscopic persistence.
+- [x] **C7e:** actual `WithTop ℕ` complexities satisfy the two correct
+  subtraction-free transport inequalities. The generic `iInf` lemma handles
+  `⊤` and does not assume an attained minimum.
+- [x] The empty forward/backward pair provides non-vacuity, and unitary
+  evolution preserves normalization without renormalizing evolved branches.
+- [x] Requested C7 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C7 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
 - Approximate records and quantitative robustness estimates.
-- Conditional persistence under Hamiltonian evolution.
+- Persistence for arbitrary Hamiltonian or continuous-time evolution and
+  generic circuit-complexity growth.
 - Brown–Susskind complexity growth and canonical uniqueness of branch
   decompositions.
+- Macroscopic irreversibility, equivalence with Weingarten's proposal, and
+  interpretive claims about Everett quantum mechanics.
 
 ### Résumé français
 
-Les jalons C0–C6 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
+Les jalons C0–C7 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
 de complexité exacts, leurs certificats relationnels, puis le gap sans
 soustraction dans `WithTop ℕ`. La syntaxe des circuits, la preuve opératorielle,
-le comptage, les certificats et les minima restent séparés. Les extensions aux
-records approximatifs, à la synthèse générale de circuits de lecture et à la
-persistance conditionnelle restent des travaux futurs distincts, et ne sont
-pas des manques de ces jalons.
+le comptage, les certificats et les minima restent séparés. C7 ajoute la
+persistance conditionnelle sous une paire explicite de circuits inverses : le
+gap perd au plus deux fois le surcoût de conjugaison, soit `4 * E.length`
+pour l'inverse canonique construit. Les records approximatifs, la synthèse
+générale de circuits de lecture, les évolutions hamiltoniennes générales et
+les conjectures de croissance restent des travaux futurs distincts, et ne
+sont pas des manques de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

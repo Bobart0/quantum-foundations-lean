@@ -1,11 +1,12 @@
-import QuantumFoundations.Complexity.MinComplexity
+import QuantumFoundations.Complexity.PersistenceMinima
 
 /-!
-# C0 — Non-vacuity
+# C0/C6/C7 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
-inhabited without any physical assumption.
+inhabited without any physical assumption.  C7's reversible-evolution
+certificate is inhabited by the empty circuit in both directions.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -63,6 +64,23 @@ example : minCircuitLength (fun _ : Circuit N d => True) = 0 := by
   · simpa using minCircuitLength_le_of_witness
       ([] : Circuit N d) (show True from trivial)
   · exact bot_le
+
+/-- The empty forward/backward pair is a reversible evolution with zero
+conjugation overhead. -/
+example :
+    (ReversibleCircuitEvolution.reversibleEmptyEvolution N d).overhead = 0 := by
+  rfl
+
+/-- Canonical inversion is non-vacuous already on the empty circuit. -/
+example : Circuit.inverse ([] : Circuit N d) = [] := by
+  rfl
+
+/-- Unitary circuit evolution preserves a supplied unit-norm hypothesis, so
+evolved normalized branches do not require renormalization. -/
+example (E : Circuit N d) (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
+    (a : H (d ^ N)) (ha : ‖a‖ = 1) :
+    ‖Circuit.evalOnH E e a‖ = 1 := by
+  exact Circuit.evalOnH_unit E e ha
 
 end
 

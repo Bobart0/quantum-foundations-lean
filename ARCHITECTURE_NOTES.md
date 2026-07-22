@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C6) — exact 2-local proxy gap
+## Complexity (C0–C7) — exact 2-local proxy gap and conditional persistence
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -928,6 +928,46 @@ the user's discretion before publication.
   classical decidability choice for `if P C`; casts between `ℕ` and
   `WithTop ℕ` were discharged explicitly with `exact_mod_cast`. No attainment
   theorem was required.
+- **Finite reversible evolution (C7).**
+  `ReversibleCircuitEvolution N d` contains separate `forward` and `backward`
+  circuits and proofs that their evaluations are mutual inverses on
+  `Sites N d`. Its overhead is exactly
+  `forward.length + backward.length`; the general theorem deliberately does
+  not assume that an inverse can be synthesized for free.
+- **Concatenation and conjugation direction.** Since
+  `eval (C ++ D) = eval D ∘ₗ eval C`, the list
+  `backward ++ C ++ forward` is `pushForward` and evaluates to
+  `forward ∘ₗ C ∘ₗ backward`. Conversely,
+  `forward ++ C ++ backward` is `pullBack` and evaluates to
+  `backward ∘ₗ C ∘ₗ forward`. The same formulas are proved after transport
+  to `H (d ^ N)` through `evalOnH`.
+- **Canonical inverse.** C7 proves locality of a unitary inverse directly
+  from the kernel witness in `IsLocalTo`, defines `TwoLocalGate.inverse`, and
+  reverses/inverts circuit lists in `Circuit.inverse`. It proves equal length
+  and support, both evaluation cancellation laws, involutivity, and builds
+  `ReversibleCircuitEvolution.ofCircuit E` with overhead `2 * E.length`.
+- **Exact proxy transport.** Circuit evaluation preserves complex inner
+  products, norms, nonzeroness, and unit norm. The push-forward and pullback
+  theorems identify the underlying complex matrix elements exactly, so both
+  Taylor–McCulloch proxy predicates are transported by equivalences. Evolved
+  normalized branches are not normalized again.
+- **Why the gap budget loses twice the overhead.** A distinguishing witness
+  is pushed forward at cost one overhead, while an evolved interference
+  circuit is pulled back at cost one overhead. Thus the certificate budget is
+  `D + 2 * overhead + g ≤ B`. For `ofCircuit E`, the overhead itself is
+  `2 * E.length`, yielding the derived factor `4 * E.length`.
+- **Certificates and minima remain distinct.** `Persistence.lean` and
+  `RecordPersistence.lean` prove the finite relational statements first.
+  `PersistenceMinima.lean` then proves a generic witness-map theorem directly
+  under the `WithTop ℕ` infimum using `ENat.iInf_add`; it handles `⊤` without
+  assuming attainment. No subtraction is used in either `Nat` or
+  `WithTop ℕ`.
+- **C7 scope.** This is conditional circuit-complexity persistence for an
+  explicit finite reversible evolution. It is not persistence for arbitrary
+  Hamiltonian time evolution, generic complexity growth, approximate-record
+  robustness, macroscopic irreversibility, branch uniqueness, an equivalence
+  with Weingarten's proposal, a Brown–Susskind result, or a proof of an
+  interpretation of quantum mechanics.
 
 ### English summary
 
@@ -941,7 +981,11 @@ injection lemma because `pigeonhole_corollary` does not match arbitrary
 2-local circuit lists. C3–C6 add exact normalized-branch proxies, handle both
 cross-amplitude orientations, use a supplied phase-flip circuit, prove the
 subtraction-free certificate first, and only then package minima in
-`WithTop ℕ`.
+`WithTop ℕ`. C7 adds exact push-forward/pullback conjugation through an
+explicit reversible pair of finite circuits. General certificates lose at
+most two conjugation overheads; the constructed equal-length canonical
+inverse makes this `4 * E.length`. This is an exact conditional bound, not a
+Hamiltonian or asymptotic persistence claim.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

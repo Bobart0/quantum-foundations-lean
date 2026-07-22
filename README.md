@@ -4,13 +4,13 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C6.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C7.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-51 fichiers `.lean`, 9781 lignes, 297 déclarations publiques, 0 `sorry`,
+57 fichiers `.lean`, 10681 lignes, 356 déclarations publiques, 0 `sorry`,
 0 axiome propre au projet. Les
 théorèmes principaux du nouveau bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
@@ -388,14 +388,35 @@ distinguishabilityComplexity e a b δ + (g : WithTop ℕ)
   ≤ interferenceComplexity e a b δ
 ```
 
+Le jalon C7 ajoute une persistance conditionnelle sous évolution réversible
+par circuits finis. Une `ReversibleCircuitEvolution` contient deux circuits
+explicites `forward` et `backward`, dont les évaluations sont inverses, et le
+surcoût `forward.length + backward.length`. Comme
+`eval (C ++ D) = eval D ∘ₗ eval C`, `backward ++ C ++ forward` implémente
+`forward ∘ₗ C ∘ₗ backward`, tandis que `forward ++ C ++ backward` implémente
+le pullback opposé. Les proxies sont exactement invariants sous ces
+conjugaisons. Une borne supérieure de distinguabilité augmente d'au plus un
+surcoût, une borne inférieure d'interférence diminue d'au plus un surcoût, et
+le gap certifié diminue donc d'au plus deux surcoûts.
+
+L'inverse canonique a également été construit : chaque porte inverse garde le
+même support local, et le circuit inverse renverse la liste en inversant ses
+portes. Ainsi `ofCircuit E` a un surcoût `2 * E.length`, d'où la condition
+exacte sur les records
+`D.length + 4 * E.length + g ≤ ceilHalf R`. Les versions minimales dans
+`WithTop ℕ` sont prouvées directement sous l'infimum, y compris dans le cas
+`⊤`, sans supposer qu'un minimum est atteint et sans soustraction.
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts,
 des régions deux-à-deux disjointes, des portes exactement 2-locales et une
 amplitude/proxy exactement non nulle. Il ne traite pas la robustesse de records
 approximatifs, la synthèse efficace de projecteurs locaux arbitraires, le
 critère physique complet de Taylor–McCulloch, la persistance sous évolution
-hamiltonienne, la croissance de complexité de Brown–Susskind ni l’unicité
-canonique des décompositions en branches.
+hamiltonienne arbitraire, la croissance générique de complexité, la croissance
+de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
+Weingarten, l'unicité canonique des décompositions en branches ni une
+interprétation de la mécanique quantique.
 
 ## Assistance IA
 
@@ -512,7 +533,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6 : témoins élémentaires et minima extrêmes | 69 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7 : témoins élémentaires, minima extrêmes et évolution vide | 87 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -524,8 +545,14 @@ affectée.
 | `QuantumFoundations/Complexity/RecordDistinguishability.lean` | C5 : lecture par phase flip exact | 114 |
 | `QuantumFoundations/Complexity/BranchGap.lean` | C6 : certificat de gap sans soustraction | 50 |
 | `QuantumFoundations/Complexity/MinComplexity.lean` | C6 : minima `WithTop ℕ` et gap effectif | 180 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 43 |
-| **Total recalculé**                          | **51 fichiers**                                                                   | **9781** |
+| `QuantumFoundations/Complexity/CircuitConjugation.lean` | C7a : évolution réversible et circuits sandwich | 157 |
+| `QuantumFoundations/Complexity/CircuitInverse.lean` | C7a : inverses locaux de portes et circuits | 207 |
+| `QuantumFoundations/Complexity/ProxyTransport.lean` | C7b : transport exact des éléments de matrice et proxies | 180 |
+| `QuantumFoundations/Complexity/Persistence.lean` | C7c : transport des certificats relationnels | 111 |
+| `QuantumFoundations/Complexity/RecordPersistence.lean` | C7d : bornes de persistance par records | 104 |
+| `QuantumFoundations/Complexity/PersistenceMinima.lean` | C7e : transport `WithTop ℕ` sans atteinte du minimum | 117 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 49 |
+| **Total recalculé**                          | **57 fichiers**                                                                   | **10681** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -596,6 +623,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C4 | Borne d’interférence `ceilHalf R` issue des records redondants | ✅ |
 | C5 | Borne de distinguabilité issue d’un phase flip de record explicite | ✅ |
 | C6 | Gap sans soustraction et minima dans `WithTop ℕ` | ✅ |
+| C7 | Transport exact et persistance conditionnelle sous circuit réversible fini | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -616,6 +644,8 @@ consolidée de tous les écarts vs les plans initiaux).
 | `record_phase_flip_gives_distinguishability_upper_bound` | Un circuit implémentant `2 P_j - I` distingue les branches normalisées à seuil `δ ≤ 1` | Lecture exacte d’un record | `Complexity/RecordDistinguishability.lean` (114) | 0 sorry, 0 axiome | — |
 | `redundant_records_give_proxy_gap_certificate` | `D.length + g ≤ ceilHalf R` certifie un gap proxy d’au moins `g` | Composition des certificats C4/C5 | `Complexity/BranchGap.lean` (50) | 0 sorry, 0 axiome | — |
 | `redundant_records_complexity_gap` | Le même gap vaut pour les minima exacts dans `WithTop ℕ` | Infimum des longueurs de circuits | `Complexity/MinComplexity.lean` (180) | 0 sorry, 0 axiome | — |
+| `redundant_records_gap_persists_under_reversible_evolution` | Le gap de records persiste sous `D.length + 2 * overhead + g ≤ ceilHalf R` | Transport exact par paire de circuits inverses | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
+| `redundant_records_gap_persists_under_circuit_evolution` | Pour l'inverse canonique, le budget devient `D.length + 4 * E.length + g ≤ ceilHalf R` | Inverse local canonique + théorème précédent | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
@@ -686,13 +716,13 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C6
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C7
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-51 `.lean` files, 9,781 lines, 297 public declarations, 0 `sorry`, and 0
+57 `.lean` files, 10,681 lines, 356 public declarations, 0 `sorry`, and 0
 project-specific axioms. The
 main theorems of the new Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
@@ -1065,13 +1095,32 @@ subtraction-free proxy-gap certificate and then as
 Both target-label locality hypotheses are required because either orientation
 of the two-term interference proxy may be nonzero.
 
+C7 proves conditional persistence under an explicit finite reversible
+circuit evolution. A `ReversibleCircuitEvolution` stores forward and backward
+circuits whose evaluations are mutual inverses, with overhead
+`forward.length + backward.length`. The append convention implies that
+`backward ++ C ++ forward` implements `forward ∘ C ∘ backward`, while
+`forward ++ C ++ backward` implements the pullback. Exact matrix elements and
+both proxies are invariant under these conjugations. Distinguishability can
+gain one overhead, interference can lose one, and the certified gap can
+therefore lose at most twice the overhead.
+
+A canonical inverse circuit was constructed by reversing the gate list and
+inverting every gate while preserving its local support. Consequently
+`ofCircuit E` has overhead `2 * E.length`, and the record theorem derives the
+budget `D.length + 4 * E.length + g ≤ ceilHalf R`. The `WithTop ℕ` transport
+theorems work directly under the infimum, including `⊤`, without attainment
+or subtraction.
+
 The result is
 limited to finitely many sites, finite local dimension, exact records,
 pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
 amplitude/proxy. It does not establish approximate-record robustness,
 efficient synthesis of arbitrary local record projectors, the full physical Taylor–McCulloch
-criterion, persistence under Hamiltonian evolution, Brown–Susskind
-complexity growth, or canonical uniqueness of branch decompositions.
+criterion, persistence under arbitrary Hamiltonian evolution, generic or
+Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
+with Weingarten, canonical uniqueness of branch decompositions, or any
+interpretive claim about quantum mechanics.
 
 ## AI assistance
 
@@ -1190,7 +1239,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6: elementary witnesses and extremal minima | 69 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7: elementary witnesses, extremal minima, and empty evolution | 87 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1202,8 +1251,14 @@ was affected.
 | QuantumFoundations/Complexity/RecordDistinguishability.lean | C5: exact phase-flip readout | 114 |
 | QuantumFoundations/Complexity/BranchGap.lean | C6: subtraction-free gap certificate | 50 |
 | QuantumFoundations/Complexity/MinComplexity.lean | C6: `WithTop ℕ` minima and actual gap | 180 |
-| QuantumFoundations.lean | Root import aggregator | 43 |
-| Recomputed total | 51 files | 9781 |
+| QuantumFoundations/Complexity/CircuitConjugation.lean | C7a: reversible evolution certificates and sandwich circuits | 157 |
+| QuantumFoundations/Complexity/CircuitInverse.lean | C7a: local gate inverses and canonical inverse circuits | 207 |
+| QuantumFoundations/Complexity/ProxyTransport.lean | C7b: exact matrix-element and proxy transport | 180 |
+| QuantumFoundations/Complexity/Persistence.lean | C7c: relational certificate transport | 111 |
+| QuantumFoundations/Complexity/RecordPersistence.lean | C7d: redundant-record persistence bounds | 104 |
+| QuantumFoundations/Complexity/PersistenceMinima.lean | C7e: `WithTop ℕ` transport without attainment | 117 |
+| QuantumFoundations.lean | Root import aggregator | 49 |
+| Recomputed total | 57 files | 10681 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1275,10 +1330,7 @@ initial plans).
 | C4 | Interference lower bound `ceilHalf R` from redundant records | ✅ |
 | C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
 | C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
-| C3 | Exact proxy predicates, normalized branches, and relational certificates | ✅ |
-| C4 | Interference lower bound `ceilHalf R` from redundant records | ✅ |
-| C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
-| C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
+| C7 | Exact transport and conditional persistence under finite reversible circuits | ✅ |
 
 ## Main theorems — reference table
 
@@ -1299,6 +1351,8 @@ initial plans).
 | record_phase_flip_gives_distinguishability_upper_bound | A circuit implementing `2 P_j - I` distinguishes normalized branches at threshold `δ ≤ 1` | Exact record readout | Complexity/RecordDistinguishability.lean (114) | 0 sorry, 0 axioms | — |
 | redundant_records_give_proxy_gap_certificate | `D.length + g ≤ ceilHalf R` certifies a proxy gap of at least `g` | Composition of C4/C5 certificates | Complexity/BranchGap.lean (50) | 0 sorry, 0 axioms | — |
 | redundant_records_complexity_gap | The same gap holds for exact `WithTop ℕ` minima | Infimum of circuit lengths | Complexity/MinComplexity.lean (180) | 0 sorry, 0 axioms | — |
+| redundant_records_gap_persists_under_reversible_evolution | The record gap persists under `D.length + 2 * overhead + g ≤ ceilHalf R` | Exact transport by an inverse circuit pair | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
+| redundant_records_gap_persists_under_circuit_evolution | The canonical inverse specializes the budget to `D.length + 4 * E.length + g ≤ ceilHalf R` | Canonical local inverse + preceding theorem | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
 
 “0 axioms” means dependence only on
 [propext, Classical.choice, Quot.sound], verified by #print axioms for

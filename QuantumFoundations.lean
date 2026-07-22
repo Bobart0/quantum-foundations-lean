@@ -43,6 +43,12 @@ import QuantumFoundations.Complexity.RecordInterferenceBound
 import QuantumFoundations.Complexity.RecordDistinguishability
 import QuantumFoundations.Complexity.BranchGap
 import QuantumFoundations.Complexity.MinComplexity
+import QuantumFoundations.Complexity.CircuitConjugation
+import QuantumFoundations.Complexity.CircuitInverse
+import QuantumFoundations.Complexity.ProxyTransport
+import QuantumFoundations.Complexity.Persistence
+import QuantumFoundations.Complexity.RecordPersistence
+import QuantumFoundations.Complexity.PersistenceMinima
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations
