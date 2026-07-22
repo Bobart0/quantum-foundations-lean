@@ -4,13 +4,14 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C2.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C6.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-44 fichiers `.lean`, 9037 lignes, 0 `sorry`, 0 axiome propre au projet. Les
+51 fichiers `.lean`, 9781 lignes, 297 déclarations publiques, 0 `sorry`,
+0 axiome propre au projet. Les
 théorèmes principaux du nouveau bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
@@ -357,12 +358,42 @@ theorem regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero
 Ainsi, toute amplitude croisée exacte non nulle entre deux branches
 distinctes force le circuit à toucher chaque région-record ; les régions
 étant deux-à-deux disjointes et chaque porte touchant au plus deux sites, on
-obtient la borne explicite `R ≤ 2 * C.length`. Le résultat porte uniquement
+obtient la borne explicite `R ≤ 2 * C.length`.
+
+Les jalons C3–C6 ajoutent les proxies exacts, sans division :
+
+```lean
+DistinguishesAt e a b δ C :=
+  2 * δ ≤ ‖⟪a, C.evalOnH e a⟫_ℂ - ⟪b, C.evalOnH e b⟫_ℂ‖
+
+InterferesAt e a b δ C :=
+  2 * δ ≤ ‖⟪a, C.evalOnH e b⟫_ℂ‖ + ‖⟪b, C.evalOnH e a⟫_ℂ‖
+```
+
+Pour deux branches enregistrées distinctes et non nulles, normalisées par
+`normalizedBranch`, avec `0 < δ ≤ 1`, des régions-records deux-à-deux
+disjointes et la localité des projecteurs cibles pour **les deux** étiquettes,
+`redundant_records_give_interference_lower_bound` prouve que tout circuit
+interférant a longueur au moins `ceilHalf R := (R + 1) / 2`. Si un circuit
+explicite `D` implémente exactement `2 P_j - I`, alors
+`record_phase_flip_gives_distinguishability_upper_bound` donne un témoin de
+distinguabilité de longueur `D.length`. Finalement,
+`redundant_records_give_proxy_gap_certificate` prouve le certificat sans
+soustraction `D.length + g ≤ ceilHalf R`, et
+`redundant_records_complexity_gap` en donne la version minimale dans
+`WithTop ℕ` :
+
+```lean
+distinguishabilityComplexity e a b δ + (g : WithTop ℕ)
+  ≤ interferenceComplexity e a b δ
+```
+
+Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts,
 des régions deux-à-deux disjointes, des portes exactement 2-locales et une
-amplitude exactement non nulle. Il ne traite pas la robustesse de records
-approximatifs, les bornes supérieures de complexité de distinguabilité, le
-critère complet de Taylor–McCulloch, la persistance sous évolution
+amplitude/proxy exactement non nulle. Il ne traite pas la robustesse de records
+approximatifs, la synthèse efficace de projecteurs locaux arbitraires, le
+critère physique complet de Taylor–McCulloch, la persistance sous évolution
 hamiltonienne, la croissance de complexité de Brown–Susskind ni l’unicité
 canonique des décompositions en branches.
 
@@ -481,13 +512,20 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0 : circuit vide et porte identité | 33 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6 : témoins élémentaires et minima extrêmes | 69 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
 | `QuantumFoundations/Complexity/Main.lean` | C2 : borne principale `R ≤ 2 * C.length` | 63 |
+| `QuantumFoundations/Complexity/ProxyDefs.lean` | C3 : proxies exacts de distinguabilité et d’interférence | 82 |
+| `QuantumFoundations/Complexity/NormalizedBranches.lean` | C3 : normalisation des branches enregistrées non nulles | 83 |
+| `QuantumFoundations/Complexity/ProxyCertificates.lean` | C3 : certificats relationnels et `ceilHalf` | 96 |
+| `QuantumFoundations/Complexity/RecordInterferenceBound.lean` | C4 : borne d’interférence à deux orientations | 96 |
+| `QuantumFoundations/Complexity/RecordDistinguishability.lean` | C5 : lecture par phase flip exact | 114 |
+| `QuantumFoundations/Complexity/BranchGap.lean` | C6 : certificat de gap sans soustraction | 50 |
+| `QuantumFoundations/Complexity/MinComplexity.lean` | C6 : minima `WithTop ℕ` et gap effectif | 180 |
 | `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 43 |
-| **Total recalculé**                          | **44 fichiers**                                                                   | **9037** |
+| **Total recalculé**                          | **51 fichiers**                                                                   | **9781** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -554,6 +592,10 @@ consolidée de tous les écarts vs les plans initiaux).
 | C0 | Circuits finis de portes unitaires supportées sur au plus deux sites | ✅ |
 | C1 | Commutation hors support et annulation de l’amplitude croisée | ✅ |
 | C2 | Comptage indépendant et borne exacte `R ≤ 2 * C.length` | ✅ |
+| C3 | Proxies exacts, branches normalisées et certificats relationnels | ✅ |
+| C4 | Borne d’interférence `ceilHalf R` issue des records redondants | ✅ |
+| C5 | Borne de distinguabilité issue d’un phase flip de record explicite | ✅ |
+| C6 | Gap sans soustraction et minima dans `WithTop ℕ` | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -570,6 +612,10 @@ consolidée de tous les écarts vs les plans initiaux).
 | `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
 | `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
 | `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisée non nulle imposent `R ≤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | — |
+| `redundant_records_give_interference_lower_bound` | Tout circuit satisfaisant le proxy exact a longueur au moins `ceilHalf R` | Proxy exact + C2 dans les deux orientations | `Complexity/RecordInterferenceBound.lean` (96) | 0 sorry, 0 axiome | — |
+| `record_phase_flip_gives_distinguishability_upper_bound` | Un circuit implémentant `2 P_j - I` distingue les branches normalisées à seuil `δ ≤ 1` | Lecture exacte d’un record | `Complexity/RecordDistinguishability.lean` (114) | 0 sorry, 0 axiome | — |
+| `redundant_records_give_proxy_gap_certificate` | `D.length + g ≤ ceilHalf R` certifie un gap proxy d’au moins `g` | Composition des certificats C4/C5 | `Complexity/BranchGap.lean` (50) | 0 sorry, 0 axiome | — |
+| `redundant_records_complexity_gap` | Le même gap vaut pour les minima exacts dans `WithTop ℕ` | Infimum des longueurs de circuits | `Complexity/MinComplexity.lean` (180) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
@@ -640,13 +686,14 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C2
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C6
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-44 `.lean` files, 9,037 lines, 0 `sorry`, and 0 project-specific axioms. The
+51 `.lean` files, 9,781 lines, 297 public declarations, 0 `sorry`, and 0
+project-specific axioms. The
 main theorems of the new Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
@@ -1005,11 +1052,24 @@ theorem regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero
 
 Thus an exact nonzero cross amplitude between distinct recorded branches
 forces the circuit to touch every record region. Pairwise disjointness and
-the two-site support bound then give `R ≤ 2 * C.length`. The theorem is
+the two-site support bound then give `R ≤ 2 * C.length`.
+
+C3–C6 add the exact division-free `DistinguishesAt` and `InterferesAt`
+predicates displayed in the French section above. For distinct nonzero
+normalized recorded branches and `0 < δ ≤ 1`, redundant pairwise-disjoint
+records imply the per-circuit interference bound `ceilHalf R ≤ C.length`.
+An explicitly supplied circuit implementing `2 P_j - I` provides the
+distinguishability upper bound. These combine first as a relational,
+subtraction-free proxy-gap certificate and then as
+`distinguishabilityComplexity + g ≤ interferenceComplexity` in `WithTop ℕ`.
+Both target-label locality hypotheses are required because either orientation
+of the two-term interference proxy may be nonzero.
+
+The result is
 limited to finitely many sites, finite local dimension, exact records,
 pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
-amplitude. It does not establish approximate-record robustness,
-distinguishability-complexity upper bounds, the full Taylor–McCulloch
+amplitude/proxy. It does not establish approximate-record robustness,
+efficient synthesis of arbitrary local record projectors, the full physical Taylor–McCulloch
 criterion, persistence under Hamiltonian evolution, Brown–Susskind
 complexity growth, or canonical uniqueness of branch decompositions.
 
@@ -1130,13 +1190,20 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0: empty circuit and identity gate | 33 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6: elementary witnesses and extremal minima | 69 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
 | QuantumFoundations/Complexity/Main.lean | C2: main bound `R ≤ 2 * C.length` | 63 |
+| QuantumFoundations/Complexity/ProxyDefs.lean | C3: exact distinguishability and interference proxies | 82 |
+| QuantumFoundations/Complexity/NormalizedBranches.lean | C3: normalization of nonzero recorded branches | 83 |
+| QuantumFoundations/Complexity/ProxyCertificates.lean | C3: relational certificates and `ceilHalf` | 96 |
+| QuantumFoundations/Complexity/RecordInterferenceBound.lean | C4: two-orientation interference bound | 96 |
+| QuantumFoundations/Complexity/RecordDistinguishability.lean | C5: exact phase-flip readout | 114 |
+| QuantumFoundations/Complexity/BranchGap.lean | C6: subtraction-free gap certificate | 50 |
+| QuantumFoundations/Complexity/MinComplexity.lean | C6: `WithTop ℕ` minima and actual gap | 180 |
 | QuantumFoundations.lean | Root import aggregator | 43 |
-| Recomputed total | 44 files | 9037 |
+| Recomputed total | 51 files | 9781 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1204,6 +1271,14 @@ initial plans).
 | C0 | Finite circuits of unitary gates supported on at most two sites | ✅ |
 | C1 | Commutation away from the support and zero cross amplitude | ✅ |
 | C2 | Independent counting and exact bound `R ≤ 2 * C.length` | ✅ |
+| C3 | Exact proxy predicates, normalized branches, and relational certificates | ✅ |
+| C4 | Interference lower bound `ceilHalf R` from redundant records | ✅ |
+| C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
+| C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
+| C3 | Exact proxy predicates, normalized branches, and relational certificates | ✅ |
+| C4 | Interference lower bound `ceilHalf R` from redundant records | ✅ |
+| C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
+| C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
 
 ## Main theorems — reference table
 
@@ -1220,6 +1295,10 @@ initial plans).
 | grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
 | contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | HistoriesKent/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
 | regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R ≤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | — |
+| redundant_records_give_interference_lower_bound | Every circuit satisfying the exact proxy has length at least `ceilHalf R` | Exact proxy + C2 in both orientations | Complexity/RecordInterferenceBound.lean (96) | 0 sorry, 0 axioms | — |
+| record_phase_flip_gives_distinguishability_upper_bound | A circuit implementing `2 P_j - I` distinguishes normalized branches at threshold `δ ≤ 1` | Exact record readout | Complexity/RecordDistinguishability.lean (114) | 0 sorry, 0 axioms | — |
+| redundant_records_give_proxy_gap_certificate | `D.length + g ≤ ceilHalf R` certifies a proxy gap of at least `g` | Composition of C4/C5 certificates | Complexity/BranchGap.lean (50) | 0 sorry, 0 axioms | — |
+| redundant_records_complexity_gap | The same gap holds for exact `WithTop ℕ` minima | Infimum of circuit lengths | Complexity/MinComplexity.lean (180) | 0 sorry, 0 axioms | — |
 
 “0 axioms” means dependence only on
 [propext, Classical.choice, Quot.sound], verified by #print axioms for

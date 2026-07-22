@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact redundant-record interference bound (C0–C2)
+## Complexity — exact redundant-record proxy gap (C0–C6)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2574,10 +2574,53 @@ those branches, then `R ≤ 2 * C.length`.
   `#print axioms` outputs are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C2 (future extensions, not deficiencies)
+### C3 — exact proxies, normalized branches, and certificates — ✅ CLOSED
 
-- Distinguishability complexity and the full Taylor–McCulloch good-branch
-  criterion.
+- [x] Division-free `DistinguishesAt` and two-cross-term `InterferesAt`.
+- [x] `normalizedBranch`, with unit norm and nonzeroness only under an
+  explicit nonzero raw-branch hypothesis; zero branches remain definitionally
+  normalized to zero and are excluded from the record theorems.
+- [x] Exact record-projector actions and orthogonality for normalized branches.
+- [x] Relational lower-, upper-, and subtraction-free gap certificates.
+- [x] `ceilHalf R := (R + 1) / 2` and the pure-natural arithmetic bridge from
+  `R ≤ 2 * k`.
+
+### C4 — interference lower bound from redundant records — ✅ CLOSED
+
+- [x] Both cross-amplitude orientations are split explicitly.
+- [x] C2 is reused with swapped labels in one branch; its counting proof is
+  not duplicated.
+- [x] Locality is required for both target labels `i` and `j`, since either
+  cross term may be the nonzero one.
+- [x] `redundant_records_give_interference_lower_bound` proves the exact
+  per-circuit lower certificate `ceilHalf R`.
+
+### C5 — distinguishability from an explicit record phase flip — ✅ CLOSED
+
+- [x] `ImplementsRecordPhaseFlip e D Λ j` is exact equality with `2 P_j - I`.
+- [x] The phase flip acts by `-1` on the distinct branch and `+1` on the target
+  branch, yielding diagonal separation of norm exactly two.
+- [x] The supplied circuit `D` witnesses the upper bound `D.length`; no
+  synthesis theorem is inferred from locality.
+- [x] The optional one-gate corollary was not needed and was not added.
+
+### C6 — proxy gap and exact minima — ✅ CLOSED
+
+- [x] `redundant_records_give_proxy_gap_certificate` combines C4 and C5 before
+  any infimum is introduced.
+- [x] `minCircuitLength` uses an `iInf` in `WithTop ℕ`; an empty predicate has
+  value `⊤`.
+- [x] Interference and distinguishability minimum complexities are bridged
+  from their relational certificates.
+- [x] `redundant_records_complexity_gap` proves the subtraction-free actual
+  gap; truncated subtraction and `⊤` are never mixed.
+- [x] Requested main-theorem axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C6 (future extensions, not deficiencies)
+
+- Efficient synthesis of arbitrary local record projectors and the full
+  physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
 - Approximate records and quantitative robustness estimates.
 - Conditional persistence under Hamiltonian evolution.
 - Brown–Susskind complexity growth and canonical uniqueness of branch
@@ -2585,12 +2628,13 @@ those branches, then `R ≤ 2 * C.length`.
 
 ### Résumé français
 
-Les jalons C0–C2 établissent uniquement la borne exacte et
-fini-dimensionnelle `R ≤ 2 * C.length`. La syntaxe des circuits, la preuve
-opératorielle d’annulation et le comptage fini sont séparés. Les extensions
-aux records approximatifs, à la complexité de distinguabilité et à la
+Les jalons C0–C6 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
+de complexité exacts, leurs certificats relationnels, puis le gap sans
+soustraction dans `WithTop ℕ`. La syntaxe des circuits, la preuve opératorielle,
+le comptage, les certificats et les minima restent séparés. Les extensions aux
+records approximatifs, à la synthèse générale de circuits de lecture et à la
 persistance conditionnelle restent des travaux futurs distincts, et ne sont
-pas des manques de ce jalon.
+pas des manques de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

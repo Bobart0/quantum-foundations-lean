@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C2) — exact 2-local interference bound
+## Complexity (C0–C6) — exact 2-local proxy gap
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -899,18 +899,49 @@ the user's discretion before publication.
   `Circuit.eval`/`Circuit.support`. The only analytic bridge needed was
   deconjugating commutation through `e`; the cross-amplitude calculation then
   follows the four transparent projector equalities directly.
+- **Exact proxies (C3).** `DistinguishesAt` and `InterferesAt` use the
+  division-free inequalities `2 * δ ≤ ‖diagonal difference‖` and
+  `2 * δ ≤ ‖cross₁‖ + ‖cross₂‖`. `normalizedBranch` is a complex scalar
+  multiple of the existing unnormalized `branch`; unit norm and nonzeroness
+  are only asserted under an explicit nonzero-branch hypothesis. The
+  relational `HasInterferenceLowerBound`,
+  `HasDistinguishabilityUpperBound`, and `HasProxyGapAtLeast` certificates
+  were completed before defining any infimum.
+- **Two cross orientations (C4).** A positive interference proxy only gives a
+  disjunction between oppositely oriented cross amplitudes. C2 is therefore
+  applied once with `(i,j)` and once with swapped labels. Locality of the
+  transported record projector is required separately for both target labels;
+  assuming it only for `j` would be unsound.
+- **Explicit readout cost (C5).** `ImplementsRecordPhaseFlip e D Λ j` is the
+  exact operator equality `Circuit.evalOnH D e = 2 • rproj Λ j - id`.
+  The circuit `D` is supplied as a witness: spatial locality alone does not
+  imply a constant-size synthesis. No optional one-gate corollary was needed.
+- **Certificates before minima (C6).** The physical gap theorem first combines
+  the C4 lower certificate and C5 witness with
+  `D.length + g ≤ ceilHalf R`. Only then is
+  `minCircuitLength P := ⨅ C, if P C then ↑C.length else ⊤` introduced in
+  `WithTop ℕ`. Subtraction is avoided because it is truncated on naturals and
+  interacts poorly with `⊤`; the final statement is
+  `distinguishabilityComplexity + g ≤ interferenceComplexity`.
+- **C3–C6 API friction.** The normalization proof needed explicit complex
+  coercions for the inverse real norm. The `iInf` encoding needed a local
+  classical decidability choice for `if P C`; casts between `ℕ` and
+  `WithTop ℕ` were discharged explicitly with `exact_mod_cast`. No attainment
+  theorem was required.
 
 ### English summary
 
-The Complexity block keeps circuit syntax, operator locality, and finite
-counting in separate files. Gates are exact unitaries on `Sites N d`, circuit
-lists act head-first, and `evalOnH` explicitly conjugates through the chosen
-site/Hilbert-space isometry. C1 reuses `commute_of_disjoint`,
-`branch_wellDefined`, `rproj_contract_apply`, and
-`Submodule.starProjection_isSymmetric`. C2 uses a new Hilbert-space-free
-injection lemma because `pigeonhole_corollary` concerns `PairCovers`, singleton
-supports, equal family sizes, and `3 ≤ R`, none of which matches the desired
-quantitative bound for arbitrary 2-local circuit lists.
+The Complexity block keeps circuit syntax, operator locality, finite counting,
+proxy certificates, and order-theoretic minima in separate files. Gates are
+exact unitaries on `Sites N d`, circuit lists act head-first, and `evalOnH`
+explicitly conjugates through the chosen site/Hilbert-space isometry. C1
+reuses `commute_of_disjoint`, `branch_wellDefined`, `rproj_contract_apply`,
+and `Submodule.starProjection_isSymmetric`. C2 uses a new Hilbert-space-free
+injection lemma because `pigeonhole_corollary` does not match arbitrary
+2-local circuit lists. C3–C6 add exact normalized-branch proxies, handle both
+cross-amplitude orientations, use a supplied phase-flip circuit, prove the
+subtraction-free certificate first, and only then package minima in
+`WithTop ℕ`.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

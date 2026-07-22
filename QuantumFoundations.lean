@@ -36,6 +36,13 @@ import QuantumFoundations.BranchesRiedel.TwoObs
 import QuantumFoundations.BranchesRiedel.Induction
 import QuantumFoundations.BranchesRiedel.Local
 import QuantumFoundations.Complexity.Main
+import QuantumFoundations.Complexity.ProxyDefs
+import QuantumFoundations.Complexity.NormalizedBranches
+import QuantumFoundations.Complexity.ProxyCertificates
+import QuantumFoundations.Complexity.RecordInterferenceBound
+import QuantumFoundations.Complexity.RecordDistinguishability
+import QuantumFoundations.Complexity.BranchGap
+import QuantumFoundations.Complexity.MinComplexity
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations
