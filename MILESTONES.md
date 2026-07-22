@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact and approximate redundant-record proxy gaps (C0–C8)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C9)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2670,12 +2670,41 @@ those branches, then `R ≤ 2 * C.length`.
 - [x] All requested C8 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C8 (future extensions, not deficiencies)
+### C9 — explicit finite repetition-record model — ✅ CLOSED
+
+- [x] **C9a:** `zeroBranch R` and `oneBranch R` are the transported
+  computational basis vectors for the constant bit strings; both have norm
+  one and are orthogonal. `repetitionState R` is their deliberately
+  unnormalized coherent sum.
+- [x] **C9b:** every singleton `{r}` carries the binary resolution obtained
+  by transporting the two coordinate-cell subspaces. The projectors are
+  local to `{r}`, fix their matching branch, kill the other branch, and give
+  both `IsRecordedOn` and the zero-error `ApproxRecordedPairOn` witness.
+- [x] **C9c–C9d:** reflection in the bit-one cell at site zero is a one-gate
+  exact implementation of `2 P₁ - I`. No empty circuit distinguishes two
+  unit vectors at threshold one, hence the model has exactly `C_D = 1`.
+- [x] **C9e:** one explicit Pauli-X gate per site, ordered by `List.finRange`,
+  exchanges the two branches. Its length is exactly `R`, proving
+  `C_I ≤ R` and in particular `C_I ≠ ⊤`.
+- [x] **C9f:** the existing redundant-record theorem supplies
+  `ceilHalf R ≤ C_I`; together with the explicit witness this gives
+  `ceilHalf R ≤ C_I ≤ R`. Every `1 + g ≤ ceilHalf R` yields both the
+  relational and minimum-level subtraction-free gap.
+- [x] **C9g:** the existing canonical-inverse persistence theorem specializes
+  exactly to `1 + 4 * E.length + g ≤ ceilHalf R`.
+- [x] Requested axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+- [ ] **Optional C9h sharpness:** not claimed. Mathlib exposes no ready-made
+  consecutive pairing of `Fin R`; a proof would require a new paired-support
+  partition/locality layer disproportionate to the optional corollary. The
+  mandatory linear bounds remain `ceilHalf R ≤ C_I ≤ R`.
+
+### Explicitly outside C0–C9 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
 - Formation or generic existence of approximate records from decoherence.
-- Explicit redundant-record models, short readout-circuit synthesis, and the
+- Explicit noisy repetition records, circuit-generation dynamics, and the
   optional operator-norm-to-pointwise-readout bridge.
 - Persistence for arbitrary Hamiltonian or continuous-time evolution and
   generic circuit-complexity growth.
@@ -2686,7 +2715,7 @@ those branches, then `R ≤ 2 * C.length`.
 
 ### Résumé français
 
-Les jalons C0–C8 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
+Les jalons C0–C9 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
 de complexité exacts, leurs certificats relationnels, puis le gap sans
 soustraction dans `WithTop ℕ`. La syntaxe des circuits, la preuve opératorielle,
 le comptage, les certificats et les minima restent séparés. C7 ajoute la
@@ -2694,8 +2723,11 @@ persistance conditionnelle sous une paire explicite de circuits inverses : le
 gap perd au plus deux fois le surcoût de conjugaison, soit `4 * E.length`
 pour l'inverse canonique construit. C8 ajoute les records approximatifs avec
 la borne croisée nette `η`, le seuil `ηi + ηj < 2δ`, la perte diagonale
-`2ηj + ξ` et la persistance sans nouvelle erreur analytique. La construction
-dynamique de ces records, la synthèse générale de circuits de lecture, les
+`2ηj + ξ` et la persistance sans nouvelle erreur analytique. C9 fournit en
+outre un modèle concret de répétition : `C_D = 1`,
+`ceilHalf R ≤ C_I ≤ R`, un gap croissant et le budget de persistance fini
+`1 + 4 * E.length + g ≤ ceilHalf R`. La construction dynamique de ces records,
+la synthèse générale de circuits de lecture, les
 évolutions hamiltoniennes générales et les conjectures de croissance restent
 des travaux futurs distincts, et ne sont pas des manques de ces jalons.
 

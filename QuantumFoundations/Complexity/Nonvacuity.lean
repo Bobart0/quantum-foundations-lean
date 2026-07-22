@@ -1,7 +1,8 @@
 import QuantumFoundations.Complexity.ApproxRecordPersistence
+import QuantumFoundations.Complexity.Models.Repetition.Persistence
 
 /-!
-# C0/C6/C7/C8 — Non-vacuity
+# C0/C6/C7/C8/C9 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -9,6 +10,8 @@ inhabited without any physical assumption.  C7's reversible-evolution
 certificate is inhabited by the empty circuit in both directions.
 Exact record and phase-flip hypotheses also inhabit their C8 approximate
 counterparts at error zero, and monotonicity enlarges any such error budget.
+C9 supplies the concrete repetition-record model: exact records, a one-gate
+readout, and a finite interference witness all coexist in one explicit family.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -103,6 +106,43 @@ example (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (D : Circuit N d)
     (a b : H (d ^ N)) (hD : ImplementsRecordPhaseFlip e D Λ j) :
     ApproximatesRecordPhaseFlipOn e D Λ j a b 0 :=
   implementsRecordPhaseFlip_gives_approximation_zero e D Λ j a b hD
+
+namespace RepetitionModel
+
+/-- The explicit coherent repetition state satisfies every exact record in
+its singleton family. -/
+example (R : ℕ) [NeZero R] :
+    IsRecordedOn (repetitionState R) (repetitionRecords R) :=
+  repetitionState_isRecordedOn R
+
+/-- The abstract readout-circuit assumption is inhabited by the concrete
+one-gate reflection. -/
+example (R : ℕ) [NeZero R] :
+    ImplementsRecordPhaseFlip (sitesEquivR R) (recordReadoutCircuit R)
+      (repetitionRecords R (firstSite R)) 1 :=
+  recordReadoutCircuit_implements_phase_flip R
+
+/-- Interference at threshold one has the explicit finite witness of length
+`R`. -/
+example (R : ℕ) :
+    InterferesAt (sitesEquivR R) (zeroBranch R) (oneBranch R) 1
+      (allBitFlipCircuit R) :=
+  repetition_interferesAt_one R
+
+/-- Consequently the explicit model's interference minimum is finite. -/
+example (R : ℕ) :
+    interferenceComplexity
+      (sitesEquivR R) (zeroBranch R) (oneBranch R) 1 ≠ ⊤ :=
+  repetition_interferenceComplexity_ne_top R
+
+/-- The exact repetition records inhabit the approximate framework with
+zero error in both label orientations. -/
+example (R : ℕ) [NeZero R] :
+    ApproxRecordedPairOn (repetitionRecords R)
+      (zeroBranch R) (oneBranch R) 0 1 0 0 :=
+  repetition_approxRecordedPair_zero R
+
+end RepetitionModel
 
 end
 

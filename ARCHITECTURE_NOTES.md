@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C8) — exact and robust 2-local proxy gaps
+## Complexity (C0–C9) — exact, robust, and explicit 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -1006,7 +1006,40 @@ the user's discretion before publication.
   `recordPhaseFlip` currently use plain `LinearMap`; the Complexity and
   BranchesRiedel APIs contain no `ContinuousLinearMap`/operator-norm layer.
   Adding one solely for the optional `2ε` pointwise bridge would be a broad
-  representation change, so that bridge is recorded as C9 work.
+  representation change, so that bridge remains future C10 work.
+
+- **Explicit repetition model (C9).** `configurationEquiv R` uses
+  `finFunctionFinEquiv.symm`, and `sitesEquivR` reindexes the standard
+  `H (2^R)` coordinates onto binary site configurations. `zeroBranch` and
+  `oneBranch` are the constant-zero/constant-one basis vectors transported
+  back through this equivalence. `repetitionState` is their unnormalized sum;
+  only its component branches are required and proved to have unit norm.
+- **Coordinate records.** At site `r`, `sitesCell R r b` is the span of basis
+  configurations with coordinate `b`. Its transported pair of orthogonal
+  subspaces is `siteResolution R r`. Orthogonal-projection transport uses
+  `Submodule.starProjection_map_apply`; locality is proved directly from the
+  diagonal matrix kernel. Singleton regions are independent because distinct
+  singletons are disjoint.
+- **Concrete readout.** The readout gate is the Mathlib orthogonal reflection
+  in the bit-one cell at `firstSite R`, hence exactly `2 P₁ - I`. Its locality
+  proof computes the `±1` diagonal kernel rather than unfolding the internal
+  `LinearIsometryEquiv` structure. The singleton circuit has length one and
+  gives `distinguishabilityComplexity = 1`; the reverse inequality uses that
+  every zero-length list is empty and acts identically.
+- **Concrete interference.** `bitFlipConfigurationEquiv` is a pointwise
+  `Equiv.swap 0 1` at one coordinate, lifted by `piLpCongrLeft`. The circuit
+  maps `bitFlipGate` over `List.finRange R`; a fold invariant proves that each
+  coordinate is flipped exactly once. Thus it exchanges the two branches,
+  has length `R`, and proves the interference minimum is finite.
+- **C9 quantitative closure.** Instantiating C4–C7, rather than reproving them,
+  gives `ceilHalf R ≤ C_I ≤ R`, `C_D = 1`, every gap satisfying
+  `1 + g ≤ ceilHalf R`, and the evolved certificate under
+  `1 + 4 * E.length + g ≤ ceilHalf R`.
+- **Optional sharpness not implemented.** No existing Mathlib equivalence
+  directly pairs consecutive elements of arbitrary `Fin R`. Exact attainment
+  at `ceilHalf R` would require new paired-support coverage, cardinality, and
+  simultaneous-flip locality infrastructure. C9 therefore makes only the
+  mandatory linear bounds and no false exactness claim.
 
 ### English summary
 
@@ -1028,7 +1061,11 @@ Hamiltonian or asymptotic persistence claim. C8 replaces exact projector
 actions by an aggregated fixing-plus-leakage budget, obtains the sharp
 one-record cross bound `η`, uses the two-label threshold
 `ηi + ηj < 2δ`, and accounts for approximate readout by the diagonal loss
-`2ηj + ξ`. Exact C7 transport adds no further analytic error.
+`2ηj + ξ`. Exact C7 transport adds no further analytic error. C9 then
+instantiates the whole stack in the binary repetition model: exact singleton
+records, a one-gate phase readout, an `R`-gate all-bit-flip witness,
+`C_D = 1`, `ceilHalf R ≤ C_I ≤ R`, and the concrete finite-circuit
+persistence budget `1 + 4 * E.length + g ≤ ceilHalf R`.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 
