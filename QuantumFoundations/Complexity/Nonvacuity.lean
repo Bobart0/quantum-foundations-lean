@@ -3,9 +3,10 @@ import QuantumFoundations.Complexity.Models.Repetition.Persistence
 import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
 import QuantumFoundations.Complexity.OperatorNorm.Nonvacuity
+import QuantumFoundations.Complexity.SimulatedEvolution.Nonvacuity
 
 /-!
-# C0/C6/C7/C8/C9/C10/C11/C12 — Non-vacuity
+# C0/C6/C7/C8/C9/C10/C11/C12/C13 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -35,6 +36,13 @@ predicates at error zero, monotonicity extends this to every nonnegative
 budget (in particular to a concrete nonzero `1/20` budget), and the same
 robust proxy-gap and persistence conclusions follow for both the static C10
 noisy model and C11's dynamically generated branches.
+C13 supplies robust persistence of the proxy-complexity gap under an actual
+norm-preserving evolution approximated in operator norm by a finite
+circuit, via a mandatory threshold margin `μ`: the identity evolution is
+exactly simulated (error zero) by the empty circuit, so the new
+simulation-certificate predicates are genuinely inhabited, and monotonicity
+carries this exact witness to the concrete `1/20` evolution-simulation
+error budget used throughout C13.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -349,6 +357,32 @@ example (R : ℕ) [NeZero R]
     g hgap
 
 end OperatorNorm
+
+namespace SimulatedEvolution
+
+open QuantumFoundations.Complexity.RepetitionModel
+open QuantumFoundations.Complexity.NoisyRepetitionModel
+
+/-- The identity evolution is exactly simulated (operator-norm error `0`) by
+the empty circuit; see
+`QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean` for the
+full non-vacuity account, including the concrete `1/20` evolution-simulation
+budget and C11's dynamically generated branches. -/
+example {N d : ℕ} (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (t : ℝ) :
+    CircuitSimulatesEvolutionAt (identityEvolution (H (d ^ N))) e t [] 0 :=
+  identityEvolution_simulated_by_empty_circuit e t
+
+/-- The concrete `1/20`-error simulated-evolution gap theorem is inhabited:
+the identity evolution, exactly simulated by the empty circuit, already
+satisfies the `1/20` budget by monotonicity. -/
+example (R : ℕ) [NeZero R] (g : ℕ) (hBudget : 1 + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      ((identityEvolution (H (2 ^ (R + 1)))).evolve 0 (noisyZeroBranch rationalNoiseProfile R))
+      ((identityEvolution (H (2 ^ (R + 1)))).evolve 0 (noisyOneBranch rationalNoiseProfile R))
+      (1 / 2 : ℝ) g :=
+  concrete_gap_persists_nonvacuous R g hBudget
+
+end SimulatedEvolution
 
 end
 
