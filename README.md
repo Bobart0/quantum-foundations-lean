@@ -10,7 +10,7 @@ mécanisés, **sans axiome**
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-23, fichiers du projet hors scratch) :
-108 fichiers `.lean`, 18125 lignes, 650 déclarations publiques (`theorem`), 0
+108 fichiers `.lean`, 18125 lignes, 589 déclarations publiques (`theorem`), 0
 `sorry`, 0 axiome propre au projet. Le bloc Complexity compte 70 fichiers et
 9490 lignes, dont 12 fichiers et 1224 lignes pour le nouveau jalon C13 de
 persistance sous évolution simulée. Les
@@ -977,7 +977,7 @@ without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-23, project files excluding scratch):
-108 `.lean` files, 18,125 lines, 650 public declarations (`theorem`), 0
+108 `.lean` files, 18,125 lines, 589 public declarations (`theorem`), 0
 `sorry`, and 0 project-specific axioms. The Complexity block contains 70
 files and 9,490 lines, of which 12 files and 1,224 lines are the new C13
 simulated-evolution persistence milestone. The
