@@ -401,8 +401,92 @@ theorem recordCatPreparation_maps_basis10 (p : NoiseProfile) (R : ℕ) [NeZero R
   rw [profilePreparationGate_maps_basis10, map_add, map_smul, map_smul,
     recordCatFanout_maps_basis10, recordCatFanout_maps_flippedFirst_config10]
 
+/-! ## C11g.1 — The full noisy generation circuit -/
+
+/-- The complete unitary generation circuit: prepare a correlated pair of
+records at the first record site, cat-fanout that pair's bit to every other
+record, then source-fanout onto every record (including the first). -/
+def noisyMeasurementCircuit (p : NoiseProfile) (R : ℕ) [NeZero R] : Circuit (R + 1) 2 :=
+  recordCatPreparationCircuit p R ++ idealFanoutCircuit R
+
+@[simp] theorem noisyMeasurementCircuit_length (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    (noisyMeasurementCircuit p R).length = 2 * R := by
+  show List.length (recordCatPreparationCircuit p R ++ idealFanoutCircuit R) = 2 * R
+  rw [List.length_append]
+  have h1 : List.length (recordCatPreparationCircuit p R) = R :=
+    recordCatPreparationCircuit_length p R
+  have h2 : List.length (idealFanoutCircuit R) = R := idealFanoutCircuit_length R
+  omega
+
+/-- On blank records (`config00`), the full generation circuit produces
+exactly the noisy-zero-branch. -/
+theorem noisyMeasurement_maps_basis00 (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit p R) (sitesEquivR (R + 1)) (basis00 R) =
+      noisyZeroBranch p R := by
+  unfold noisyMeasurementCircuit noisyZeroBranch
+  rw [evalOnH_append_apply, recordCatPreparation_maps_basis00, map_add, map_smul, map_smul,
+    idealFanout_maps_basis00, idealFanout_maps_basis01]
+
+/-- On blank records (`config10`), the full generation circuit produces
+exactly the noisy-one-branch: the source fanout exchanges the `keep`/`leak`
+roles left over from `recordCatPreparation_maps_basis10`, restoring the
+correct `noisyOneBranch` weighting. -/
+theorem noisyMeasurement_maps_basis10 (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit p R) (sitesEquivR (R + 1)) (basis10 R) =
+      noisyOneBranch p R := by
+  unfold noisyMeasurementCircuit noisyOneBranch
+  rw [evalOnH_append_apply, recordCatPreparation_maps_basis10, map_add, map_smul, map_smul,
+    idealFanout_maps_basis10, idealFanout_maps_basis11,
+    add_comm (p.keep • basis11 R) (p.leak • basis10 R)]
+
+/-! ## C11g.2 — Generic branching from a source superposition -/
+
+/-- Pre-generation state: source superposition, all records blank. -/
+def noisyInputState (α β : ℂ) (R : ℕ) [NeZero R] : H (2 ^ (R + 1)) :=
+  α • basis00 R + β • basis10 R
+
+/-- Post-generation state: each source branch carries its own noisy
+redundant-record tail. -/
+def noisyGeneratedState (α β : ℂ) (p : NoiseProfile) (R : ℕ) [NeZero R] : H (2 ^ (R + 1)) :=
+  α • noisyZeroBranch p R + β • noisyOneBranch p R
+
+/-- The full generation circuit turns a source superposition over blank
+records into the noisy branching decomposition, by linearity from the two
+basis actions.  This is unitary measurement correlation via computational-
+basis fanout and local amplitude mixing: the source qubit's own amplitudes
+`α, β` are never copied, only its classical label is correlated with the
+generated redundant records. -/
+theorem noisyMeasurement_generates_branching (α β : ℂ) (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit p R) (sitesEquivR (R + 1)) (noisyInputState α β R) =
+      noisyGeneratedState α β p R := by
+  unfold noisyInputState noisyGeneratedState
+  rw [map_add, map_smul, map_smul, noisyMeasurement_maps_basis00, noisyMeasurement_maps_basis10]
+
+/-! ## C11g.3 — Exact-profile regression -/
+
+theorem noisyZeroBranch_exactProfile (R : ℕ) : noisyZeroBranch exactProfile R = basis00 R := by
+  unfold noisyZeroBranch
+  simp
+
+theorem noisyOneBranch_exactProfile (R : ℕ) : noisyOneBranch exactProfile R = basis11 R := by
+  unfold noisyOneBranch
+  simp
+
+/-- Zero-leak regression: at the exact profile, the noisy generation
+circuit's action collapses to the ideal fanout's branching, recovering
+`idealFanout_generates_branching` as a special case. -/
+theorem noisyMeasurement_exactProfile (α β : ℂ) (R : ℕ) [NeZero R] :
+    Circuit.evalOnH (noisyMeasurementCircuit exactProfile R) (sitesEquivR (R + 1))
+        (noisyInputState α β R) =
+      idealOutputState α β R := by
+  rw [noisyMeasurement_generates_branching]
+  unfold noisyGeneratedState idealOutputState
+  rw [noisyZeroBranch_exactProfile, noisyOneBranch_exactProfile]
+
 #print axioms recordCatPreparation_maps_basis00
 #print axioms recordCatPreparation_maps_basis10
+#print axioms noisyMeasurement_generates_branching
+#print axioms noisyMeasurement_exactProfile
 
 end
 
