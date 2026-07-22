@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact redundant-record proxy gap and persistence (C0–C7)
+## Complexity — exact and approximate redundant-record proxy gaps (C0–C8)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2644,11 +2644,39 @@ those branches, then `R ≤ 2 * C.length`.
 - [x] Requested C7 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C7 (future extensions, not deficiencies)
+### C8 — approximate records and quantitative robustness — ✅ CLOSED
+
+- [x] **C8a:** `ApproxRecordFor P target other η` aggregates the target
+  fixing defect and rejected-state leakage as
+  `‖P target - target‖ + ‖P other‖ ≤ η`; `ApproxRecordedPairOn` supplies the
+  two label budgets `ηi`, `ηj` region by region. Exact records inhabit both
+  predicates at error zero, and monotonicity enlarges the budgets.
+- [x] **C8b:** an untouched symmetric local projector gives the sharp estimate
+  `‖cross amplitude‖ ≤ η`; the two orientations sum to at most `ηi + ηj`.
+- [x] **C8c:** under the strict threshold `ηi + ηj < 2 * δ`, every region is
+  touched. Existing C2 counting yields `R ≤ 2 * C.length`, `ceilHalf R` as a
+  relational lower certificate, and the corresponding `WithTop ℕ` bound.
+- [x] **C8d:** `ApproximatesRecordPhaseFlipOn` gives an aggregate pointwise
+  readout error `ξ`. The diagonal gap is at least
+  `2 - (2 * ηj + ξ)`, so `2 * δ + 2 * ηj + ξ ≤ 2` supplies both the finite
+  distinguishability witness and the minimum upper bound.
+- [x] **C8e:** the approximate lower and upper certificates combine into a
+  subtraction-free robust proxy gap, then into the existing minimum layer.
+  Zero record/readout errors recover the exact C6 certificate.
+- [x] **C8f:** exact reversible proxy transport introduces no additional
+  analytic error. Persistence pays only `2 * Evo.overhead`, specialized to
+  `4 * E.length` for canonical circuit evolution; the minimum-level result
+  follows from the C7 API. Zero errors recover the exact C7 result.
+- [x] All requested C8 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C8 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
-- Approximate records and quantitative robustness estimates.
+- Formation or generic existence of approximate records from decoherence.
+- Explicit redundant-record models, short readout-circuit synthesis, and the
+  optional operator-norm-to-pointwise-readout bridge.
 - Persistence for arbitrary Hamiltonian or continuous-time evolution and
   generic circuit-complexity growth.
 - Brown–Susskind complexity growth and canonical uniqueness of branch
@@ -2658,16 +2686,18 @@ those branches, then `R ≤ 2 * C.length`.
 
 ### Résumé français
 
-Les jalons C0–C7 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
+Les jalons C0–C8 établissent la borne exacte `R ≤ 2 * C.length`, les proxies
 de complexité exacts, leurs certificats relationnels, puis le gap sans
 soustraction dans `WithTop ℕ`. La syntaxe des circuits, la preuve opératorielle,
 le comptage, les certificats et les minima restent séparés. C7 ajoute la
 persistance conditionnelle sous une paire explicite de circuits inverses : le
 gap perd au plus deux fois le surcoût de conjugaison, soit `4 * E.length`
-pour l'inverse canonique construit. Les records approximatifs, la synthèse
-générale de circuits de lecture, les évolutions hamiltoniennes générales et
-les conjectures de croissance restent des travaux futurs distincts, et ne
-sont pas des manques de ces jalons.
+pour l'inverse canonique construit. C8 ajoute les records approximatifs avec
+la borne croisée nette `η`, le seuil `ηi + ηj < 2δ`, la perte diagonale
+`2ηj + ξ` et la persistance sans nouvelle erreur analytique. La construction
+dynamique de ces records, la synthèse générale de circuits de lecture, les
+évolutions hamiltoniennes générales et les conjectures de croissance restent
+des travaux futurs distincts, et ne sont pas des manques de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

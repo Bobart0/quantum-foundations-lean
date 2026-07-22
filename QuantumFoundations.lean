@@ -49,6 +49,13 @@ import QuantumFoundations.Complexity.ProxyTransport
 import QuantumFoundations.Complexity.Persistence
 import QuantumFoundations.Complexity.RecordPersistence
 import QuantumFoundations.Complexity.PersistenceMinima
+import QuantumFoundations.Complexity.ApproxRecordDefs
+import QuantumFoundations.Complexity.ApproxRecordBasic
+import QuantumFoundations.Complexity.ApproxRecordInterference
+import QuantumFoundations.Complexity.ApproxRecordInterferenceBound
+import QuantumFoundations.Complexity.ApproxRecordDistinguishability
+import QuantumFoundations.Complexity.ApproxBranchGap
+import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations

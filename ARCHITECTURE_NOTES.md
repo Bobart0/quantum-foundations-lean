@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C7) — exact 2-local proxy gap and conditional persistence
+## Complexity (C0–C8) — exact and robust 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -969,6 +969,45 @@ the user's discretion before publication.
   with Weingarten's proposal, a Brown–Susskind result, or a proof of an
   interpretation of quantum mechanics.
 
+- **Aggregated approximate records (C8).** The primary predicate is exactly
+  `ApproxRecordFor P target other η :=
+  ‖P target - target‖ + ‖P other‖ ≤ η`.  The fixing defect and leakage are
+  aggregated because the untouched-cross-amplitude proof consumes their sum
+  directly, with no factor loss. `ApproxRecordedPairOn` assigns independent
+  budgets `ηi` and `ηj` to the two target labels on every region.
+- **Sharp untouched-region estimate.** The proof splits the target vector
+  into its projected part and defect, moves the symmetric projector across
+  the inner product, commutes it through the untouched circuit, and applies
+  Cauchy–Schwarz plus the unitary norm bound. It obtains
+  `‖cross amplitude‖ ≤ η`, hence the two proxy orientations total at most
+  `ηi + ηj`. Therefore the strict threshold `ηi + ηj < 2 * δ` forces every
+  record region to be touched; the existing C2 counting theorem is reused.
+- **Approximate explicit readout.** `ApproximatesRecordPhaseFlipOn` bounds the
+  sum of the circuit's pointwise errors on the two supplied unit vectors by
+  `ξ`. The ideal phase reflection together with the target-label approximate
+  record yields diagonal separation at least `2 - (2 * ηj + ξ)`. Thus
+  `2 * δ + 2 * ηj + ξ ≤ 2` is the exact sufficient distinguishability
+  threshold. The readout circuit remains explicit; locality alone still does
+  not provide a synthesis theorem.
+- **Robust gaps and persistence.** C8 first combines the robust lower and
+  upper relational certificates, then reuses the existing `WithTop ℕ`
+  minimum layer. Exact records and exact phase flips instantiate the new
+  predicates at errors zero, recovering C4–C6. C7's exact proxy conjugation
+  transports the resulting certificate without adding analytic error; only
+  the combinatorial budget pays `2 * Evo.overhead`, or `4 * E.length` for the
+  canonical inverse, recovering the exact C7 interface at zero error.
+- **C8 scope.** The results are quantitative consequences of supplied
+  approximate records and a supplied approximate readout on finite systems.
+  They do not construct such records from decoherence, synthesize arbitrary
+  record readouts, treat continuous-time/Hamiltonian simulation or complexity
+  growth, prove irreversible branching or branch uniqueness, establish a
+  Weingarten equivalence, or support an interpretive claim.
+- **Deferred operator-norm bridge.** `Circuit.evalOnH` and
+  `recordPhaseFlip` currently use plain `LinearMap`; the Complexity and
+  BranchesRiedel APIs contain no `ContinuousLinearMap`/operator-norm layer.
+  Adding one solely for the optional `2ε` pointwise bridge would be a broad
+  representation change, so that bridge is recorded as C9 work.
+
 ### English summary
 
 The Complexity block keeps circuit syntax, operator locality, finite counting,
@@ -985,7 +1024,11 @@ subtraction-free certificate first, and only then package minima in
 explicit reversible pair of finite circuits. General certificates lose at
 most two conjugation overheads; the constructed equal-length canonical
 inverse makes this `4 * E.length`. This is an exact conditional bound, not a
-Hamiltonian or asymptotic persistence claim.
+Hamiltonian or asymptotic persistence claim. C8 replaces exact projector
+actions by an aggregated fixing-plus-leakage budget, obtains the sharp
+one-record cross bound `η`, uses the two-label threshold
+`ηi + ηj < 2δ`, and accounts for approximate readout by the diagonal loss
+`2ηj + ξ`. Exact C7 transport adds no further analytic error.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

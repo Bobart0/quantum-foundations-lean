@@ -120,6 +120,37 @@ theorem approximate_records_complexity_gap_persists_under_reversible_evolution
   exact proxy_complexity_gap_persists_of_explicit_bounds Evo e a b δ
     (ceilHalf R) (Circuit.length D) hI hD g hbudget
 
+/-- Regression theorem: zero record/readout errors recover the exact C7
+persistence certificate through the C8 interface. -/
+theorem exact_records_recover_approximate_gap_persistence
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K) (ψ : H (d ^ N))
+    (hrec : IsRecordedOn ψ recs) (r₀ : Fin R) (i j : Fin K) (hij : i ≠ j)
+    (hi : branch recs ψ i ≠ 0) (hj : branch recs ψ j ≠ 0)
+    (hlocal_i : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) i) (regions r))
+    (hlocal_j : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (δ : ℝ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (D : Circuit N d) (hD : ImplementsRecordPhaseFlip e D (recs r₀) j)
+    (Evo : ReversibleCircuitEvolution N d) (g : ℕ)
+    (hbudget : Circuit.length D + 2 * Evo.overhead + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast e
+      (Circuit.evalOnH Evo.forward e (normalizedBranch recs ψ i))
+      (Circuit.evalOnH Evo.forward e (normalizedBranch recs ψ j)) δ g := by
+  exact approximate_records_gap_persists_under_reversible_evolution
+    e regions recs (normalizedBranch recs ψ i) (normalizedBranch recs ψ j)
+    r₀ i j 0 0 0 δ
+    (normalizedBranch_norm recs ψ i hi) (normalizedBranch_norm recs ψ j hj)
+    (exact_records_give_approxRecordedPairOn_zero recs ψ hrec i j hij hi hj)
+    hlocal_i hlocal_j hpairwise (by linarith) D
+    (implementsRecordPhaseFlip_gives_approximation_zero
+      e D (recs r₀) j (normalizedBranch recs ψ i) (normalizedBranch recs ψ j) hD)
+    (by linarith) Evo g hbudget
+
 #print axioms approximate_records_gap_persists_under_reversible_evolution
 #print axioms approximate_records_gap_persists_under_circuit_evolution
 #print axioms approximate_records_complexity_gap_persists_under_reversible_evolution

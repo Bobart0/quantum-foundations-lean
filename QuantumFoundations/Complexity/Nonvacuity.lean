@@ -1,12 +1,14 @@
-import QuantumFoundations.Complexity.PersistenceMinima
+import QuantumFoundations.Complexity.ApproxRecordPersistence
 
 /-!
-# C0/C6/C7 — Non-vacuity
+# C0/C6/C7/C8 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
 inhabited without any physical assumption.  C7's reversible-evolution
 certificate is inhabited by the empty circuit in both directions.
+Exact record and phase-flip hypotheses also inhabit their C8 approximate
+counterparts at error zero, and monotonicity enlarges any such error budget.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -81,6 +83,26 @@ example (E : Circuit N d) (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
     (a : H (d ^ N)) (ha : ‖a‖ = 1) :
     ‖Circuit.evalOnH E e a‖ = 1 := by
   exact Circuit.evalOnH_unit E e ha
+
+/-- Exact fixing and rejection are an approximate record with zero error. -/
+example (P : H n →ₗ[ℂ] H n) (target other : H n)
+    (hfix : P target = target) (hreject : P other = 0) :
+    ApproxRecordFor P target other 0 :=
+  approxRecordFor_zero_of_fixes_rejects hfix hreject
+
+/-- Any nonnegative budget weakens the preceding exact witness. -/
+example (P : H n →ₗ[ℂ] H n) (target other : H n)
+    (hfix : P target = target) (hreject : P other = 0)
+    (η : ℝ) (hη : 0 ≤ η) : ApproxRecordFor P target other η := by
+  exact (approxRecordFor_zero_of_fixes_rejects hfix hreject).mono hη
+
+/-- An exact record phase flip is an approximate implementation at error
+zero. -/
+example (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (D : Circuit N d)
+    (Λ : LabeledResolution (d ^ N) K) (j : Fin K)
+    (a b : H (d ^ N)) (hD : ImplementsRecordPhaseFlip e D Λ j) :
+    ApproximatesRecordPhaseFlipOn e D Λ j a b 0 :=
+  implementsRecordPhaseFlip_gives_approximation_zero e D Λ j a b hD
 
 end
 

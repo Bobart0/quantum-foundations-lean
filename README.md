@@ -4,14 +4,15 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C7.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C8.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-57 fichiers `.lean`, 10681 lignes, 356 déclarations publiques, 0 `sorry`,
-0 axiome propre au projet. Les
+64 fichiers `.lean`, 11622 lignes, 390 déclarations publiques, 0 `sorry`,
+0 axiome propre au projet. Le bloc Complexity compte 26 fichiers et 2992
+lignes. Les
 théorèmes principaux du nouveau bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
@@ -334,7 +335,8 @@ extension future possible, voir `MILESTONES.md`.
 
 ## Borne de circuit d’interférence par records redondants (Complexity)
 
-Le bloc `QuantumFoundations.Complexity` relie les records spatiaux exacts de
+Le bloc `QuantumFoundations.Complexity` relie les records spatiaux exacts ou
+approximatifs de
 Riedel aux circuits quantiques 2-locaux. Les circuits sont des listes finies
 de portes unitaires, chacune locale à un `Finset (Fin N)` de cardinal au plus
 deux. Pour `[G₁, G₂, G₃]`, la convention est
@@ -407,11 +409,46 @@ exacte sur les records
 `WithTop ℕ` sont prouvées directement sous l'infimum, y compris dans le cas
 `⊤`, sans supposer qu'un minimum est atteint et sans soustraction.
 
+Le jalon C8 remplace les identités de record exactes par le budget agrégé
+`ApproxRecordFor P target other η :=
+‖P target - target‖ + ‖P other‖ ≤ η`. Cette agrégation correspond exactement
+aux deux termes produits par la décomposition projecteur/défaut : une région
+non touchée donne la constante nette `‖cross amplitude‖ ≤ η`. Pour les deux
+orientations du proxy, le budget devient `ηi + ηj`; la condition stricte
+`ηi + ηj < 2 * δ` force donc encore chaque région à être touchée.
+
+Le circuit de lecture explicite peut lui-même être approché sur les deux
+vecteurs, avec erreur agrégée `ξ`. La séparation diagonale idéale `2` se
+dégrade d'au plus `2 * ηj + ξ`, d'où le seuil suffisant
+`2 * δ + 2 * ηj + ξ ≤ 2`. Ces certificats donnent le gap robuste et sa version
+minimale. Le transport C7 étant une conjugaison unitaire exacte, il n'ajoute
+aucune erreur analytique : seul subsiste le coût combinatoire
+`2 * Evo.overhead`, ou `4 * E.length`. À `ηi = ηj = ξ = 0`, les résultats
+exacts C4–C7 sont retrouvés.
+
+Les trois prédicats robustes publics sont exactement :
+
+```lean
+ApproxRecordFor P target other η :=
+  ‖P target - target‖ + ‖P other‖ ≤ η
+
+ApproxRecordedPairOn recs a b i j ηi ηj := ∀ r,
+  ApproxRecordFor (rproj (recs r) i) a b ηi ∧
+  ApproxRecordFor (rproj (recs r) j) b a ηj
+
+ApproximatesRecordPhaseFlipOn e D Λ j a b ξ :=
+  ‖Circuit.evalOnH D e a - recordPhaseFlip Λ j a‖ +
+  ‖Circuit.evalOnH D e b - recordPhaseFlip Λ j b‖ ≤ ξ
+```
+
 Le résultat porte uniquement
-sur un nombre fini de sites, une dimension locale finie, des records exacts,
+sur un nombre fini de sites, une dimension locale finie, des records exacts
+ou des records approximatifs fournis,
 des régions deux-à-deux disjointes, des portes exactement 2-locales et une
-amplitude/proxy exactement non nulle. Il ne traite pas la robustesse de records
-approximatifs, la synthèse efficace de projecteurs locaux arbitraires, le
+amplitude/proxy au-dessus du seuil explicite. Il ne construit pas les records
+approximatifs depuis une dynamique de décohérence et ne traite pas la synthèse
+efficace de projecteurs locaux arbitraires, le pont optionnel depuis une borne
+en norme d’opérateur, les modèles explicites de records redondants, le
 critère physique complet de Taylor–McCulloch, la persistance sous évolution
 hamiltonienne arbitraire, la croissance générique de complexité, la croissance
 de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
@@ -533,7 +570,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7 : témoins élémentaires, minima extrêmes et évolution vide | 87 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8 : témoins élémentaires et régressions exactes | 109 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -551,6 +588,13 @@ affectée.
 | `QuantumFoundations/Complexity/Persistence.lean` | C7c : transport des certificats relationnels | 111 |
 | `QuantumFoundations/Complexity/RecordPersistence.lean` | C7d : bornes de persistance par records | 104 |
 | `QuantumFoundations/Complexity/PersistenceMinima.lean` | C7e : transport `WithTop ℕ` sans atteinte du minimum | 117 |
+| `QuantumFoundations/Complexity/ApproxRecordDefs.lean` | C8a : record approximatif à erreur agrégée | 78 |
+| `QuantumFoundations/Complexity/ApproxRecordBasic.lean` | C8a : paire enregistrée et pont exact | 64 |
+| `QuantumFoundations/Complexity/ApproxRecordInterference.lean` | C8b : borne nette d’amplitude croisée hors support | 132 |
+| `QuantumFoundations/Complexity/ApproxRecordInterferenceBound.lean` | C8c : borne d’interférence robuste et minima | 123 |
+| `QuantumFoundations/Complexity/ApproxRecordDistinguishability.lean` | C8d : lecture de phase approximative | 203 |
+| `QuantumFoundations/Complexity/ApproxBranchGap.lean` | C8e : gap proxy robuste et régression exacte | 152 |
+| `QuantumFoundations/Complexity/ApproxRecordPersistence.lean` | C8f : persistance conditionnelle du gap robuste | 160 |
 | `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 49 |
 | **Total recalculé**                          | **57 fichiers**                                                                   | **10681** |
 
@@ -624,6 +668,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C5 | Borne de distinguabilité issue d’un phase flip de record explicite | ✅ |
 | C6 | Gap sans soustraction et minima dans `WithTop ℕ` | ✅ |
 | C7 | Transport exact et persistance conditionnelle sous circuit réversible fini | ✅ |
+| C8 | Records approximatifs, bornes quantitatives et persistance conditionnelle | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -646,6 +691,11 @@ consolidée de tous les écarts vs les plans initiaux).
 | `redundant_records_complexity_gap` | Le même gap vaut pour les minima exacts dans `WithTop ℕ` | Infimum des longueurs de circuits | `Complexity/MinComplexity.lean` (180) | 0 sorry, 0 axiome | — |
 | `redundant_records_gap_persists_under_reversible_evolution` | Le gap de records persiste sous `D.length + 2 * overhead + g ≤ ceilHalf R` | Transport exact par paire de circuits inverses | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
 | `redundant_records_gap_persists_under_circuit_evolution` | Pour l'inverse canonique, le budget devient `D.length + 4 * E.length + g ≤ ceilHalf R` | Inverse local canonique + théorème précédent | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
+| `norm_cross_amplitude_le_of_untouched_approx_record` | Une région approximativement enregistrée et non touchée borne l’amplitude croisée par `η` | Décomposition projecteur/défaut + Cauchy–Schwarz | `Complexity/ApproxRecordInterference.lean` (132) | 0 sorry, 0 axiome | — |
+| `approximate_records_give_interference_lower_bound` | `ηi + ηj < 2δ` impose une longueur au moins `ceilHalf R` | Borne robuste + comptage C2 | `Complexity/ApproxRecordInterferenceBound.lean` (123) | 0 sorry, 0 axiome | — |
+| `approx_record_phase_flip_gives_upper_bound` | `2δ + 2ηj + ξ ≤ 2` fournit le témoin de distinguabilité | Lecture de phase approximative explicite | `Complexity/ApproxRecordDistinguishability.lean` (203) | 0 sorry, 0 axiome | — |
+| `approximate_records_give_proxy_gap_certificate` | Les deux seuils robustes et `D.length + g ≤ ceilHalf R` certifient le gap | Composition C8c/C8d | `Complexity/ApproxBranchGap.lean` (152) | 0 sorry, 0 axiome | — |
+| `approximate_records_gap_persists_under_circuit_evolution` | Le gap robuste persiste sous `D.length + 4 * E.length + g ≤ ceilHalf R` | Transport exact C7 du certificat C8 | `Complexity/ApproxRecordPersistence.lean` (160) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
@@ -716,14 +766,15 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C7
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C8
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-57 `.lean` files, 10,681 lines, 356 public declarations, 0 `sorry`, and 0
-project-specific axioms. The
+64 `.lean` files, 11,622 lines, 390 public declarations, 0 `sorry`, and 0
+project-specific axioms. The Complexity block contains 26 files and 2,992
+lines. The
 main theorems of the new Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
@@ -1059,7 +1110,7 @@ MILESTONES.md.
 
 ## Redundant-record interference-circuit bound (Complexity)
 
-`QuantumFoundations.Complexity` connects Riedel's exact spatial records to
+`QuantumFoundations.Complexity` connects Riedel's exact or approximate spatial records to
 exact 2-local quantum circuits. A circuit is a finite list of unitary gates,
 each local to a `Finset (Fin N)` of cardinality at most two. The evaluation
 convention is chronological: for `[G₁, G₂, G₃]`,
@@ -1112,11 +1163,24 @@ budget `D.length + 4 * E.length + g ≤ ceilHalf R`. The `WithTop ℕ` transport
 theorems work directly under the infimum, including `⊤`, without attainment
 or subtraction.
 
+C8 replaces the exact record identities by the aggregated predicate
+`‖P target - target‖ + ‖P other‖ ≤ η`. The projector/defect decomposition
+gives the sharp untouched cross-amplitude bound `η`; the two proxy
+orientations therefore require `ηi + ηj < 2 * δ`. A supplied readout circuit
+may have aggregate pointwise error `ξ`; its diagonal separation loses exactly
+`2 * ηj + ξ`, giving the sufficient threshold
+`2 * δ + 2 * ηj + ξ ≤ 2`. The robust certificates and `WithTop ℕ` bounds then
+reuse C6. Exact C7 conjugation adds no analytic error, only the existing
+twice-overhead circuit budget. Setting all errors to zero recovers C4–C7.
+
 The result is
-limited to finitely many sites, finite local dimension, exact records,
+limited to finitely many sites, finite local dimension, supplied exact or
+approximate records,
 pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
-amplitude/proxy. It does not establish approximate-record robustness,
-efficient synthesis of arbitrary local record projectors, the full physical Taylor–McCulloch
+amplitude/proxy above the explicit threshold. It does not construct
+approximate records from decoherence, establish efficient synthesis of
+arbitrary local record projectors, provide the optional operator-norm bridge
+or explicit redundant-record models, the full physical Taylor–McCulloch
 criterion, persistence under arbitrary Hamiltonian evolution, generic or
 Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
 with Weingarten, canonical uniqueness of branch decompositions, or any
@@ -1239,7 +1303,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7: elementary witnesses, extremal minima, and empty evolution | 87 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8: elementary witnesses and exact regressions | 109 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1257,6 +1321,13 @@ was affected.
 | QuantumFoundations/Complexity/Persistence.lean | C7c: relational certificate transport | 111 |
 | QuantumFoundations/Complexity/RecordPersistence.lean | C7d: redundant-record persistence bounds | 104 |
 | QuantumFoundations/Complexity/PersistenceMinima.lean | C7e: `WithTop ℕ` transport without attainment | 117 |
+| QuantumFoundations/Complexity/ApproxRecordDefs.lean | C8a: aggregated approximate-record predicate | 78 |
+| QuantumFoundations/Complexity/ApproxRecordBasic.lean | C8a: recorded pairs and exact bridge | 64 |
+| QuantumFoundations/Complexity/ApproxRecordInterference.lean | C8b: sharp untouched cross-amplitude bound | 132 |
+| QuantumFoundations/Complexity/ApproxRecordInterferenceBound.lean | C8c: robust interference bound and minima | 123 |
+| QuantumFoundations/Complexity/ApproxRecordDistinguishability.lean | C8d: approximate phase readout | 203 |
+| QuantumFoundations/Complexity/ApproxBranchGap.lean | C8e: robust proxy gap and exact regression | 152 |
+| QuantumFoundations/Complexity/ApproxRecordPersistence.lean | C8f: conditional robust-gap persistence | 160 |
 | QuantumFoundations.lean | Root import aggregator | 49 |
 | Recomputed total | 57 files | 10681 |
 
@@ -1331,6 +1402,7 @@ initial plans).
 | C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
 | C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
 | C7 | Exact transport and conditional persistence under finite reversible circuits | ✅ |
+| C8 | Approximate records, quantitative bounds, and conditional persistence | ✅ |
 
 ## Main theorems — reference table
 
@@ -1353,6 +1425,11 @@ initial plans).
 | redundant_records_complexity_gap | The same gap holds for exact `WithTop ℕ` minima | Infimum of circuit lengths | Complexity/MinComplexity.lean (180) | 0 sorry, 0 axioms | — |
 | redundant_records_gap_persists_under_reversible_evolution | The record gap persists under `D.length + 2 * overhead + g ≤ ceilHalf R` | Exact transport by an inverse circuit pair | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
 | redundant_records_gap_persists_under_circuit_evolution | The canonical inverse specializes the budget to `D.length + 4 * E.length + g ≤ ceilHalf R` | Canonical local inverse + preceding theorem | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
+| norm_cross_amplitude_le_of_untouched_approx_record | An untouched approximate record bounds its cross amplitude by `η` | Projector/defect split + Cauchy–Schwarz | Complexity/ApproxRecordInterference.lean (132) | 0 sorry, 0 axioms | — |
+| approximate_records_give_interference_lower_bound | `ηi + ηj < 2δ` forces length at least `ceilHalf R` | Robust bound + C2 counting | Complexity/ApproxRecordInterferenceBound.lean (123) | 0 sorry, 0 axioms | — |
+| approx_record_phase_flip_gives_upper_bound | `2δ + 2ηj + ξ ≤ 2` supplies a distinguishability witness | Explicit approximate phase readout | Complexity/ApproxRecordDistinguishability.lean (203) | 0 sorry, 0 axioms | — |
+| approximate_records_give_proxy_gap_certificate | The robust thresholds and `D.length + g ≤ ceilHalf R` certify the proxy gap | C8c/C8d composition | Complexity/ApproxBranchGap.lean (152) | 0 sorry, 0 axioms | — |
+| approximate_records_gap_persists_under_circuit_evolution | The robust gap persists under `D.length + 4 * E.length + g ≤ ceilHalf R` | Exact C7 transport of the C8 certificate | Complexity/ApproxRecordPersistence.lean (160) | 0 sorry, 0 axioms | — |
 
 “0 axioms” means dependence only on
 [propext, Classical.choice, Quot.sound], verified by #print axioms for
