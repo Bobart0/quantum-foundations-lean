@@ -1,2 +1,13 @@
 .lake/
 .claude/settings.json
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Lake build artifacts (fallback path used by some toolchains)
+/build/
+*.olean
+
+# Local secrets/config
+.env
