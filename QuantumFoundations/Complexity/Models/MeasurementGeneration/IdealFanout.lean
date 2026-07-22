@@ -116,8 +116,9 @@ private theorem eval_sourceRecord_list_configuration (R : ℕ) (rs : List (Fin R
       rw [controlledBitFlipUnitary_single, ih]
       rfl
 
-/-- Every site of `Fin (R + 1)` is either the source or a unique record. -/
-private theorem eq_sourceSite_or_recordSite (R : ℕ) (s : Fin (R + 1)) :
+/-- Every site of `Fin (R + 1)` is either the source or a unique record.
+Not `private`: also reused directly by `NoisyGeneration.lean`. -/
+theorem eq_sourceSite_or_recordSite (R : ℕ) (s : Fin (R + 1)) :
     s = sourceSite R ∨ ∃ r : Fin R, s = recordSite r :=
   Fin.cases (Or.inl rfl) (fun r => Or.inr ⟨r, rfl⟩) s
 
