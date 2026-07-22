@@ -152,6 +152,24 @@ def allBitFlipCircuit (R : ℕ) : Circuit R 2 :=
     (allBitFlipCircuit R).length = R := by
   simp [allBitFlipCircuit, Circuit.length]
 
+/-- The `R`-gate all-bit-flip circuit flips every coordinate of an arbitrary
+configuration.  `allBitFlipCircuit_maps_zero_to_one`/`_one_to_zero` are the
+special cases at the constant configurations. -/
+theorem allBitFlipCircuit_maps_configurationBranch (R : ℕ) (g : Fin R → Fin 2) :
+    Circuit.evalOnH (allBitFlipCircuit R) (sitesEquivR R)
+        (configurationBranch R g) =
+      configurationBranch R (fun s => Equiv.swap (0 : Fin 2) 1 (g s)) := by
+  show Circuit.evalOnH (allBitFlipCircuit R) (sitesEquivR R)
+      ((sitesEquivR R).symm (configurationBasis g)) =
+    (sitesEquivR R).symm (configurationBasis (fun s => Equiv.swap (0 : Fin 2) 1 (g s)))
+  apply (sitesEquivR R).injective
+  simp [Circuit.evalOnH]
+  rw [allBitFlipCircuit, eval_bitFlip_list_configuration]
+  congr 1
+  funext s
+  rw [foldl_bitFlips_apply_of_nodup R (List.nodup_finRange R) g s]
+  simp
+
 /-- The explicit `R`-gate circuit maps the all-zero branch to all one. -/
 theorem allBitFlipCircuit_maps_zero_to_one (R : ℕ) :
     Circuit.evalOnH (allBitFlipCircuit R) (sitesEquivR R) (zeroBranch R) =
