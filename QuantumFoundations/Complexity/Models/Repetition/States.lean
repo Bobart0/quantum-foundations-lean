@@ -49,6 +49,39 @@ def zeroBranch (R : ℕ) : H (2 ^ R) :=
 def oneBranch (R : ℕ) : H (2 ^ R) :=
   (sitesEquivR R).symm (sitesOne R)
 
+/-- Generic computational-basis vector for an arbitrary site configuration,
+transported to `H (2 ^ R)`.  `zeroBranch`/`oneBranch` are the special cases at
+the constant-zero and constant-one configurations (see
+`zeroBranch_eq_configurationBranch`/`oneBranch_eq_configurationBranch`). -/
+def configurationBranch (R : ℕ) (f : Fin R → Fin 2) : H (2 ^ R) :=
+  (sitesEquivR R).symm (EuclideanSpace.single f 1)
+
+@[simp] theorem sitesEquivR_configurationBranch (R : ℕ) (f : Fin R → Fin 2) :
+    sitesEquivR R (configurationBranch R f) = EuclideanSpace.single f 1 := by
+  simp [configurationBranch]
+
+theorem zeroBranch_eq_configurationBranch (R : ℕ) :
+    zeroBranch R = configurationBranch R (zeroConfiguration R) := rfl
+
+theorem oneBranch_eq_configurationBranch (R : ℕ) :
+    oneBranch R = configurationBranch R (oneConfiguration R) := rfl
+
+theorem configurationBranch_norm (R : ℕ) (f : Fin R → Fin 2) :
+    ‖configurationBranch R f‖ = 1 := by
+  simp [configurationBranch]
+
+theorem configurationBranch_ne_zero (R : ℕ) (f : Fin R → Fin 2) :
+    configurationBranch R f ≠ 0 :=
+  ne_zero_of_norm_ne_zero (by rw [configurationBranch_norm]; norm_num)
+
+/-- Distinct configurations give orthogonal basis vectors: the single generic
+fact underlying every pairwise orthogonality statement between explicit
+computational basis states. -/
+theorem configurationBranch_inner_eq_zero_of_ne {R : ℕ} {f g : Fin R → Fin 2}
+    (hfg : f ≠ g) :
+    ⟪configurationBranch R f, configurationBranch R g⟫_ℂ = 0 := by
+  simp [configurationBranch, EuclideanSpace.inner_single_left, hfg]
+
 /-- Unnormalized coherent repetition/GHZ state `|0…0⟩ + |1…1⟩`. -/
 def repetitionState (R : ℕ) : H (2 ^ R) :=
   zeroBranch R + oneBranch R
