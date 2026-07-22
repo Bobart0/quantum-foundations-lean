@@ -1,13 +1,22 @@
 import QuantumFoundations.Complexity.OperatorNorm.RecordReadout
+import QuantumFoundations.Complexity.ApproxRecordPersistence
 
 /-!
-# C12d — Robust distinguishability from operator-norm error
+# C12d/C12e — Robust distinguishability and proxy gaps from operator-norm error
 
-Reuses C8's own analytic distinguishability estimate
+C12d reuses C8's own analytic distinguishability estimate
 (`approx_record_phase_flip_distinguishesAt`) unchanged: the operator-norm
 readout threshold is exactly `2 * δ + 2 * ηj + 2 * ε ≤ 2`, i.e. the C8
 pointwise threshold `2 * δ + 2 * ηj + ξ ≤ 2` specialized at `ξ = 2 * ε`. No
 new analytic estimate is introduced here.
+
+C12e combines this with C8's approximate redundant-record interference lower
+bound (`approximate_records_give_interference_lower_bound`) and the existing
+proxy-gap/persistence certificates
+(`approximate_records_give_proxy_gap_certificate`,
+`approximate_records_gap_persists_under_circuit_evolution`), again by direct
+specialization at pointwise error `ξ = 2 * ε` — `minCircuitLength` and the C7
+conjugation machinery are reused unchanged, not reimplemented.
 -/
 
 namespace QuantumFoundations.Complexity.OperatorNorm
@@ -80,6 +89,118 @@ theorem exact_opApprox_record_phase_flip_distinguishesAt {N d K : ℕ}
 
 #print axioms opApprox_record_phase_flip_distinguishesAt
 #print axioms opApprox_record_phase_flip_complexity_upper_bound
+
+/-! ## C12e — Approximate-record proxy gaps with operator-norm readout -/
+
+/-- Approximate redundant records and a supplied operator-norm-approximate
+readout circuit certify a subtraction-free proxy gap.  A direct
+specialization of `approximate_records_give_proxy_gap_certificate` at
+pointwise error `ξ = 2 * ε`, via `opApprox_implies_pointwise_phaseFlip`. No
+`i ≠ j` hypothesis is needed: the underlying C8 certificate does not use
+it. -/
+theorem approximate_records_opNorm_readout_give_proxy_gap
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K)
+    (a b : H (d ^ N))
+    (ha : ‖a‖ = 1) (hb : ‖b‖ = 1)
+    (i j : Fin K)
+    (ηi ηj ε δ : ℝ)
+    (happrox : ApproxRecordedPairOn recs a b i j ηi ηj)
+    (hlocal_i : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) i) (regions r))
+    (hlocal_j : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (hinterference : ηi + ηj < 2 * δ)
+    (r₀ : Fin R)
+    (D : Circuit N d)
+    (hOp : ApproximatesRecordPhaseFlipOp e D (recs r₀) j ε)
+    (hreadout : 2 * δ + 2 * ηj + 2 * ε ≤ 2)
+    (g : ℕ)
+    (hgap : Circuit.length D + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast e a b δ g :=
+  approximate_records_give_proxy_gap_certificate
+    e regions recs a b r₀ i j ηi ηj (2 * ε) δ ha hb happrox hlocal_i hlocal_j
+    hpairwise hinterference D
+    (opApprox_implies_pointwise_phaseFlip e D (recs r₀) j a b ε hOp ha hb)
+    hreadout g hgap
+
+/-- The same robust gap holds for the actual exact circuit minima in
+`WithTop ℕ`.  Reuses `approximate_records_complexity_gap`; `minCircuitLength`
+is not reimplemented. -/
+theorem approximate_records_opNorm_readout_complexity_gap
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K)
+    (a b : H (d ^ N))
+    (ha : ‖a‖ = 1) (hb : ‖b‖ = 1)
+    (i j : Fin K)
+    (ηi ηj ε δ : ℝ)
+    (happrox : ApproxRecordedPairOn recs a b i j ηi ηj)
+    (hlocal_i : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) i) (regions r))
+    (hlocal_j : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (hinterference : ηi + ηj < 2 * δ)
+    (r₀ : Fin R)
+    (D : Circuit N d)
+    (hOp : ApproximatesRecordPhaseFlipOp e D (recs r₀) j ε)
+    (hreadout : 2 * δ + 2 * ηj + 2 * ε ≤ 2)
+    (g : ℕ)
+    (hgap : Circuit.length D + g ≤ ceilHalf R) :
+    distinguishabilityComplexity e a b δ + (g : WithTop ℕ) ≤
+      interferenceComplexity e a b δ :=
+  approximate_records_complexity_gap
+    e regions recs a b r₀ i j ηi ηj (2 * ε) δ ha hb happrox hlocal_i hlocal_j
+    hpairwise hinterference D
+    (opApprox_implies_pointwise_phaseFlip e D (recs r₀) j a b ε hOp ha hb)
+    hreadout g hgap
+
+/-! ### C12e.1 — Conditional persistence -/
+
+/-- The robust proxy gap persists through a further finite `2`-local circuit
+`E`, given the extra budget `4 * E.length`.  Built in two steps exactly as
+prescribed: the initial gap certificate uses the new operator-norm readout
+theorem, then the existing C7/C8 persistence machinery
+(`approximate_records_gap_persists_under_circuit_evolution`) transports it.
+The approximate readout operator itself is never evolved or conjugated; only
+the resulting gap certificate is transported. -/
+theorem approximate_records_opNorm_gap_persists_under_circuit
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K)
+    (a b : H (d ^ N))
+    (ha : ‖a‖ = 1) (hb : ‖b‖ = 1)
+    (i j : Fin K)
+    (ηi ηj ε δ : ℝ)
+    (happrox : ApproxRecordedPairOn recs a b i j ηi ηj)
+    (hlocal_i : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) i) (regions r))
+    (hlocal_j : ∀ r, IsLocalTo
+      (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (hinterference : ηi + ηj < 2 * δ)
+    (r₀ : Fin R)
+    (D : Circuit N d)
+    (hOp : ApproximatesRecordPhaseFlipOp e D (recs r₀) j ε)
+    (hreadout : 2 * δ + 2 * ηj + 2 * ε ≤ 2)
+    (E : Circuit N d) (g : ℕ)
+    (hbudget : Circuit.length D + 4 * Circuit.length E + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast e
+      (Circuit.evalOnH E e a) (Circuit.evalOnH E e b) δ g :=
+  approximate_records_gap_persists_under_circuit_evolution
+    e regions recs a b r₀ i j ηi ηj (2 * ε) δ ha hb happrox hlocal_i hlocal_j
+    hpairwise hinterference D
+    (opApprox_implies_pointwise_phaseFlip e D (recs r₀) j a b ε hOp ha hb)
+    hreadout E g hbudget
+
+#print axioms approximate_records_opNorm_readout_give_proxy_gap
+#print axioms approximate_records_opNorm_gap_persists_under_circuit
 
 end
 
