@@ -2,9 +2,10 @@ import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Models.Repetition.Persistence
 import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
+import QuantumFoundations.Complexity.OperatorNorm.Nonvacuity
 
 /-!
-# C0/C6/C7/C8/C9/C10/C11 — Non-vacuity
+# C0/C6/C7/C8/C9/C10/C11/C12 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -27,6 +28,13 @@ uncorrelated source qubit and blank record qubits, rather than assuming the
 branched state as given: a concrete nonzero-amplitude source profile, paired
 with C10's concrete nonzero-noise profile, exhibits the full
 generation-to-persistence pipeline with no side hypotheses.
+C12 supplies a finite-dimensional operator-norm bridge from a single global
+operator-norm error budget to the pointwise readout hypotheses used by
+C8–C11: exact circuit implementations inhabit the new operator-norm
+predicates at error zero, monotonicity extends this to every nonnegative
+budget (in particular to a concrete nonzero `1/20` budget), and the same
+robust proxy-gap and persistence conclusions follow for both the static C10
+noisy model and C11's dynamically generated branches.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -308,6 +316,39 @@ example (R : ℕ) [NeZero R] (E : Circuit (R + 1) 2) (g : ℕ)
   concrete_generated_branches_persist R E g hbudget
 
 end MeasurementGeneration
+
+namespace OperatorNorm
+
+open QuantumFoundations.Complexity.RepetitionModel
+open QuantumFoundations.Complexity.NoisyRepetitionModel
+open QuantumFoundations.Complexity.MeasurementGeneration
+
+/-- Every exact circuit implementation of the record phase flip inhabits the
+new operator-norm predicate at error exactly zero; see
+`QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean` for the full
+non-vacuity account, including the concrete `1/20` budget and C11's
+dynamically generated branches. -/
+example (R : ℕ) [NeZero R] :
+    ApproximatesRecordPhaseFlipOp
+      (sitesEquivR (R + 1)) (noisyReadoutCircuit R) (noisyRecords R 0) 1 0 :=
+  implementsRecordPhaseFlip_implies_opApprox_zero
+    (sitesEquivR (R + 1)) (noisyReadoutCircuit R) (noisyRecords R 0) 1
+    (noisyReadoutCircuit_implements R)
+
+/-- The concrete `1/20` operator-norm error budget already has a robust
+proxy-gap consequence, using only the exact C10 readout and monotonicity. -/
+example (R : ℕ) [NeZero R]
+    (g : ℕ) (hgap : (noisyReadoutCircuit R).length + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      (noisyZeroBranch rationalNoiseProfile R)
+      (noisyOneBranch rationalNoiseProfile R) (1 / 2 : ℝ) g :=
+  concrete_generated_branches_tolerate_opNorm_error R (noisyReadoutCircuit R)
+    ((implementsRecordPhaseFlip_implies_opApprox_zero
+        (sitesEquivR (R + 1)) (noisyReadoutCircuit R) (noisyRecords R 0) 1
+        (noisyReadoutCircuit_implements R)).mono (by norm_num))
+    g hgap
+
+end OperatorNorm
 
 end
 
