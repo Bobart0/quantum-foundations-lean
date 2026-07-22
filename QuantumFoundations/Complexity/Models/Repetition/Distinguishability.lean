@@ -48,6 +48,37 @@ theorem not_distinguishesAt_one_of_length_zero
   rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K, ha, hb] at hdist
   norm_num at hdist
 
+/-- No zero-length circuit distinguishes two unit vectors at any positive
+threshold.  Generalizes `not_distinguishesAt_one_of_length_zero`: the two
+diagonal matrix elements of the identity are both `1`, so their difference
+vanishes regardless of the (positive) threshold. -/
+theorem not_distinguishesAt_of_length_zero
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (a b : H (d ^ N))
+    (ha : ‖a‖ = 1) (hb : ‖b‖ = 1) (δ : ℝ) (hδ : 0 < δ) (C : Circuit N d)
+    (hC : C.length = 0) :
+    ¬ DistinguishesAt e a b δ C := by
+  intro hdist
+  unfold DistinguishesAt at hdist
+  rw [Circuit.evalOnH_eq_id_of_length_eq_zero e hC] at hdist
+  simp only [LinearMap.id_apply] at hdist
+  rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K, ha, hb] at hdist
+  norm_num at hdist
+  linarith
+
+/-- Every threshold-`δ` distinguishing circuit for two unit vectors contains
+at least one gate, for any positive `δ`. -/
+theorem one_le_distinguishabilityComplexity_of_pos
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (a b : H (d ^ N))
+    (ha : ‖a‖ = 1) (hb : ‖b‖ = 1) (δ : ℝ) (hδ : 0 < δ) :
+    (1 : WithTop ℕ) ≤ distinguishabilityComplexity e a b δ := by
+  unfold distinguishabilityComplexity
+  apply le_minCircuitLength_of_forall
+  intro C hC
+  by_cases hzero : C.length = 0
+  · exact False.elim
+      ((not_distinguishesAt_of_length_zero e a b ha hb δ hδ C hzero) hC)
+  · exact Nat.one_le_iff_ne_zero.mpr hzero
+
 namespace RepetitionModel
 
 /-- Every threshold-one distinguishing circuit for the two repetition
