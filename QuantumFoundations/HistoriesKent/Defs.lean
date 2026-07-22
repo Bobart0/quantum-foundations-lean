@@ -72,7 +72,7 @@ These are THE two points at which a convention error would invalidate the
 remainder of the block; both were validated through a user check-in after K0.
 -/
 
-namespace QuantumFoundations.Histories
+namespace QuantumFoundations.HistoriesKent
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -159,4 +159,4 @@ def histProb (ψ : H n) (h : History n L) : ℝ :=
   ‖chainOp h ψ‖ ^ 2
 
 end
-end QuantumFoundations.Histories
+end QuantumFoundations.HistoriesKent

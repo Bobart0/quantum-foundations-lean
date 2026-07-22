@@ -1,4 +1,4 @@
-import QuantumFoundations.Branches.Nonvacuity
+import QuantumFoundations.BranchesRiedel.Nonvacuity
 
 /-!
 **FR.** # R1 — Lemmes généraux courts sur `LabeledResolution`
@@ -10,7 +10,7 @@ Jalon de dé-risquage minimal, avant `TwoObs.lean`/`Induction.lean`.
 Minimal risk-reduction milestone, preceding TwoObs.lean/Induction.lean.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace
 open Gleason
@@ -130,4 +130,4 @@ theorem branch_orthogonal [NeZero R] (ψ : H n) (recs : Fin R → LabeledResolut
   exact (Submodule.mem_orthogonal ((recs 0).cells i) _).mp (hortho' hmem') _ hmem
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

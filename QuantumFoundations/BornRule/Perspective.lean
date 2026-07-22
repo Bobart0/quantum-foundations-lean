@@ -465,7 +465,7 @@ pas de `‖·‖²`), dérivé ici directement via l'expansion bilinéaire du pr
 scalaire. Relocalisé depuis `BornRule/Nonvacuity.lean` (public) : fait
 géométrique générique sur les familles orthogonales, indépendant du témoin
 de Born — sa place naturelle est aux côtés de `Perspective`, dans le fichier
-que `Histories` importe déjà.
+que `HistoriesKent` importe déjà.
 
 **EN.** Finite Pythagorean theorem: the squared norm of a sum of pairwise
 orthogonal vectors is the sum of their squared norms. This result is not
@@ -475,7 +475,7 @@ the bilinear expansion of the inner product. Moved from
 BornRule/Nonvacuity.lean and made public: it is a generic geometric fact
 about orthogonal families, independent of the Born witness, and therefore
 belongs naturally alongside Perspective, in the file already imported by
-Histories.
+HistoriesKent.
 -/
 theorem norm_sq_sum_of_pairwise_orthogonal {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (x : ι → H n) (hortho : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ⟪x i, x j⟫_ℂ = 0) :

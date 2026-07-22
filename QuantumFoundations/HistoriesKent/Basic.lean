@@ -1,4 +1,4 @@
-import QuantumFoundations.Histories.Nonvacuity
+import QuantumFoundations.HistoriesKent.Nonvacuity
 
 /-!
 **FR.** # K1 — Lemmes généraux courts
@@ -31,7 +31,7 @@ than factored out here without a user. K1 therefore contains only 2 open
 goals, (a) and (b), not 3.
 -/
 
-namespace QuantumFoundations.Histories
+namespace QuantumFoundations.HistoriesKent
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -118,4 +118,4 @@ theorem histProb_additivity_two_stage (D1 : Perspective n) (ψ : H n)
   simpa using hpyth.symm
 
 end
-end QuantumFoundations.Histories
+end QuantumFoundations.HistoriesKent

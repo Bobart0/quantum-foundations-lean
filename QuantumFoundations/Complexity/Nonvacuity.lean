@@ -10,7 +10,7 @@ inhabited without any physical assumption.
 
 namespace QuantumFoundations.Complexity
 
-open QuantumFoundations.Branches
+open QuantumFoundations.BranchesRiedel
 
 /-- The identity gate, declared local to the empty region. -/
 noncomputable def identityGate (N d : ℕ) : TwoLocalGate N d where

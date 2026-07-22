@@ -1,4 +1,4 @@
-import QuantumFoundations.Histories.Basic
+import QuantumFoundations.HistoriesKent.Basic
 
 /-!
 **FR.** # K2 — Witness : les deux ensembles cohérents de Kent
@@ -76,7 +76,7 @@ i = 0 ∨ i = 1, precisely the only domain in which the witness is used
 (S1_consistent/S2_consistent instantiate it trivially).
 -/
 
-namespace QuantumFoundations.Histories
+namespace QuantumFoundations.HistoriesKent
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -487,4 +487,4 @@ theorem S1_consistent : IsConsistent ψ₀ (S 0) := S_consistent 0 (Or.inl rfl)
 theorem S2_consistent : IsConsistent ψ₀ (S 1) := S_consistent 1 (Or.inr rfl)
 
 end
-end QuantumFoundations.Histories
+end QuantumFoundations.HistoriesKent

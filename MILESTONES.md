@@ -36,7 +36,7 @@ publié sous `v2.1-bornrule` : simple forme projecteur du théorème final, sans
 hypothèse ni contenu mathématique indépendant supplémentaire. Son audit ne
 dépend que de `[propext, Classical.choice, Quot.sound]`.
 
-Histories (K0, 2026-07-16) ajoute **5 sorry** (squelette Defs/Nonvacuity à
+HistoriesKent (K0, 2026-07-16) ajoute **5 sorry** (squelette Defs/Nonvacuity à
 0 sorry + K1/K2/K3 en sorry ; estimation initiale 5-7, réduite par deux
 factorisations paramétrées documentées dans les fichiers eux-mêmes) —
 **3 sorry** après clôture de K1 (2026-07-16), **2 sorry** après clôture de
@@ -1198,7 +1198,7 @@ axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
 courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
 Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
 
-## Histories — Théorème des inférences contraires de Kent
+## HistoriesKent — Théorème des inférences contraires de Kent
 
 **Énoncé.** Kent, *Quasiclassical Dynamics in a Closed Quantum System*, PRL 78,
 2874 (1997), arXiv:gr-qc/9604012 : dans le cadre des histoires cohérentes en
@@ -1332,9 +1332,9 @@ bloque sur une forme déjà repliée.
       `chainOp_two_stage`, `phi0_inner_e01`, et le nouveau `φ₀_norm_sq`
 - [x] `guard.sh` : 0 axiome, 0 `native_decide`, 0 sorry sur tout le dépôt
       (cinq blocs). `#print axioms` sur les 36 déclarations porteuses de
-      contenu de `Histories` : `[propext, Classical.choice, Quot.sound]`,
+      contenu de `HistoriesKent` : `[propext, Classical.choice, Quot.sound]`,
       sans exception, y compris à travers la chaîne à trois niveaux
-      Histories → BornRule (`Perspective`, `projL_sup_of_pairwise_isOrtho`
+      HistoriesKent → BornRule (`Perspective`, `projL_sup_of_pairwise_isOrtho`
       relocalisé) → Uhlhorn/Gleason externe.
 
 ### Hors scope (extensions futures possibles, pas des manques de ce jalon)
@@ -1394,7 +1394,7 @@ released under v2.1-bornrule: it is simply the projector form of the final theor
 with no additional assumption or independent mathematical content. Its audit
 depends only on [propext, Classical.choice, Quot.sound].
 
-Histories (K0, 2026-07-16) adds 5 sorry (Defs/Nonvacuity skeleton with
+HistoriesKent (K0, 2026-07-16) adds 5 sorry (Defs/Nonvacuity skeleton with
 0 sorry + K1/K2/K3 containing sorry; initial estimate 5–7, reduced by two
 parameterized factorizations documented in the files themselves) —
 3 sorry after completion of K1 (2026-07-16), 2 sorry after completion of
@@ -2374,7 +2374,7 @@ theorem1_general), one fewer axiom (gleason proved rather than postulated),
 and a shorter proof at several points thanks to reuse of the Uhlhorn
 infrastructure (U2, U3a) and the Proj1-first design of g.
 
-## Histories — Kent's contrary-inferences theorem
+## HistoriesKent — Kent's contrary-inferences theorem
 
 Statement. Kent, Quasiclassical Dynamics in a Closed Quantum System,
 PRL 78, 2874 (1997), arXiv:gr-qc/9604012: within the finite-dimensional
@@ -2511,9 +2511,9 @@ already folded form.
  chainOp_two_stage, phi0_inner_e01, and the new φ₀_norm_sq
 - [x] guard.sh: 0 axioms, 0 native_decide, 0 sorry throughout the
  repository (five blocks). #print axioms on the 36 content-bearing
- declarations of Histories: [propext, Classical.choice, Quot.sound],
+ declarations of HistoriesKent: [propext, Classical.choice, Quot.sound],
  without exception, including through the three-level chain
- Histories → BornRule (Perspective,
+ HistoriesKent → BornRule (Perspective,
  projL_sup_of_pairwise_isOrtho relocated) → external Uhlhorn/Gleason.
 
 ### Out of scope (possible future extensions, not deficiencies of this milestone)
@@ -2550,7 +2550,7 @@ those branches, then `R ≤ 2 * C.length`.
 ### C1 — untouched records force zero cross amplitude — ✅ CLOSED
 
 - [x] `circuit_commute_of_disjoint`, proved gate by gate from the existing
-  `Branches.commute_of_disjoint` and explicit composition closure.
+  `BranchesRiedel.commute_of_disjoint` and explicit composition closure.
 - [x] Representation bridge through
   `e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d` and `Circuit.evalOnH`.
 - [x] Existing record facts reused directly:
@@ -2591,3 +2591,17 @@ opératorielle d’annulation et le comptage fini sont séparés. Les extensions
 aux records approximatifs, à la complexité de distinguabilité et à la
 persistance conditionnelle restent des travaux futurs distincts, et ne sont
 pas des manques de ce jalon.
+
+## Renommage de modules — ✅ CLOSED (2026-07-22)
+
+- [x] `QuantumFoundations/Branches/` et
+  `QuantumFoundations.Branches` renommés en
+  `QuantumFoundations/BranchesRiedel/` et
+  `QuantumFoundations.BranchesRiedel`.
+- [x] `QuantumFoundations/Histories/` et
+  `QuantumFoundations.Histories` renommés en
+  `QuantumFoundations/HistoriesKent/` et
+  `QuantumFoundations.HistoriesKent`.
+- [x] Imports racine, dépendances internes de Complexity, références
+  documentaires et sorties d'axiomes mis à jour sans alias résiduel.
+- [x] `lake build QuantumFoundations`: vert, 8705 jobs.

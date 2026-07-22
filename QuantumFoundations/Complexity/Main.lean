@@ -20,7 +20,7 @@ namespace QuantumFoundations.Complexity
 open scoped InnerProductSpace
 
 open Gleason
-open QuantumFoundations.Branches
+open QuantumFoundations.BranchesRiedel
 
 noncomputable section
 

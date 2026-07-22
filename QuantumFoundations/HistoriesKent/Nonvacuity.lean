@@ -1,4 +1,4 @@
-import QuantumFoundations.Histories.Defs
+import QuantumFoundations.HistoriesKent.Defs
 
 /-!
 **FR.** # K0 — Nonvacuity : une famille à un étage est toujours cohérente
@@ -32,7 +32,7 @@ projL (h 0) ψ and projL (k 0) ψ lie in these orthogonal cells, hence
 decFunctional ψ h k = 0.
 -/
 
-namespace QuantumFoundations.Histories
+namespace QuantumFoundations.HistoriesKent
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -82,4 +82,4 @@ example : ∃ (D : Perspective 3) (ψ : H 3), IsConsistent ψ (fun _ : Fin 1 => 
   ⟨basisPerspective (EuclideanSpace.basisFun (Fin 3) ℂ), 0, isConsistent_single_stage _ 0⟩
 
 end
-end QuantumFoundations.Histories
+end QuantumFoundations.HistoriesKent

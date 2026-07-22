@@ -1,4 +1,4 @@
-import QuantumFoundations.Branches.Induction
+import QuantumFoundations.BranchesRiedel.Induction
 
 /-!
 **FR.** # R4 — Couche 2 : modèle multi-sites plat, localité, disjonction spatiale
@@ -58,7 +58,7 @@ the LEAST stable signature in the entire R0 skeleton, to be refined while
 completing R4.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace Classical
 open Gleason
@@ -466,4 +466,4 @@ theorem pigeonhole_corollary {R : ℕ} (recA recB : Fin R → Finset (Fin N))
   omega
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

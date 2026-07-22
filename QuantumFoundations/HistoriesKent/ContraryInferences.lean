@@ -1,4 +1,4 @@
-import QuantumFoundations.Histories.Witness
+import QuantumFoundations.HistoriesKent.Witness
 
 /-!
 **FR.** # K3 — ContraryInferences : le théorème des inférences contraires de Kent
@@ -75,7 +75,7 @@ the same failed cancellation (⟪φ₀, e 2⟫ = -1 ≠ 1). The hypothesis
 i = 0 ∨ i = 1 has therefore been added.
 -/
 
-namespace QuantumFoundations.Histories
+namespace QuantumFoundations.HistoriesKent
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -159,4 +159,4 @@ theorem contrary_inferences :
     inference 0 (Or.inl rfl), inference 1 (Or.inr rfl)⟩
 
 end
-end QuantumFoundations.Histories
+end QuantumFoundations.HistoriesKent

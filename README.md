@@ -1,10 +1,10 @@
-# quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner, Uhlhorn, BornRule, Histories, Branches et Complexity
+# quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel et Complexity
 
 **Statut : Naimark v2 COMPLET (`v2.0-naimark`, 2026-07-11), Wigner COMPLET avec
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
-(`v2.0-bornrule`, 2026-07-15) ET Histories COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs Branches/Riedel et Complexity C0–C2.** Sept blocs
+(`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C2.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
@@ -14,6 +14,12 @@ voir plus bas), en dimension finie sur ℂ.
 théorèmes principaux du nouveau bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
+
+**Noms de modules actuels :** le bloc Riedel est
+`QuantumFoundations.BranchesRiedel` et le bloc des inférences contraires de
+Kent est `QuantumFoundations.HistoriesKent`. Les anciens chemins/namespaces
+`QuantumFoundations.Branches` et `QuantumFoundations.Histories` ne sont plus
+exposés.
 
 Le **théorème de dilation de Naimark** pour les POVM finies (Watrous, *The Theory
 of Quantum Information*, Theorem 2.42) : toute POVM `E : Fin m → (H n →ₗ[ℂ] H n)` se
@@ -57,7 +63,7 @@ tout en impliquant chacun avec CERTITUDE une proposition différente, ces deux
 propositions étant mutuellement orthogonales. Un étage temporel d'un ensemble
 d'histoires **réutilise directement** `BornRule.Perspective`, sans
 redéfinition — comme Uhlhorn et BornRule le font déjà pour d'autres briques,
-`Histories` **compose** l'infrastructure interne du dépôt (`BornRule` →
+`HistoriesKent` **compose** l'infrastructure interne du dépôt (`BornRule` →
 `Uhlhorn`/`Gleason`) plutôt que de repartir de zéro. Le théorème de profusion
 générique de Dowker–Kent (1996) — qui montrerait que la contrariété du témoin
 n'est pas un cas isolé — est explicitement hors scope de ce bloc.
@@ -66,7 +72,7 @@ Ce dépôt s'appuie sur [`gleason-theorem-lean`](https://github.com/Bobart0/glea
 (tag `v1.0-gleason`). Naimark n'y réutilise que `IsPositiveOp`
 (`Gleason.Busch.Effects`) ; Uhlhorn et BornRule, en revanche, invoquent
 `Gleason.gleason` lui-même ainsi qu'une partie de sa machinerie interne ;
-Histories n'invoque pas `Gleason.gleason` directement mais en hérite par
+HistoriesKent n'invoque pas `Gleason.gleason` directement mais en hérite par
 transitivité via `BornRule.Perspective`/`projL` — voir la section
 « Dépendances » plus bas pour le détail et la vérification de non-fuite
 d'axiome.
@@ -279,7 +285,7 @@ projecteur du théorème précédent : l'identité de Parseval identifie sa somm
 sur la base orthonormée à `‖projL c v‖²`. Ce n'est pas un nouveau résultat
 mathématique indépendant.
 
-## Théorème des inférences contraires de Kent (Histories)
+## Théorème des inférences contraires de Kent (HistoriesKent)
 
 ```lean
 abbrev History (n L : ℕ) := Fin L → Submodule ℂ (H n)
@@ -409,10 +415,10 @@ rapport de clôture — toutes dépendent du même trio) :
 'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.S_consistent' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.S_consistent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 Ce sont les trois axiomes standards acceptés par Lean/Mathlib lui-même (extensionnalité
@@ -424,8 +430,8 @@ est le premier théorème du dépôt à dépendre à la fois de `Gleason.gleason
 l'infrastructure Uhlhorn interne (U2, U3a) — dans les deux cas, cette double
 chaîne de dépendances ne fait fuiter aucun axiome supplémentaire, confirmé
 ci-dessus. `contrary_inferences` dépend transitivement d'une chaîne à TROIS
-niveaux (`Histories` → `BornRule.Perspective` → `Uhlhorn`/`Gleason` externe) —
-même trio, confirmé lors de la clôture de `Histories` (2026-07-16), ainsi que
+niveaux (`HistoriesKent` → `BornRule.Perspective` → `Uhlhorn`/`Gleason` externe) —
+même trio, confirmé lors de la clôture de `HistoriesKent` (2026-07-16), ainsi que
 la non-régression des axiomes de `BornRule` suite à la relocalisation de
 `norm_sq_sum_of_pairwise_orthogonal`/`sum_sq_projL_of_pairwise_isOrtho`
 (`private` dans `Nonvacuity.lean`, migrés public vers `Perspective.lean`) :
@@ -463,17 +469,17 @@ affectée.
 | `QuantumFoundations/BornRule/Assembly.lean`  | B4 (assemblage), théorème final `grainCoherenceTheorem`                          | 215 |
 | `QuantumFoundations/BornRule/Nonvacuity.lean` | Témoin BornRule : `E₀ v` (règle de Born) satisfait Grain+Norm+Pos+Null simultanément | 177 |
 | `QuantumFoundations/Nonvacuity.lean`         | Témoin Naimark : POVM uniforme `n=2, m=2`                                         | 65 |
-| `QuantumFoundations/Histories/Defs.lean`     | `History`, `IsHistoryOf`, `chainOp`, `decFunctional`, `IsConsistent`, `histProb`   | 162 |
-| `QuantumFoundations/Histories/Nonvacuity.lean` | Témoin Histories : toute `Perspective`, famille à un étage, est cohérente        | 85 |
-| `QuantumFoundations/Histories/Basic.lean`    | K1 : `decFunctional_last_stage_orthogonal`, `histProb_additivity_two_stage`       | 121 |
-| `QuantumFoundations/Histories/Witness.lean`  | K2 : témoin explicite de Kent en `H 3`, `S_consistent`                            | 490 |
-| `QuantumFoundations/Histories/ContraryInferences.lean` | K3 : `inference`, théorème final `contrary_inferences`                  | 162 |
-| `QuantumFoundations/Branches/Defs.lean` | R0 : résolutions étiquetées, branches et records redondants | 234 |
-| `QuantumFoundations/Branches/Nonvacuity.lean` | R0 : témoin GHZ à trois records | 210 |
-| `QuantumFoundations/Branches/Basic.lean` | R1 : identités générales des projecteurs de records | 133 |
-| `QuantumFoundations/Branches/TwoObs.lean` | R2 : deux observables enregistrés | 207 |
-| `QuantumFoundations/Branches/Induction.lean` | R3 : induction multi-observables | 559 |
-| `QuantumFoundations/Branches/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
+| `QuantumFoundations/HistoriesKent/Defs.lean`     | `History`, `IsHistoryOf`, `chainOp`, `decFunctional`, `IsConsistent`, `histProb`   | 162 |
+| `QuantumFoundations/HistoriesKent/Nonvacuity.lean` | Témoin HistoriesKent : toute `Perspective`, famille à un étage, est cohérente        | 85 |
+| `QuantumFoundations/HistoriesKent/Basic.lean`    | K1 : `decFunctional_last_stage_orthogonal`, `histProb_additivity_two_stage`       | 121 |
+| `QuantumFoundations/HistoriesKent/Witness.lean`  | K2 : témoin explicite de Kent en `H 3`, `S_consistent`                            | 490 |
+| `QuantumFoundations/HistoriesKent/ContraryInferences.lean` | K3 : `inference`, théorème final `contrary_inferences`                  | 162 |
+| `QuantumFoundations/BranchesRiedel/Defs.lean` | R0 : résolutions étiquetées, branches et records redondants | 234 |
+| `QuantumFoundations/BranchesRiedel/Nonvacuity.lean` | R0 : témoin GHZ à trois records | 210 |
+| `QuantumFoundations/BranchesRiedel/Basic.lean` | R1 : identités générales des projecteurs de records | 133 |
+| `QuantumFoundations/BranchesRiedel/TwoObs.lean` | R2 : deux observables enregistrés | 207 |
+| `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
+| `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
 | `QuantumFoundations/Complexity/Nonvacuity.lean` | C0 : circuit vide et porte identité | 33 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
@@ -532,7 +538,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
 | Nonvacuity | `E₀ v` (règle de Born) habite simultanément Grain+Norm+Pos+Null            | ✅ |
 
-## Jalons — Histories
+## Jalons — HistoriesKent
 
 | Jalon | Contenu                                                                        | État |
 |-------|---------------------------------------------------------------------------------|------|
@@ -562,7 +568,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (111) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
 | `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | Gleason 1957 (théorème sous-jacent) | `BornRule/Assembly.lean` (215) | 0 sorry, 0 axiome | `v2.0-bornrule` |
 | `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
-| `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `Histories/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
+| `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
 | `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisée non nulle imposent `R ≤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
@@ -600,10 +606,10 @@ Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvab
   `eq_projL_of_positive_le_one_trace_one_inner_one` (U2),
   `exists_projMeasure_of_frameFunctionOnLines` (U3a) et
   `isEffect_of_isDensityOperator` (relocalisé de U3b vers `Uhlhorn/Defs.lean`
-  lors de B3) — aucun contenu Gleason/Uhlhorn n'est reprouvé. **Histories**
+  lors de B3) — aucun contenu Gleason/Uhlhorn n'est reprouvé. **HistoriesKent**
   n'invoque `Gleason.gleason` ni `Gleason.projL`/`Submodule.starProjection`
   directement, mais en hérite par transitivité via `BornRule.Perspective`
-  (chaîne à trois niveaux Histories → BornRule → Uhlhorn/Gleason externe) —
+  (chaîne à trois niveaux HistoriesKent → BornRule → Uhlhorn/Gleason externe) —
   même absence de fuite d'axiome, confirmée sur `contrary_inferences` et les
   35 autres déclarations publiques du bloc.
 - `mathlib`, `rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"`.
@@ -611,7 +617,7 @@ Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvab
 `./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'état exact
 du dépôt sur un clone frais, sans intervention manuelle — testé lors de
 chaque passe de clôture (`lake clean` + `lake exe cache get` + `lake build`),
-la plus récente incluant `Histories` (2026-07-16).
+la plus récente incluant `HistoriesKent` (2026-07-16).
 
 ## Règles
 
@@ -628,13 +634,13 @@ pour l'ensemble des règles.
 
 ## English translation
 
-# quantum-foundations-lean — Lean 4 formalizations: Naimark, Wigner, Uhlhorn, BornRule, Histories, Branches, and Complexity
+# quantum-foundations-lean — Lean 4 formalizations: Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel, and Complexity
 
 Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
-(v2.0-bornrule, 2026-07-15), AND Histories COMPLETE
-(v1.0-histories, 2026-07-16), plus the Branches/Riedel and Complexity C0–C2
+(v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C2
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
@@ -644,6 +650,12 @@ By the numbers (recomputed on 2026-07-22, project files excluding scratch):
 main theorems of the new Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
+
+**Current module names:** the Riedel block is
+`QuantumFoundations.BranchesRiedel`, and Kent's contrary-inferences block is
+`QuantumFoundations.HistoriesKent`. The former
+`QuantumFoundations.Branches` and `QuantumFoundations.Histories` module paths
+and namespaces are no longer exposed.
 
 The Naimark dilation theorem for finite POVMs
 (Watrous, The Theory of Quantum Information, Theorem 2.42): every POVM
@@ -687,7 +699,7 @@ histories can share the same preparation and postselection while each
 implying with CERTAINTY a different proposition, the two propositions being
 mutually orthogonal. A temporal stage of a history set directly reuses
 BornRule.Perspective, with no redefinition. As Uhlhorn and BornRule already
-do for other components, Histories composes the repository's internal
+do for other components, HistoriesKent composes the repository's internal
 infrastructure (BornRule → Uhlhorn/Gleason) rather than starting over.
 The generic profusion theorem of Dowker–Kent (1996), which would show that the
 witness is not an isolated contrary-inference example, is explicitly outside
@@ -697,7 +709,7 @@ This repository relies on
 gleason-theorem-lean
 (tag v1.0-gleason). Naimark reuses only IsPositiveOp
 (Gleason.Busch.Effects); Uhlhorn and BornRule, by contrast, invoke
-Gleason.gleason itself as well as part of its internal machinery. Histories
+Gleason.gleason itself as well as part of its internal machinery. HistoriesKent
 does not invoke Gleason.gleason directly but inherits it transitively
 through BornRule.Perspective/projL. See “Dependencies” below for details
 and verification that no additional axioms leak through the dependency
@@ -920,7 +932,7 @@ grainCoherenceTheorem_projector is only the projector-notation version of
 the preceding theorem: Parseval's identity identifies its orthonormal-basis
 sum with ‖projL c v‖². It is not a new independent mathematical result.
 
-## Kent's contrary-inferences theorem (Histories)
+## Kent's contrary-inferences theorem (HistoriesKent)
 
 lean
 abbrev History (n L : ℕ) := Fin L → Submodule ℂ (H n)
@@ -1051,10 +1063,10 @@ report; all depend on the same trio):
 'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.S_consistent' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.Histories.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.S_consistent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.HistoriesKent.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
 
 
 These are the three standard axioms accepted by Lean/Mathlib itself:
@@ -1067,8 +1079,8 @@ grainCoherenceTheorem depends both on Gleason.gleason AND on the internal
 Uhlhorn infrastructure U2/U3a. In both cases, the dual dependency chain leaks
 no additional axioms, as confirmed above. contrary_inferences depends
 transitively on a THREE-level chain
-(Histories → BornRule.Perspective → external Uhlhorn/Gleason); the
-same trio was confirmed when Histories was closed on 2026-07-16, as was the
+(HistoriesKent → BornRule.Perspective → external Uhlhorn/Gleason); the
+same trio was confirmed when HistoriesKent was closed on 2026-07-16, as was the
 absence of any BornRule axiom regression following the relocation of
 norm_sq_sum_of_pairwise_orthogonal/sum_sq_projL_of_pairwise_isOrtho
 (from private in Nonvacuity.lean to public declarations in
@@ -1106,17 +1118,17 @@ was affected.
 | QuantumFoundations/BornRule/Assembly.lean | B4 (assembly), final theorem grainCoherenceTheorem | 215 |
 | QuantumFoundations/BornRule/Nonvacuity.lean | BornRule witness: E₀ v (Born rule) satisfies Grain+Norm+Pos+Null simultaneously | 177 |
 | QuantumFoundations/Nonvacuity.lean | Naimark witness: uniform POVM with n=2, m=2 | 65 |
-| QuantumFoundations/Histories/Defs.lean | History, IsHistoryOf, chainOp, decFunctional, IsConsistent, histProb | 162 |
-| QuantumFoundations/Histories/Nonvacuity.lean | Histories witness: every one-stage Perspective is consistent | 85 |
-| QuantumFoundations/Histories/Basic.lean | K1: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | 121 |
-| QuantumFoundations/Histories/Witness.lean | K2: explicit Kent witness in H 3, S_consistent | 490 |
-| QuantumFoundations/Histories/ContraryInferences.lean | K3: inference, final theorem contrary_inferences | 162 |
-| QuantumFoundations/Branches/Defs.lean | R0: labeled resolutions, branches, and redundant records | 234 |
-| QuantumFoundations/Branches/Nonvacuity.lean | R0: three-record GHZ witness | 210 |
-| QuantumFoundations/Branches/Basic.lean | R1: general record-projector identities | 133 |
-| QuantumFoundations/Branches/TwoObs.lean | R2: two recorded observables | 207 |
-| QuantumFoundations/Branches/Induction.lean | R3: multi-observable induction | 559 |
-| QuantumFoundations/Branches/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
+| QuantumFoundations/HistoriesKent/Defs.lean | History, IsHistoryOf, chainOp, decFunctional, IsConsistent, histProb | 162 |
+| QuantumFoundations/HistoriesKent/Nonvacuity.lean | HistoriesKent witness: every one-stage Perspective is consistent | 85 |
+| QuantumFoundations/HistoriesKent/Basic.lean | K1: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | 121 |
+| QuantumFoundations/HistoriesKent/Witness.lean | K2: explicit Kent witness in H 3, S_consistent | 490 |
+| QuantumFoundations/HistoriesKent/ContraryInferences.lean | K3: inference, final theorem contrary_inferences | 162 |
+| QuantumFoundations/BranchesRiedel/Defs.lean | R0: labeled resolutions, branches, and redundant records | 234 |
+| QuantumFoundations/BranchesRiedel/Nonvacuity.lean | R0: three-record GHZ witness | 210 |
+| QuantumFoundations/BranchesRiedel/Basic.lean | R1: general record-projector identities | 133 |
+| QuantumFoundations/BranchesRiedel/TwoObs.lean | R2: two recorded observables | 207 |
+| QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
+| QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
 | QuantumFoundations/Complexity/Nonvacuity.lean | C0: empty circuit and identity gate | 33 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
@@ -1176,7 +1188,7 @@ initial plans).
 | B4 | Final assembly, theorem grainCoherenceTheorem | ✅ |
 | Nonvacuity | E₀ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | ✅ |
 
-## Milestones — Histories
+## Milestones — HistoriesKent
 
 | Milestone | Content | Status |
 |-----------|--------------------------------------------------------------------------------------------------|--------|
@@ -1206,7 +1218,7 @@ initial plans).
 | uhlhorn_finite_dim | In dimension n ≥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (111) | 0 sorry, 0 axioms | v1.0-uhlhorn |
 | grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (∑ᵢ‖⟨v,fᵢ⟩‖²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (215) | 0 sorry, 0 axioms | v2.0-bornrule |
 | grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
-| contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | Histories/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
+| contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | HistoriesKent/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
 | regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R ≤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | — |
 
 “0 axioms” means dependence only on
@@ -1244,11 +1256,11 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  eq_projL_of_positive_le_one_trace_one_inner_one (U2),
  exists_projMeasure_of_frameFunctionOnLines (U3a), and
  isEffect_of_isDensityOperator (moved from U3b to Uhlhorn/Defs.lean
- during B3); no Gleason/Uhlhorn content is reproved. Histories does not
+ during B3); no Gleason/Uhlhorn content is reproved. HistoriesKent does not
  invoke Gleason.gleason or
  Gleason.projL/Submodule.starProjection directly, but inherits them
  transitively through BornRule.Perspective (the three-level chain
- Histories → BornRule → external Uhlhorn/Gleason). The same absence of axiom
+ HistoriesKent → BornRule → external Uhlhorn/Gleason). The same absence of axiom
  leakage was confirmed for contrary_inferences and the other 35 public
  declarations in the block.
 - mathlib, rev = "8bba4200986270d3b30be2bb2f8840af47a7854f".
@@ -1256,7 +1268,7 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
 ./setup.sh (lake exe cache get, then lake build) reproduces the exact
 repository state on a fresh clone without manual intervention. This was
 tested during every closing pass (lake clean + lake exe cache get +
-lake build), most recently including Histories on 2026-07-16.
+lake build), most recently including HistoriesKent on 2026-07-16.
 
 ## Rules
 

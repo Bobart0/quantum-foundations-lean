@@ -1,4 +1,4 @@
-import QuantumFoundations.Branches.Basic
+import QuantumFoundations.BranchesRiedel.Basic
 
 /-!
 **FR.** # R2 — Cas `A = 2` : dé-risquage de la mécanique `CommuteWitness`/chaîne
@@ -83,7 +83,7 @@ needed by Induction.lean—rather than being duplicated as private in both
 files.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace
 open Gleason
@@ -204,4 +204,4 @@ theorem twoObs_eigen [NeZero R] (Obs : Fin 2 → Fin R → LabeledResolution n K
   · exact rproj_contract_apply (Obs 1 0) k (f 1) (rproj (Obs 0 0) (f 0) ψ)
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

@@ -1,4 +1,4 @@
-import QuantumFoundations.Branches.TwoObs
+import QuantumFoundations.BranchesRiedel.TwoObs
 
 /-!
 **FR.** # R3 — Induction générale : tunneling (T), action diagonale (E), théorème de Riedel
@@ -64,7 +64,7 @@ decomposition become ONE-LINE COROLLARIES of E (applied to
 There is NO permutation manipulation anywhere in this file.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace
 open Gleason
@@ -455,7 +455,7 @@ redondance (`IsRecordedOn` de chaque observable) et témoin de commutation
 `Local.commute_of_disjoint`), `ψ` se décompose de façon UNIQUE en branches
 jointes orthogonales, chacune état propre SIMULTANÉ de tous les records de
 toutes les observables. **Contrepoint POSITIF de
-`Histories.contrary_inferences`** : la cohérence seule (Kent) autorise les
+`HistoriesKent.contrary_inferences`** : la cohérence seule (Kent) autorise les
 inférences contraires ; les records redondants (Riedel) forcent au contraire
 l'unicité de la décomposition — deux mécanismes structurellement distincts
 gouvernant la même notion d'« histoire »/« branche ».
@@ -490,7 +490,7 @@ hypothesis (CommuteWitness, arising in practice from spatial disjointness
 of the supports through Local.commute_of_disjoint), ψ admits a UNIQUE
 decomposition into orthogonal joint branches, each of which is a
 SIMULTANEOUS eigenstate of every record of every observable. The POSITIVE
-counterpart of Histories.contrary_inferences: consistency alone (Kent)
+counterpart of HistoriesKent.contrary_inferences: consistency alone (Kent)
 permits contrary inferences, whereas redundant records (Riedel) enforce
 uniqueness of the decomposition—two structurally distinct mechanisms
 governing the same notion of “history”/“branch.”
@@ -556,4 +556,4 @@ theorem riedel [NeZero R] [NeZero K] (Obs : Fin A → Fin R → LabeledResolutio
     exact hlin.symm
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

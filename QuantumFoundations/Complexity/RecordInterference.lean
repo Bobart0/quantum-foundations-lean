@@ -3,7 +3,7 @@ import QuantumFoundations.Complexity.CircuitLocality
 /-!
 # C1 — Untouched records kill cross amplitudes
 
-This file bridges circuits on `Branches.Sites N d` to Riedel's branch
+This file bridges circuits on `BranchesRiedel.Sites N d` to Riedel's branch
 vectors on `Gleason.H (d ^ N)` through an explicit linear isometry.  It then
 uses only the existing record-projector identities and self-adjointness.
 -/
@@ -13,7 +13,7 @@ namespace QuantumFoundations.Complexity
 open scoped InnerProductSpace
 
 open Gleason
-open QuantumFoundations.Branches
+open QuantumFoundations.BranchesRiedel
 
 noncomputable section
 

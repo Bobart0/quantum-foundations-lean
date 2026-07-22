@@ -211,7 +211,7 @@ section `MILESTONES.md` correspondante pour le détail de la dérivation.
   et la convergence intersubjective entre observateurs comme corollaire du
   théorème principal — voir `MILESTONES.md`, section « Hors scope ».
 
-## Histories (K0–K3)
+## HistoriesKent (K0–K3)
 
 - **Relocalisation préalable de `norm_sq_sum_of_pairwise_orthogonal` et
   `sum_sq_projL_of_pairwise_isOrtho`**, `private` dans `BornRule/Nonvacuity.lean`,
@@ -220,13 +220,13 @@ section `MILESTONES.md` correspondante pour le détail de la dérivation.
   sur `Perspective` (Pythagore fini + valeur de Born additive sur un sup
   orthogonal), pas spécifiques au témoin de Born construit dans
   `BornRule/Nonvacuity.lean` — leur place naturelle est à côté de la
-  définition de `Perspective`, dans le fichier que `Histories` importe déjà.
+  définition de `Perspective`, dans le fichier que `HistoriesKent` importe déjà.
   Même logique que les relocalisations antérieures
   (`exists_unit_vector_of_proj1`/`projL_singleton_unit` en Uhlhorn,
   `isEffect_of_isDensityOperator` U3b→Uhlhorn/Defs.lean lors de B2) :
   dès qu'un même besoin réapparaît dans un second fichier/bloc, relocalisation
   immédiate, jamais de copie. Vérifié sans impact sur les axiomes de
-  `BornRule` (audit de clôture Histories, Bloc 1 point spécifique 2 —
+  `BornRule` (audit de clôture HistoriesKent, Bloc 1 point spécifique 2 —
   35 déclarations après ajout du corollaire projecteur, trio standard sans
   exception).
 - **Deux corrections d'énoncé (règle 2 du projet), même cause, découvertes
@@ -300,7 +300,7 @@ section `MILESTONES.md` correspondante pour le détail de la dérivation.
   le théorème final du bloc — toutes deux attendues comme points d'entrée, pas
   des orphelins. `sendsONBToONB_of_preservesOrthogonality` est `private` comme
   prévu (consommé uniquement par `uhlhorn_finite_dim`, dans le même fichier).
-- `QuantumFoundations/Histories/Basic.lean`, `histProb_additivity_two_stage` :
+- `QuantumFoundations/HistoriesKent/Basic.lean`, `histProb_additivity_two_stage` :
   prouvé (K1(b), tel que demandé par la feuille de route : « version minimale
   suffisante pour K3 ») mais jamais consommé par aucune preuve ultérieure — la
   route finalement empruntée par `inference` (K3a) passe directement par
@@ -308,7 +308,7 @@ section `MILESTONES.md` correspondante pour le détail de la dérivation.
   générique des probabilités d'histoires. Gardé pour la même raison que
   `inner_V_eq_of_im_eq_zero` en Wigner : c'est l'écho explicitement demandé
   d'`AxGrain` (BornRule), un engagement mathématique documenté indépendant du
-  chemin de preuve finalement suivi par K3. Reste de `Histories` audité sans
+  chemin de preuve finalement suivi par K3. Reste de `HistoriesKent` audité sans
   autre résidu : toutes les autres déclarations publiques ont au moins un
   second point d'usage (directement ou via `S1_consistent`/`S2_consistent`,
   eux-mêmes non consommés en interne mais explicitement demandés par la
@@ -388,9 +388,9 @@ laissée à la discrétion de l'utilisateur avant publication.
   de Pythagore fini sur `‖·‖²` (absent tel quel, `gleason-theorem-lean` ne
   couvrant que l'additivité de `bornValue`) a dû être dérivé, en ~15 lignes.
 
-## Cohérence de nommage Histories vs Naimark/Wigner/Uhlhorn/BornRule
+## Cohérence de nommage HistoriesKent vs Naimark/Wigner/Uhlhorn/BornRule
 
-- **Namespace imbriqué `QuantumFoundations.Histories`**, comme
+- **Namespace imbriqué `QuantumFoundations.HistoriesKent`**, comme
   Wigner/Uhlhorn/BornRule — cohérent.
 - **Style des identifiants : hybride, comme BornRule, mais selon un clivage
   différent.** Les définitions structurelles (`Defs.lean`) suivent le style
@@ -650,7 +650,7 @@ corresponding section of MILESTONES.md for details of the derivation.
  convergence between observers as a corollary of the main theorem—see
  MILESTONES.md, section “Out of scope.”
 
-## Histories (K0–K3)
+## HistoriesKent (K0–K3)
 
 - Prior relocation of norm_sq_sum_of_pairwise_orthogonal and
  sum_sq_projL_of_pairwise_isOrtho, previously private in
@@ -660,11 +660,11 @@ corresponding section of MILESTONES.md for details of the derivation.
  Pythagoras + additivity of the Born value over an orthogonal supremum), not
  specific to the Born witness constructed in BornRule/Nonvacuity.lean.
  Their natural location is next to the definition of Perspective, in the
- file already imported by Histories. This follows the same logic as
+ file already imported by HistoriesKent. This follows the same logic as
  previous relocations (exists_unit_vector_of_proj1/projL_singleton_unit
  in Uhlhorn, isEffect_of_isDensityOperator U3b→Uhlhorn/Defs.lean during B2): whenever the same need reappears in a second
  file/block, relocate it immediately; never copy it. Verified to have no
- effect on the axioms of BornRule (Histories closing audit, Block 1,
+ effect on the axioms of BornRule (HistoriesKent closing audit, Block 1,
  specific point 2—35 declarations after adding the projector corollary,
  with the standard trio and no exceptions).
 - Two corrections to statements (project rule 2), with the same cause,
@@ -742,7 +742,7 @@ corresponding section of MILESTONES.md for details of the derivation.
  final theorem of the block—both expected entry points, not orphans.
  sendsONBToONB_of_preservesOrthogonality is private as intended and is
  consumed only by uhlhorn_finite_dim in the same file.
-- QuantumFoundations/Histories/Basic.lean,
+- QuantumFoundations/HistoriesKent/Basic.lean,
  histProb_additivity_two_stage: proved (K1(b), as requested by the roadmap:
  “minimal version sufficient for K3”) but never consumed by a later proof.
  The route ultimately taken by inference (K3a) proceeds directly through
@@ -751,7 +751,7 @@ corresponding section of MILESTONES.md for details of the derivation.
  inner_V_eq_of_im_eq_zero in Wigner: it is the explicitly requested echo of
  AxGrain (BornRule), an independently documented mathematical commitment
  regardless of the proof route ultimately followed by K3. The rest of
- Histories was audited with no additional residue: every other public
+ HistoriesKent was audited with no additional residue: every other public
  declaration has at least a second use (directly or through
  S1_consistent/S2_consistent, themselves not consumed internally but
  explicitly requested by the roadmap as terminal specializations of
@@ -834,9 +834,9 @@ the user's discretion before publication.
  gleason-theorem-lean covers only additivity of bornValue, had to be
  derived, in ~15 lines.
 
-## Histories naming consistency relative to Naimark/Wigner/Uhlhorn/BornRule
+## HistoriesKent naming consistency relative to Naimark/Wigner/Uhlhorn/BornRule
 
-- Nested namespace QuantumFoundations.Histories, as in
+- Nested namespace QuantumFoundations.HistoriesKent, as in
  Wigner/Uhlhorn/BornRule—consistent.
 - Identifier style: hybrid, as in BornRule, but along a different divide.
  The structural definitions in Defs.lean follow the descriptive
@@ -868,7 +868,7 @@ the user's discretion before publication.
 ## Complexity (C0–C2) — exact 2-local interference bound
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
-  equivalence on `Branches.Sites N d`, a region `Finset (Fin N)`, the
+  equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
   existing proof `IsLocalTo`, and a support-cardinality proof `≤ 2`.
   `Circuit N d` is a `List`; its chronological convention is
   `[G₁,G₂,G₃].eval x = G₃ (G₂ (G₁ x))`. Consequently,
@@ -876,7 +876,7 @@ the user's discretion before publication.
 - **Representation bridge.** Riedel's branches live on `H (d ^ N)`, whereas
   locality lives on `Sites N d`. The API therefore requires the same
   explicit isometry `e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d` already used by
-  `Branches.Local`; `Circuit.evalOnH` conjugates circuit evaluation by `e`.
+  `BranchesRiedel.Local`; `Circuit.evalOnH` conjugates circuit evaluation by `e`.
 - **Reused Riedel facts.** C1 uses `commute_of_disjoint` gate by gate,
   `branch_wellDefined` plus `rproj_contract_apply` for the two record
   identities, and `Submodule.starProjection_isSymmetric` for self-adjointness.
@@ -911,3 +911,22 @@ site/Hilbert-space isometry. C1 reuses `commute_of_disjoint`,
 injection lemma because `pigeonhole_corollary` concerns `PairCovers`, singleton
 supports, equal family sizes, and `3 ≤ R`, none of which matches the desired
 quantitative bound for arbitrary 2-local circuit lists.
+
+## Renommage des blocs Riedel et Kent (2026-07-22)
+
+- Le répertoire, les imports et le namespace `QuantumFoundations.Branches`
+  sont renommés uniformément en `QuantumFoundations.BranchesRiedel`.
+- Le répertoire, les imports et le namespace `QuantumFoundations.Histories`
+  sont renommés uniformément en `QuantumFoundations.HistoriesKent`.
+- Aucun alias de compatibilité n'est conservé : le changement demandé porte
+  explicitement sur les namespaces publics eux-mêmes. Les types des
+  déclarations sont inchangés ; seuls leurs noms pleinement qualifiés et leurs
+  chemins de modules changent.
+
+### English summary
+
+The directory, import path, and namespace renames are uniform:
+`QuantumFoundations.BranchesRiedel` and
+`QuantumFoundations.HistoriesKent`. No compatibility aliases are retained;
+declaration types are unchanged, while fully qualified names and module paths
+change.

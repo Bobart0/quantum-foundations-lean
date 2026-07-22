@@ -7,7 +7,7 @@ Formalisation du théorème de Riedel (PRL 118, 120402 (2017), arXiv:1608.05377)
 un ensemble d'observables redondamment enregistrées dont aucune ne « pair-couvre »
 une autre induit une décomposition en branches jointe, unique, orthogonale, en
 états propres simultanés de tous les records. Contrepoint POSITIF de
-`Histories.contrary_inferences` : la cohérence seule autorise les inférences
+`HistoriesKent.contrary_inferences` : la cohérence seule autorise les inférences
 contraires (Kent), les records redondants forcent l'unicité (Riedel).
 
 ## Architecture à deux couches (décision ferme)
@@ -44,7 +44,7 @@ contraires (Kent), les records redondants forcent l'unicité (Riedel).
 
 ## Convention d'ordre de `chainProj`
 
-Analogue à `Histories.chainOp` (`Fin.foldl`, dernier étage appliqué en
+Analogue à `HistoriesKent.chainOp` (`Fin.foldl`, dernier étage appliqué en
 dernier) : `chainProj Obs L ρ f` replie `L : List (Fin A)` via `List.foldl`,
 chaque nouvelle observable de `L` composée par la GAUCHE de l'accumulateur —
 la DERNIÈRE observable de `L` est donc appliquée EN DERNIER (extérieure).
@@ -59,7 +59,7 @@ Formalization of Riedel's theorem (PRL 118, 120402 (2017), arXiv:1608.05377):
 a set of redundantly recorded observables, none of which pair-covers another,
 induces a unique orthogonal joint-branch decomposition into simultaneous
 eigenstates of all records. This is the POSITIVE counterpart of
-Histories.contrary_inferences: consistency alone permits contrary
+HistoriesKent.contrary_inferences: consistency alone permits contrary
 inferences (Kent), whereas redundant records enforce uniqueness (Riedel).
 
 ## Two-layer architecture (fixed decision)
@@ -98,7 +98,7 @@ Gleason.projL infrastructure, as in BornRule.Perspective).
 
 ## Ordering convention for chainProj
 
-As in Histories.chainOp (Fin.foldl, with the final stage applied last),
+As in HistoriesKent.chainOp (Fin.foldl, with the final stage applied last),
 chainProj Obs L ρ f folds L : List (Fin A) using List.foldl, composing
 each new observable from L on the LEFT of the accumulator. Consequently,
 the LAST observable in L is applied LAST, as the outermost operator. This
@@ -108,7 +108,7 @@ Induction.lean), not an invariant imposed here; see the note in
 Induction.lean.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace
 open Gleason QuantumFoundations.BornRule
@@ -231,4 +231,4 @@ def jointBranch [NeZero R] (Obs : Fin A → Fin R → LabeledResolution n K) (ψ
   chainProj Obs (List.finRange A) 0 f ψ
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

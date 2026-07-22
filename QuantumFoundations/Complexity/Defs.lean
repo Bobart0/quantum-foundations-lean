@@ -1,11 +1,11 @@
-import QuantumFoundations.Branches.Local
+import QuantumFoundations.BranchesRiedel.Local
 
 /-!
 # C0 — Finite 2-local circuits
 
-This file defines exact finite circuits on `Branches.Sites N d`.  Each gate
+This file defines exact finite circuits on `BranchesRiedel.Sites N d`.  Each gate
 is a linear isometric equivalence supported on at most two sites in the
-existing `Branches.IsLocalTo` sense.
+existing `BranchesRiedel.IsLocalTo` sense.
 
 The evaluation convention is chronological from the head of the list: for
 `C = [G₁, G₂, G₃]`, `C.eval x = G₃ (G₂ (G₁ x))`.
@@ -13,7 +13,7 @@ The evaluation convention is chronological from the head of the list: for
 
 namespace QuantumFoundations.Complexity
 
-open QuantumFoundations.Branches
+open QuantumFoundations.BranchesRiedel
 
 noncomputable section
 

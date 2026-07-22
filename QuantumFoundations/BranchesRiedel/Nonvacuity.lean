@@ -1,4 +1,4 @@
-import QuantumFoundations.Branches.Defs
+import QuantumFoundations.BranchesRiedel.Defs
 
 /-!
 **FR.** # R0 — Nonvacuity : témoin GHZ₃ (une observable, trois records redondants)
@@ -25,7 +25,7 @@ vacuité oblige), PAS un modèle réduit du travail que `Local.riedel_local`
 devra faire en général. Ne pas réutiliser cette construction comme base pour
 le pont général.
 
-## Discipline du témoin (comme `Histories.Witness`, amplitudes d'abord)
+## Discipline du témoin (comme `HistoriesKent.Witness`, amplitudes d'abord)
 
 `ψ₀ := e 0 + e 7` (les deux configurations « tous les sites égaux », NON
 normalisé) — `0 = 000₂`, `7 = 111₂`. Ordre de dérivation : générateurs et
@@ -61,7 +61,7 @@ single-observable case (where CommuteWitness is vacuous), NOT a reduced
 model of the work that Local.riedel_local must perform in general. This
 construction must not be reused as a basis for the general bridge.
 
-## Witness discipline (as in Histories.Witness, amplitudes first)
+## Witness discipline (as in HistoriesKent.Witness, amplitudes first)
 
 ψ₀ := e 0 + e 7 (the two “all sites equal” configurations, NOT normalized):
 0 = 000₂, 7 = 111₂. The derivation order is: generators and their inner
@@ -74,7 +74,7 @@ covers via the standard basis of H 8 (EuclideanSpace.basisFun), split
 according to digit s.
 -/
 
-namespace QuantumFoundations.Branches
+namespace QuantumFoundations.BranchesRiedel
 
 open scoped InnerProductSpace
 open Gleason
@@ -207,4 +207,4 @@ theorem isRecordedOn_ψ₀ : IsRecordedOn ψ₀ siteRec := by
   · rw [proj_cell1_psi0, proj_cell1_psi0]
 
 end
-end QuantumFoundations.Branches
+end QuantumFoundations.BranchesRiedel

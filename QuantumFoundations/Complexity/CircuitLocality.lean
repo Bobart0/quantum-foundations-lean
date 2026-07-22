@@ -10,7 +10,7 @@ disjoint from the circuit's union support.
 
 namespace QuantumFoundations.Complexity
 
-open QuantumFoundations.Branches
+open QuantumFoundations.BranchesRiedel
 
 noncomputable section
 
@@ -18,7 +18,7 @@ namespace Circuit
 
 /--
 A circuit commutes with an operator localized away from every site touched
-by the circuit.  The proof applies `Branches.commute_of_disjoint` gate by
+by the circuit.  The proof applies `BranchesRiedel.commute_of_disjoint` gate by
 gate and closes commutation under composition explicitly.
 -/
 theorem circuit_commute_of_disjoint (C : Circuit N d) (F : Finset (Fin N))
