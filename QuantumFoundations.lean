@@ -57,6 +57,7 @@ import QuantumFoundations.Complexity.ApproxRecordDistinguishability
 import QuantumFoundations.Complexity.ApproxBranchGap
 import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Models.Repetition.Persistence
+import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations

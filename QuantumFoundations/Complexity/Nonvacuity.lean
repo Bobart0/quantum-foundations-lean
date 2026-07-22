@@ -1,8 +1,9 @@
 import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Models.Repetition.Persistence
+import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 
 /-!
-# C0/C6/C7/C8/C9 — Non-vacuity
+# C0/C6/C7/C8/C9/C10 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -12,6 +13,13 @@ Exact record and phase-flip hypotheses also inhabit their C8 approximate
 counterparts at error zero, and monotonicity enlarges any such error budget.
 C9 supplies the concrete repetition-record model: exact records, a one-gate
 readout, and a finite interference witness all coexist in one explicit family.
+C10 supplies a *nonzero-noise* family on `R + 1` sites (one source qubit plus
+`R` record qubits): its records are only approximate (the C8 predicate is
+genuinely inhabited by nonzero error), yet the robust threshold
+`4 * ‖leak‖ < 1` still yields the same qualitative separation as C9 — a
+constant-cost readout, a linear-length interference witness, and a proxy gap
+growing with the record count.  C10 does not claim identity with the C9
+model: it uses `R + 1` sites because of the extra source qubit.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -143,6 +151,77 @@ example (R : ℕ) [NeZero R] :
   repetition_approxRecordedPair_zero R
 
 end RepetitionModel
+
+namespace NoisyRepetitionModel
+
+open QuantumFoundations.Complexity.RepetitionModel
+
+/-- The concrete rational profile's leakage is nonzero: C10's approximate
+records are genuinely inhabited by nonzero error, not merely by the C9
+zero-error regression. -/
+example : rationalNoiseProfile.leak ≠ 0 := rationalNoiseProfile_leak_ne_zero
+
+/-- The concrete profile satisfies the robust-noise threshold
+`4 * ‖leak‖ < 1`. -/
+example : rationalNoiseProfile.IsRobust := rationalNoiseProfile_isRobust
+
+/-- The noisy records instantiate the C8 approximate-record pair predicate
+with nonzero aggregate error `2 * ‖leak‖`, not the exact `IsRecordedOn`
+predicate. -/
+example (R : ℕ) [NeZero R] :
+    ApproxRecordedPairOn (noisyRecords R)
+      (noisyZeroBranch rationalNoiseProfile R) (noisyOneBranch rationalNoiseProfile R)
+      0 1 (2 * ‖rationalNoiseProfile.leak‖) (2 * ‖rationalNoiseProfile.leak‖) :=
+  noisy_repetition_approxRecordedPairOn rationalNoiseProfile R
+
+/-- The one-gate readout implements the exact record phase flip at the
+embedded record site. -/
+example (R : ℕ) [NeZero R] :
+    ImplementsRecordPhaseFlip (sitesEquivR (R + 1)) (noisyReadoutCircuit R)
+      (noisyRecords R 0) 1 :=
+  noisyReadoutCircuit_implements R
+
+/-- The concrete robust distinguishability complexity is exactly one gate. -/
+example (R : ℕ) [NeZero R] :
+    distinguishabilityComplexity (sitesEquivR (R + 1))
+        (noisyZeroBranch rationalNoiseProfile R) (noisyOneBranch rationalNoiseProfile R)
+        (1 / 2 : ℝ)
+      = (1 : WithTop ℕ) :=
+  concrete_noisy_distinguishabilityComplexity_eq_one R
+
+/-- The all-bit-flip circuit gives a finite interference witness, so the
+noisy model's interference minimum is finite. -/
+example (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    interferenceComplexity (sitesEquivR (R + 1))
+        (noisyZeroBranch p R) (noisyOneBranch p R) (1 / 2 : ℝ) ≠ ⊤ :=
+  noisy_repetition_interference_ne_top p R
+
+/-- Positive proxy gaps are certified whenever the finite record budget
+permits: e.g. `R = 3` record qubits already give gap `1`. -/
+example : HasProxyGapAtLeast (sitesEquivR (3 + 1))
+    (noisyZeroBranch rationalNoiseProfile 3) (noisyOneBranch rationalNoiseProfile 3)
+    (1 / 2 : ℝ) 1 :=
+  noisy_repetition_positive_gap rationalNoiseProfile rationalNoiseProfile_isRobust 3 (by norm_num)
+
+/-- The robust proxy gap persists conditionally through a supplied finite
+circuit, as long as the record budget also covers the conjugation
+overhead. -/
+example (R : ℕ) [NeZero R] (E : Circuit (R + 1) 2) (g : ℕ)
+    (hbudget : 1 + 4 * E.length + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      (Circuit.evalOnH E (sitesEquivR (R + 1)) (noisyZeroBranch rationalNoiseProfile R))
+      (Circuit.evalOnH E (sitesEquivR (R + 1)) (noisyOneBranch rationalNoiseProfile R))
+      (1 / 2 : ℝ) g :=
+  concrete_noisy_repetition_gap_persists R E g hbudget
+
+/-- Zero-leak regression: `exactProfile` recovers exact record identities
+(zero aggregate error) from the same noisy construction. -/
+example (R : ℕ) [NeZero R] :
+    ApproxRecordedPairOn (noisyRecords R)
+      (noisyZeroBranch exactProfile R) (noisyOneBranch exactProfile R) 0 1 0 0 :=
+  exactProfile_approxRecordedPairOn_zero R
+
+end NoisyRepetitionModel
 
 end
 
