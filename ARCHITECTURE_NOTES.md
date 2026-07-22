@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C9) — exact, robust, and explicit 2-local proxy gaps
+## Complexity (C0–C10) — exact, robust, and explicit 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -1006,7 +1006,7 @@ the user's discretion before publication.
   `recordPhaseFlip` currently use plain `LinearMap`; the Complexity and
   BranchesRiedel APIs contain no `ContinuousLinearMap`/operator-norm layer.
   Adding one solely for the optional `2ε` pointwise bridge would be a broad
-  representation change, so that bridge remains future C10 work.
+  representation change, so that bridge remains future C12 work.
 
 - **Explicit repetition model (C9).** `configurationEquiv R` uses
   `finFunctionFinEquiv.symm`, and `sitesEquivR` reindexes the standard
@@ -1041,6 +1041,69 @@ the user's discretion before publication.
   simultaneous-flip locality infrastructure. C9 therefore makes only the
   mandatory linear bounds and no false exactness claim.
 
+- **Explicit noisy repetition model (C10).** `R + 1` sites: source qubit `0`
+  plus `R` record qubits at `recordSite r := Fin.succ r`. Four computational
+  configurations cross the source bit with the constant record bit
+  (`config00`/`config01`/`config10`/`config11`, built with `Fin.cases`, not
+  classical choice). `NoiseProfile` packages a normalized `keep`/`leak` pair;
+  `noisyZeroBranch`/`noisyOneBranch` mix the two same-source configurations,
+  staying exactly orthogonal because the source bit differs between them —
+  the Pythagorean norm identity for orthogonal unit vectors (via
+  `norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero`) and `p.norm_sq`
+  give unit norm without any smallness assumption on `leak`.
+- **Additive C9 generalizations, not replacements.** C10 needed three pieces
+  of C9 infrastructure at a generality C9 itself never required: a basis
+  vector at an arbitrary (not just constant) configuration
+  (`configurationBranch`, added to `States.lean`), a reflection readout at an
+  arbitrary (not just `firstSite`) site (`recordReadoutGateAt`/
+  `recordReadoutCircuitAt`, added to `Readout.lean`), and the all-bit-flip
+  action on an arbitrary (not just constant) configuration
+  (`allBitFlipCircuit_maps_configurationBranch`, added to `Interference.lean`).
+  In each case the existing C9 declaration was reproved as the new generic
+  lemma's special case, with no change to its public type. A fourth addition,
+  `one_le_distinguishabilityComplexity_of_pos` in `Distinguishability.lean`,
+  generalizes the existing threshold-one zero-length non-distinguishability
+  argument to an arbitrary positive threshold — the argument never used that
+  the threshold was exactly one, only that it was positive.
+- **Exact per-site record errors, not `IsRecordedOn`.** Reusing C9's generic
+  `siteProj_apply_configuration`, every record projector's action on each of
+  the four basis vectors is an exact equality (fixes or kills outright,
+  depending on whether the projector's label matches the site's constant
+  record bit). Linearity then gives the *exact* norms
+  `‖P_b(noisyBranch) − noisyBranch‖ = ‖leak‖` (fixing defect) and
+  `‖P_b(other noisyBranch)‖ = ‖leak‖` (leakage) at every record site, which
+  sum to the aggregate `ApproxRecordedPairOn` budget `2 * ‖leak‖` per label —
+  an equality-derived bound, not an estimate.
+- **Threshold `δ = 1/2` makes the robust condition exactly `4‖leak‖ < 1`.**
+  With `ηi = ηj = 2‖leak‖` and `ξ = 0` (the readout is exact), the C8
+  interference threshold `ηi + ηj < 2δ` becomes `4‖leak‖ < 1`
+  (`NoiseProfile.IsRobust`) and the distinguishability threshold
+  `2δ + 2ηj + ξ ≤ 2` becomes `1 + 4‖leak‖ ≤ 2`, implied by the same strict
+  condition. Both robust theorems (C10e) are therefore direct instantiations
+  of the untouched-record and phase-flip-approximation C8 machinery, with no
+  new analytic argument.
+- **Unconditional finite interference witness.** Flipping every one of the
+  `R + 1` sites (not just the `R` record sites) swaps the source bit too,
+  exchanging the two noisy branches exactly regardless of `leak`. This gives
+  `C_I ≤ R + 1` (C10f) without any robustness hypothesis — only the lower
+  bound needs `IsRobust`.
+- **Gap and persistence are direct C8 instantiations.** C10g introduces no
+  new generic machinery: `approximate_records_give_proxy_gap_certificate` and
+  `approximate_records_gap_persists_under_circuit_evolution` are applied with
+  `noisyRecords`/`noisyRegions`/`noisyReadoutCircuit` supplied as data. The
+  minimal record count for a nonzero gap (`3 ≤ R`) is unchanged from C9,
+  since `ceilHalf` depends only on the record count `R`, not on the extra
+  source qubit.
+- **Concrete rational witness.** `99² + 20² = 101²` gives an exact rational
+  `NoiseProfile` (`keep = 99/101`, `leak = 20/101`) via `norm_div` and
+  `norm_num`; `4 * (20/101) = 80/101 < 1` is checked the same way. No
+  floating-point evaluation or `native_decide` is used anywhere.
+- **C10 scope.** This is a static explicit family with nonzero record
+  leakage, not a dynamical derivation of noisy records from decoherence, a
+  claim of typicality, an operator-norm robustness result, a Hamiltonian
+  persistence result, or a complexity-growth/branch-uniqueness/Many-Worlds
+  claim.
+
 ### English summary
 
 The Complexity block keeps circuit syntax, operator locality, finite counting,
@@ -1065,7 +1128,14 @@ one-record cross bound `η`, uses the two-label threshold
 instantiates the whole stack in the binary repetition model: exact singleton
 records, a one-gate phase readout, an `R`-gate all-bit-flip witness,
 `C_D = 1`, `ceilHalf R ≤ C_I ≤ R`, and the concrete finite-circuit
-persistence budget `1 + 4 * E.length + g ≤ ceilHalf R`.
+persistence budget `1 + 4 * E.length + g ≤ ceilHalf R`. C10 shows the same
+robust C8 stack is inhabited by a genuinely noisy family on `R + 1` sites: a
+`keep`/`leak` mix of two same-source configurations stays exactly orthogonal,
+gives an exact aggregate record error `2 * ‖leak‖` per label, and — whenever
+`4 * ‖leak‖ < 1` — the same qualitative bounds as C9 (`C_D = 1`,
+`ceilHalf R ≤ C_I ≤ R + 1`, and persistence budget
+`1 + 4 * E.length + g ≤ ceilHalf R`), instantiated concretely at
+`(keep, leak) = (99/101, 20/101)`.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

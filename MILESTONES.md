@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C9)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C10)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2699,14 +2699,71 @@ those branches, then `R ≤ 2 * C.length`.
   partition/locality layer disproportionate to the optional corollary. The
   mandatory linear bounds remain `ceilHalf R ≤ C_I ≤ R`.
 
-### Explicitly outside C0–C9 (future extensions, not deficiencies)
+### C10 — explicit noisy redundant-record model — ✅ CLOSED
+
+Purpose: show that the robust C8 theory is genuinely inhabited by a
+nonzero-noise family, not only by the zero-error regression to the exact C9
+repetition model.  The site system has `R + 1` sites: one distinguished
+source qubit at site `0`, plus `R` record qubits embedded at sites `r + 1`.
+
+- [x] **C10a:** `NoiseProfile` packages a normalized `keep`/`leak` amplitude
+  pair (`‖keep‖² + ‖leak‖² = 1`), deliberately without the small-noise
+  condition. `NoiseProfile.IsRobust p := 4 * ‖p.leak‖ < 1` is a separate
+  predicate, used only by the robust theorems. `exactProfile` (`keep = 1`,
+  `leak = 0`) is the zero-noise regression limit.
+- [x] **C10b:** four basis configurations cross the source bit with the
+  constant record bit (`config00`, `config01`, `config10`, `config11`); a
+  generic `configurationBranch` helper was added additively to C9's
+  `States.lean` (with `zeroBranch`/`oneBranch` proved to be its special
+  cases, without changing their public types). `noisyZeroBranch p R :=
+  keep • basis00 + leak • basis01` and `noisyOneBranch p R := leak • basis10
+  + keep • basis11` both have norm exactly one (via `p.norm_sq` and the
+  Pythagorean identity for orthogonal unit vectors) and stay exactly
+  orthogonal for every `leak`, since the source qubit differs between them.
+- [x] **C10c:** every record site's projector has an *exact* computed error:
+  it fixes the aligned configuration exactly and leaks exactly `‖leak‖`
+  amplitude into (or out of) the opposite one. These exact norms instantiate
+  `ApproxRecordedPairOn` with aggregate error `2 * ‖leak‖` per label — the
+  canonical nonzero C8 inhabitant, not `IsRecordedOn`.
+- [x] **C10d:** a generic arbitrary-site reflection readout
+  (`recordReadoutGateAt`/`recordReadoutCircuitAt`) was added additively to
+  C9's `Readout.lean`, with the existing fixed-site `recordReadoutGate`/
+  `recordReadoutCircuit` reproved as its specialization at `firstSite`. The
+  noisy model reads out record qubit `0` with one exact gate, which becomes
+  an approximate implementation of the record phase flip at readout error
+  `ξ = 0` via the existing C8 exact-to-approximate bridge.
+- [x] **C10e:** at threshold `δ = 1/2`, the C8 thresholds `ηi + ηj < 2δ` and
+  `2δ + 2ηj + ξ ≤ 2` become exactly `4 * ‖leak‖ < 1` and `1 + 4 * ‖leak‖ ≤ 2`,
+  both implied by `IsRobust`. A generic
+  `one_le_distinguishabilityComplexity_of_pos` (any positive threshold,
+  generalizing the existing threshold-one lemma) was added additively to
+  C9's `Distinguishability.lean`, giving the exact value `C_D = 1`.
+- [x] **C10f:** flipping every one of the `R + 1` sites swaps the source bit
+  too, so it exchanges `config00 ↔ config11` and `config01 ↔ config10`
+  pairwise and hence the two noisy branches exactly; a generic
+  `allBitFlipCircuit_maps_configurationBranch` helper was added additively to
+  C9's `Interference.lean`. This gives the unconditional witness `C_I ≤ R+1`.
+- [x] **C10g:** the C8 proxy-gap and persistence theorems are instantiated
+  directly (no new generic lemma needed): `1 + g ≤ ceilHalf R` gives a robust
+  proxy gap, and `1 + 4 * E.length + g ≤ ceilHalf R` gives conditional
+  persistence through an arbitrary finite circuit. Three or more record
+  qubits already give gap `1`, exactly as in C9, since `ceilHalf` depends
+  only on the record count `R`.
+- [x] **C10h:** the Pythagorean triple `99² + 20² = 101²` gives a fully
+  concrete rational profile (`keep = 99/101`, `leak = 20/101`) with
+  `4 * (20/101) = 80/101 < 1`; every C10a–C10g theorem applies to it with no
+  further hypotheses — the principal nonvacuity witness.
+- [x] Requested C10 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C10 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
-- Formation or generic existence of approximate records from decoherence.
-- Explicit noisy repetition records, circuit-generation dynamics, and the
-  optional operator-norm-to-pointwise-readout bridge.
-- Persistence for arbitrary Hamiltonian or continuous-time evolution and
+- Formation or generic existence of approximate records from decoherence, and
+  dynamical (unitary fanout/measurement) generation of the noisy records —
+  the C10 model is a static explicit family, not a derived one.
+- Operator-norm-to-pointwise-readout bridge, Hamiltonian evolution, and
   generic circuit-complexity growth.
 - Brown–Susskind complexity growth and canonical uniqueness of branch
   decompositions.
@@ -2726,10 +2783,16 @@ la borne croisée nette `η`, le seuil `ηi + ηj < 2δ`, la perte diagonale
 `2ηj + ξ` et la persistance sans nouvelle erreur analytique. C9 fournit en
 outre un modèle concret de répétition : `C_D = 1`,
 `ceilHalf R ≤ C_I ≤ R`, un gap croissant et le budget de persistance fini
-`1 + 4 * E.length + g ≤ ceilHalf R`. La construction dynamique de ces records,
-la synthèse générale de circuits de lecture, les
-évolutions hamiltoniennes générales et les conjectures de croissance restent
-des travaux futurs distincts, et ne sont pas des manques de ces jalons.
+`1 + 4 * E.length + g ≤ ceilHalf R`. C10 instancie enfin cette théorie robuste
+sur une famille à bruit non nul explicite : un qubit source plus `R` qubits
+de mémoire, une erreur de record exacte `2 * ‖leak‖` par étiquette, la
+condition robuste `4 * ‖leak‖ < 1`, et exactement les mêmes bornes
+`C_D = 1`, `ceilHalf R ≤ C_I ≤ R + 1` et le budget de persistance
+`1 + 4 * E.length + g ≤ ceilHalf R`, y compris un témoin rationnel concret
+`(99/101, 20/101)`. La construction dynamique de ces records, la synthèse
+générale de circuits de lecture, les évolutions hamiltoniennes générales et
+les conjectures de croissance restent des travaux futurs distincts, et ne
+sont pas des manques de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

@@ -4,16 +4,16 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C9.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C10.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-71 fichiers `.lean`, 12657 lignes, 474 déclarations publiques, 0 `sorry`,
-0 axiome propre au projet. Le bloc Complexity compte 33 fichiers et 4026
-lignes. Les
-théorèmes principaux du nouveau bloc Complexity ont été vérifiés par
+79 fichiers `.lean`, 13843 lignes, 561 déclarations publiques, 0 `sorry`,
+0 axiome propre au projet. Le bloc Complexity compte 41 fichiers et 5211
+lignes, dont 8 fichiers et 990 lignes pour le nouveau modèle bruité C10. Les
+théorèmes principaux du bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
 
@@ -462,14 +462,54 @@ prouve en particulier que l'interference complexity n'est pas `⊤`.
 L'option de sharpness par flips appariés n'est pas revendiquée : les bornes
 fermées sont `ceilHalf R ≤ C_I ≤ R`.
 
+Le jalon C10 instancie enfin la théorie robuste C8 sur une famille à bruit
+**non nul** explicite, sur `R + 1` sites : un qubit source (site `0`) plus
+`R` qubits de mémoire (`recordSite r := Fin.succ r`). Un `NoiseProfile`
+normalisé `(keep, leak)` (`‖keep‖² + ‖leak‖² = 1`) mélange deux
+configurations de même bit source, `noisyZeroBranch := keep • basis00 + leak
+• basis01` et `noisyOneBranch := leak • basis10 + keep • basis11`, qui restent
+**exactement orthogonales pour tout `leak`** puisque le qubit source diffère
+entre elles. Chaque record a une erreur exacte calculée : il fixe
+exactement la configuration alignée et fuit exactement `‖leak‖` vers
+l'autre, d'où l'erreur agrégée exacte `2 * ‖leak‖` par étiquette — un
+habitant non trivial de `ApproxRecordedPairOn`, sans jamais invoquer
+`IsRecordedOn`. Au seuil `δ = 1/2`, la condition robuste est exactement
+
+```lean
+def NoiseProfile.IsRobust (p : NoiseProfile) : Prop := 4 * ‖p.leak‖ < 1
+```
+
+sous laquelle on obtient exactement les mêmes bornes que C9 :
+
+```lean
+distinguishabilityComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) = 1
+ceilHalf R ≤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
+interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) ≤ R + 1
+```
+
+ainsi que le gap robuste et sa persistance conditionnelle sous le même budget
+`1 + 4 * E.length + g ≤ ceilHalf R`. Le triplet pythagoricien
+`99² + 20² = 101²` fournit un témoin rationnel concret
+`(keep, leak) = (99/101, 20/101)` avec `4 * (20/101) = 80/101 < 1`, auquel
+tous les théorèmes C10a–C10g s'appliquent sans hypothèse supplémentaire.
+Trois généralisations additives de C9 (jamais nécessaires à C9 lui-même) ont
+servi de brique : une branche de base à configuration arbitraire
+(`configurationBranch`), une lecture par réflexion à site arbitraire
+(`recordReadoutGateAt`/`recordReadoutCircuitAt`), et l'action du circuit
+« flip tous les bits » sur une configuration arbitraire
+(`allBitFlipCircuit_maps_configurationBranch`) — dans chaque cas la
+déclaration C9 existante est reprouvée comme cas particulier, sans changer
+son type public.
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
 des régions deux-à-deux disjointes, des portes exactement 2-locales et une
 amplitude/proxy au-dessus du seuil explicite. Il ne construit pas les records
-approximatifs depuis une dynamique de décohérence et ne traite pas la synthèse
+approximatifs depuis une dynamique de décohérence (fanout unitaire/mesure) et
+ne traite pas la synthèse
 efficace de projecteurs locaux arbitraires, le pont optionnel depuis une borne
-en norme d’opérateur, les modèles bruités de records de répétition, le
+en norme d'opérateur, le
 critère physique complet de Taylor–McCulloch, la persistance sous évolution
 hamiltonienne arbitraire, la croissance générique de complexité, la croissance
 de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
@@ -591,7 +631,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9 : témoins élémentaires et modèle concret | 149 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10 : témoins élémentaires et modèles concrets | 228 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -623,8 +663,16 @@ affectée.
 | `QuantumFoundations/Complexity/Models/Repetition/Interference.lean` | C9e : circuit fini de flips de tous les bits | 205 |
 | `QuantumFoundations/Complexity/Models/Repetition/Complexities.lean` | C9f : bornes linéaires et gap concret | 105 |
 | `QuantumFoundations/Complexity/Models/Repetition/Persistence.lean` | C9g : budget concret de persistance par circuit | 57 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 64 |
-| **Total recalculé**                          | **71 fichiers**                                                                   | **12657** |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Profiles.lean` | C10a : profils de bruit `keep`/`leak` normalisés | 76 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/States.lean` | C10b : quatre configurations et branches bruitées | 215 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Records.lean` | C10c : erreurs de record exactes et paire approximative | 182 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Readout.lean` | C10d : lecture exacte à site de record arbitraire | 59 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean` | C10e : séparation de complexité robuste à `δ = 1/2` | 89 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean` | C10f : témoin fini d'interférence bruitée | 151 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean` | C10g : gap robuste et persistance conditionnelle | 123 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean` | C10h : profil rationnel concret `(99/101, 20/101)` | 95 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 65 |
+| **Total recalculé**                          | **79 fichiers**                                                                   | **13843** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -698,6 +746,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C7 | Transport exact et persistance conditionnelle sous circuit réversible fini | ✅ |
 | C8 | Records approximatifs, bornes quantitatives et persistance conditionnelle | ✅ |
 | C9 | Modèle explicite de répétition, circuits concrets et gap linéaire | ✅ |
+| C10 | Modèle explicite de répétition **bruitée** (`leak ≠ 0`), séparation robuste | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -729,6 +778,12 @@ consolidée de tous les écarts vs les plans initiaux).
 | `repetition_interferenceComplexity_bounds` | `ceilHalf R ≤ C_I ≤ R` et donc `C_I ≠ ⊤` | Records singletons + circuit de `R` flips | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | — |
 | `repetition_has_proxy_gap` | `1 + g ≤ ceilHalf R` certifie le gap explicite | Instanciation directe de C4–C6 | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | — |
 | `repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g ≤ ceilHalf R` conserve le gap | Instanciation directe de C7 | `Models/Repetition/Persistence.lean` (57) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_approxRecordedPairOn` | Les records bruités habitent `ApproxRecordedPairOn` avec erreur agrégée exacte `2 * ‖leak‖` | Actions exactes des projecteurs sur les quatre configurations | `Models/NoisyRepetition/Records.lean` (182) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_distinguishabilityComplexity` | Sous bruit robuste (`4‖leak‖ < 1`), `C_D = 1` à `δ = 1/2` | Lecture exacte à un site + seuil C8d | `Models/NoisyRepetition/Complexities.lean` (89) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_interference_bounds` | Sous bruit robuste, `ceilHalf R ≤ C_I ≤ R + 1` à `δ = 1/2` | Records approximatifs C8c + témoin flip-tous-les-bits | `Models/NoisyRepetition/Interference.lean` (151) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_has_proxy_gap` | `1 + g ≤ ceilHalf R` certifie le gap robuste | Instanciation directe de C8e | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g ≤ ceilHalf R` conserve le gap robuste | Instanciation directe de C8f | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | — |
+| `rationalNoiseProfile_isRobust` | Le profil rationnel `(99/101, 20/101)` est robuste (`80/101 < 1`) | Triplet pythagoricien `99² + 20² = 101²` | `Models/NoisyRepetition/ConcreteNoise.lean` (95) | 0 sorry, 0 axiome | — |
 
 Statut « 0 axiome » signifie : dépend uniquement de
 `[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
@@ -799,16 +854,16 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C9
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C10
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-71 `.lean` files, 12,657 lines, 474 public declarations, 0 `sorry`, and 0
-project-specific axioms. The Complexity block contains 33 files and 4,026
-lines. The
-main theorems of the new Complexity block were checked with `#print axioms`
+79 `.lean` files, 13,843 lines, 561 public declarations, 0 `sorry`, and 0
+project-specific axioms. The Complexity block contains 41 files and 5,211
+lines, of which 8 files and 990 lines are the new C10 noisy model. The
+main theorems of the Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
 
@@ -1218,14 +1273,49 @@ every `1 + g ≤ ceilHalf R` gives a proxy gap, and the concrete persistence
 budget is `1 + 4 * E.length + g ≤ ceilHalf R`. Paired-flip sharpness is not
 claimed; the closed interference result is the stated pair of linear bounds.
 
+C10 finally shows this robust C8 theory is inhabited by a genuinely
+**nonzero-noise** explicit family, on `R + 1` sites: one source qubit (site
+`0`) plus `R` record qubits (`recordSite r := Fin.succ r`). A normalized
+`NoiseProfile` (`keep`, `leak`, with `‖keep‖² + ‖leak‖² = 1`) mixes two
+same-source-bit configurations,
+`noisyZeroBranch := keep • basis00 + leak • basis01` and
+`noisyOneBranch := leak • basis10 + keep • basis11`, which stay **exactly
+orthogonal for every `leak`** because their source qubits differ. Every
+record projector has an exact computed error — it fixes the aligned
+configuration exactly and leaks exactly `‖leak‖` into the other one — giving
+the exact aggregate `ApproxRecordedPairOn` budget `2 * ‖leak‖` per label, a
+genuine (not merely zero-error) inhabitant of the C8 approximate-record
+predicate. At threshold `δ = 1/2` the robust condition
+`NoiseProfile.IsRobust p := 4 * ‖p.leak‖ < 1` gives exactly the same
+qualitative bounds as C9:
+
+```lean
+distinguishabilityComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) = 1
+ceilHalf R ≤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
+interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) ≤ R + 1
+```
+
+together with the robust proxy gap and its conditional persistence under the
+same budget `1 + 4 * E.length + g ≤ ceilHalf R`. The Pythagorean triple
+`99² + 20² = 101²` gives a fully concrete rational witness
+`(keep, leak) = (99/101, 20/101)` with `4 * (20/101) = 80/101 < 1`, to which
+every C10a–C10g theorem applies unconditionally. Three generalizations were
+added additively to C9 (at a generality C9 itself never needed, and without
+changing any existing public type): a basis vector at an arbitrary
+configuration (`configurationBranch`), a reflection readout at an arbitrary
+site (`recordReadoutGateAt`/`recordReadoutCircuitAt`), and the all-bit-flip
+action on an arbitrary configuration
+(`allBitFlipCircuit_maps_configurationBranch`).
+
 The result is
 limited to finitely many sites, finite local dimension, supplied exact or
 approximate records,
 pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
 amplitude/proxy above the explicit threshold. It does not construct
-approximate records from decoherence, establish efficient synthesis of
-arbitrary local record projectors, provide the optional operator-norm bridge
-or explicit noisy repetition records, the full physical Taylor–McCulloch
+approximate records from decoherence (unitary fanout/measurement dynamics),
+establish efficient synthesis of
+arbitrary local record projectors, provide the optional operator-norm bridge,
+the full physical Taylor–McCulloch
 criterion, persistence under arbitrary Hamiltonian evolution, generic or
 Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
 with Weingarten, canonical uniqueness of branch decompositions, or any
@@ -1348,7 +1438,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9: elementary witnesses and concrete model | 149 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10: elementary witnesses and concrete models | 228 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1380,8 +1470,16 @@ was affected.
 | QuantumFoundations/Complexity/Models/Repetition/Interference.lean | C9e: finite all-bit-flip circuit | 205 |
 | QuantumFoundations/Complexity/Models/Repetition/Complexities.lean | C9f: linear bounds and concrete gap | 105 |
 | QuantumFoundations/Complexity/Models/Repetition/Persistence.lean | C9g: concrete circuit-persistence budget | 57 |
-| QuantumFoundations.lean | Root import aggregator | 64 |
-| Recomputed total | 71 files | 12657 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Profiles.lean | C10a: normalized `keep`/`leak` noise profiles | 76 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/States.lean | C10b: four configurations and noisy branches | 215 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Records.lean | C10c: exact record errors and approximate pair | 182 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Readout.lean | C10d: exact readout at an arbitrary record site | 59 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean | C10e: robust complexity separation at `δ = 1/2` | 89 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean | C10f: finite noisy interference witness | 151 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean | C10g: robust gap and conditional persistence | 123 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean | C10h: concrete rational profile `(99/101, 20/101)` | 95 |
+| QuantumFoundations.lean | Root import aggregator | 65 |
+| Recomputed total | 79 files | 13843 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1456,6 +1554,7 @@ initial plans).
 | C7 | Exact transport and conditional persistence under finite reversible circuits | ✅ |
 | C8 | Approximate records, quantitative bounds, and conditional persistence | ✅ |
 | C9 | Explicit repetition model, concrete circuits, and linear proxy gap | ✅ |
+| C10 | Explicit **noisy** repetition model (`leak ≠ 0`), robust separation | ✅ |
 
 ## Main theorems — reference table
 
@@ -1487,6 +1586,12 @@ initial plans).
 | repetition_interferenceComplexity_bounds | `ceilHalf R ≤ C_I ≤ R`, hence `C_I ≠ ⊤` | Singleton records + explicit `R`-flip circuit | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | — |
 | repetition_has_proxy_gap | `1 + g ≤ ceilHalf R` certifies the explicit gap | Direct C4–C6 instantiation | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | — |
 | repetition_gap_persists_under_circuit | `1 + 4 * E.length + g ≤ ceilHalf R` preserves the gap | Direct C7 instantiation | Models/Repetition/Persistence.lean (57) | 0 sorry, 0 axioms | — |
+| noisy_repetition_approxRecordedPairOn | Noisy records inhabit `ApproxRecordedPairOn` with exact aggregate error `2 * ‖leak‖` | Exact projector actions on the four configurations | Models/NoisyRepetition/Records.lean (182) | 0 sorry, 0 axioms | — |
+| noisy_repetition_distinguishabilityComplexity | Under robust noise (`4‖leak‖ < 1`), `C_D = 1` at `δ = 1/2` | One-site exact readout + C8d threshold | Models/NoisyRepetition/Complexities.lean (89) | 0 sorry, 0 axioms | — |
+| noisy_repetition_interference_bounds | Under robust noise, `ceilHalf R ≤ C_I ≤ R + 1` at `δ = 1/2` | C8c approximate records + all-bit-flip witness | Models/NoisyRepetition/Interference.lean (151) | 0 sorry, 0 axioms | — |
+| noisy_repetition_has_proxy_gap | `1 + g ≤ ceilHalf R` certifies the robust gap | Direct C8e instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | — |
+| noisy_repetition_gap_persists_under_circuit | `1 + 4 * E.length + g ≤ ceilHalf R` preserves the robust gap | Direct C8f instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | — |
+| rationalNoiseProfile_isRobust | The rational profile `(99/101, 20/101)` is robust (`80/101 < 1`) | Pythagorean triple `99² + 20² = 101²` | Models/NoisyRepetition/ConcreteNoise.lean (95) | 0 sorry, 0 axioms | — |
 
 “0 axioms” means dependence only on
 [propext, Classical.choice, Quot.sound], verified by #print axioms for
