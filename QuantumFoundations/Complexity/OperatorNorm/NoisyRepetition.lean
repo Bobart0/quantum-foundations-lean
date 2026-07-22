@@ -1,5 +1,6 @@
 import QuantumFoundations.Complexity.OperatorNorm.RecordGap
 import QuantumFoundations.Complexity.Models.NoisyRepetition.Persistence
+import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 
 /-!
 # C12f — Noisy repetition model corollaries with operator-norm readout
@@ -112,8 +113,52 @@ theorem noisy_repetition_opNorm_readout_exact_regression
   exact noisy_repetition_opNorm_readout_has_gap p hp R
     (noisyReadoutCircuit R) 0 hOp hreadout g hgap
 
+/-! ## Concrete error budget: `rationalNoiseProfile`, `ε = 1/20` -/
+
+private theorem rationalNoiseProfile_opNorm_threshold :
+    4 * ‖rationalNoiseProfile.leak‖ + 2 * (1 / 20 : ℝ) ≤ 1 := by
+  rw [rationalNoiseProfile_leak, norm_div]
+  norm_num
+
+/-- The concrete rational profile `(99/101, 20/101)` tolerates an
+operator-norm readout error budget of `1/20`: exactly
+`80/101 + 2 * (1/20) ≤ 1`, checked by exact rational arithmetic — no
+floating-point approximation and no unsafe evaluation tactic. -/
+theorem concrete_generated_branches_tolerate_opNorm_error
+    (R : ℕ) [NeZero R] (D : Circuit (R + 1) 2)
+    (hOp : ApproximatesRecordPhaseFlipOp
+      (sitesEquivR (R + 1)) D (noisyRecords R 0) 1 (1 / 20 : ℝ))
+    (g : ℕ) (hgap : Circuit.length D + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      (noisyZeroBranch rationalNoiseProfile R)
+      (noisyOneBranch rationalNoiseProfile R) (1 / 2 : ℝ) g :=
+  noisy_repetition_opNorm_readout_has_gap rationalNoiseProfile
+    rationalNoiseProfile_isRobust R D (1 / 20 : ℝ) hOp
+    rationalNoiseProfile_opNorm_threshold g hgap
+
+/-- The concrete `1/20` error-budget gap persists through a further finite
+circuit `E`, given the extra record budget `4 * E.length`. This is a
+*conditional* theorem: it assumes a circuit `D` with `hOp` inhabited, and
+does not itself construct a circuit with strictly nonzero operator-norm
+error (the exact C10 readout remains the zero-error witness, satisfying
+`1/20` by monotonicity — see `Nonvacuity.lean`). -/
+theorem concrete_generated_branches_opNorm_gap_persists
+    (R : ℕ) [NeZero R] (D : Circuit (R + 1) 2)
+    (hOp : ApproximatesRecordPhaseFlipOp
+      (sitesEquivR (R + 1)) D (noisyRecords R 0) 1 (1 / 20 : ℝ))
+    (E : Circuit (R + 1) 2) (g : ℕ)
+    (hbudget : Circuit.length D + 4 * Circuit.length E + g ≤ ceilHalf R) :
+    HasProxyGapAtLeast (sitesEquivR (R + 1))
+      (Circuit.evalOnH E (sitesEquivR (R + 1)) (noisyZeroBranch rationalNoiseProfile R))
+      (Circuit.evalOnH E (sitesEquivR (R + 1)) (noisyOneBranch rationalNoiseProfile R))
+      (1 / 2 : ℝ) g :=
+  noisy_repetition_opNorm_gap_persists rationalNoiseProfile
+    rationalNoiseProfile_isRobust R D (1 / 20 : ℝ) hOp
+    rationalNoiseProfile_opNorm_threshold E g hbudget
+
 #print axioms noisy_repetition_opNorm_readout_has_gap
 #print axioms noisy_repetition_opNorm_gap_persists
+#print axioms concrete_generated_branches_tolerate_opNorm_error
 
 end
 
