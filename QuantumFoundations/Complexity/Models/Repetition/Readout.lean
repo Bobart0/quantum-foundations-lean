@@ -73,12 +73,68 @@ private theorem sitesCell_reflection_local (R : ℕ) (r : Fin R) (b : Fin 2) :
       · rw [if_neg hk, inner_neg_right, hinner]
         simp [hoff]
 
-/-- The one-site reflection that reads the bit-one record at `firstSite`. -/
-def recordReadoutGate (R : ℕ) [NeZero R] : TwoLocalGate R 2 where
-  unitary := (sitesCell R (firstSite R) 1).reflection
-  support := {firstSite R}
-  locality := sitesCell_reflection_local R (firstSite R) 1
+/-- The one-site reflection that reads the bit-one record at an arbitrary
+site `r`.  Unlike `recordReadoutGate`, no `[NeZero R]` instance is needed: the
+site `r` itself witnesses that `Fin R` is nonempty. -/
+def recordReadoutGateAt (R : ℕ) (r : Fin R) : TwoLocalGate R 2 where
+  unitary := (sitesCell R r 1).reflection
+  support := {r}
+  locality := sitesCell_reflection_local R r 1
   support_card_le_two := by simp
+
+@[simp] theorem recordReadoutGateAt_support (R : ℕ) (r : Fin R) :
+    (recordReadoutGateAt R r).support = {r} := rfl
+
+@[simp] theorem recordReadoutGateAt_support_card (R : ℕ) (r : Fin R) :
+    (recordReadoutGateAt R r).support.card = 1 := by simp
+
+theorem recordReadoutGateAt_local (R : ℕ) (r : Fin R) :
+    IsLocalTo
+      (recordReadoutGateAt R r).unitary.toLinearIsometry.toLinearMap {r} :=
+  (recordReadoutGateAt R r).locality
+
+/-- The constant-cost readout circuit at an arbitrary site: a single
+reflection gate. -/
+def recordReadoutCircuitAt (R : ℕ) (r : Fin R) : Circuit R 2 :=
+  [recordReadoutGateAt R r]
+
+@[simp] theorem recordReadoutCircuitAt_length (R : ℕ) (r : Fin R) :
+    (recordReadoutCircuitAt R r).length = 1 := rfl
+
+/-- The singleton circuit at an arbitrary site implements the exact abstract
+record phase flip. -/
+theorem recordReadoutCircuitAt_implements (R : ℕ) (r : Fin R) :
+    ImplementsRecordPhaseFlip
+      (sitesEquivR R) (recordReadoutCircuitAt R r)
+      (siteResolution R r) 1 := by
+  unfold ImplementsRecordPhaseFlip
+  apply LinearMap.ext
+  intro x
+  simp only [Circuit.evalOnH, recordReadoutCircuitAt, Circuit.eval_singleton,
+    LinearMap.comp_apply]
+  change (sitesEquivR R).symm
+      ((recordReadoutGateAt R r).unitary ((sitesEquivR R) x)) =
+    recordPhaseFlip (siteResolution R r) 1 x
+  rw [show (recordReadoutGateAt R r).unitary =
+    (sitesCell R r 1).reflection from rfl]
+  change (sitesEquivR R).symm
+      ((sitesCell R r 1).reflection ((sitesEquivR R) x)) =
+    recordPhaseFlip (siteResolution R r) 1 x
+  calc
+    (sitesEquivR R).symm
+        ((sitesCell R r 1).reflection ((sitesEquivR R) x)) =
+        (siteCell R r 1).reflection x := by
+      simpa [siteCell] using
+        (Submodule.reflection_map_apply
+          (sitesEquivR R).symm (sitesCell R r 1) x).symm
+    _ = recordPhaseFlip (siteResolution R r) 1 x := by
+      rw [Submodule.reflection_apply]
+      simp [recordPhaseFlip, Gleason.projL, siteResolution]
+      module
+
+/-- The one-site reflection that reads the bit-one record at `firstSite`. -/
+def recordReadoutGate (R : ℕ) [NeZero R] : TwoLocalGate R 2 :=
+  recordReadoutGateAt R (firstSite R)
 
 @[simp] theorem recordReadoutGate_support (R : ℕ) [NeZero R] :
     (recordReadoutGate R).support = {firstSite R} := rfl
@@ -94,40 +150,18 @@ theorem recordReadoutGate_local (R : ℕ) [NeZero R] :
 
 /-- The constant-cost readout circuit consists of the single reflection gate. -/
 def recordReadoutCircuit (R : ℕ) [NeZero R] : Circuit R 2 :=
-  [recordReadoutGate R]
+  recordReadoutCircuitAt R (firstSite R)
 
 @[simp] theorem recordReadoutCircuit_length (R : ℕ) [NeZero R] :
     (recordReadoutCircuit R).length = 1 := rfl
 
-/-- The singleton circuit implements the exact abstract record phase flip. -/
+/-- The singleton circuit implements the exact abstract record phase flip.
+Specialization of `recordReadoutCircuitAt_implements` at `firstSite`. -/
 theorem recordReadoutCircuit_implements_phase_flip (R : ℕ) [NeZero R] :
     ImplementsRecordPhaseFlip
       (sitesEquivR R) (recordReadoutCircuit R)
-      (repetitionRecords R (firstSite R)) 1 := by
-  unfold ImplementsRecordPhaseFlip
-  apply LinearMap.ext
-  intro x
-  simp only [Circuit.evalOnH, recordReadoutCircuit, Circuit.eval_singleton,
-    LinearMap.comp_apply]
-  change (sitesEquivR R).symm
-      ((recordReadoutGate R).unitary ((sitesEquivR R) x)) =
-    recordPhaseFlip (repetitionRecords R (firstSite R)) 1 x
-  rw [show (recordReadoutGate R).unitary =
-    (sitesCell R (firstSite R) 1).reflection from rfl]
-  change (sitesEquivR R).symm
-      ((sitesCell R (firstSite R) 1).reflection ((sitesEquivR R) x)) =
-    recordPhaseFlip (siteResolution R (firstSite R)) 1 x
-  calc
-    (sitesEquivR R).symm
-        ((sitesCell R (firstSite R) 1).reflection ((sitesEquivR R) x)) =
-        (siteCell R (firstSite R) 1).reflection x := by
-      simpa [siteCell] using
-        (Submodule.reflection_map_apply
-          (sitesEquivR R).symm (sitesCell R (firstSite R) 1) x).symm
-    _ = recordPhaseFlip (siteResolution R (firstSite R)) 1 x := by
-      rw [Submodule.reflection_apply]
-      simp [recordPhaseFlip, Gleason.projL, siteResolution]
-      module
+      (repetitionRecords R (firstSite R)) 1 :=
+  recordReadoutCircuitAt_implements R (firstSite R)
 
 /-- The explicit readout distinguishes the two unit branches at threshold one. -/
 theorem repetition_distinguishesAt_one (R : ℕ) [NeZero R] :
