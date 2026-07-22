@@ -4,15 +4,16 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C10.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C11.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-79 fichiers `.lean`, 13843 lignes, 561 déclarations publiques, 0 `sorry`,
-0 axiome propre au projet. Le bloc Complexity compte 41 fichiers et 5211
-lignes, dont 8 fichiers et 990 lignes pour le nouveau modèle bruité C10. Les
+88 fichiers `.lean`, 15864 lignes, 568 déclarations publiques (`theorem`), 0
+`sorry`, 0 axiome propre au projet. Le bloc Complexity compte 50 fichiers et
+7231 lignes, dont 9 fichiers et 1930 lignes pour le nouveau modèle C11 de
+génération unitaire des branches. Les
 théorèmes principaux du bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
@@ -501,13 +502,41 @@ servi de brique : une branche de base à configuration arbitraire
 déclaration C9 existante est reprouvée comme cas particulier, sans changer
 son type public.
 
+Le jalon C11 comble précisément l'écart signalé à la fin de C10 : un circuit
+fini explicite de portes `1`- et `2`-locales génère **unitairement** les
+branches source-record à partir d'un qubit source non corrélé
+`α|0⟩ + β|1⟩` et de `R` qubits de mémoire vierges, au lieu de les supposer
+déjà formées. `controlledBitFlipGate` (C11a) est une porte de permutation
+`2`-locale; `idealFanoutCircuit R` (C11b) copie l'étiquette classique du
+qubit source vers chaque record — un fanout d'étiquette en base de calcul,
+jamais un clonage d'un état quantique arbitraire (le no-cloning n'est pas
+violé : seule l'étiquette classique `0`/`1` est propagée, jamais les
+amplitudes propres du qubit source). La construction la plus délicate
+(C11e) est une véritable rotation unitaire de mélange d'amplitude sur un
+qubit, élevée à tous les `N` sites via la représentation plate `Sites N d`
+(aucune infrastructure de facteur tensoriel n'existait dans le dépôt pour
+cela) : `prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) - conj(leak) •
+(F ∘ P₁) + conj(keep) • P₁`, prouvée unitaire par expansion directe du
+produit scalaire à 16 termes. Cette construction réussit **sans condition**
+pour chaque `NoiseProfile` — aucune porte supplémentaire n'a dû être
+supposée. `noisyMeasurementCircuit p R` (C11f–g, longueur `2R`) transforme
+`α • basis00 + β • basis10` en exactement
+`α • noisyZeroBranch p R + β • noisyOneBranch p R` : ce sont les *mêmes*
+états que ceux de C10, si bien que le gap robuste et sa persistance
+conditionnelle sous un circuit ultérieur arbitraire s'y transportent
+immédiatement (C11i), sans nouvel argument de distinguabilité. Le triplet
+pythagoricien `3² + 4² = 5²` fournit un témoin rationnel concret
+`(amp0, amp1) = (3/5, 4/5)` (C11j), auquel s'applique — combiné au profil de
+bruit rationnel `(99/101, 20/101)` de C10h — toute la chaîne C11 sans
+hypothèse supplémentaire.
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
 des régions deux-à-deux disjointes, des portes exactement 2-locales et une
-amplitude/proxy au-dessus du seuil explicite. Il ne construit pas les records
-approximatifs depuis une dynamique de décohérence (fanout unitaire/mesure) et
-ne traite pas la synthèse
+amplitude/proxy au-dessus du seuil explicite. Il ne traite pas
+la formation générique de records approximatifs par décohérence (distincte de
+la construction unitaire explicite de C11), la synthèse
 efficace de projecteurs locaux arbitraires, le pont optionnel depuis une borne
 en norme d'opérateur, le
 critère physique complet de Taylor–McCulloch, la persistance sous évolution
@@ -631,7 +660,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10 : témoins élémentaires et modèles concrets | 228 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11 : témoins élémentaires et modèles concrets | 314 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -671,8 +700,17 @@ affectée.
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean` | C10f : témoin fini d'interférence bruitée | 151 |
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean` | C10g : gap robuste et persistance conditionnelle | 123 |
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean` | C10h : profil rationnel concret `(99/101, 20/101)` | 95 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 65 |
-| **Total recalculé**                          | **79 fichiers**                                                                   | **13843** |
+| `QuantumFoundations/Complexity/Gates/ControlledBitFlip.lean` | C11a : portes de bit-flip contrôlé, 2-locales | 229 |
+| `QuantumFoundations/Complexity/Gates/AmplitudeRotation.lean` | C11e : rotation unitaire de mélange d'amplitude sur `N` sites | 415 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/IdealFanout.lean` | C11b : fanout unitaire d'étiquette en base de calcul | 219 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/Amplitudes.lean` | C11c : profil d'amplitude source normalisé | 89 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/BranchWeights.lean` | C11d/h : projecteurs source et préservation des poids de branche | 231 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ProfilePreparation.lean` | C11e : porte de préparation canonique par profil | 95 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean` | C11f/g : préparation corrélée des records et génération bruitée complète | 493 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean` | C11i : connexion génération unitaire / persistance du gap | 70 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean` | C11j : témoin concret de génération unitaire | 89 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 66 |
+| **Total recalculé**                          | **88 fichiers**                                                                   | **15864** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -747,6 +785,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C8 | Records approximatifs, bornes quantitatives et persistance conditionnelle | ✅ |
 | C9 | Modèle explicite de répétition, circuits concrets et gap linéaire | ✅ |
 | C10 | Modèle explicite de répétition **bruitée** (`leak ≠ 0`), séparation robuste | ✅ |
+| C11 | Génération **unitaire** des branches source-record par circuit local explicite | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -854,15 +893,16 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C10
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C11
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-79 `.lean` files, 13,843 lines, 561 public declarations, 0 `sorry`, and 0
-project-specific axioms. The Complexity block contains 41 files and 5,211
-lines, of which 8 files and 990 lines are the new C10 noisy model. The
+88 `.lean` files, 15,864 lines, 568 public declarations (`theorem`), 0
+`sorry`, and 0 project-specific axioms. The Complexity block contains 50
+files and 7,231 lines, of which 9 files and 1,930 lines are the new C11
+unitary branch-generation model. The
 main theorems of the Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
@@ -1307,13 +1347,38 @@ site (`recordReadoutGateAt`/`recordReadoutCircuitAt`), and the all-bit-flip
 action on an arbitrary configuration
 (`allBitFlipCircuit_maps_configurationBranch`).
 
+C11 closes precisely the gap noted at the end of C10: an explicit finite
+circuit of 1- and 2-local unitary gates **dynamically generates** the
+source-record branching from an uncorrelated source qubit `α|0⟩ + β|1⟩` and
+`R` blank record qubits, rather than assuming the branched state as given.
+`controlledBitFlipGate` (C11a) is a genuine 2-local permutation gate;
+`idealFanoutCircuit R` (C11b) copies the source qubit's classical label onto
+every record — computational-basis label fanout, never cloning of an
+arbitrary quantum state (no-cloning is not violated: only the classical
+`0`/`1` label is fanned out, never the source qubit's own amplitudes). The
+hardest construction (C11e) is a genuine single-qubit amplitude-mixing
+unitary lifted to all `N` sites through the flat `Sites N d` representation
+(no tensor-factor infrastructure existed in the repository for this):
+`prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) - conj(leak) • (F ∘ P₁) +
+conj(keep) • P₁`, proved unitary by a direct 16-term inner-product
+expansion. This construction succeeds **unconditionally** for every
+`NoiseProfile` — no supplied-gate fallback was needed. `noisyMeasurementCircuit
+p R` (C11f–g, length `2R`) turns `α • basis00 + β • basis10` into exactly
+`α • noisyZeroBranch p R + β • noisyOneBranch p R` — the *same* states as
+C10's, so C10's robust proxy gap and its conditional persistence under any
+further circuit transport immediately (C11i), with no new distinguishability
+argument. The Pythagorean triple `3² + 4² = 5²` gives a fully concrete
+rational source-amplitude witness `(amp0, amp1) = (3/5, 4/5)` (C11j), to
+which — paired with C10h's rational noise profile `(99/101, 20/101)` — the
+full C11 chain applies unconditionally.
+
 The result is
 limited to finitely many sites, finite local dimension, supplied exact or
 approximate records,
 pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
-amplitude/proxy above the explicit threshold. It does not construct
-approximate records from decoherence (unitary fanout/measurement dynamics),
-establish efficient synthesis of
+amplitude/proxy above the explicit threshold. It does not
+address generic formation of approximate records from decoherence (distinct
+from C11's explicit unitary construction), establish efficient synthesis of
 arbitrary local record projectors, provide the optional operator-norm bridge,
 the full physical Taylor–McCulloch
 criterion, persistence under arbitrary Hamiltonian evolution, generic or
@@ -1438,7 +1503,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10: elementary witnesses and concrete models | 228 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11: elementary witnesses and concrete models | 314 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1478,8 +1543,17 @@ was affected.
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean | C10f: finite noisy interference witness | 151 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean | C10g: robust gap and conditional persistence | 123 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean | C10h: concrete rational profile `(99/101, 20/101)` | 95 |
-| QuantumFoundations.lean | Root import aggregator | 65 |
-| Recomputed total | 79 files | 13843 |
+| QuantumFoundations/Complexity/Gates/ControlledBitFlip.lean | C11a: 2-local controlled-bit-flip gates | 229 |
+| QuantumFoundations/Complexity/Gates/AmplitudeRotation.lean | C11e: amplitude-mixing unitary lifted to `N` sites | 415 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/IdealFanout.lean | C11b: unitary computational-basis label fanout | 219 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/Amplitudes.lean | C11c: normalized source-amplitude profile | 89 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/BranchWeights.lean | C11d/h: source projectors and branch-weight preservation | 231 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/ProfilePreparation.lean | C11e: canonical profile-preparation gate | 95 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean | C11f/g: correlated record preparation and full noisy generation | 493 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean | C11i: unitary generation meets branch persistence | 70 |
+| QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean | C11j: concrete unitary generation witness | 89 |
+| QuantumFoundations.lean | Root import aggregator | 66 |
+| Recomputed total | 88 files | 15864 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1555,6 +1629,7 @@ initial plans).
 | C8 | Approximate records, quantitative bounds, and conditional persistence | ✅ |
 | C9 | Explicit repetition model, concrete circuits, and linear proxy gap | ✅ |
 | C10 | Explicit **noisy** repetition model (`leak ≠ 0`), robust separation | ✅ |
+| C11 | **Unitary** local-circuit generation of source-record branches | ✅ |
 
 ## Main theorems — reference table
 

@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C10) — exact, robust, and explicit 2-local proxy gaps
+## Complexity (C0–C11) — exact, robust, and explicit 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -1104,6 +1104,105 @@ the user's discretion before publication.
   persistence result, or a complexity-growth/branch-uniqueness/Many-Worlds
   claim.
 
+- **Unitary generation, not an assumed branched state (C11).** C11 closes
+  precisely the gap flagged at the end of C10 ("dynamical (unitary
+  fanout/measurement) generation of the noisy records" was future work): an
+  explicit finite circuit of 1- and 2-local gates turns an uncorrelated
+  source qubit `α|0⟩ + β|1⟩` plus `R` blank record qubits into the C10
+  branched states, by construction rather than by hypothesis.
+- **Controlled bit flip, reusing C9's permutation machinery.**
+  `controlledBitFlipMap control target f := Function.update f target
+  (f target + f control)` XORs one coordinate by another; its unitary lift
+  `controlledBitFlipEquiv` and locality proof follow the same pattern as C9's
+  `bitFlipConfigurationEquiv`/`bitFlipUnitary`, just with a two-site (not
+  one-site) permutation. No new locality-proof technique was needed.
+- **Ideal fanout is label copying, not state cloning.** `idealFanoutCircuit R`
+  lists one `sourceRecordGate` per record site; a `Nodup`-indexed fold lemma
+  (`foldl_sourceRecord_record_apply_of_nodup`) shows each record's bit gains
+  the source bit exactly once. This is deliberately described throughout as
+  computational-basis label fanout: the source qubit's own amplitudes
+  `α, β` never appear inside the fold, only its classical `0`/`1` value does,
+  so no-cloning is not at stake.
+- **The genuinely hard construction: a single-qubit amplitude-mixing unitary
+  lifted to `N` sites with no tensor-factor infrastructure.** The repository's
+  `Sites N d` is a *flat* `EuclideanSpace ℂ (Fin N → Fin d)`, deliberately not
+  a tensor product (per existing repository convention), so there is no
+  ready-made "apply this single-qubit unitary to factor `t`, identity
+  elsewhere" combinator to reuse. C11e instead builds the rotation directly
+  from existing primitives: `P₀`/`P₁` (site-`t` cell `starProjection`s, which
+  sum to the identity) and `F` (the existing C9 `bitFlipUnitary`, involutive
+  and self-adjoint), via
+  `prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) − conj(leak) • (F ∘ P₁) +
+  conj(keep) • P₁`. Unitarity is not obtained from a generic rotation lemma;
+  it is proved by hand, decomposing an arbitrary `x` into its `P₀`/`P₁` parts,
+  establishing eight orthogonality/self-adjointness facts, and closing the
+  resulting 16-term inner-product expansion with `linear_combination
+  (⟪x₀,x₀⟫ + ⟪x₁,x₁⟫) * hsum` where `hsum : keep·conj(keep) + leak·conj(leak)
+  = 1`. `LinearIsometry.toLinearIsometryEquiv` (isometry + matching finrank)
+  then upgrades the isometry to the required equivalence. This succeeded
+  **unconditionally** for every `NoiseProfile`: no supplied-gate fallback (the
+  two-layer strategy's second, harder branch) was ever needed.
+- **`ImplementsNoisePreparation`'s local action is an intermediate state, not
+  the final branch.** The certificate states the gate's action on
+  `basis00`/`basis10` as `keep • basis00 + leak •
+  (bitFlip-at-firstRecord of config00)` — i.e. only the *first* record's bit
+  flips, producing one excited record, not all of them. This is intentional:
+  the subsequent cat-fanout (C11f) is what copies that single bit to every
+  other record, so the certificate must describe the gate's genuinely local
+  effect, not the eventual global one.
+- **The `keep`/`leak` "swap" is resolved by composing with the source fanout,
+  not a proof error.** Applying `recordCatPreparationCircuit` alone to
+  `basis10` (source `1`, all records `0`) produces `keep • basis10 + leak •
+  basis11` — the *opposite* pairing from `noisyOneBranch := leak • basis10 +
+  keep • basis11`. This is not a bug: the *subsequent* `idealFanoutCircuit`
+  stage (C11g) also touches record `0`, unlike the cat-fanout alone, and
+  `idealFanout_maps_basis10 = basis11`/`idealFanout_maps_basis11 = basis10`
+  exchanges the two terms, landing on exactly `noisyOneBranch`. Diagnosing
+  this by hand (rather than trusting the first derivation) was the key
+  insight that fixed the intended circuit order,
+  `recordCatPreparationCircuit ++ idealFanoutCircuit`.
+- **Generic fold lemmas needed an explicit embedding parameter.** The first
+  draft of the controlled-flip fold lemmas assumed the control site and the
+  folded list shared one `Fin M` index type; this broke for the cat-fanout,
+  where the control is `firstRecord R : Fin (R+1)` but the folded list is
+  `List (Fin R)` (`nonFirstRecords R`) embedded via `recordSite`. Both fold
+  lemmas were generalized to take an explicit `emb : Fin R → Fin M` plus
+  `Function.Injective emb`, and the "untouched site" lemma was further
+  generalized from "the control is unchanged" to "any site not among the
+  embedded targets is unchanged," unifying the control-fixed and
+  source-fixed cases into one proof.
+- **A `dite` with an unused witness elaborates as a genuine `dite`, not an
+  `ite`, and needs `dif_pos`/`dif_neg`.** Writing `if h : P then a else b`
+  with `a`/`b` not mentioning `h` does *not* make Lean elaborate a plain
+  `ite`; the term is `dite` regardless, and `if_pos`/`if_neg` (for `ite`)
+  fail to rewrite it in a fresh goal even though they may appear to succeed
+  when chained after a separate `ite` rewrite in the same tactic block
+  (a false positive caused by the *first* `if_neg`/`if_pos` in the chain
+  matching a genuine outer `ite`, masking that the *second* call was
+  targeting the inner `dite` and silently failing to typecheck until
+  rebuilt in a new context). The fix is `dif_pos`/`dif_neg` for every branch
+  actually guarded by a named existential witness.
+- **`noisyMeasurementCircuit p R := recordCatPreparationCircuit p R ++
+  idealFanoutCircuit R` (length `2R`) reaches exactly C10's states, so C10's
+  gap and persistence theorems apply with no new argument.** C11i does not
+  reprove `HasProxyGapAtLeast`; it rewrites the generated state to
+  `noisyZeroBranch`/`noisyOneBranch` via `noisyMeasurement_maps_basis00`/
+  `_maps_basis10` and then invokes `noisy_repetition_has_proxy_gap`/
+  `noisy_repetition_gap_persists_under_circuit` directly. Generation and
+  persistence are proved to be about the *same* vectors, not merely
+  analogous ones.
+- **Concrete witness uses a second, independent Pythagorean triple.**
+  `concreteSourceProfile` (`amp0 = 3/5`, `amp1 = 4/5`, from `3² + 4² = 5²`)
+  is deliberately a different triple from C10h's noise profile
+  (`99² + 20² = 101²`), so the two concrete witnesses are visibly independent
+  rather than one being a disguised copy of the other.
+- **C11 scope.** This is an explicit finite unitary circuit generating exact
+  and noisy redundant records from an initially uncorrelated source qubit
+  and blank records. It is not Hamiltonian time evolution, Brown–Susskind
+  complexity growth, an operator-norm approximation bridge, a canonical
+  branch-uniqueness result, a generic decoherence derivation, cloning of an
+  arbitrary quantum state, or optional paired-flip sharpness.
+
 ### English summary
 
 The Complexity block keeps circuit syntax, operator locality, finite counting,
@@ -1135,7 +1234,20 @@ gives an exact aggregate record error `2 * ‖leak‖` per label, and — whenev
 `4 * ‖leak‖ < 1` — the same qualitative bounds as C9 (`C_D = 1`,
 `ceilHalf R ≤ C_I ≤ R + 1`, and persistence budget
 `1 + 4 * E.length + g ≤ ceilHalf R`), instantiated concretely at
-`(keep, leak) = (99/101, 20/101)`.
+`(keep, leak) = (99/101, 20/101)`. C11 finally closes the "static family, not
+a derived one" gap left open by C10: an explicit finite circuit of 1- and
+2-local unitary gates dynamically generates the branched states from an
+uncorrelated source qubit and blank records. A controlled-bit-flip permutation
+gate (reusing C9's fold techniques) gives computational-basis label fanout,
+never cloning of an arbitrary state. The genuinely hard step is a single-qubit
+amplitude-mixing unitary lifted to all `N` sites through the flat `Sites N d`
+representation — built from site cell projectors and the existing bit-flip
+involution, proved unitary by a direct 16-term inner-product expansion, and
+constructed unconditionally for every `NoiseProfile`. The full generation
+circuit reaches *exactly* C10's `noisyZeroBranch`/`noisyOneBranch`, so C10's
+robust proxy gap and its conditional persistence transport immediately, with
+a concrete rational witness `(amp0, amp1) = (3/5, 4/5)` independent of C10h's
+noise-profile triple.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

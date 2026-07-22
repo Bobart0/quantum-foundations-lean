@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C10)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C11)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2756,17 +2756,87 @@ source qubit at site `0`, plus `R` record qubits embedded at sites `r + 1`.
 - [x] Requested C10 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C10 (future extensions, not deficiencies)
+### C11 — unitary local-circuit generation of redundant-record branches — ✅ CLOSED
+
+Purpose: show that the C10 branched states are not merely assumed but
+*dynamically generated* by an explicit finite circuit of 1- and 2-local
+unitary gates, starting from an uncorrelated source qubit
+`α|0⟩ + β|1⟩` and `R` blank record qubits. This directly closes the "static
+family, not a derived one" gap noted at the end of C10.
+
+- [x] **C11a:** `controlledBitFlipGate control target` is a genuine `2`-local
+  permutation gate (self-adjoint, involutive) that XORs the target bit by the
+  control bit and leaves every other site fixed.
+- [x] **C11b:** `idealFanoutCircuit R`, one source-controlled flip per record
+  site, turns `α • basis00 + β • basis10` into `α • basis00 + β • basis11` —
+  computational-basis label fanout, exactly the classical XOR/CNOT fanout
+  used in error-correction encoding, never described as cloning an arbitrary
+  quantum state (no-cloning is not violated: only the classical `0`/`1` label
+  is fanned out, not the source qubit's own amplitudes).
+- [x] **C11c:** `SourceAmplitudeProfile` packages a normalized pair of source
+  amplitudes; `sourceInputState`/`idealGeneratedState` have unit norm and are
+  nonzero, and `equalSourceProfile` (`1/√2`, `1/√2`, via the exact identity
+  `√2² = 2`) is a concrete nontrivial witness.
+- [x] **C11d:** the source qubit's own resolution exactly extracts the two
+  branch components from the generated state via its label projectors,
+  neither amplifying nor damping `α`/`β`; the two squared component weights
+  sum to one.
+- [x] **C11e:** the hardest construction: a genuine single-qubit
+  amplitude-mixing unitary lifted to all `N` sites via the flat `Sites N d`
+  representation (no tensor-factor infrastructure existed in the repository
+  for this). `prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) -
+  conj(leak) • (F ∘ P₁) + conj(keep) • P₁`, where `P₀`/`P₁` are the cell
+  projectors at site `t` and `F` is the existing C9 bit-flip involution, is
+  proved unitary by direct 16-term inner-product expansion using
+  orthogonality, self-adjointness, and `p.norm_sq`. `profilePreparationGate p
+  R` (via `amplitudeRotationGate`) is constructed unconditionally for *every*
+  `NoiseProfile` — no supplied-gate fallback was needed.
+- [x] **C11f:** `recordCatPreparationCircuit p R` — the profile-preparation
+  gate at the first record, followed by a cat-fanout controlled by that same
+  first record — turns blank records into the intermediate split `keep •
+  basis00 + leak • basis01` (resp. `keep • basis10 + leak • basis11`).
+- [x] **C11g:** `noisyMeasurementCircuit p R := recordCatPreparationCircuit p
+  R ++ idealFanoutCircuit R` (length `2R`) turns
+  `α • basis00 + β • basis10` into exactly `α • noisyZeroBranch p R + β •
+  noisyOneBranch p R`: the subsequent source-fanout stage exchanges the
+  `keep`/`leak` roles left over from the first stage's source-`1` branch,
+  restoring the correct `noisyOneBranch` weighting. The zero-leak regression
+  `noisyMeasurement_exactProfile` recovers `idealFanout_generates_branching`
+  exactly.
+- [x] **C11h:** the noisy generated state built from a normalized
+  `SourceAmplitudeProfile` and any `NoiseProfile` has unit norm, is nonzero,
+  and its two projector-extracted components have squared norms summing to
+  one and are individually nonzero whenever the corresponding source
+  amplitude is nonzero.
+- [x] **C11i:** the two branches dynamically generated from blank records are
+  *exactly* C10's `noisyZeroBranch`/`noisyOneBranch`, so C10's robust proxy
+  gap and its conditional persistence under a further arbitrary finite
+  circuit both transport immediately, with no new distinguishability
+  argument: generation and persistence share the same states.
+- [x] **C11j:** the Pythagorean triple `3² + 4² = 5²` gives a fully concrete
+  rational source-amplitude profile (`amp0 = 3/5`, `amp1 = 4/5`); paired with
+  C10h's rational noise profile `(99/101, 20/101)`, every C11 generation and
+  persistence theorem applies unconditionally — the principal nonvacuity
+  witness of C11.
+- [x] Requested C11 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C11 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
-- Formation or generic existence of approximate records from decoherence, and
-  dynamical (unitary fanout/measurement) generation of the noisy records —
-  the C10 model is a static explicit family, not a derived one.
-- Operator-norm-to-pointwise-readout bridge, Hamiltonian evolution, and
-  generic circuit-complexity growth.
-- Brown–Susskind complexity growth and canonical uniqueness of branch
-  decompositions.
+- Formation or generic existence of approximate records from decoherence
+  (distinct from C11's unitary measurement-correlation construction, which
+  is exact and explicit, not a decoherence derivation).
+- Hamiltonian time evolution, Brown–Susskind complexity growth, and generic
+  circuit-complexity growth beyond the explicit finite circuits constructed
+  here.
+- Operator-norm-to-pointwise-readout bridge, and canonical uniqueness of
+  branch decompositions.
+- Cloning of an arbitrary quantum state (C11's fanout only ever copies a
+  computational-basis *label*, never a source qubit's own amplitudes — this
+  is consistent with, not a violation of, no-cloning), and optional
+  paired-flip sharpness.
 - Macroscopic irreversibility, equivalence with Weingarten's proposal, and
   interpretive claims about Everett quantum mechanics.
 
@@ -2789,10 +2859,17 @@ de mémoire, une erreur de record exacte `2 * ‖leak‖` par étiquette, la
 condition robuste `4 * ‖leak‖ < 1`, et exactement les mêmes bornes
 `C_D = 1`, `ceilHalf R ≤ C_I ≤ R + 1` et le budget de persistance
 `1 + 4 * E.length + g ≤ ceilHalf R`, y compris un témoin rationnel concret
-`(99/101, 20/101)`. La construction dynamique de ces records, la synthèse
-générale de circuits de lecture, les évolutions hamiltoniennes générales et
-les conjectures de croissance restent des travaux futurs distincts, et ne
-sont pas des manques de ces jalons.
+`(99/101, 20/101)`. C11 comble enfin l'écart signalé à la fin de C10 : un
+circuit fini explicite de portes 1- et 2-locales génère unitairement ces
+mêmes branches à partir d'un qubit source non corrélé et de qubits de
+mémoire vierges — fanout d'étiquette en base de calcul, jamais clonage d'un
+état quantique arbitraire — et les branches ainsi engendrées sont
+*exactement* celles de C10, si bien que le gap robuste et sa persistance
+conditionnelle s'y transportent immédiatement, avec un témoin rationnel
+concret supplémentaire `(3/5, 4/5)`. La synthèse générale de circuits de
+lecture, les évolutions hamiltoniennes générales et les conjectures de
+croissance restent des travaux futurs distincts, et ne sont pas des manques
+de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 
