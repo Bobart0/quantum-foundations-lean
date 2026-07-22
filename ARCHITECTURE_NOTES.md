@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C12) — exact, robust, and explicit 2-local proxy gaps
+## Complexity (C0–C13) — exact, robust, and explicit 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -1295,6 +1295,124 @@ the user's discretion before publication.
   branch uniqueness, a construction of approximate records from decoherence,
   or a `ContinuousLinearMap` migration of any existing public declaration.
 
+- **Why a threshold margin is mandatory, not an optional refinement (C13).**
+  Perturbing two unit vectors `a`, `b` each by at most `ε` in operator norm
+  moves any single matrix element `⟪x, T y⟫` by at most `‖x-x'‖ + ‖y-y'‖ ≤ 2ε`
+  (`norm_inner_map_sub_inner_map_le`, an add-and-subtract decomposition
+  `⟪x,Ty⟫-⟪x',Ty'⟫ = ⟪x,T(y-y')⟫+⟪x-x',Ty'⟫` plus Cauchy–Schwarz and norm
+  preservation). Since the diagonal-difference and cross-sum proxies each
+  compare *two* such perturbed quantities, the actual shift is `4ε`
+  (`diagonal_difference_stability`/`cross_sum_stability`). Because C3's
+  proxies are stated with a factor `2 * threshold` (`2δ ≤ ‖diagonal
+  difference‖`, `2δ ≤ ‖cross₁‖ + ‖cross₂‖`), a `4ε` shift in the quantity is
+  exactly a `2ε` shift in the threshold itself. Persistence at the *same*
+  threshold `δ` under an arbitrary `ε`-close norm-preserving evolution is
+  therefore not justified in general — only persistence from a
+  *margin-shifted* pair of thresholds `δ - μ` (interference) and `δ + μ`
+  (distinguishability) down to the central `δ`, valid precisely when
+  `2ε ≤ μ`. This is why C13 introduces `HasProxyGapMarginAtLeast e a b δ μ g`
+  rather than attempting to reuse `HasProxyGapAtLeast` unchanged.
+- **Margin monotonicity is directional, and the wrong direction was
+  deliberately not proved.** `HasProxyGapMarginAtLeast.mono_margin` only
+  goes from a *wider* margin to a *narrower* one (`μ' ≤ μ` gives the `μ'`
+  certificate from the `μ` certificate), because widening `μ` moves the two
+  thresholds `δ - μ`/`δ + μ` in opposite directions relative to ease:
+  interference at `δ - μ` gets *harder* to certify as `μ` grows (the
+  threshold moves down, so the required interference lower bound bites
+  less, but distinguishability at `δ + μ` also needs a stronger diagonal
+  bound as `μ` grows). Only the narrowing direction is unconditionally
+  sound from the underlying inequalities; the reverse was checked and is
+  not provable without additional hypotheses, and the file's docstring
+  records this explicitly rather than leaving it to be rediscovered.
+- **`margin_gap_persists_under_circuit` reuses C7's persistence engine at
+  two thresholds, not one.** The interference certificate is transported at
+  threshold `δ - μ` and the distinguishability certificate at `δ + μ`,
+  each via the existing `distinguishability_upper_bound_under_evolution`/
+  `interference_lower_bound_under_evolution` from `Persistence.lean`,
+  unchanged. The combinatorial budget is unaffected by the margin: it is
+  still `4 * E.length` for `ReversibleCircuitEvolution.ofCircuit E`, exactly
+  as in C7/C8/C10.
+- **`NormPreservingEvolution` is deliberately not a group, and is not
+  called "Hamiltonian."** `IsNormPreserving U := ∀ x, ‖U x‖ = ‖x‖` is an
+  unbundled predicate (not Mathlib's `LinearIsometry` bundling) so that
+  `evolve : ℝ → E →L[ℂ] E` need not satisfy any composition law to state the
+  main theorem; C13f's `NormPreservingEvolution` structure accordingly
+  carries no semigroup/group axiom. Nothing in C13a–j is called a
+  Hamiltonian evolution, since no relation to a self-adjoint generator or an
+  operator exponential is established at that layer — that relation is
+  built only in the separate, optional C13k file.
+- **`margin_gap_persists_under_simulated_evolution` is the central theorem,
+  and is a composition, not a new estimate.** Given a target
+  `U : NormPreservingEvolution E` and an exact circuit `E` (via a
+  `ReversibleCircuitEvolution`) with `‖U.evolve t - circuitCLMOnH E e‖ ≤ ε`
+  and `2ε ≤ μ`, the theorem chains `margin_gap_persists_under_circuit`
+  (evolution-free, exact-circuit persistence) with the C13c threshold-
+  transport theorems (`distinguishesAt_transport_of_operator_approx`,
+  `not_interferesAt_transport_of_operator_approx`) applied at the *shifted*
+  thresholds — no new analytic bound beyond the `4ε`/`2ε` derivation above
+  is introduced at this layer.
+- **Readout error `ρ` and evolution error `ε` are kept as two distinct
+  quantities throughout.** `ρ` (from C8/C12's `ApproximatesRecordPhaseFlipOn`)
+  bounds error in the *record-readout circuit itself*; `ε` bounds error in
+  the *target evolution's* approximation by an exact simulating circuit.
+  `NoisyRepetition.lean`'s readout inequality
+  `2(δ+μ) + 4‖leak‖ + 2ρ ≤ 2` and its interference inequality
+  `4‖leak‖ < 2(δ-μ)` therefore each carry `ρ`/`leak` as data wholly separate
+  from `ε`/`μ`, which enter only through the separate simulated-evolution
+  composition — conflating the two would hide which error budget is
+  actually being spent where.
+- **`generated_branches_persist_under_simulated_evolution` proves the
+  generation equality and the two nonzero-component facts alongside the
+  margin gap, not just the gap alone.** Mirroring C11i/C12g, the theorem
+  packages `noisyMeasurement_generates_branching`'s exact equality plus
+  `rproj ... ≠ 0` for both labels (needed so the generated superposition
+  genuinely has both branches present, not merely a proxy-gap statement
+  that would be vacuous if one component were already zero) together with
+  the margin-gap conclusion, in one four-part conjunction.
+- **`HasCircuitSimulationBound`'s time-dependence is a bare function
+  `ℝ → ℕ` / `ℝ → ℝ`, with no asymptotic-growth claim.** C13j's
+  `gap_persists_at_time_of_simulation_bound` takes a cost bound
+  `cost : ℝ → ℕ` and error bound `err : ℝ → ℝ` pointwise in `t`, and its
+  conclusion is the ordinary margin-gap statement at that fixed `t` — no
+  `O(t)`/linear/polynomial growth notation is introduced, since asserting
+  one would require an actual Trotter/product-formula or Lieb–Robinson
+  bound, explicitly out of scope for C13.
+- **The concrete instance reuses C10's rational witness and a fresh,
+  independent `1/20` error budget.** `ConcreteModel.lean` keeps `(keep,
+  leak) = (99/101, 20/101)` and `δ = 1/2` from C10, adds `μ = 1/10`, and
+  checks `2 * (1/20) ≤ 1/10` alongside the pre-existing `80/101 < 4/5` and
+  `6/5 + 80/101 ≤ 2` rational facts — all three by `norm_num` after
+  unfolding `rationalNoiseProfile_leak`/`norm_div`, with no floating-point
+  or `native_decide` evaluation anywhere.
+- **C13k builds a genuine operator-exponential relation, using Mathlib's
+  existing `CStarAlgebra`/`selfAdjoint.expUnitary` infrastructure, and
+  documents rather than hides its one incomplete piece.**
+  `hamiltonianEvolution Hm hH` sets `evolve t := selfAdjoint.expUnitary
+  ((-(t:ℂ)) • Hm)`, literally the operator exponential `exp(-itHm)` for a
+  self-adjoint generator, reusing `ContinuousLinearMap.adjoint` and
+  `Unitary.star_mul_self_of_mem` rather than reproving norm preservation
+  from coordinates. Construction, norm preservation, and the zero-time
+  regression `evolve 0 = id` are complete. The additive group law
+  `evolve (s+t) = evolve s * evolve t` was attempted twice — once via the
+  underlying scalar identity (`congr 1; push_cast; module`, which works in
+  isolation) and once via `Commute.expUnitary_add` — but combining them
+  through `congr 1` on the `selfAdjoint (H n →L[ℂ] H n)` subtype equality
+  triggers a reproducible `synthInstance` timeout resolving `AddCommMonoid
+  ↥(selfAdjoint (H n →L[ℂ] H n))` through the `CStarAlgebra`/`NormedRing`
+  instance stack. This is a Mathlib instance-resolution performance
+  obstruction, not a mathematical gap (both underlying identities are
+  separately provable), and is left open for C14 rather than masked with a
+  file-wide `synthInstance.maxHeartbeats` increase.
+- **C13 scope.** Robust persistence of a proxy-complexity gap under an
+  arbitrary norm-preserving evolution that is operator-norm-close to an
+  exact finite circuit, provided the threshold margin absorbs twice the
+  evolution error. It is not a Trotter/product-formula or Lieb–Robinson
+  simulation-cost bound, not a claim of linear or polynomial simulation
+  cost growth in time, not a completed additive group law for the optional
+  Hamiltonian-generated evolution, not Brown–Susskind complexity growth,
+  and not a canonical branch-uniqueness or decoherence-origin result for
+  approximate records.
+
 ### English summary
 
 The Complexity block keeps circuit syntax, operator locality, finite counting,
@@ -1350,7 +1468,33 @@ estimates unchanged, producing the readout threshold
 `2 * δ + 2 * ηj + 2 * ε ≤ 2` and its C10 specialization
 `4 * ‖leak‖ + 2 * ε ≤ 1` (with `p.IsRobust` kept as an independently
 necessary hypothesis, not redundant with the readout threshold) and its C11
-generated-branch corollary, concretely at `ε = 1/20`.
+generated-branch corollary, concretely at `ε = 1/20`. C13 closes the
+remaining gap: persistence of the proxy gap under an actual norm-preserving
+evolution that is only operator-norm-close, not exactly equal, to a
+simulating circuit. Perturbing two unit states by at most `ε` moves a single
+matrix element by at most `2ε` and hence the diagonal-difference/cross-sum
+proxies (each comparing two such elements) by at most `4ε`; since the C3
+proxies are stated as `2 * threshold` inequalities, this is exactly a `2ε`
+threshold shift, so same-threshold persistence from an operator
+approximation is not justified in general. `HasProxyGapMarginAtLeast e a b δ
+μ g` instead certifies interference at `δ - μ` and distinguishability at
+`δ + μ`; its only sound monotonicity direction is narrowing the margin, and
+`margin_gap_persists_under_circuit` transports both certificates through an
+exact circuit exactly as C7/C8 already do, unaffected by the margin.
+`margin_gap_persists_under_simulated_evolution`, the central theorem, then
+composes this with the threshold-transport bound whenever `2ε ≤ μ`, closing
+the gap back down to the central `δ`. `NormPreservingEvolution` is a bare
+predicate with no group law and is never called "Hamiltonian" at this
+layer. C13g/h instantiate the noisy-repetition and C11-generated-branch
+families, keeping the readout error `ρ` and the evolution error `ε` as
+distinct budgets throughout; C13i verifies the fully concrete case `δ = 1/2`,
+`μ = 1/10`, `ε = 1/20` by `norm_num`; C13j packages a time-dependent cost/
+error bound with no asymptotic-growth claim. The optional C13k layer builds
+`hamiltonianEvolution Hm hH`, literally `exp(-itHm)` via Mathlib's
+`selfAdjoint.expUnitary`, complete for construction, norm preservation, and
+the zero-time regression, with the additive group law left open and
+precisely documented as a `synthInstance` performance obstruction on the
+`selfAdjoint` subtype, not a mathematical gap.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

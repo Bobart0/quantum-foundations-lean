@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C12)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C13)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2881,16 +2881,79 @@ already consumed by C8–C11, without migrating any existing `LinearMap` API.
 - [x] Requested C12 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C12 (future extensions, not deficiencies)
+### C13 — robust persistence under simulated norm-preserving evolution — ✅ CLOSED
+
+Purpose: extend C7/C8's conditional persistence, which so far only covered
+*exact* finite circuits, to an actual norm-preserving evolution that is
+merely operator-norm-close to a simulating circuit — while proving, not
+asserting, that this requires a threshold margin rather than the same
+threshold `δ` used everywhere from C3 onward.
+
+- [x] **C13a:** `IsNormPreserving U := ∀ x, ‖U x‖ = ‖x‖`, a bare predicate
+  (not Mathlib's `LinearIsometry` bundling), plus `operator_norm_le_one`/
+  `operator_norm_eq_one` and the regression `circuitCLMOnH_isNormPreserving`.
+- [x] **C13b:** matrix-element stability. `norm_inner_map_sub_inner_map_le`
+  bounds `|⟪x,Ty⟫-⟪x',Ty'⟫|` by `εx+εy` via an add-and-subtract
+  decomposition plus Cauchy–Schwarz; `diagonal_difference_stability`/
+  `cross_sum_stability` specialize this to the `4ε` shift of C3's proxy
+  quantities under two independent `ε`-perturbations.
+- [x] **C13c:** threshold transport. `distinguishesAt_transport_of_operator_approx`
+  and `not_interferesAt_transport_of_operator_approx` convert the `4ε`
+  quantity shift into the matching `2ε` *threshold* shift via the reverse
+  triangle inequality, for C3's `2 * threshold`-normalized proxies.
+- [x] **C13d:** `HasProxyGapMarginAtLeast e a b δ μ g` certifies interference
+  at `δ - μ` and distinguishability at `δ + μ`. Its only sound monotonicity
+  direction is `.mono_margin` (wider margin ⇒ narrower margin), proved and
+  documented as directional — the reverse is not claimed.
+- [x] **C13e:** `margin_gap_persists_under_circuit` transports both
+  margin-shifted certificates through an exact `ReversibleCircuitEvolution`,
+  reusing C7's persistence theorems unchanged at budget `4 * E.length`.
+- [x] **C13f:** `NormPreservingEvolution` (bare `evolve : ℝ → E →L[ℂ] E` +
+  norm preservation, no group law), `CircuitSimulatesEvolutionAt`/
+  `HasCircuitSimulationAt`, and the central theorem
+  `margin_gap_persists_under_simulated_evolution`: given an exact circuit
+  within operator-norm error `ε` of the target evolution and `2ε ≤ μ`, the
+  central-threshold `δ` gap persists.
+- [x] **C13g:** `noisy_repetition_has_margin_gap`/
+  `noisy_repetition_gap_persists_under_simulated_evolution` instantiate C13f
+  at C10's noisy model, keeping the readout error `ρ` and the evolution
+  error `ε` as two distinct budgets.
+- [x] **C13h:** `generated_branches_persist_under_simulated_evolution`
+  packages C11's exact generation equality, both nonzero-component facts,
+  and the margin gap for the dynamically generated branches, in one
+  four-part conjunction.
+- [x] **C13i:** fully concrete instance at `δ = 1/2`, `μ = 1/10`, `ε = 1/20`,
+  reusing C10's rational witness `(99/101, 20/101)`; all three rational
+  inequalities (`80/101 < 4/5`, `6/5+80/101 ≤ 2`, `2·(1/20) ≤ 1/10`) checked
+  by `norm_num`, no floating point or unsafe evaluation tactic.
+- [x] **C13j:** `HasCircuitSimulationBound` (pointwise-in-`t` cost/error
+  functions `ℝ → ℕ`/`ℝ → ℝ`, no asymptotic-growth notation) and
+  `gap_persists_at_time_of_simulation_bound`/its noisy-repetition
+  specialization.
+- [x] **C13k (optional):** `hamiltonianEvolution Hm hH`, literally
+  `exp(-itHm)` for a self-adjoint generator via Mathlib's
+  `selfAdjoint.expUnitary`. Construction, norm preservation, and the
+  zero-time regression are complete; the additive group law is left open,
+  documented precisely as a `synthInstance` performance obstruction on the
+  `selfAdjoint (H n →L[ℂ] H n)` subtype (both underlying scalar/commutation
+  identities are separately provable), not a mathematical gap.
+- [x] Requested C13 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C13 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
 - Formation or generic existence of approximate records from decoherence
   (distinct from C11's unitary measurement-correlation construction, which
   is exact and explicit, not a decoherence derivation).
-- Hamiltonian time evolution, Trotter/product-formula simulation,
-  Brown–Susskind complexity growth, and generic circuit-complexity growth
-  beyond the explicit finite circuits constructed here.
+- Trotter/product-formula or Lieb–Robinson simulation-cost bounds, linear or
+  polynomial simulation-cost growth in time (C13 formalizes no `O(t)`
+  notation), Brown–Susskind complexity growth, and generic
+  circuit-complexity growth beyond the explicit finite circuits and
+  simulated evolutions constructed here. Persistence under a genuinely
+  Hamiltonian-generated evolution is now partially covered (C13k's
+  `exp(-itHm)` construction), but its additive group law remains open.
 - Operator-norm completion of every repository API (C12 covers only the
   record-readout bridge), and canonical uniqueness of branch decompositions.
 - Cloning of an arbitrary quantum state (C11's fanout only ever copies a
@@ -2935,10 +2998,33 @@ sur deux états unitaires l'accumulation `2ε`, et cette borne restitue
 directement — en réutilisant telles quelles les estimations analytiques de
 C8 — le seuil de lecture `2δ + 2ηj + 2ε ≤ 2`, sa spécialisation bruitée
 `4‖leak‖ + 2ε ≤ 1`, et la connexion aux branches engendrées par C11, avec un
-témoin rationnel concret `ε = 1/20`. La synthèse générale de circuits de
-lecture, les évolutions hamiltoniennes générales, la simulation de Trotter
-et les conjectures de croissance restent des travaux futurs distincts, et ne
-sont pas des manques de ces jalons.
+témoin rationnel concret `ε = 1/20`. C13 comble le dernier écart : la
+persistance sous une évolution norm-préservante *réelle*, non plus un
+circuit exact, mais seulement `ε`-proche en norme d'opérateur d'un circuit
+simulateur exact. Perturber deux états unitaires de `ε` chacun déplace tout
+élément de matrice d'au plus `2ε`, donc les proxies de différence diagonale
+et de somme croisée — chacun comparant deux tels éléments — d'au plus `4ε`;
+comme ces proxies s'énoncent avec un facteur `2 * seuil`, ce déplacement de
+`4ε` est exactement un déplacement de seuil de `2ε`, ce qui rend la
+persistance au *même* seuil `δ` généralement injustifiée. `HasProxyGapMarginAtLeast
+e a b δ μ g` certifie donc l'interférence au seuil `δ - μ` et la
+distinguabilité au seuil `δ + μ`, avec une seule direction de monotonie
+valide (rétrécir la marge), et `margin_gap_persists_under_simulated_evolution`
+referme l'écart jusqu'au seuil central `δ` dès que `2ε ≤ μ`. Cette théorie
+est instanciée sur le modèle bruité de C10 et sur les branches engendrées de
+C11 — en gardant l'erreur de lecture `ρ` et l'erreur d'évolution `ε` comme
+deux budgets distincts —, puis rendue concrète à `δ = 1/2`, `μ = 1/10`,
+`ε = 1/20`, et enfin dotée d'une interface de coût dépendant du temps sans
+aucune notation de croissance asymptotique. La couche optionnelle C13k
+construit `exp(-itHm)` via l'infrastructure `selfAdjoint.expUnitary` de
+Mathlib, complète pour la construction, la préservation de norme et la
+régression au temps zéro, la loi de groupe additive restant ouverte et
+documentée comme un obstacle de résolution d'instances Mathlib, non comme
+une lacune mathématique. La synthèse générale de circuits de lecture, la
+simulation de Trotter/Lieb–Robinson, la croissance de la complexité en
+fonction du temps et les conjectures de croissance à la Brown–Susskind
+restent des travaux futurs distincts, et ne sont pas des manques de ces
+jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

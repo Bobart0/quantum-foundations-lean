@@ -4,16 +4,16 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C12.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
-**En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-96 fichiers `.lean`, 16866 lignes, 608 déclarations publiques (`theorem`), 0
-`sorry`, 0 axiome propre au projet. Le bloc Complexity compte 58 fichiers et
-8232 lignes, dont 8 fichiers et 960 lignes pour le nouveau pont C12 en norme
-d'opérateur. Les
+**En chiffres (recalculés le 2026-07-23, fichiers du projet hors scratch) :
+108 fichiers `.lean`, 18125 lignes, 650 déclarations publiques (`theorem`), 0
+`sorry`, 0 axiome propre au projet. Le bloc Complexity compte 70 fichiers et
+9490 lignes, dont 12 fichiers et 1224 lignes pour le nouveau jalon C13 de
+persistance sous évolution simulée. Les
 théorèmes principaux du bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
@@ -558,6 +558,31 @@ Le témoin rationnel concret `ε = 1/20` vérifie exactement
 composition génériques (C12h, facultatives) préparent l'accumulation
 d'erreur de simulation de C13.
 
+Le jalon C13 établit la persistance robuste du gap sous une véritable
+évolution `U` préservant la norme (pas nécessairement un circuit), tant
+qu'un circuit exact `E` l'approche en norme d'opérateur à erreur `ε`. Le
+point mathématique central est qu'une persistance au **même** seuil `δ` sans
+marge n'est en général **pas** justifiée : perturber deux états unitaires de
+`ε` chacun déplace la différence diagonale d'au plus `4ε` et la somme
+croisée d'au plus `4ε` (C13b), ce qui déplace le seuil de proxy de `2ε`
+(puisque les définitions utilisent `2·seuil`). C13 introduit donc une marge
+`μ` : un certificat à seuils écartés `δ-μ` (interférence) et `δ+μ`
+(distinguabilité) — `HasProxyGapMarginAtLeast` (C13d) — persiste sous circuit
+exact (C13e) puis se transporte vers le seuil central `δ` pour les états
+évolués par `U`, dès que `2ε ≤ μ` (C13f, le théorème principal). Le
+certificat de simulation `CircuitSimulatesEvolutionAt`/`HasCircuitSimulationAt`
+(C13f) et son extension dépendante du temps `HasCircuitSimulationBound`
+(C13j) rendent ce résultat directement réutilisable. Instancié au modèle
+bruité C10 (C13g) puis aux branches engendrées par C11 (C13h), avec le
+témoin rationnel concret `δ=1/2, μ=1/10, ε=1/20` (C13i,
+`80/101 < 4/5`, `6/5+80/101 ≤ 2`, `2·(1/20) ≤ 1/10`). Une interface
+optionnelle (C13k) construit une évolution *effectivement* engendrée par un
+générateur auto-adjoint `H` — `evolve t := exp(-itH)`, via l'exponentielle
+opératorielle existante de Mathlib pour les C⋆-algèbres bornées, sans aucune
+hypothèse supplémentaire — dont seule la loi de groupe additive reste non
+prouvée (obstruction de résolution d'instances Mathlib précisément
+documentée dans le fichier, non une lacune mathématique).
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
@@ -568,8 +593,10 @@ la construction unitaire explicite de C11), la synthèse
 efficace de projecteurs locaux arbitraires, la complétion en norme
 d'opérateur de toute l'API du dépôt (C12 ne couvre que le pont de lecture de
 record), le
-critère physique complet de Taylor–McCulloch, la persistance sous évolution
-hamiltonienne arbitraire, la croissance générique de complexité, la croissance
+critère physique complet de Taylor–McCulloch, une borne de simulation de
+Trotter/formule produit ou de Lieb–Robinson, une croissance linéaire ou
+polynomiale du coût de simulation en temps (C13 ne formalise aucune notation
+`O(t)`), la croissance générique de complexité, la croissance
 de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
 Weingarten, l'unicité canonique des décompositions en branches ni une
 interprétation de la mécanique quantique.
@@ -689,7 +716,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12 : témoins élémentaires et modèles concrets | 355 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12/C13 : témoins élémentaires et modèles concrets | 389 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -746,8 +773,20 @@ affectée.
 | `QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean` | C12g : connexion à la génération unitaire C11 | 87 |
 | `QuantumFoundations/Complexity/OperatorNorm/Composition.lean` | C12h : lois de composition (facultatif, pour C13) | 84 |
 | `QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean` | C12 : non-vacuité de l'API budget d'erreur | 83 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 67 |
-| **Total recalculé**                          | **96 fichiers**                                                                   | **16866** |
+| `QuantumFoundations/Complexity/SimulatedEvolution/NormPreserving.lean` | C13a : opérateurs préservant la norme | 92 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/MatrixElementStability.lean` | C13b : bornes de perturbation d'élément de matrice | 132 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/ThresholdTransport.lean` | C13c : transport de seuil sous erreur d'opérateur | 127 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/MarginCertificate.lean` | C13d : certificat de gap à marge de seuil | 88 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/CircuitPersistence.lean` | C13e : persistance de la marge sous circuit exact | 50 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/SimulationCertificate.lean` | C13f : persistance sous évolution simulée | 142 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/NoisyRepetition.lean` | C13g : instanciation à marge pour le modèle bruité | 92 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/GeneratedBranches.lean` | C13h : connexion aux branches engendrées C11 | 77 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean` | C13i : instance rationnelle concrète `δ=1/2, μ=1/10, ε=1/20` | 108 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean` | C13j : coût de simulation dépendant du temps | 85 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean` | C13k : évolution certifiée par générateur auto-adjoint | 117 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean` | C13 : non-vacuité de l'API d'évolution simulée | 114 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 68 |
+| **Total recalculé**                          | **108 fichiers**                                                                  | **18125** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -824,6 +863,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C10 | Modèle explicite de répétition **bruitée** (`leak ≠ 0`), séparation robuste | ✅ |
 | C11 | Génération **unitaire** des branches source-record par circuit local explicite | ✅ |
 | C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
+| C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -931,16 +971,16 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C12
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C13
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
-By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-96 `.lean` files, 16,866 lines, 608 public declarations (`theorem`), 0
-`sorry`, and 0 project-specific axioms. The Complexity block contains 58
-files and 8,232 lines, of which 8 files and 960 lines are the new C12
-operator-norm bridge. The
+By the numbers (recomputed on 2026-07-23, project files excluding scratch):
+108 `.lean` files, 18,125 lines, 650 public declarations (`theorem`), 0
+`sorry`, and 0 project-specific axioms. The Complexity block contains 70
+files and 9,490 lines, of which 12 files and 1,224 lines are the new C13
+simulated-evolution persistence milestone. The
 main theorems of the Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
@@ -1436,6 +1476,30 @@ checks exactly `80/101 + 2·(1/20) ≤ 1` by exact rational arithmetic.
 Generic composition laws (C12h, optional) prepare C13's simulation-error
 accumulation.
 
+C13 establishes robust gap persistence under an actual norm-preserving
+evolution `U` (not necessarily a circuit), as long as an exact circuit `E`
+approximates it in operator norm to error `ε`. The central mathematical
+point is that same-threshold persistence at `δ` with **no** margin is
+generally **not** justified: perturbing two unit states by `ε` each moves
+the diagonal difference by at most `4ε` and the cross sum by at most `4ε`
+(C13b), shifting the proxy threshold by `2ε` (since the definitions use
+`2 · threshold`). C13 therefore introduces a margin `μ`: a certificate at
+the widened thresholds `δ - μ` (interference) and `δ + μ`
+(distinguishability) — `HasProxyGapMarginAtLeast` (C13d) — persists under an
+exact circuit (C13e) and then transports to the central threshold `δ` for
+the `U`-evolved states, whenever `2ε ≤ μ` (C13f, the main theorem). The
+simulation certificates `CircuitSimulatesEvolutionAt`/`HasCircuitSimulationAt`
+(C13f) and their time-dependent extension `HasCircuitSimulationBound` (C13j)
+make this directly reusable. Instantiated at C10's noisy model (C13g) and
+then at C11's generated branches (C13h), with the concrete rational witness
+`δ=1/2, μ=1/10, ε=1/20` (C13i, `80/101 < 4/5`, `6/5+80/101 ≤ 2`,
+`2·(1/20) ≤ 1/10`). An optional layer (C13k) constructs an evolution
+*genuinely* generated by a self-adjoint generator `H` — `evolve t :=
+exp(-itH)`, via Mathlib's existing operator exponential for bounded C⋆-
+algebras, with no extra assumption — leaving only the additive group law
+unproved (a precisely documented Mathlib instance-resolution obstruction,
+not a mathematical gap).
+
 The result is
 limited to finitely many sites, finite local dimension, supplied exact or
 approximate records,
@@ -1446,7 +1510,9 @@ from C11's explicit unitary construction), establish efficient synthesis of
 arbitrary local record projectors, complete the operator-norm view of every
 repository API (C12 covers only the record-readout bridge), the full
 physical Taylor–McCulloch
-criterion, persistence under arbitrary Hamiltonian evolution, generic or
+criterion, a Trotter/product-formula or Lieb–Robinson simulation bound,
+linear or polynomial simulation-cost growth in time (C13 formalizes no
+`O(t)` notation), generic or
 Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
 with Weingarten, canonical uniqueness of branch decompositions, or any
 interpretive claim about quantum mechanics.
@@ -1568,7 +1634,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11/C12: elementary witnesses and concrete models | 355 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11/C12/C13: elementary witnesses and concrete models | 389 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1625,8 +1691,20 @@ was affected.
 | QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean | C12g: connection to C11 unitary generation | 87 |
 | QuantumFoundations/Complexity/OperatorNorm/Composition.lean | C12h: composition laws (optional, for C13) | 84 |
 | QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean | C12: non-vacuity of the error-budget API | 83 |
-| QuantumFoundations.lean | Root import aggregator | 67 |
-| Recomputed total | 96 files | 16866 |
+| QuantumFoundations/Complexity/SimulatedEvolution/NormPreserving.lean | C13a: norm-preserving operators | 92 |
+| QuantumFoundations/Complexity/SimulatedEvolution/MatrixElementStability.lean | C13b: matrix-element perturbation bounds | 132 |
+| QuantumFoundations/Complexity/SimulatedEvolution/ThresholdTransport.lean | C13c: threshold transport under operator error | 127 |
+| QuantumFoundations/Complexity/SimulatedEvolution/MarginCertificate.lean | C13d: threshold-margin gap certificate | 88 |
+| QuantumFoundations/Complexity/SimulatedEvolution/CircuitPersistence.lean | C13e: margin persistence under an exact circuit | 50 |
+| QuantumFoundations/Complexity/SimulatedEvolution/SimulationCertificate.lean | C13f: persistence under simulated evolution | 142 |
+| QuantumFoundations/Complexity/SimulatedEvolution/NoisyRepetition.lean | C13g: margin instantiation for the noisy model | 92 |
+| QuantumFoundations/Complexity/SimulatedEvolution/GeneratedBranches.lean | C13h: connection to C11 generated branches | 77 |
+| QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean | C13i: concrete rational instance `δ=1/2, μ=1/10, ε=1/20` | 108 |
+| QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean | C13j: time-dependent simulation cost | 85 |
+| QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean | C13k: certified self-adjoint-generated evolution | 117 |
+| QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean | C13: non-vacuity of the simulated-evolution API | 114 |
+| QuantumFoundations.lean | Root import aggregator | 68 |
+| Recomputed total | 108 files | 18125 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1704,6 +1782,7 @@ initial plans).
 | C10 | Explicit **noisy** repetition model (`leak ≠ 0`), robust separation | ✅ |
 | C11 | **Unitary** local-circuit generation of source-record branches | ✅ |
 | C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
+| C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
 
 ## Main theorems — reference table
 
