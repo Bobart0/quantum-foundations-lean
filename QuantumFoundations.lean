@@ -59,6 +59,7 @@ import QuantumFoundations.Complexity.ApproxRecordPersistence
 import QuantumFoundations.Complexity.Models.Repetition.Persistence
 import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
+import QuantumFoundations.Complexity.OperatorNorm.Composition
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations

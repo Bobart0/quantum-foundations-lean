@@ -865,7 +865,7 @@ the user's discretion before publication.
 - Docstrings, prefix h for hypotheses, and private for internal lemmas are
  identical to the four preceding blocks, with no divergence.
 
-## Complexity (C0–C11) — exact, robust, and explicit 2-local proxy gaps
+## Complexity (C0–C12) — exact, robust, and explicit 2-local proxy gaps
 
 - **Syntax and evaluation.** `TwoLocalGate N d` stores a linear isometric
   equivalence on `BranchesRiedel.Sites N d`, a region `Finset (Fin N)`, the
@@ -1203,6 +1203,98 @@ the user's discretion before publication.
   branch-uniqueness result, a generic decoherence derivation, cloning of an
   arbitrary quantum state, or optional paired-flip sharpness.
 
+- **Why `LinearMap` APIs were retained, not migrated (C12).** `Circuit.eval`,
+  `Circuit.evalOnH`, `recordPhaseFlip`, and every C0–C11 declaration built
+  from them stay plain `LinearMap`s. Migrating the whole repository to
+  `ContinuousLinearMap` would be a broad representation change (deferred
+  explicitly at the end of C10 as future C12 work) disproportionate to the
+  one property actually needed: a norm. Instead, `toContinuousLinearMapFD`
+  (`FiniteDimensional.lean`) is a *thin, additional view*: given
+  `T : E →ₗ[ℂ] F` with `E` finite-dimensional over `ℂ`, it packages the
+  existing Mathlib equivalence `LinearMap.toContinuousLinearMap : (E →ₗ[𝕜]
+  F) ≃ₗ[𝕜] (E →L[𝕜] F)` (finite-dimensional linear maps are automatically
+  continuous — `LinearMap.continuous_of_finiteDimensional`). Application is
+  `rfl`-transparent (`toContinuousLinearMapFD T x = T x` holds by `rfl`, not
+  merely propositionally), and the zero/add/sub/smul/comp algebra laws all
+  reduce to the generic `map_zero`/`map_add`/`map_sub`/`map_smul` facts about
+  a `LinearEquiv` (viewing `LinearMap.toContinuousLinearMap` itself as a
+  linear map between the two function spaces) plus one `ext`-and-`simp` for
+  composition — no bespoke functorial API was built.
+- **Mathlib module layout had moved since earlier sessions.** The operator-
+  norm API now lives under `Mathlib.Analysis.Normed.Operator.*` and
+  `Mathlib.Analysis.Normed.Module.*`, not the previously-expected
+  `Mathlib.Analysis.NormedSpace.OperatorNorm.*`; several lemma names are
+  deprecated in favor of generic `IsSubApply`/`IsZeroApply`-class versions
+  (e.g. `ContinuousLinearMap.sub_apply` → plain `sub_apply`,
+  `ContinuousLinearMap.coe_sub` → `ContinuousLinearMap.toLinearMap_sub`).
+  Confirmed via `#check`/`#print axioms` in unimported scratch files before
+  writing any permanent code, per the no-guessing-APIs rule.
+- **`ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` is the operator norm, stated
+  once, generically.** No records or circuits are mentioned in
+  `Approximation.lean`. The central estimate
+  `‖A x - B x‖ ≤ ε * ‖x‖` (`norm_apply_sub_le_of_approximatesOperator`) comes
+  from `sub_apply` plus `ContinuousLinearMap.le_opNorm`, and the two-state
+  accumulation `‖A a - B a‖ + ‖A b - B b‖ ≤ 2 * ε`
+  (`sum_two_apply_errors_le`) is `linarith` over the two unit-vector
+  specializations — the factor `2` is arithmetic, never inserted as a
+  postulate.
+- **The pointwise bridge is a direct specialization, not a new estimate.**
+  `ApproximatesRecordPhaseFlipOp` wraps `ApproximatesOperator
+  (circuitCLMOnH D e) (recordPhaseFlipCLM Λ j) ε`;
+  `opApprox_implies_pointwise_phaseFlip` is literally
+  `sum_two_apply_errors_le` unfolded through `ApproximatesRecordPhaseFlipOn`,
+  giving pointwise budget `ξ = 2 * ε`. C12d/e then reuse C8's own
+  `approx_record_phase_flip_distinguishesAt` and
+  `approximate_records_give_proxy_gap_certificate`/
+  `approximate_records_gap_persists_under_circuit_evolution` unchanged, at
+  `ξ := 2 * ε`: no new analytic distinguishability or interference argument
+  was written for C12. The readout threshold is therefore exactly
+  `2 * δ + 2 * ηj + 2 * ε ≤ 2`, and its C10 specialization
+  (`δ = 1/2`, `ηj = 2‖leak‖`) is exactly `4 * ‖leak‖ + 2 * ε ≤ 1`. Setting
+  `ε := 0` recovers each pre-existing exact-implementation regression
+  bit-for-bit (`exact_phaseFlip_recovers_pointwise_zero`,
+  `exact_opApprox_record_phase_flip_distinguishesAt`,
+  `noisy_repetition_opNorm_readout_exact_regression` reproducing
+  `noisy_repetition_has_proxy_gap`).
+- **`p.IsRobust` is not redundant given the readout threshold, and this was
+  checked, not assumed.** `noisy_repetition_opNorm_readout_has_gap` takes
+  both `hp : p.IsRobust` (`4‖leak‖ < 1`, strict) and
+  `hreadout : 4‖leak‖ + 2ε ≤ 1` (non-strict). `hreadout` together with
+  `ε ≥ 0` (itself only derivable from an inhabited `ApproximatesRecordPhaseFlipOp`,
+  since operator-norm errors are nonnegative) gives only `4‖leak‖ ≤ 1`. At
+  the boundary `4‖leak‖ = 1`, `ε = 0`, `hreadout` holds with equality while
+  `p.IsRobust` fails — and the underlying C4/C8 pigeonhole argument needs the
+  *strict* interference threshold `ηi + ηj < 2δ`, which does not go through
+  at equality. `hp` is therefore kept as an explicit, independently-justified
+  hypothesis rather than derived or silently dropped.
+- **C12g needs no nontriviality hypothesis on the source amplitudes.**
+  `generated_branches_have_opNorm_robust_gap`'s two conclusions — the C11
+  generation equality and the generated branch pair's operator-norm robust
+  gap — hold for *every* `SourceAmplitudeProfile q`: the equality is C11's
+  own `noisyMeasurement_generates_branching` (unconditional), and the gap
+  concerns `noisyZeroBranch`/`noisyOneBranch` directly, independent of `q`
+  entirely. `q.amp0 ≠ 0`/`q.amp1 ≠ 0` hypotheses suggested by the initial
+  sketch were dropped rather than carried unused, matching the same
+  discipline applied to `hp` above (only `noisySourceInputState q R =
+  noisyInputState q.amp0 q.amp1 R` and the generated-state equality needed
+  to be `rfl`-transparent, which they are, so no unfold/congr scaffolding
+  was needed either).
+- **C12h composition laws were completed, not skeletoned.**
+  `approximation_comp_left`/`_right` and the two-sided
+  `approximation_comp_two_sided` (`A∘C − B∘D = A∘(C−D) + (A−B)∘D`, a
+  standard triangle-inequality split) all went in after C12a–g were green,
+  as instructed. Unitary/isometric (`‖·‖ = 1`) specializations were
+  deliberately not added: nothing in C12 needs them, and C13 can add them
+  later if its simulation-error accumulation actually requires the sharper
+  bound.
+- **C12 scope.** A finite-dimensional operator-norm view and the bridge from
+  a single global operator-norm readout error to C8's pointwise readout
+  hypotheses, plus its C10/C11 specializations. It is not Hamiltonian
+  simulation, Trotter/product-formula error analysis, Brown–Susskind
+  complexity growth, an operator-norm view of every repository API, generic
+  branch uniqueness, a construction of approximate records from decoherence,
+  or a `ContinuousLinearMap` migration of any existing public declaration.
+
 ### English summary
 
 The Complexity block keeps circuit syntax, operator locality, finite counting,
@@ -1247,7 +1339,18 @@ constructed unconditionally for every `NoiseProfile`. The full generation
 circuit reaches *exactly* C10's `noisyZeroBranch`/`noisyOneBranch`, so C10's
 robust proxy gap and its conditional persistence transport immediately, with
 a concrete rational witness `(amp0, amp1) = (3/5, 4/5)` independent of C10h's
-noise-profile triple.
+noise-profile triple. C12 closes the operator-norm-to-pointwise-readout
+bridge deferred since C8: `toContinuousLinearMapFD` views a finite-
+dimensional linear map as a continuous linear map via Mathlib's existing
+automatic-continuity equivalence, with no migration of `Circuit.evalOnH` or
+`recordPhaseFlip` themselves. `ApproximatesOperator A B ε := ‖A - B‖ ≤ ε`
+gives, on two unit states, pointwise error at most `2 * ε`, and this bridges
+directly into C8's own analytic distinguishability and interference
+estimates unchanged, producing the readout threshold
+`2 * δ + 2 * ηj + 2 * ε ≤ 2` and its C10 specialization
+`4 * ‖leak‖ + 2 * ε ≤ 1` (with `p.IsRobust` kept as an independently
+necessary hypothesis, not redundant with the readout threshold) and its C11
+generated-branch corollary, concretely at `ε = 1/20`.
 
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 

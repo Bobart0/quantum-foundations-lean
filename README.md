@@ -4,16 +4,16 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C11.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C12.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-22, fichiers du projet hors scratch) :
-88 fichiers `.lean`, 15864 lignes, 568 déclarations publiques (`theorem`), 0
-`sorry`, 0 axiome propre au projet. Le bloc Complexity compte 50 fichiers et
-7231 lignes, dont 9 fichiers et 1930 lignes pour le nouveau modèle C11 de
-génération unitaire des branches. Les
+96 fichiers `.lean`, 16866 lignes, 608 déclarations publiques (`theorem`), 0
+`sorry`, 0 axiome propre au projet. Le bloc Complexity compte 58 fichiers et
+8232 lignes, dont 8 fichiers et 960 lignes pour le nouveau pont C12 en norme
+d'opérateur. Les
 théorèmes principaux du bloc Complexity ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
@@ -530,6 +530,34 @@ pythagoricien `3² + 4² = 5²` fournit un témoin rationnel concret
 bruit rationnel `(99/101, 20/101)` de C10h — toute la chaîne C11 sans
 hypothèse supplémentaire.
 
+Le jalon C12 comble le pont optionnel en norme d'opérateur laissé de côté
+depuis C8 : `toContinuousLinearMapFD` (C12a) est la vue canonique en
+application linéaire continue d'une application linéaire issue d'un espace
+normé complexe de dimension finie (`LinearMap.toContinuousLinearMap` de
+Mathlib) — `Circuit.evalOnH`, `recordPhaseFlip` et toute l'API `LinearMap`
+existante restent inchangées; c'est une vue supplémentaire, pas un
+remplacement. `ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` (C12b) est une
+erreur de norme d'opérateur générique, sans référence aux records ou
+circuits; l'estimation centrale `‖A x - B x‖ ≤ ε‖x‖` donne, sur deux états
+unitaires `a, b`, l'accumulation `‖A a - B a‖ + ‖A b - B b‖ ≤ 2ε` — le
+facteur `2` dérivé par arithmétique simple, jamais postulé.
+`ApproximatesRecordPhaseFlipOp` (C12c) spécialise ce pont à
+`recordPhaseFlip` : un budget d'erreur en norme d'opérateur `ε` implique le
+budget ponctuel C8 `ξ = 2ε`, ce qui restitue directement (C12d) le seuil de
+lecture `2δ + 2ηj + 2ε ≤ 2` et (C12e) le gap proxy robuste ainsi que sa
+persistance conditionnelle, en réutilisant tel quel l'estimation analytique
+de C8 — aucune nouvelle estimation n'est introduite. Au modèle bruité C10
+(C12f), ce seuil devient exactement `4‖leak‖ + 2ε ≤ 1`; l'hypothèse
+`p.IsRobust` (`4‖leak‖ < 1`, stricte) reste néanmoins nécessaire en plus de
+ce seuil — non redondante, car `hreadout` seul (avec `ε ≥ 0`) ne donne que
+l'inégalité large `4‖leak‖ ≤ 1`, insuffisante pour l'argument
+d'interférence strict. Aux branches dynamiquement engendrées par C11
+(C12g), le même seuil s'applique directement au couple de branches généré.
+Le témoin rationnel concret `ε = 1/20` vérifie exactement
+`80/101 + 2·(1/20) ≤ 1` par arithmétique rationnelle exacte. Des lois de
+composition génériques (C12h, facultatives) préparent l'accumulation
+d'erreur de simulation de C13.
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
@@ -537,8 +565,9 @@ des régions deux-à-deux disjointes, des portes exactement 2-locales et une
 amplitude/proxy au-dessus du seuil explicite. Il ne traite pas
 la formation générique de records approximatifs par décohérence (distincte de
 la construction unitaire explicite de C11), la synthèse
-efficace de projecteurs locaux arbitraires, le pont optionnel depuis une borne
-en norme d'opérateur, le
+efficace de projecteurs locaux arbitraires, la complétion en norme
+d'opérateur de toute l'API du dépôt (C12 ne couvre que le pont de lecture de
+record), le
 critère physique complet de Taylor–McCulloch, la persistance sous évolution
 hamiltonienne arbitraire, la croissance générique de complexité, la croissance
 de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
@@ -660,7 +689,7 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11 : témoins élémentaires et modèles concrets | 314 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12 : témoins élémentaires et modèles concrets | 355 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
 | `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
 | `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
@@ -709,8 +738,16 @@ affectée.
 | `QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean` | C11f/g : préparation corrélée des records et génération bruitée complète | 493 |
 | `QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean` | C11i : connexion génération unitaire / persistance du gap | 70 |
 | `QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean` | C11j : témoin concret de génération unitaire | 89 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 66 |
-| **Total recalculé**                          | **88 fichiers**                                                                   | **15864** |
+| `QuantumFoundations/Complexity/OperatorNorm/FiniteDimensional.lean` | C12a : vue en application linéaire continue, dimension finie | 115 |
+| `QuantumFoundations/Complexity/OperatorNorm/Approximation.lean` | C12b : approximation générique en norme d'opérateur | 106 |
+| `QuantumFoundations/Complexity/OperatorNorm/RecordReadout.lean` | C12c : pont erreur d'opérateur / erreur ponctuelle de lecture | 113 |
+| `QuantumFoundations/Complexity/OperatorNorm/RecordGap.lean` | C12d/e : distinguabilité et gap proxy en norme d'opérateur | 207 |
+| `QuantumFoundations/Complexity/OperatorNorm/NoisyRepetition.lean` | C12f : instanciation bruitée concrète, budget `1/20` | 165 |
+| `QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean` | C12g : connexion à la génération unitaire C11 | 87 |
+| `QuantumFoundations/Complexity/OperatorNorm/Composition.lean` | C12h : lois de composition (facultatif, pour C13) | 84 |
+| `QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean` | C12 : non-vacuité de l'API budget d'erreur | 83 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 67 |
+| **Total recalculé**                          | **96 fichiers**                                                                   | **16866** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -786,6 +823,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C9 | Modèle explicite de répétition, circuits concrets et gap linéaire | ✅ |
 | C10 | Modèle explicite de répétition **bruitée** (`leak ≠ 0`), séparation robuste | ✅ |
 | C11 | Génération **unitaire** des branches source-record par circuit local explicite | ✅ |
+| C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -893,16 +931,16 @@ Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C11
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C12
 blocks. Seven mechanized blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-22, project files excluding scratch):
-88 `.lean` files, 15,864 lines, 568 public declarations (`theorem`), 0
-`sorry`, and 0 project-specific axioms. The Complexity block contains 50
-files and 7,231 lines, of which 9 files and 1,930 lines are the new C11
-unitary branch-generation model. The
+96 `.lean` files, 16,866 lines, 608 public declarations (`theorem`), 0
+`sorry`, and 0 project-specific axioms. The Complexity block contains 58
+files and 8,232 lines, of which 8 files and 960 lines are the new C12
+operator-norm bridge. The
 main theorems of the Complexity block were checked with `#print axioms`
 and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
 Lean/Mathlib trio.
@@ -1372,6 +1410,32 @@ rational source-amplitude witness `(amp0, amp1) = (3/5, 4/5)` (C11j), to
 which — paired with C10h's rational noise profile `(99/101, 20/101)` — the
 full C11 chain applies unconditionally.
 
+C12 closes the optional operator-norm bridge left open since C8:
+`toContinuousLinearMapFD` (C12a) is the canonical continuous-linear-map view
+of a linear map out of a finite-dimensional complex normed space
+(Mathlib's `LinearMap.toContinuousLinearMap`) — `Circuit.evalOnH`,
+`recordPhaseFlip`, and every existing `LinearMap` API are left entirely
+unchanged; this is an additional view, not a replacement.
+`ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` (C12b) is a generic operator-norm
+error budget mentioning no records or circuits; the central estimate
+`‖A x - B x‖ ≤ ε‖x‖` gives, on two unit states `a, b`, the accumulation
+`‖A a - B a‖ + ‖A b - B b‖ ≤ 2ε` — the factor `2` derived by plain
+arithmetic, never postulated. `ApproximatesRecordPhaseFlipOp` (C12c)
+specializes this bridge to `recordPhaseFlip`: an operator-norm error budget
+`ε` implies the C8 pointwise budget `ξ = 2ε`, which directly recovers
+(C12d) the readout threshold `2δ + 2ηj + 2ε ≤ 2` and (C12e) the robust
+proxy gap and its conditional persistence, reusing C8's own analytic
+estimate unchanged — no new estimate is introduced. At C10's noisy model
+(C12f) this threshold becomes exactly `4‖leak‖ + 2ε ≤ 1`; the hypothesis
+`p.IsRobust` (`4‖leak‖ < 1`, strict) is still required alongside it — not
+redundant, since `hreadout` alone (with `ε ≥ 0`) gives only the non-strict
+`4‖leak‖ ≤ 1`, insufficient for the strict interference argument. At C11's
+dynamically generated branches (C12g), the same threshold applies directly
+to the generated branch pair. The concrete rational witness `ε = 1/20`
+checks exactly `80/101 + 2·(1/20) ≤ 1` by exact rational arithmetic.
+Generic composition laws (C12h, optional) prepare C13's simulation-error
+accumulation.
+
 The result is
 limited to finitely many sites, finite local dimension, supplied exact or
 approximate records,
@@ -1379,8 +1443,9 @@ pairwise disjoint regions, exact 2-local gates, and an exact nonzero cross
 amplitude/proxy above the explicit threshold. It does not
 address generic formation of approximate records from decoherence (distinct
 from C11's explicit unitary construction), establish efficient synthesis of
-arbitrary local record projectors, provide the optional operator-norm bridge,
-the full physical Taylor–McCulloch
+arbitrary local record projectors, complete the operator-norm view of every
+repository API (C12 covers only the record-readout bridge), the full
+physical Taylor–McCulloch
 criterion, persistence under arbitrary Hamiltonian evolution, generic or
 Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
 with Weingarten, canonical uniqueness of branch decompositions, or any
@@ -1503,7 +1568,7 @@ was affected.
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
-| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11: elementary witnesses and concrete models | 314 |
+| QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11/C12: elementary witnesses and concrete models | 355 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
@@ -1552,8 +1617,16 @@ was affected.
 | QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean | C11f/g: correlated record preparation and full noisy generation | 493 |
 | QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean | C11i: unitary generation meets branch persistence | 70 |
 | QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean | C11j: concrete unitary generation witness | 89 |
-| QuantumFoundations.lean | Root import aggregator | 66 |
-| Recomputed total | 88 files | 15864 |
+| QuantumFoundations/Complexity/OperatorNorm/FiniteDimensional.lean | C12a: finite-dimensional continuous-linear-map view | 115 |
+| QuantumFoundations/Complexity/OperatorNorm/Approximation.lean | C12b: generic operator-norm approximation | 106 |
+| QuantumFoundations/Complexity/OperatorNorm/RecordReadout.lean | C12c: operator-norm/pointwise readout-error bridge | 113 |
+| QuantumFoundations/Complexity/OperatorNorm/RecordGap.lean | C12d/e: distinguishability and proxy gap from operator norm | 207 |
+| QuantumFoundations/Complexity/OperatorNorm/NoisyRepetition.lean | C12f: concrete noisy instantiation, `1/20` budget | 165 |
+| QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean | C12g: connection to C11 unitary generation | 87 |
+| QuantumFoundations/Complexity/OperatorNorm/Composition.lean | C12h: composition laws (optional, for C13) | 84 |
+| QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean | C12: non-vacuity of the error-budget API | 83 |
+| QuantumFoundations.lean | Root import aggregator | 67 |
+| Recomputed total | 96 files | 16866 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1630,6 +1703,7 @@ initial plans).
 | C9 | Explicit repetition model, concrete circuits, and linear proxy gap | ✅ |
 | C10 | Explicit **noisy** repetition model (`leak ≠ 0`), robust separation | ✅ |
 | C11 | **Unitary** local-circuit generation of source-record branches | ✅ |
+| C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
 
 ## Main theorems — reference table
 

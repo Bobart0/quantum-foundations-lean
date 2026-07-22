@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C11)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C12)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2821,18 +2821,78 @@ family, not a derived one" gap noted at the end of C10.
 - [x] Requested C11 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C11 (future extensions, not deficiencies)
+### C12 — finite-dimensional operator-norm bridge — ✅ CLOSED
+
+Purpose: close the "operator-norm-to-pointwise-readout bridge" gap named at
+the end of C8/C11, connecting a single global operator-norm error budget on
+a readout circuit to the pointwise readout hypotheses `ApproximatesRecordPhaseFlipOn`
+already consumed by C8–C11, without migrating any existing `LinearMap` API.
+
+- [x] **C12a:** `toContinuousLinearMapFD` is the canonical continuous-
+  linear-map view of a linear map out of a finite-dimensional complex normed
+  space, via Mathlib's `LinearMap.toContinuousLinearMap` equivalence
+  (existing constructor, not reproved). `circuitCLMOnH`/`recordPhaseFlipCLM`
+  specialize it to `Circuit.evalOnH`/`recordPhaseFlip`, both left completely
+  unchanged — this is an additional view, not a replacement.
+- [x] **C12b:** `ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` is a generic
+  operator-norm error budget mentioning no records or circuits, with
+  `mono`/`refl`/`zero`/`symm`/`trans`. The central estimate
+  `‖A x - B x‖ ≤ ε * ‖x‖` follows from `ContinuousLinearMap.le_opNorm`; on
+  two unit states it gives `‖A a - B a‖ + ‖A b - B b‖ ≤ 2 * ε`, the factor
+  `2` derived by `linarith`, never postulated.
+- [x] **C12c:** `ApproximatesRecordPhaseFlipOp` specializes C12b to
+  `recordPhaseFlip`; `opApprox_implies_pointwise_phaseFlip` is the pointwise-
+  error bridge, a direct specialization of `sum_two_apply_errors_le`. An
+  exact circuit implementation gives operator-norm error exactly `0`.
+- [x] **C12d:** `opApprox_record_phase_flip_distinguishesAt` reuses C8's
+  `approx_record_phase_flip_distinguishesAt` unchanged at pointwise error
+  `ξ = 2 * ε`: the readout threshold is exactly `2 * δ + 2 * ηj + 2 * ε ≤ 2`.
+- [x] **C12e:** `approximate_records_opNorm_readout_give_proxy_gap` and its
+  persistence corollary combine C8's approximate-record interference lower
+  bound with the C12d readout bound, reusing
+  `approximate_records_give_proxy_gap_certificate`/
+  `approximate_records_gap_persists_under_circuit_evolution` unchanged; no
+  `i ≠ j` hypothesis is needed (the underlying C8 certificate does not use
+  it), and `minCircuitLength`/the C7 conjugation machinery are not
+  reimplemented.
+- [x] **C12f:** instantiated at C10's noisy model
+  (`a := noisyZeroBranch p R`, `b := noisyOneBranch p R`,
+  `ηi = ηj := 2 * ‖p.leak‖`, `δ := 1/2`), the readout threshold becomes
+  exactly `4 * ‖p.leak‖ + 2 * ε ≤ 1`. `p.IsRobust` (`4 * ‖p.leak‖ < 1`,
+  strict) is kept as an explicit hypothesis, documented as *not* redundant
+  given the readout threshold: at the boundary `4‖leak‖ = 1`, `ε = 0`, the
+  non-strict threshold holds with equality but the strict interference
+  argument needs `<`, not `≤`. The `ε = 0`, exact-readout regression
+  recovers `noisy_repetition_has_proxy_gap` exactly.
+- [x] **C12g:** connects C11's `noisyMeasurementCircuit`/
+  `noisyMeasurement_generates_branching` (unchanged) to the C12f robust gap:
+  the generation equality and the generated branch pair's operator-norm
+  robust gap hold together, with no nontriviality hypothesis on the source
+  amplitudes needed for either conclusion.
+- [x] **C12h (optional):** generic composition laws
+  `approximation_comp_left`/`approximation_comp_right`/
+  `approximation_comp_two_sided` for future C13 simulation-error
+  accumulation, proved by the standard triangle-inequality splitting
+  `A∘C − B∘D = A∘(C−D) + (A−B)∘D`. Completed (not merely skeletoned), after
+  the mandatory C12a–g bridge was green.
+- [x] Concrete rational witness: `ε = 1/20` against `rationalNoiseProfile`
+  satisfies `80/101 + 2 * (1/20) ≤ 1` by exact rational arithmetic (no
+  floating point, no unsafe evaluation tactic).
+- [x] Requested C12 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C12 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
 - Formation or generic existence of approximate records from decoherence
   (distinct from C11's unitary measurement-correlation construction, which
   is exact and explicit, not a decoherence derivation).
-- Hamiltonian time evolution, Brown–Susskind complexity growth, and generic
-  circuit-complexity growth beyond the explicit finite circuits constructed
-  here.
-- Operator-norm-to-pointwise-readout bridge, and canonical uniqueness of
-  branch decompositions.
+- Hamiltonian time evolution, Trotter/product-formula simulation,
+  Brown–Susskind complexity growth, and generic circuit-complexity growth
+  beyond the explicit finite circuits constructed here.
+- Operator-norm completion of every repository API (C12 covers only the
+  record-readout bridge), and canonical uniqueness of branch decompositions.
 - Cloning of an arbitrary quantum state (C11's fanout only ever copies a
   computational-basis *label*, never a source qubit's own amplitudes — this
   is consistent with, not a violation of, no-cloning), and optional
@@ -2866,10 +2926,19 @@ mémoire vierges — fanout d'étiquette en base de calcul, jamais clonage d'un
 état quantique arbitraire — et les branches ainsi engendrées sont
 *exactement* celles de C10, si bien que le gap robuste et sa persistance
 conditionnelle s'y transportent immédiatement, avec un témoin rationnel
-concret supplémentaire `(3/5, 4/5)`. La synthèse générale de circuits de
-lecture, les évolutions hamiltoniennes générales et les conjectures de
-croissance restent des travaux futurs distincts, et ne sont pas des manques
-de ces jalons.
+concret supplémentaire `(3/5, 4/5)`. C12 referme enfin le pont en norme
+d'opérateur laissé de côté depuis C8 : `toContinuousLinearMapFD` fournit la
+vue en application linéaire continue d'une application linéaire issue d'un
+espace de dimension finie (vue additionnelle, aucune API `LinearMap`
+existante n'est modifiée), `ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` donne
+sur deux états unitaires l'accumulation `2ε`, et cette borne restitue
+directement — en réutilisant telles quelles les estimations analytiques de
+C8 — le seuil de lecture `2δ + 2ηj + 2ε ≤ 2`, sa spécialisation bruitée
+`4‖leak‖ + 2ε ≤ 1`, et la connexion aux branches engendrées par C11, avec un
+témoin rationnel concret `ε = 1/20`. La synthèse générale de circuits de
+lecture, les évolutions hamiltoniennes générales, la simulation de Trotter
+et les conjectures de croissance restent des travaux futurs distincts, et ne
+sont pas des manques de ces jalons.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 
