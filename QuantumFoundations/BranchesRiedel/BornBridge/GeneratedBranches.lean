@@ -155,6 +155,45 @@ theorem idealGenerated_branch1_weight (h1 : q.amp1 ≠ 0)
 
 theorem idealGenerated_branch_weights_sum : ‖q.amp0‖ ^ 2 + ‖q.amp1‖ ^ 2 = 1 := q.norm_sq
 
+/-! ## C14j — The exact-noisy branch boundary
+
+The noisy C10 branches (`noisyZeroBranch`/`noisyOneBranch p R`) satisfy only
+`ApproxRecordedPairOn` (an aggregated approximate-record budget
+`2 * ‖p.leak‖` per label), not the exact `IsRecordedOn` that
+`Induction.riedel`/`record_induced_Born_decomposition` require. Applying
+this file's exact record-induced branch-uniqueness machinery to the noisy
+branches would therefore not be justified by the noisy model's actual
+hypotheses, and C14 does not do so: no approximate-record-uniqueness
+theorem is defined here (that remains a separate, later research
+question).
+
+What *does* remain true for the noisy model, and is recorded below as a
+genuine (if modest) new combination of existing C10/C11 facts rather than
+mere restatement: source-projector extraction is still *exact* — applying
+the source resolution to the noisy generated state returns exactly the
+`amp0`- or `amp1`-weighted noisy branch, unchanged — so the squared component
+norms are still exactly `‖amp0‖ ^ 2`/`‖amp1‖ ^ 2` and sum to one, regardless
+of the noise profile `p`. C10's `NoiseProfile.IsRobust` condition together
+with C8's approximate-record machinery (not repeated here) is what
+continues to provide a robust *complexity* separation and its C13
+persistence under simulated evolution; none of this amounts to exact
+record-induced branch *uniqueness* for the noisy state. -/
+
+/-- **The exact-noisy boundary, packaged.** Source-projector extraction from
+the noisy generated state remains exact and amplitude-preserving — the two
+squared component norms are exactly `‖amp0‖ ^ 2`/`‖amp1‖ ^ 2` and sum to
+one — without any claim of exact record-induced branch uniqueness for the
+noisy branches themselves (whose records only satisfy the weaker
+`ApproxRecordedPairOn`, not `IsRecordedOn`). -/
+theorem noisyGenerated_weight_preservation_without_uniqueness
+    (q : SourceAmplitudeProfile) (p : NoiseProfile) (R : ℕ) [NeZero R] :
+    ‖rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R)‖ ^ 2 = ‖q.amp0‖ ^ 2
+      ∧ ‖rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R)‖ ^ 2 = ‖q.amp1‖ ^ 2
+      ∧ ‖rproj (sourceResolution R) 0 (noisySourceGeneratedState q p R)‖ ^ 2
+          + ‖rproj (sourceResolution R) 1 (noisySourceGeneratedState q p R)‖ ^ 2 = 1 :=
+  ⟨norm_sq_noisy_source_zero_component q p R, norm_sq_noisy_source_one_component q p R,
+    noisy_component_norm_squares_sum_one q p R⟩
+
 end
 
 end QuantumFoundations.BranchesRiedel.BornBridge
