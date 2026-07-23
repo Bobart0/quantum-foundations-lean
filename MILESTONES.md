@@ -2531,7 +2531,7 @@ already folded form.
  (ContraryInferences.lean), not formalized — it is an interpretive
  argument, not an additional mathematical statement to prove.
 
-## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C13)
+## Complexity — exact, robust, and explicit redundant-record proxy gaps (C0–C14)
 
 Closed on 2026-07-22. The implemented result is deliberately finite and
 exact: if `R` pairwise disjoint regions carry exact records of two distinct
@@ -2940,7 +2940,90 @@ threshold `δ` used everywhere from C3 onward.
 - [x] Requested C13 axiom audits are exactly
   `[propext, Classical.choice, Quot.sound]`.
 
-### Explicitly outside C0–C13 (future extensions, not deficiencies)
+### C14 — record-induced Born bridge — ✅ CLOSED
+
+Purpose: connect the formally unique branch decomposition selected by
+redundant records (`Induction.riedel`, BranchesRiedel) to the formally
+unique Born weighting selected by refinement coherence
+(`grainCoherenceTheorem_projector`, BornRule) — one explicit theorem
+chain rather than three merely adjacent results. Lives in
+`QuantumFoundations/BranchesRiedel/BornBridge/` (namespace
+`QuantumFoundations.BranchesRiedel.BornBridge`), since the repository has
+no `Branches` module (only `BranchesRiedel`).
+
+- [x] **C14a:** `RecordChoice A R := Fin A → Fin R` reuses `chainProj`'s
+  own record-choice parameter (no new structure needed).
+  `chainProj_choice_invariant` proves full simultaneous record-choice
+  invariance via a single induction (`List.reverseRecOn`, peeling the
+  observable list from the end) that reuses `Induction.tunneling` at each
+  step — never composing two different records of the same observable,
+  contrary to a worry raised in `Induction.lean`'s own header note (which
+  concerned a different, stronger question: generalizing the *uniqueness*
+  clause itself). Single-record replacement, choice-independent
+  reconstruction/orthogonality/eigenstate/uniqueness, and a local
+  multisite corollary are all direct corollaries.
+- [x] **C14b:** `ActiveBranchIndex B := {f // B f ≠ 0}` excludes zero
+  branches, since `Perspective.nz` forbids `⊥` cells. `branchCell B f :=
+  Submodule.span ℂ {activeBranchVector B f}`; `branchCell_injective` and
+  `branchCells_pairwise_orthogonal` genuinely use pairwise orthogonality of
+  the branch family, not merely nonzeroness.
+- [x] **C14c:** `starProjection_branchCell_apply_state` — the state's
+  projection onto any active branch cell is exactly the branch vector — is
+  proved as pure linear algebra (splitting `ψ = B f + ∑_{g≠f} B g` and
+  applying Mathlib's `Submodule.eq_starProjection_of_mem_orthogonal'`),
+  independent of any Born-weight hypothesis.
+- [x] **C14d:** `branchSupport := ⨆ f : ActiveBranchIndex B, branchCell B
+  f` (not necessarily `⊤`); `residualCell := branchSupportᗮ` (may be `⊥`).
+- [x] **C14e:** `branchPerspectiveOfFullSupport`/
+  `branchPerspectiveOfResidual` case-split on `branchSupport B = ⊤`
+  (`Perspective` forbids `⊥` cells), unified behind
+  `BranchPerspectivePackage` — adapted from the task's suggested structure
+  to the repository's actual `Perspective` (a bare `Finset (Submodule ℂ (H
+  n))`, no abstract `Cell` type).
+- [x] **C14f:** `recordBranch_weight_eq_norm_sq` chains
+  `grainCoherenceTheorem_projector` (Born weight = `‖projL c v‖²`) with the
+  C14c projection identity to get `Est D (branchCell B f) = ‖B f‖²`, never
+  assuming the desired equality. Residual weight zero (two independent
+  proofs: the projector formula and directly from (Null)), normalization
+  of the active weights, uniqueness across estimation rules, and
+  record-choice invariance of the weight (at the vector level, from C14a)
+  are all proved.
+- [x] **C14g:** `record_induced_Born_decomposition` assembles C14a–f into
+  one theorem, returning `RecordInducedBornConclusion` (a structure, not a
+  deep conjunction) under redundancy, a commutation witness, a normalized
+  state, and (Pos)/(Norm)/(Grain)/(Null).
+- [x] **C14h:** `local_record_induced_Born_decomposition` instantiates
+  C14g at the finite local record model via
+  `commuteWitness_of_not_pairCovers` (the same hypotheses as
+  `riedel_local`, none weakened).
+- [x] **C14i:** `unitary_generation_yields_record_induced_Born_decomposition`
+  connects C11's exact `idealFanoutCircuit`/`idealGeneratedState` to the
+  abstract machinery, reusing C10's `noisyRecords` site-projector family
+  applied to the *exact* generated state (not the noisy branches);
+  `CommuteWitness` is vacuous for the single "which-branch" observable.
+  Branch vectors are exactly `q.amp0 • basis00 R`/`q.amp1 • basis11 R`,
+  weights `‖amp0‖²`/`‖amp1‖²`.
+- [x] **C14j:** `noisyGenerated_weight_preservation_without_uniqueness`
+  documents and combines what remains true for the noisy C10 model (exact
+  source-projector extraction, amplitude preservation) while explicitly
+  not concluding exact record-induced branch uniqueness (the noisy
+  branches satisfy only `ApproxRecordedPairOn`, not `IsRecordedOn`).
+- [x] **C14k:** `IsNormPreserving.inner_map_map` derives inner-product
+  preservation from the norm-based polarization identity
+  (`inner_eq_sum_norm_sq_div_four`), not assumed. Evolved branches retain
+  their squared norm and pairwise orthogonality;
+  `evolved_branch_weight_and_gap_persist` states weight conservation and
+  C13's proxy-gap persistence as two simultaneous, logically distinct
+  conclusions.
+- [x] **C14l:** `concrete_unitary_recorded_Born_decomposition` at
+  `concreteSourceProfile` (`amp0=3/5`, `amp1=4/5`) gives the exact rational
+  weights `9/25` and `16/25` (`norm_num`, no floating point or unsafe
+  evaluation tactic), alongside generation, redundancy, and the full
+  decomposition package.
+- [x] Requested C14 axiom audits are exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+### Explicitly outside C0–C14 (future extensions, not deficiencies)
 
 - Efficient synthesis of arbitrary local record projectors and the full
   physical Taylor–McCulloch good-branch criterion beyond these exact proxies.
@@ -2962,6 +3045,12 @@ threshold `δ` used everywhere from C3 onward.
   paired-flip sharpness.
 - Macroscopic irreversibility, equivalence with Weingarten's proposal, and
   interpretive claims about Everett quantum mechanics.
+- A derivation of the Born rule from redundant records alone (C14 assumes
+  (Pos)/(Norm)/(Grain)/(Null) throughout), (Grain) restricted to
+  physically realized perspectives, approximate branch-uniqueness for the
+  noisy model, and generic many-body branch canonicity. Restricted-domain
+  Born uniqueness over only physically admissible record perspectives
+  remains the separate **C15** problem.
 
 ### Résumé français
 
@@ -3024,7 +3113,29 @@ une lacune mathématique. La synthèse générale de circuits de lecture, la
 simulation de Trotter/Lieb–Robinson, la croissance de la complexité en
 fonction du temps et les conjectures de croissance à la Brown–Susskind
 restent des travaux futurs distincts, et ne sont pas des manques de ces
-jalons.
+jalons. C14 relie enfin deux théorèmes déjà établis, sans dériver l'un de
+l'autre : la décomposition en branches jointes uniques de Riedel
+(`Induction.riedel`) et le poids de Born de la cohérence de grain
+(`grainCoherenceTheorem_projector`, `Est D c = ‖projL c v‖²`). L'invariance
+de choix de record (`chainProj_choice_invariant`) se déduit de
+`Induction.tunneling` seul, par une induction qui traite les observables
+une par une depuis la fin de la liste, sans jamais composer deux records
+différents de la même observable. L'identité de projection centrale
+(`starProjection_branchCell_apply_state`) est un fait d'algèbre linéaire
+pur ; `recordBranch_weight_eq_norm_sq` l'enchaîne avec le théorème de
+cohérence de grain pour obtenir le poids `‖B f‖²` de chaque cellule active,
+sans jamais supposer l'égalité visée. Le tout s'assemble en un théorème
+abstrait unique (`record_induced_Born_decomposition`), spécialisé au
+modèle local multi-sites puis à la génération unitaire exacte de C11
+(réutilisant les projecteurs de site exacts de C10, appliqués à l'état
+engendré exact, jamais aux branches bruitées), concrètement à `(3/5, 4/5)`
+donnant les poids rationnels exacts `9/25` et `16/25`. Le modèle bruité de
+C10 ne satisfait que la redondance approximative, pas l'exacte
+`IsRecordedOn` : aucune unicité de branche exacte n'y est conclue. Les
+poids de Born des branches évoluées sous une évolution norm-préservante
+conservent leur norme au carré, via l'identité de polarisation en termes
+de normes. L'unicité de Born restreinte à un domaine de perspectives
+physiquement admissibles reste le problème **C15** séparé.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 

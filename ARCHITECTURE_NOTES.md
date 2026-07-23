@@ -1496,6 +1496,162 @@ the zero-time regression, with the additive group law left open and
 precisely documented as a `synthInstance` performance obstruction on the
 `selfAdjoint` subtype, not a mathematical gap.
 
+## BranchesRiedel/BornBridge (C14) — record-induced Born bridge
+
+- **The record-choice type is literally `Fin A → Fin R`, not a new
+  structure.** `Induction.chainProj` already threads a record-choice
+  function `ρ : Fin A → Fin R` through its fold; `jointBranch` is simply
+  the `ρ = 0` special case. `RecordChoice A R := Fin A → Fin R` (an
+  `abbrev`) is therefore the *smallest* faithful notion of "a valid
+  record-selection function" the task asked for: every record index is
+  equally valid, so no separate validity predicate is needed.
+- **Full choice invariance follows from `tunneling` alone, contradicting
+  the pessimism of `Induction.lean`'s own header note.** That note worried
+  that generalizing the eigenstate/uniqueness property to an arbitrary
+  record would require composing two different records of the *same*
+  observable at an interior point of the chain — which
+  `Basic.rproj_contract` does not cover. This worry applies to
+  strengthening `Induction.riedel`'s *uniqueness* clause (stated relative
+  to record `0`), not to asking whether `chainProj` itself is invariant
+  under `ρ`. `chainProj_choice_invariant` (C14a) proves the latter by
+  induction on the observable list via `List.reverseRecOn`, peeling one
+  observable from the *end* at each step: since the list has no
+  duplicates, the newly exposed observable is *always* absent from the
+  shorter remaining prefix — exactly `tunneling`'s own hypothesis — so
+  every step is a single reuse of `tunneling`, never an interior
+  composition of two records of the same observable. Single-observable
+  replacement (`replace_one_record_preserves_joint_branch`, section 4.1) is
+  presented as the one-coordinate special case of this same general
+  lemma, not a separately-proved warm-up.
+- **`Perspective`'s cells are a bare `Finset (Submodule ℂ (H n))`, not an
+  abstract indexed `Cell` type.** The task's suggested
+  `BranchPerspectivePackage` structure references `perspective.Cell` and
+  an `underlyingSubspace` projection; the repository's actual
+  `BornRule.Perspective` (`cells : Finset (Submodule ℂ (H n))`, `nz`,
+  `ortho`, `span`) has no such indirection — a cell *is* its own subspace.
+  `BranchPerspectivePackage` (C14e) is adapted accordingly:
+  `activeCell_mem`/`residual_mem_or_bot`/`cells_exhaust` state Finset
+  membership facts directly, with no abstract `Cell` type introduced.
+- **Zero branches are excluded from `ActiveBranchIndex`, not merely
+  weighted zero, because `Perspective.nz` forbids `⊥` cells outright.**
+  `ActiveBranchIndex B := {f // B f ≠ 0}`; `branchCell` is defined *only*
+  on this subtype. `branchCell_injective` genuinely needs pairwise
+  orthogonality (task-flagged pitfall: distinct nonzero vectors need not
+  have distinct spans without it) — the proof extracts the scalar `c` with
+  `B f = c • B g` from equal spans, then shows `c = 0` via
+  `⟪B g, B f⟫ = c · ‖B g‖² = 0` (orthogonality) forces `c = 0`,
+  contradicting `B f ≠ 0`.
+- **The residual cell is genuinely optional, and `Perspective`'s
+  `⊥`-exclusion forces a two-case construction.** `branchSupport := ⨆ f :
+  ActiveBranchIndex B, branchCell B f` need not be `⊤` (the active cells
+  span `ψ`, not necessarily all of `H n`); `residualCell := branchSupportᗮ`
+  may be `⊥`. `branchPerspectiveOfFullSupport`/`branchPerspectiveOfResidual`
+  case-split on `branchSupport B = ⊤`, exactly mirroring
+  `BornRule.Perspective.binary`'s own use of
+  `Submodule.sup_orthogonal_of_hasOrthogonalProjection`/
+  `Submodule.orthogonal_disjoint` (both automatic in finite dimension, no
+  extra hypothesis).
+- **The central projection identity is pure linear algebra, proved without
+  touching Gleason or the coherence axioms.**
+  `starProjection_branchCell_apply_state` (C14c) splits
+  `ψ = activeBranchVector B f + (∑ g ∈ univ.erase f.1, B g)` via
+  `Finset.add_sum_erase`, shows the remainder is in `(branchCell B f)ᗮ` via
+  `Submodule.mem_orthogonal_singleton_iff_inner_right` plus pairwise
+  orthogonality, and closes with Mathlib's
+  `Submodule.eq_starProjection_of_mem_orthogonal'` — a single existing
+  lemma doing exactly the needed "decompose as `v + z`, `v ∈ K`, `z ∈ Kᗮ`
+  ⟹ projection is `v`" step.
+- **`Gleason.projL` and `Submodule.starProjection` coincide by `rfl`, but
+  `rw` still needs an explicit bridge lemma.** Confirmed via an unimported
+  scratch `example ... := rfl` before writing any permanent code.
+  `grainCoherenceTheorem_projector`'s conclusion is stated with `projL c v`
+  while `C14c`'s lemmas are stated with `c.starProjection v`; since the two
+  terms are only definitionally (not syntactically) equal, `rw` cannot
+  bridge them directly — `projL_eq_starProjection` (a one-line `rfl`
+  lemma) is threaded through every proof that combines the two APIs
+  (`recordBranch_weight_eq_norm_sq`, `residualCell_weight_eq_zero`).
+- **Inner-product preservation under a norm-preserving evolution is
+  derived from the norm-based polarization identity, not the operator
+  version.** Mathlib's `inner_map_polarization` expresses `⟪T y, x⟫` from
+  values `⟪T z, z⟫` (useful when relating a form to *itself* through an
+  operator), which is the wrong shape here. The right tool is
+  `inner_eq_sum_norm_sq_div_four` (`⟪x,y⟫` purely from norms of `x ± y`,
+  `x ± I•y`): since `T` is linear, `T x ± T y = T(x ± y)` etc., and each
+  resulting norm is preserved by hypothesis, so the whole polarization
+  expression for `⟪Tx,Ty⟫` collapses to the one for `⟪x,y⟫`
+  (`IsNormPreserving.inner_map_map`, C14k). This also surfaced a recurring
+  Lean pitfall: dot notation `hT.norm_apply`/`(U.isNormPreserving
+  t).inner_map_map` fails because `IsNormPreserving`, being a plain `def`
+  unfolding to a Pi type, loses its head symbol during elaboration of a
+  *computed* term's type (though not for a hypothesis's *declared* type);
+  the fix is direct application (`hT z`) or fully-qualified
+  (`IsNormPreserving.inner_map_map hT x y`), matching the idiom already
+  used throughout C13's own files (e.g. `hU a` rather than `hU.norm_apply
+  a`).
+- **`noisyRecords` (C10) is exact and model-agnostic; reusing it for the
+  exact C11 model is not the forbidden "noisy record family with an exact
+  theorem."** `noisyRecords R r := siteResolution (R+1) (recordSite r)` is
+  a plain site projector, with no noise baked into the *projector itself*
+  — the noise only enters, elsewhere in the repository, through which
+  *state* (`noisyZeroBranch`/`noisyOneBranch` vs. the exact
+  `idealGeneratedState`) it is applied to. C14i's `idealRecords` reuses it
+  applied to `idealGeneratedState`, for which `IsRecordedOn` holds exactly
+  (`siteProj_zero_basis00`/`_basis11`/`siteProj_one_basis00`/`_basis11` are
+  already stated for an *arbitrary* record site, so redundancy across
+  sites is immediate). Applying the same family to the *noisy* branches
+  (C14j) only ever yields `ApproxRecordedPairOn`, and C14 draws no
+  exact-uniqueness conclusion there.
+- **The two-branch generation model has exactly one observable (`Fin 1`),
+  so `CommuteWitness` is vacuous.** `idealRecords_commuteWitness_vacuous`
+  is `fun a b hab => absurd (Subsingleton.elim a b) hab` — `Fin 1` has no
+  pair `a ≠ b` to discharge, so no commutation argument is needed at all
+  for the concrete two-branch model, unlike the genuinely multi-observable
+  local model of C14h.
+- **C14 scope.** Connects Riedel's record-induced branch decomposition to
+  the Grain Coherence Theorem's Born weight, under (Pos), (Norm), (Grain),
+  (Null), for a supplied model. It is not a claim that records alone imply
+  the Born rule, that (Grain) need only hold on physically realized
+  perspectives, an approximate- or generic-many-body branch-uniqueness
+  result, a derivation of rational credence, or an Everett-interpretation
+  claim. Restricted-domain Born uniqueness (over only physically
+  admissible record perspectives) remains the separate C15 problem.
+
+### English summary
+
+`BranchesRiedel/BornBridge` connects two already-established theorems —
+Riedel's unique joint-branch decomposition (`Induction.riedel`) and the
+Grain Coherence Theorem's projector form
+(`grainCoherenceTheorem_projector`, `Est D c = ‖projL c v‖²`) — rather than
+deriving either from the other. `RecordChoice A R := Fin A → Fin R` reuses
+`chainProj`'s own record-choice parameter; full choice invariance follows
+from `Induction.tunneling` alone, via an induction that peels the
+observable list from the end (so the newly exposed observable is always
+absent from the shorter remaining prefix), contrary to a worry raised in
+`Induction.lean`'s own header note about composing two records of the
+same observable. `ActiveBranchIndex` excludes zero branches because
+`Perspective.nz` forbids `⊥` cells; `branchCell_injective` genuinely uses
+pairwise orthogonality, not just nonzeroness. The central projection
+identity (`starProjection_branchCell_apply_state`) is pure linear algebra,
+closed by Mathlib's existing `Submodule.eq_starProjection_of_mem_orthogonal'`.
+`BranchPerspectivePackage` adapts the task's suggested structure to the
+repository's actual `Perspective` (a bare `Finset` of subspaces, no
+abstract `Cell` type), case-splitting on whether `branchSupport = ⊤` since
+`Perspective` forbids `⊥` cells. `recordBranch_weight_eq_norm_sq` chains
+the projector formula with the projection identity to get `Est D (branchCell
+B f) = ‖B f‖²`; `record_induced_Born_decomposition` assembles this into one
+abstract theorem, specialized to the local multisite model and then to
+C11's exact two-branch generation (reusing C10's exact `noisyRecords` site
+projectors applied to the *exact* generated state, not the noisy
+branches, since a single observable makes `CommuteWitness` vacuous),
+concretely at `(3/5, 4/5)` giving weights `9/25`/`16/25`. Evolution-weight
+preservation under a norm-preserving map is derived from the norm-based
+polarization identity `inner_eq_sum_norm_sq_div_four` (the operator-form
+`inner_map_polarization` has the wrong shape for this), which also
+surfaced a Lean idiom: `IsNormPreserving`, a `Prop`-valued `def` unfolding
+to a Pi type, loses its head symbol for dot notation on *computed* terms
+(though not on hypotheses with a declared type), so direct application
+(`hT z`) is used throughout, matching C13's own convention.
+
 ## Renommage des blocs Riedel et Kent (2026-07-22)
 
 - Le répertoire, les imports et le namespace `QuantumFoundations.Branches`

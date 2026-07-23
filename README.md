@@ -4,17 +4,21 @@
 unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13.** Sept blocs
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13, et désormais
+le pont **C14 records → poids de Born**.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
 
 **En chiffres (recalculés le 2026-07-23, fichiers du projet hors scratch) :
-108 fichiers `.lean`, 18125 lignes, 589 déclarations publiques (`theorem`), 0
+119 fichiers `.lean`, 19598 lignes, 663 déclarations publiques (`theorem`), 0
 `sorry`, 0 axiome propre au projet. Le bloc Complexity compte 70 fichiers et
-9490 lignes, dont 12 fichiers et 1224 lignes pour le nouveau jalon C13 de
-persistance sous évolution simulée. Les
-théorèmes principaux du bloc Complexity ont été vérifiés par
+9490 lignes, dont 12 fichiers et 1224 lignes pour le jalon C13 de
+persistance sous évolution simulée. Le bloc BranchesRiedel compte 17 fichiers
+et 3250 lignes, dont 11 fichiers et 1438 lignes pour le nouveau
+sous-répertoire `BornBridge/` (jalon C14, pont entre la décomposition en
+branches de Riedel et le poids de Born). Les
+théorèmes principaux des blocs Complexity et BornBridge ont été vérifiés par
 `#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
 
@@ -583,6 +587,46 @@ hypothèse supplémentaire — dont seule la loi de groupe additive reste non
 prouvée (obstruction de résolution d'instances Mathlib précisément
 documentée dans le fichier, non une lacune mathématique).
 
+Le jalon **C14** relie deux théorèmes déjà établis plutôt que d'en dériver un
+depuis l'autre : la décomposition en branches jointes, uniques et
+orthogonales de `Induction.riedel` (BranchesRiedel), et le poids de Born
+`grainCoherenceTheorem_projector` (BornRule), qui assigne `‖projL c v‖²` à
+toute cellule `c` d'une perspective, sous (Pos), (Norm), (Grain), (Null).
+`BranchesRiedel/BornBridge/` distingue quatre objets : un vecteur de branche
+`B f`, sa cellule active `span ℂ {B f}` (définie seulement si `B f ≠ 0` —
+un vecteur nul n'a pas de cellule formelle), le support `branchSupport`
+(la borne supérieure des cellules actives, pas nécessairement tout
+l'espace) et la cellule résiduelle orthogonale `residualCell` (qui peut
+être `⊥`). L'identité de projection centrale,
+`starProjection_branchCell_apply_state : (branchCell B f).starProjection ψ
+= activeBranchVector B f` (C14c), est un fait d'algèbre linéaire pur — via
+`Submodule.eq_starProjection_of_mem_orthogonal'` — indépendant de toute
+pondération. `BranchPerspectivePackage` (C14e) construit une véritable
+`Perspective` à partir des cellules actives, en ajoutant la cellule
+résiduelle seulement si elle est non nulle (`Perspective` interdit les
+cellules `⊥`). `recordBranch_weight_eq_norm_sq` (C14f) chaîne alors
+`grainCoherenceTheorem_projector` et l'identité de projection : le poids de
+Born de chaque cellule active vaut exactement `‖B f‖²`, le poids résiduel
+est nul, et les poids actifs somment à `1`. L'invariance de choix de
+record (C14a) — `chainProj_choice_invariant`, prouvée par remplacement
+d'observable un par un via `Induction.tunneling`, sans jamais composer deux
+records différents de la même observable — donne l'invariance du poids par
+rapport au record choisi (C14f.5), au niveau des vecteurs, pas seulement
+des normes. `record_induced_Born_decomposition` (C14g) assemble le tout en
+un théorème abstrait unique, spécialisé au modèle multi-sites local (C14h)
+puis à la génération unitaire exacte de C11 (C14i) — deux branches
+`q.amp0 • basis00 R`/`q.amp1 • basis11 R`, poids `‖amp0‖²`/`‖amp1‖²` —,
+concrètement à `(3/5, 4/5)` donnant les poids rationnels exacts `9/25` et
+`16/25` (C14l). Le modèle bruité C10 ne satisfait que la redondance
+approximative (`ApproxRecordedPairOn`), pas l'exacte `IsRecordedOn` :
+l'unicité exacte de branche n'est donc pas conclue pour lui, seule
+l'extraction exacte des composantes de source (C14j) demeure. Enfin, les
+poids de Born des branches évoluées sous une évolution norm-préservante
+(C13) conservent leur norme au carré — via l'identité de polarisation en
+termes de normes, `inner_eq_sum_norm_sq_div_four` — sans que la branche
+évoluée soit encore sélectionnée par les projecteurs de record d'origine
+(C14k).
+
 Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
@@ -598,8 +642,14 @@ Trotter/formule produit ou de Lieb–Robinson, une croissance linéaire ou
 polynomiale du coût de simulation en temps (C13 ne formalise aucune notation
 `O(t)`), la croissance générique de complexité, la croissance
 de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
-Weingarten, l'unicité canonique des décompositions en branches ni une
-interprétation de la mécanique quantique.
+Weingarten, ni une interprétation de la mécanique quantique. C14 relie
+records redondants et poids de Born pour un modèle donné, sous (Pos),
+(Norm), (Grain), (Null) — il ne prétend pas que les records seuls
+impliquent la règle de Born, ni que (Grain) n'a besoin de valoir que sur
+les perspectives physiquement réalisées, ni une unicité de décomposition
+en branches approximative ou générique en système à N corps (l'unicité
+canonique restreinte à un domaine de perspectives physiquement admissibles
+reste le problème C15).
 
 ## Assistance IA
 
@@ -715,6 +765,17 @@ affectée.
 | `QuantumFoundations/BranchesRiedel/TwoObs.lean` | R2 : deux observables enregistrés | 207 |
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
 | `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/RecordChoice.lean` | C14a : invariance de choix de record redondant | 203 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/ActiveBranches.lean` | C14b : indice de branche active | 76 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/BranchCells.lean` | C14b/c : cellules de branche, identité de projection | 134 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/BranchPerspective.lean` | C14d/e : support, cellule résiduelle, perspective formelle | 218 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/BornWeights.lean` | C14f : poids de Born des branches induites par records | 151 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Synthesis.lean` | C14g : théorème de synthèse abstrait | 92 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/LocalRecords.lean` | C14h : corollaire local multi-sites | 49 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/GeneratedBranches.lean` | C14i/j : modèle unitaire exact C11, frontière du modèle bruité | 199 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Evolution.lean` | C14k : préservation des poids sous évolution norm-préservante | 129 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/ConcreteModel.lean` | C14l : instance concrète (poids 9/25, 16/25) | 86 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Nonvacuity.lean` | C14 : témoins de non-vacuité | 101 |
 | `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
 | `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12/C13 : témoins élémentaires et modèles concrets | 389 |
 | `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
@@ -785,8 +846,8 @@ affectée.
 | `QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean` | C13j : coût de simulation dépendant du temps | 85 |
 | `QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean` | C13k : évolution certifiée par générateur auto-adjoint | 117 |
 | `QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean` | C13 : non-vacuité de l'API d'évolution simulée | 114 |
-| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 68 |
-| **Total recalculé**                          | **108 fichiers**                                                                  | **18125** |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 69 |
+| **Total recalculé**                          | **119 fichiers**                                                                  | **19598** |
 
 Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
 `MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
@@ -864,6 +925,7 @@ consolidée de tous les écarts vs les plans initiaux).
 | C11 | Génération **unitaire** des branches source-record par circuit local explicite | ✅ |
 | C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
 | C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
+| C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -972,18 +1034,22 @@ with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
 (v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C13
-blocks. Seven mechanized blocks,
+blocks, and now the **C14 records-to-Born-weight bridge**. Seven mechanized
+blocks,
 without axioms in the sense of the project rules, apart from the three
 standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-23, project files excluding scratch):
-108 `.lean` files, 18,125 lines, 589 public declarations (`theorem`), 0
+119 `.lean` files, 19,598 lines, 663 public declarations (`theorem`), 0
 `sorry`, and 0 project-specific axioms. The Complexity block contains 70
-files and 9,490 lines, of which 12 files and 1,224 lines are the new C13
-simulated-evolution persistence milestone. The
-main theorems of the Complexity block were checked with `#print axioms`
-and depend on exactly `[propext, Classical.choice, Quot.sound]`, the standard
-Lean/Mathlib trio.
+files and 9,490 lines, of which 12 files and 1,224 lines are the C13
+simulated-evolution persistence milestone. The BranchesRiedel block
+contains 17 files and 3,250 lines, of which 11 files and 1,438 lines are
+the new `BornBridge/` subdirectory (the C14 milestone, bridging Riedel's
+branch decomposition to the Born weight). The
+main theorems of the Complexity and BornBridge blocks were checked with
+`#print axioms` and depend on exactly `[propext, Classical.choice,
+Quot.sound]`, the standard Lean/Mathlib trio.
 
 **Current module names:** the Riedel block is
 `QuantumFoundations.BranchesRiedel`, and Kent's contrary-inferences block is
@@ -1500,6 +1566,44 @@ algebras, with no extra assumption — leaving only the additive group law
 unproved (a precisely documented Mathlib instance-resolution obstruction,
 not a mathematical gap).
 
+**C14** connects two already-established theorems rather than deriving one
+from the other: Riedel's unique orthogonal joint-branch decomposition
+(`Induction.riedel`, BranchesRiedel) and the Born weight
+`grainCoherenceTheorem_projector` (BornRule), which assigns `‖projL c v‖²`
+to any cell `c` of a perspective under (Pos), (Norm), (Grain), (Null).
+`BranchesRiedel/BornBridge/` distinguishes four objects: a branch vector
+`B f`, its active cell `span ℂ {B f}` (defined only when `B f ≠ 0` — a
+zero vector has no formal cell), the support `branchSupport` (the supremum
+of the active cells, not necessarily the whole space), and the residual
+orthogonal cell `residualCell` (which may be `⊥`). The central projection
+identity, `starProjection_branchCell_apply_state : (branchCell B
+f).starProjection ψ = activeBranchVector B f` (C14c), is a pure
+linear-algebra fact — via `Submodule.eq_starProjection_of_mem_orthogonal'`
+— independent of any weighting. `BranchPerspectivePackage` (C14e) builds a
+genuine `Perspective` from the active cells, adding the residual cell only
+when it is nonzero (`Perspective` forbids `⊥` cells).
+`recordBranch_weight_eq_norm_sq` (C14f) then chains
+`grainCoherenceTheorem_projector` with the projection identity: the Born
+weight of each active cell is exactly `‖B f‖²`, the residual weight is
+zero, and the active weights sum to `1`. Record-choice invariance (C14a) —
+`chainProj_choice_invariant`, proved by replacing one observable's record
+at a time via `Induction.tunneling`, never composing two different records
+of the same observable — gives weight invariance under the chosen record
+(C14f.5) at the vector level, not merely the norm level.
+`record_induced_Born_decomposition` (C14g) assembles all of this into one
+abstract theorem, specialized to the local multisite model (C14h) and then
+to C11's exact unitary generation (C14i) — two branches `q.amp0 • basis00
+R`/`q.amp1 • basis11 R`, weights `‖amp0‖²`/`‖amp1‖²` — concretely at
+`(3/5, 4/5)` giving the exact rational weights `9/25` and `16/25` (C14l).
+C10's noisy model satisfies only approximate redundancy
+(`ApproxRecordedPairOn`), not exact `IsRecordedOn`: exact branch uniqueness
+is therefore not concluded for it, only exact source-component extraction
+(C14j). Finally, the Born weights of evolved branches under a
+norm-preserving evolution (C13) retain their squared norm — via the
+norm-based polarization identity `inner_eq_sum_norm_sq_div_four` — without
+the evolved branch still being selected by the original record projectors
+(C14k).
+
 The result is
 limited to finitely many sites, finite local dimension, supplied exact or
 approximate records,
@@ -1514,8 +1618,13 @@ criterion, a Trotter/product-formula or Lieb–Robinson simulation bound,
 linear or polynomial simulation-cost growth in time (C13 formalizes no
 `O(t)` notation), generic or
 Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
-with Weingarten, canonical uniqueness of branch decompositions, or any
-interpretive claim about quantum mechanics.
+with Weingarten, or any interpretive claim about quantum mechanics. C14
+connects redundant records to Born weights for a given model, under (Pos),
+(Norm), (Grain), (Null) — it does not claim that records alone imply the
+Born rule, that (Grain) need only hold on physically realized
+perspectives, or approximate/generic many-body branch-decomposition
+uniqueness (canonical uniqueness restricted to a physically admissible
+domain of perspectives remains problem C15).
 
 ## AI assistance
 
@@ -1633,6 +1742,17 @@ was affected.
 | QuantumFoundations/BranchesRiedel/TwoObs.lean | R2: two recorded observables | 207 |
 | QuantumFoundations/BranchesRiedel/Induction.lean | R3: multi-observable induction | 559 |
 | QuantumFoundations/BranchesRiedel/Local.lean | R4: spatial locality and `PairCovers` counting | 469 |
+| QuantumFoundations/BranchesRiedel/BornBridge/RecordChoice.lean | C14a: redundant record-choice invariance | 203 |
+| QuantumFoundations/BranchesRiedel/BornBridge/ActiveBranches.lean | C14b: active branch index | 76 |
+| QuantumFoundations/BranchesRiedel/BornBridge/BranchCells.lean | C14b/c: branch cells, projection identity | 134 |
+| QuantumFoundations/BranchesRiedel/BornBridge/BranchPerspective.lean | C14d/e: support, residual cell, formal perspective | 218 |
+| QuantumFoundations/BranchesRiedel/BornBridge/BornWeights.lean | C14f: Born weights of record-induced branches | 151 |
+| QuantumFoundations/BranchesRiedel/BornBridge/Synthesis.lean | C14g: abstract synthesis theorem | 92 |
+| QuantumFoundations/BranchesRiedel/BornBridge/LocalRecords.lean | C14h: local multisite corollary | 49 |
+| QuantumFoundations/BranchesRiedel/BornBridge/GeneratedBranches.lean | C14i/j: C11 exact unitary model, noisy-model boundary | 199 |
+| QuantumFoundations/BranchesRiedel/BornBridge/Evolution.lean | C14k: weight preservation under norm-preserving evolution | 129 |
+| QuantumFoundations/BranchesRiedel/BornBridge/ConcreteModel.lean | C14l: concrete instance (weights 9/25, 16/25) | 86 |
+| QuantumFoundations/BranchesRiedel/BornBridge/Nonvacuity.lean | C14: non-vacuity witnesses | 101 |
 | QuantumFoundations/Complexity/Defs.lean | C0: exact 2-local gates and circuits, evaluation and support | 129 |
 | QuantumFoundations/Complexity/Nonvacuity.lean | C0/C6/C7/C8/C9/C10/C11/C12/C13: elementary witnesses and concrete models | 389 |
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
@@ -1703,8 +1823,8 @@ was affected.
 | QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean | C13j: time-dependent simulation cost | 85 |
 | QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean | C13k: certified self-adjoint-generated evolution | 117 |
 | QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean | C13: non-vacuity of the simulated-evolution API | 114 |
-| QuantumFoundations.lean | Root import aggregator | 68 |
-| Recomputed total | 108 files | 18125 |
+| QuantumFoundations.lean | Root import aggregator | 69 |
+| Recomputed total | 119 files | 19598 |
 
 Documentation: AGENTS.md (rules for the AI agent, to be read at startup),
 MILESTONES.md (detailed milestone-by-milestone tracking), and
@@ -1783,6 +1903,7 @@ initial plans).
 | C11 | **Unitary** local-circuit generation of source-record branches | ✅ |
 | C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
 | C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
+| C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
 
 ## Main theorems — reference table
 

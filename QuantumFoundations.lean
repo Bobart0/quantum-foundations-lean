@@ -61,6 +61,7 @@ import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
 import QuantumFoundations.Complexity.OperatorNorm.Composition
 import QuantumFoundations.Complexity.SimulatedEvolution.HamiltonianEvolution
+import QuantumFoundations.BranchesRiedel.BornBridge.ConcreteModel
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations
