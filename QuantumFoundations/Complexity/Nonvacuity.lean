@@ -4,9 +4,10 @@ import QuantumFoundations.Complexity.Models.NoisyRepetition.ConcreteNoise
 import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGeneration
 import QuantumFoundations.Complexity.OperatorNorm.Nonvacuity
 import QuantumFoundations.Complexity.SimulatedEvolution.Nonvacuity
+import QuantumFoundations.BranchesRiedel.BornBridge.Nonvacuity
 
 /-!
-# C0/C6/C7/C8/C9/C10/C11/C12/C13 — Non-vacuity
+# C0/C6/C7/C8/C9/C10/C11/C12/C13/C14 — Non-vacuity
 
 The empty circuit exists for every finite site system.  In addition, the
 identity is an exact gate with empty support, so the gate structure itself is
@@ -43,6 +44,13 @@ exactly simulated (error zero) by the empty circuit, so the new
 simulation-certificate predicates are genuinely inhabited, and monotonicity
 carries this exact witness to the concrete `1/20` evolution-simulation
 error budget used throughout C13.
+C14 connects Riedel's unique record-induced branch decomposition to the
+Grain Coherence Theorem's Born weight: at the concrete `(3/5, 4/5)`
+two-branch model, the active branch index and the branch perspective
+package are genuinely inhabited, both concrete weights `9/25`/`16/25` are
+nonzero, record-choice invariance is exercised on two genuinely distinct
+record choices (not merely stated in the abstract), and the
+evolution-weight theorem is inhabited by C13's `identityEvolution`.
 -/
 
 namespace QuantumFoundations.Complexity
@@ -387,3 +395,29 @@ end SimulatedEvolution
 end
 
 end QuantumFoundations.Complexity
+
+namespace QuantumFoundations.BranchesRiedel.BornBridge
+
+open QuantumFoundations.Complexity.MeasurementGeneration
+
+/-- The active branch index is genuinely inhabited at the concrete C14
+two-branch model; see
+`QuantumFoundations/BranchesRiedel/BornBridge/Nonvacuity.lean` for the
+full non-vacuity account, including the branch perspective package, both
+nonzero concrete weights, record-choice invariance on two genuinely
+distinct choices, and the evolution-weight witness. -/
+example :
+    Nonempty (ActiveBranchIndex
+      (jointBranch (idealRecords 2) (idealGeneratedState concreteSourceProfile 2))) :=
+  concrete_activeBranchIndex_nonempty
+
+/-- Record-choice invariance is exercised on two genuinely distinct record
+choices, not merely stated in the abstract. -/
+example :
+    jointBranchWithChoice (idealRecords 2) (0 : RecordChoice 1 2)
+        (idealGeneratedState concreteSourceProfile 2) (fun _ => 0)
+      = jointBranchWithChoice (idealRecords 2) (Function.update (0 : RecordChoice 1 2) 0 1)
+          (idealGeneratedState concreteSourceProfile 2) (fun _ => 0) :=
+  concrete_recordChoice_weight_invariant_nonvacuous
+
+end QuantumFoundations.BranchesRiedel.BornBridge
