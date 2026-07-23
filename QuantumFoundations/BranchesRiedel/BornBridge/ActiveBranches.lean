@@ -28,9 +28,7 @@ variable {n : ℕ} {F : Type*} [Fintype F]
 nonzero. A finite subtype of the finite index type `F`. -/
 def ActiveBranchIndex (B : F → H n) := {f : F // B f ≠ 0}
 
-instance (B : F → H n) : Finite (ActiveBranchIndex B) := Subtype.finite
-
-noncomputable instance (B : F → H n) : Fintype (ActiveBranchIndex B) := Fintype.ofFinite _
+noncomputable instance (B : F → H n) : Fintype (ActiveBranchIndex B) := Subtype.fintype _
 
 theorem activeBranchIndex_finite (B : F → H n) : Finite (ActiveBranchIndex B) := inferInstance
 
@@ -59,6 +57,19 @@ def activeBranchVector (B : F → H n) (f : ActiveBranchIndex B) : H n := B f.1
 
 theorem activeBranchVector_ne_zero (B : F → H n) (f : ActiveBranchIndex B) :
     activeBranchVector B f ≠ 0 := f.2
+
+/-- Summing over the full index type `F` and summing over only the active
+indices give the same result: every inactive term is literally zero.
+Reused by `C14d`'s `ψ_mem_branchSupport` and `C14f`'s normalization
+theorem. -/
+theorem sum_over_F_eq_sum_active (B : F → H n) {ψ : H n} (hsum : ∑ g : F, B g = ψ) :
+    ∑ f : ActiveBranchIndex B, activeBranchVector B f = ψ := by
+  rw [← hsum]
+  have hkey := Fintype.sum_subtype_add_sum_subtype (fun f : F => B f ≠ 0) B
+  have hzero : ∑ i : {x : F // ¬ (B x ≠ 0)}, B i.1 = 0 :=
+    Finset.sum_eq_zero (fun i _ => not_not.mp i.2)
+  rw [hzero, add_zero] at hkey
+  exact hkey
 
 end
 
