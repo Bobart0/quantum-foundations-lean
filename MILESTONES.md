@@ -3427,3 +3427,32 @@ branches, ni la production dynamique de la borne sur la distance des
 composantes. C16, l'optimalité de la constante `2` et tout renforcement de
 C17 restent hors de ce jalon. Aucune revendication de priorité historique
 n'est faite.
+
+## C17b — Ponts d'intégration pour la stabilité quantitative — ✅ CLOS (2026-07-24)
+
+**Statut logique.** C17b ne renforce pas le cœur réduit de C17, déjà clos
+avant ce jalon. Il dérive des corollaires à faible coût à partir des API
+existantes C12, C13, C14 et C17.
+
+**Ponts fermés.**
+
+- Pour un secteur fixé et deux états de la boule unité,
+  `|w_R(ψ) - w_R(φ)| ≤ 2 ‖ψ - φ‖`.
+- Une approximation en norme d'opérateur des projecteurs,
+  `‖P_R - P_S‖ ≤ ε`, donne
+  `|w_R(ψ) - w_S(ψ)| ≤ 2 ε` sur un état normalisé.
+- Le pont combiné contrôle simultanément la variation de l'état et du
+  projecteur par `2 (‖ψ - φ‖ + ε)`.
+- Un certificat C13 de simulation par circuit donne, pour chaque secteur
+  fixé, `|w_R(U(t)ψ) - w_R(Cψ)| ≤ 2 ε`, avec une forme existentielle à coût
+  borné et une somme finie explicite.
+- Les poids de branches C14 héritent de
+  `(‖u‖ + ‖v‖) ‖u - v‖`, puis de `2 ‖u - v‖` sur la boule unité, lorsque
+  l'appariement des branches est fourni explicitement.
+
+**Frontière exacte.** Le pont C13 évalue le même secteur fourni sur les états
+exact et simulé; il ne prouve pas que ce secteur reste sélectionné par la
+dynamique de formation des records. C17b ne construit aucun appariement de
+branches et ne prouve ni unicité approximative, ni saturation approximative,
+ni hypothèses C15 approximatives, ni C16, ni renforcement supplémentaire de
+C17. Aucune revendication de priorité historique n'est faite.

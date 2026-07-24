@@ -115,6 +115,35 @@ uniqueness of branch decompositions, or a dynamical derivation of the
 projected-component distance. It does not address C16 or claim optimality of
 the constant two. No historical priority claim is made.
 
+## C17b — Low-cost integration bridges
+
+C17b does not strengthen the reduced C17 theorem. It connects that theorem
+to already completed APIs. For a fixed sector `R`, states in the unit ball
+satisfy
+
+```text
+|w_R(ψ) - w_R(φ)| ≤ 2 ‖ψ - φ‖.
+```
+
+If two orthogonal projections are within operator-norm error `ε`, their
+quadratic weights on a normalized state satisfy
+
+```text
+|w_R(ψ) - w_S(ψ)| ≤ 2 ε.
+```
+
+A C13 circuit-simulation certificate with error `ε` consequently gives this
+same `2 ε` bound for every fixed sector evaluated on the exact and simulated
+states. This compares the same supplied sector on both states; it does not
+assert that the sector remains selected by the evolved record dynamics.
+
+Finally, C14 active-branch weights inherit the generic
+`(‖u‖ + ‖v‖) ‖u - v‖` estimate, and its unit-ball constant-two form, when the
+caller explicitly supplies the correspondence between the two branches.
+C17b derives neither approximate branch matching or uniqueness, approximate
+saturation, physical persistence of record selection, nor any stronger C17
+stability statement. No historical priority claim is made.
+
 ## Files
 
 - `Additive.lean`: additive maps `ℝ≥0 → ℝ≥0` are scalar multiplication,
@@ -132,3 +161,9 @@ the constant two. No historical priority claim is made.
 - `Stability.lean`: generic norm-square estimate, exact-law adapter,
   pointwise, finite-`L¹`, uniform-error, and normalized-state C17 bounds.
 - `StabilityNonvacuity.lean`: nonzero-distance scalar witnesses.
+- `StabilityOperatorNorm.lean`: fixed-sector state, C12 operator-norm,
+  projection, and combined state-sector bridges.
+- `StabilitySimulatedEvolution.lean`: C13 circuit-simulation, bounded-cost,
+  and finite-family fixed-sector bridges.
+- `BranchesRiedel/BornBridge/Stability.lean`: C14 active-branch weight
+  stability under an explicitly supplied branch correspondence.

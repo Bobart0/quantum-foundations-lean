@@ -676,6 +676,17 @@ hypothèses C15 approximatives, ni de l’unicité approximative des branches, n
 de la production dynamique de la proximité des composantes. Aucune
 revendication de priorité historique n’est faite.
 
+**C17b** est un jalon d’intégration, pas un renforcement du cœur C17 déjà
+clos. Sur la boule unité, un secteur fixé vérifie
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; deux projecteurs à distance au plus `ε` en norme
+d’opérateur vérifient `|w_R(ψ)-w_S(ψ)| ≤ 2ε`. Un certificat de simulation C13
+donne donc, pour chaque secteur fixé,
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε`. Les poids de branches C14 héritent aussi de la
+borne générique sur les vecteurs de branches lorsqu’une correspondance entre
+branches est fournie explicitement. Ces ponts ne prouvent ni unicité ou
+appariement approximatif des branches, ni saturation approximative, ni
+persistance physique de la sélection des records.
+
 ## Assistance IA
 
 Ce développement (squelette, preuves, choix d'architecture) a été réalisé avec
@@ -972,6 +983,7 @@ détail complet (portée, dérivations, non-revendications interprétatives).
 | C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
 | C15 | Unicité `W = c ‖P_R Ψ‖²` sur les situations de record admissibles sous stabilité, équivalence interne et saturation binaire | ✅ |
 | C17 | Première stabilité quantitative des poids C15 sous perturbation des composantes projetées, avec bornes ponctuelle, `L¹` et uniforme | ✅ |
+| C17b | Ponts de stabilité vers les secteurs fixes, la norme d’opérateur C12, la simulation C13 et les poids de branches C14 explicitement appariées | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -1707,6 +1719,16 @@ bounds. It does not address approximate C15 hypotheses, approximate branch
 uniqueness, or a dynamical derivation of component proximity. No historical
 priority claim is made.
 
+**C17b** is an integration milestone, not a strengthening of the already
+completed reduced C17 core. On the unit ball, a fixed sector satisfies
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; projectors within operator-norm error `ε` satisfy
+`|w_R(ψ)-w_S(ψ)| ≤ 2ε`. A C13 simulation certificate therefore gives
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε` for every fixed sector. C14 branch weights also
+inherit the generic branch-vector bound when the caller supplies an explicit
+branch correspondence. These bridges do not establish approximate branch
+matching or uniqueness, approximate saturation, or physical persistence of
+record selection.
+
 ## AI assistance
 
 This development—skeleton, proofs, and architectural choices—was carried out
@@ -2006,6 +2028,7 @@ full detail (scope, derivations, interpretive non-claims).
 | C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
 | C15 | Uniqueness `W = c ‖P_R Ψ‖²` on admissible record situations under stability, internal equivalence, and binary saturation | ✅ |
 | C17 | First quantitative stability theorem for C15 weights under projected-component perturbations, with pointwise, `L¹`, and uniform bounds | ✅ |
+| C17b | Stability bridges to fixed sectors, C12 operator norm, C13 simulation, and explicitly matched C14 branch weights | ✅ |
 
 ## Main theorems — reference table
 
