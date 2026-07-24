@@ -85,4 +85,3 @@ saturation bridge, C16, and C17 remain future work.
 - `Continuation.lean`: finite disjoint-bundle additivity adapter.
 - `Nonvacuity.lean`: non-trivial saturated scalar model plus Hilbert and
   finite continuation witnesses.
-
