@@ -44,6 +44,8 @@ import QuantumFoundations.BornRule.RestrictedRecordSectors.Continuation
 import QuantumFoundations.BornRule.RestrictedRecordSectors.Nonvacuity
 import QuantumFoundations.BornRule.RestrictedRecordSectors.Stability
 import QuantumFoundations.BornRule.RestrictedRecordSectors.StabilityNonvacuity
+import QuantumFoundations.BornRule.RestrictedRecordSectors.StabilityOperatorNorm
+import QuantumFoundations.BornRule.RestrictedRecordSectors.StabilitySimulatedEvolution
 import QuantumFoundations.HistoriesKent.Defs
 import QuantumFoundations.HistoriesKent.Nonvacuity
 import QuantumFoundations.HistoriesKent.Basic
@@ -82,6 +84,7 @@ import QuantumFoundations.Complexity.Models.MeasurementGeneration.ConcreteGenera
 import QuantumFoundations.Complexity.OperatorNorm.Composition
 import QuantumFoundations.Complexity.SimulatedEvolution.HamiltonianEvolution
 import QuantumFoundations.BranchesRiedel.BornBridge.ConcreteModel
+import QuantumFoundations.BranchesRiedel.BornBridge.Stability
 import QuantumFoundations.Complexity.Nonvacuity
 
 namespace QuantumFoundations
