@@ -52,10 +52,10 @@ gleason-theorem-lean. Although it is a generic Gleason fact, the tagged
 public repository is not reopened for this need.
 
 Major deviation from the initial reconnaissance strategy: the anticipated
-delicate point—independence from the choice of orthonormal basis, Sublemma
-1—was NOT reproved from first principles by concatenating bases
+delicate point, independence from the choice of orthonormal basis
+(Sublemma 1), was not reproved from first principles by concatenating bases
 (Fin k ⊕ Fin l → Fin n through finSumFinEquiv/Fin.append).
-Internally, Gleason.Complex.RealSections already contains EXACTLY this
+Internally, Gleason.Complex.RealSections already contains exactly this
 argument in vector form: Gleason.cframe_sum_invariant (for a frame function
 g : H n → ℝ satisfying IsCFrameFunction g W, two orthonormal families of
 the same size spanning the same subspace have equal sums). The strategy

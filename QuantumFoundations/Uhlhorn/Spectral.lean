@@ -28,11 +28,11 @@ the pinned dependency, provides the required quadratic-in-t argument.
 Deviation from the reconnaissance strategy: the final assembly uses
 neither LinearMap.restrict nor a generic “Sublemma 3” stating that a
 positive operator of trace zero is zero, which does not exist in
-gleason-theorem-lean. Instead, x is completed to a COMPLETE orthonormal
+gleason-theorem-lean. Instead, x is completed to a complete orthonormal
 basis of H n (exists_orthonormalBasis_extension_complex, already used in
 Naimark/Gleason), and the trace is decomposed directly around this basis via
 LinearMap.trace_eq_sum_inner. This gives E (b i) = 0 for every i other
-than the position of x, DIRECTLY for the full operator E, without ever
+than the position of x, directly for the full operator E, without ever
 restricting E to x⊥. The proposed “Sublemma 2” (stability of x⊥) is
 therefore unnecessary and is never invoked.
 -/
@@ -63,11 +63,11 @@ private theorem E_fixes_x {E : H n →ₗ[ℂ] H n} (hE : IsEffect E) {x : H n} 
 /--
 **FR.** **U2** : un opérateur positif, borné par l'identité (`IsEffect`, i.e.
 `0 ≤ E ≤ 1`), de trace `1`, dont la forme quadratique vaut `1` en un vecteur
-unitaire `x`, est EXACTEMENT la projection sur `x`.
+unitaire `x`, est exactement la projection sur `x`.
 
 **EN.** U2: a positive operator bounded above by the identity (IsEffect,
 i.e. 0 ≤ E ≤ 1), with trace 1 and quadratic form equal to 1 at a unit
-vector x, is EXACTLY the projection onto x.
+vector x, is exactly the projection onto x.
 -/
 theorem eq_projL_of_positive_le_one_trace_one_inner_one {E : H n →ₗ[ℂ] H n}
     (hE : IsEffect E) (hE1 : LinearMap.trace ℂ (H n) E = 1) {x : H n} (hx : ‖x‖ = 1)

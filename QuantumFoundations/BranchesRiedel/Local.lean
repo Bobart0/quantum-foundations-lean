@@ -3,58 +3,60 @@ import QuantumFoundations.BranchesRiedel.Induction
 /-!
 **FR.** # R4 — Couche 2 : modèle multi-sites plat, localité, disjonction spatiale
 
-Modèle CONCRET : `Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d)` — route K₂
-du TODO mémoire, JAMAIS le `TensorProduct` abstrait de Mathlib. Cette brique
-servira aussi à Stinespring plus tard.
+Modèle concret : `Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d)` — le choix
+K₂ (somme directe plate), jamais le `TensorProduct` abstrait de Mathlib, par
+cohérence avec le choix K₂ déjà retenu côté Naimark (`DilSpace.lean`). Cette
+brique servira aussi à Stinespring plus tard.
 
 ## `IsLocalTo` : noyau existentiel sur les éléments de matrice (décision F)
 
-`IsLocalTo` est une `Prop` à NOYAU EXISTENTIEL sur les éléments de matrice
+`IsLocalTo` est une `Prop` à noyau existentiel sur les éléments de matrice
 (pas un constructeur opératoriel `localLift` — celui-ci est relégué en outil
 optionnel R5). Restriction d'une configuration `g : Fin N → Fin d` à un
-sous-ensemble de sites `A : Finset (Fin N)` par simple COMPOSITION
+sous-ensemble de sites `A : Finset (Fin N)` par simple composition
 `g ∘ Subtype.val : ({x // x ∈ A} → Fin d)` — confirmé en reconnaissance,
 aucune plomberie supplémentaire nécessaire.
 
-## Pont couche 2 ↔ couche 1 : PAS construit ici (avertissement)
+## Pont couche 2 ↔ couche 1 : non construit ici (avertissement)
 
 `commuteWitness_of_not_pairCovers` et `riedel_local` ci-dessous ont besoin
 d'identifier `Sites N d` à un `H n` (couche 1) — nécessairement, puisque
 `LabeledResolution`/`CommuteWitness` sont typées sur `H n`
 (`Module.finrank ℂ (Sites N d) = d ^ N`, donc `n := d ^ N`). Contrairement au
 témoin de `Nonvacuity.lean` (une seule observable, pont évité par
-construction), CE pont est le VRAI travail de ce jalon : les signatures
-ci-dessous le rendent explicite via un paramètre `e : H (d ^ N) ≃ₗᵢ[ℂ]
-Sites N d` plutôt que de le construire à la volée — **signature la MOINS
-stabilisée de tout le squelette R0**, à raffiner en remplissant R4.
+construction), ce pont constitue le véritable travail de ce jalon : les
+signatures ci-dessous le rendent explicite via un paramètre `e : H (d ^ N)
+≃ₗᵢ[ℂ] Sites N d` plutôt que de le construire à la volée — la signature la
+moins stabilisée de tout le squelette R0, à raffiner en remplissant R4.
 
 **EN.** # R4 — Layer 2: flat multisite model, locality, and spatial disjointness
 
-CONCRETE model: Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d)—route K₂
-from the memory TODO, NEVER Mathlib's abstract TensorProduct. This component
-will also be used later for Stinespring.
+Concrete model: Sites N d := EuclideanSpace ℂ ((Fin N) → Fin d), the K₂
+(flat direct-sum) choice, never Mathlib's abstract TensorProduct, for
+consistency with the K₂ choice already made on the Naimark side
+(DilSpace.lean). This component will also be used later for Stinespring.
 
 ## IsLocalTo: existential kernel on matrix elements (decision F)
 
-IsLocalTo is a Prop with an EXISTENTIAL KERNEL on matrix elements (not an
+IsLocalTo is a Prop with an existential kernel on matrix elements (not an
 operator constructor localLift, which is relegated to the optional R5
 tool). A configuration g : Fin N → Fin d is restricted to a subset of
-sites A : Finset (Fin N) by simple COMPOSITION:
-g ∘ Subtype.val : ({x // x ∈ A} → Fin d). Reconnaissance confirmed that no
-additional plumbing is needed.
+sites A : Finset (Fin N) by simple composition:
+g ∘ Subtype.val : ({x // x ∈ A} → Fin d). The scoping phase confirmed that
+no additional plumbing is needed.
 
-## Layer-2 ↔ layer-1 bridge: NOT constructed here (warning)
+## Layer-2 ↔ layer-1 bridge: not constructed here (warning)
 
 commuteWitness_of_not_pairCovers and riedel_local below require an
 identification of Sites N d with some H n (layer 1), necessarily so
 because LabeledResolution/CommuteWitness are typed over H n
 (Module.finrank ℂ (Sites N d) = d ^ N, hence n := d ^ N). Unlike the
 witness in Nonvacuity.lean (a single observable, with the bridge avoided by
-construction), THIS bridge is the ACTUAL work of this milestone. The
-signatures below make it explicit through a parameter
+construction), this bridge constitutes the actual work of this milestone.
+The signatures below make it explicit through a parameter
 e : H (d ^ N) ≃ₗᵢ[ℂ]
-Sites N d rather than constructing it on the fly—
-the LEAST stable signature in the entire R0 skeleton, to be refined while
+Sites N d rather than constructing it on the fly,
+the least stable signature in the entire R0 skeleton, to be refined while
 completing R4.
 -/
 

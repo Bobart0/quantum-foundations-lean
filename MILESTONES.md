@@ -1198,6 +1198,99 @@ axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
 courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
 Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
 
+## BornRule/EffectPerspectives — extension qubit/Busch (QB1–QB11) — ✅ CLOS (2026-07-24)
+
+**Énoncé.** Route alternative vers le poids de Born, fondée sur les effets
+(`0 ≤ T ≤ 1`, ordre de Loewner) plutôt que sur des sous-espaces projectifs
+deux à deux orthogonaux, réutilisant sans le modifier le théorème de Busch
+(P. Busch, *Quantum states and generalized observables: a simple proof of
+Gleason's theorem*, PRL 91, 120403, 2003), pinné dans `gleason-theorem-lean`
+(`Gleason.busch`/`Gleason.busch_born_rule`). Contrairement à Gleason
+(`n ≥ 3`), Busch s'applique dès `n = 1`, atteignant le qubit (`n = 2`) là où
+la voie projective `BornRule` est muette. Voir le détail complet dans
+`QuantumFoundations/BornRule/EffectPerspectives/README.md`.
+
+- [x] **QB1 — `Basic.lean`** : `Effect n` (sous-type de `Gleason.IsEffect`,
+      réutilisant — pas recréant — la notion de positivité de Busch) ;
+      `zeroEffect`, `oneEffect`, `complementEffect`, `projectionEffect`
+- [x] **QB2 — `Perspective.lean`** : `EffectPerspective` (famille finie
+      étiquetée d'effets sommant à `1`, sans contrainte de non-nullité,
+      d'injectivité ni de commutativité) ; `binaryPerspective`,
+      `splitPerspective`, `duplicateZeroPerspective`
+- [x] **QB3 — `Refinement.lean`** : `Refines` (raffinement par `parent` +
+      reconstruction par somme de fibre) ; `Refines.refl`,
+      `collapseToChosen`, `splitRefinesBinary`, `duplicateZeroRefinesBinary`.
+      **`Refines.trans` différé** (documenté dans le fichier : réindexation
+      de double somme finie disproportionnée par rapport à un objectif
+      secondaire explicitement différable ; aucun jalon QB4–QB10 n'en a
+      besoin)
+- [x] **QB4 — `Estimation.lean`** : `EstimationRule` (poids, positivité,
+      normalisation par perspective, `grain` — cohérence de raffinement sur
+      le carrier `EffectPerspective`, distincte de `AxGrain` projectif)
+- [x] **QB5 — `ContextIndependence.lean`** : indépendance contextuelle,
+      poids de l'effet nul, poids de l'effet unité, et additivité binaire
+      des effets — quatre **théorèmes dérivés** de `grain` seul, jamais des
+      axiomes ni des champs de structure
+- [x] **QB6 — `EffectMeasure.lean`** : `EstimationRule.toEffectMeasure :
+      Gleason.EffectMeasure n` ; application directe de `Gleason.busch` et
+      `Gleason.busch_born_rule` (la preuve de Busch elle-même n'est jamais
+      reproduite)
+- [x] **QB7 — `PureStatePinning.lean`** : `ContextualNullSupport`
+      (support nul état-relatif, posé directement sur les occurrences
+      d'effet) ; théorème de repli `density_bornValue_eq_pure_of_null`,
+      réutilisant `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal`
+      (B3) et `Gleason.bornValue_span_singleton` (aucune des deux n'est
+      reprouvée)
+- [x] **QB8 — `Main.lean`** : `projectionEffect_weight_eq_born` et
+      `contextual_projection_weight_eq_born` — le poids de Born pour les
+      effets de projection, en dimension finie quelconque, sous support nul
+      état-relatif
+- [x] **QB9 — `Qubit.lean`** : `qubit_projectionEffect_weight_eq_born` et
+      `qubit_contextual_projection_weight_eq_born` — spécialisations pures
+      de QB8 à `n := 2`, sans répétition de preuve
+- [x] **QB10 — `Nonvacuity.lean`** : `pureStateEstimationRule` (positivité/
+      normalisation/`grain` prouvées directement, jamais via
+      `Gleason.busch`) ; témoins qubit concrets (`qubitZeroState`,
+      `qubitOneState`), exemples exacts poids-un/poids-zéro
+- [x] **QB11 — `NaimarkBridge.lean`** : couche d'intégration pure vers le
+      pont de Naimark existant (`QuantumFoundations.Naimark/`), sans
+      reproduire Naimark, Busch, Gleason ni QB1–QB10. `EffectPerspective.toPOVM`
+      (aucune hypothèse nouvelle : `IsEffect` donne déjà la positivité,
+      `sum_eq_one` donne déjà la complétude POVM) ; réalisation projective
+      dilatée (`effectPerspective_naimark_realization`, application directe
+      de `QuantumFoundations.naimark`) ; préservation exacte des valeurs
+      d'espérance d'effet sous dilatation, pour tout vecteur
+      (`effectPerspective_born_preserved_under_dilation`, `naimark_born`) ;
+      forme ancilla/unitaire globale explicite avec indice `i₀` gardé
+      explicite (`effectPerspective_projective_ancilla_realization`,
+      `naimark_projective_form`). Corollaire optionnel
+      `pureStateEstimationRule_weight_eq_dilated_expectation` ajouté (courte
+      composition de théorèmes existants, aucune nouvelle algèbre de trace)
+- [x] **Intégration** : dix imports ajoutés à `QuantumFoundations.lean` pour
+      QB1–QB10, un onzième pour QB11, dans l'ordre de dépendance ; aucun
+      fichier existant modifié au-delà de ces onze lignes d'import
+- [x] **Audit `#print axioms`** : 16 déclarations représentatives (QB5–QB10)
+      plus les 4 déclarations QB11 dépendent uniquement de
+      `[propext, Classical.choice, Quot.sound]`
+- [x] `guard.sh` (et sa reproduction PowerShell) : 0 axiome, 0
+      `native_decide`, 0 sorry sur tout le dépôt après intégration
+
+### Hors scope (extensions futures possibles, pas des manques de ce jalon)
+
+- **`Refines.trans`** (QB3.2), voir ci-dessus.
+- **`effectWeight_eq_pure_expectation`** : généralisation optionnelle de QB8
+  aux effets arbitraires (pas seulement `projectionEffect A`) — demanderait
+  d'exposer publiquement l'identité opératorielle complète et un calcul de
+  trace généralisé ; documenté précisément dans `Main.lean`, section QB8.3.
+- **`ProjectiveBridge.lean`** (adaptateur optionnel reliant `projectionEffect`
+  au carrier projectif `BornRule.Perspective`, distinct du pont Naimark
+  QB11) : non tenté dans cette passe.
+- Naimark (QB11) fournit une réalisation opérationnelle, pas la règle de
+  Born ni l'indépendance contextuelle : ces dernières restent du ressort de
+  Busch (QB6–QB9).
+- Aucune revendication de disponibilité physique des effets, aucune lecture
+  décision-théorique/bayésienne des poids, aucune revendication everettienne.
+
 ## HistoriesKent — Théorème des inférences contraires de Kent
 
 **Énoncé.** Kent, *Quasiclassical Dynamics in a Closed Quantum System*, PRL 78,
@@ -2374,6 +2467,94 @@ theorem1_general), one fewer axiom (gleason proved rather than postulated),
 and a shorter proof at several points thanks to reuse of the Uhlhorn
 infrastructure (U2, U3a) and the Proj1-first design of g.
 
+## BornRule/EffectPerspectives — qubit/Busch extension (QB1–QB11) — ✅ CLOSED (2026-07-24)
+
+Statement. An alternative route to the Born weight, built on effects
+(0 ≤ T ≤ 1, Loewner order) rather than pairwise-orthogonal projective
+subspaces, reusing without modification Busch's theorem (P. Busch,
+Quantum states and generalized observables: a simple proof of Gleason's
+theorem, PRL 91, 120403, 2003), pinned in gleason-theorem-lean
+(Gleason.busch/Gleason.busch_born_rule). Unlike Gleason (n ≥ 3), Busch
+applies from n = 1 onward, reaching the qubit (n = 2) where the projective
+BornRule route is silent. See the full detail in
+QuantumFoundations/BornRule/EffectPerspectives/README.md.
+
+- [x] QB1 — Basic.lean: Effect n (subtype of Gleason.IsEffect, reusing —
+      not recreating — Busch's positivity notion); zeroEffect, oneEffect,
+      complementEffect, projectionEffect
+- [x] QB2 — Perspective.lean: EffectPerspective (finite labelled family of
+      effects summing to 1, with no nonzero, injectivity, or commutativity
+      constraint); binaryPerspective, splitPerspective,
+      duplicateZeroPerspective
+- [x] QB3 — Refinement.lean: Refines (refinement via parent + fiber-sum
+      reconstruction); Refines.refl, collapseToChosen, splitRefinesBinary,
+      duplicateZeroRefinesBinary. Refines.trans deferred (documented in the
+      file: the double finite-sum reindexing it needs proved
+      disproportionate relative to an explicitly deferrable secondary
+      goal; no QB4–QB10 milestone needs it)
+- [x] QB4 — Estimation.lean: EstimationRule (weight, non-negativity,
+      per-perspective normalization, grain — refinement coherence on the
+      EffectPerspective carrier, distinct from the projective AxGrain)
+- [x] QB5 — ContextIndependence.lean: context independence, zero-effect
+      weight, unit-effect weight, and binary effect additivity — four
+      derived theorems from grain alone, never axioms or structure fields
+- [x] QB6 — EffectMeasure.lean: EstimationRule.toEffectMeasure :
+      Gleason.EffectMeasure n; direct application of Gleason.busch and
+      Gleason.busch_born_rule (the Busch proof itself is never reproduced)
+- [x] QB7 — PureStatePinning.lean: ContextualNullSupport (state-relative
+      null support, stated directly on effect occurrences); fallback
+      theorem density_bornValue_eq_pure_of_null, reusing
+      QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal (B3)
+      and Gleason.bornValue_span_singleton (neither is reproved)
+- [x] QB8 — Main.lean: projectionEffect_weight_eq_born and
+      contextual_projection_weight_eq_born — the Born weight for
+      projection effects, in arbitrary finite dimension, under
+      state-relative null support
+- [x] QB9 — Qubit.lean: qubit_projectionEffect_weight_eq_born and
+      qubit_contextual_projection_weight_eq_born — pure specializations of
+      QB8 at n := 2, with no proof repetition
+- [x] QB10 — Nonvacuity.lean: pureStateEstimationRule (non-negativity/
+      normalization/grain proved directly, never via Gleason.busch);
+      concrete qubit witnesses (qubitZeroState, qubitOneState), exact
+      weight-one/weight-zero examples
+- [x] QB11 — NaimarkBridge.lean: a pure integration layer connecting to the
+      existing Naimark bridge (QuantumFoundations.Naimark/), without
+      reproving Naimark, Busch, Gleason, or QB1–QB10. EffectPerspective.toPOVM
+      (no new hypothesis: IsEffect already gives positivity, sum_eq_one
+      already gives POVM completeness); the dilated projective realization
+      (effectPerspective_naimark_realization, direct application of
+      QuantumFoundations.naimark); exact preservation of effect expectation
+      values under dilation, for every vector
+      (effectPerspective_born_preserved_under_dilation, naimark_born); the
+      explicit global-unitary/ancilla form with i₀ kept explicit
+      (effectPerspective_projective_ancilla_realization,
+      naimark_projective_form). Optional corollary
+      pureStateEstimationRule_weight_eq_dilated_expectation added (a short
+      composition of existing theorems, no new trace algebra)
+- [x] Integration: ten imports added to QuantumFoundations.lean for
+      QB1–QB10, an eleventh for QB11, in dependency order; no existing file
+      modified beyond these eleven import lines
+- [x] #print axioms audit: 16 representative declarations (QB5–QB10) plus
+      the 4 QB11 declarations depend only on
+      [propext, Classical.choice, Quot.sound]
+- [x] guard.sh (and its PowerShell reproduction): 0 axioms, 0
+      native_decide, 0 sorry across the whole repository after integration
+
+### Out of scope (possible future extensions, not deficiencies of this milestone)
+
+- Refines.trans (QB3.2), see above.
+- effectWeight_eq_pure_expectation: an optional generalization of QB8 to
+  arbitrary effects (not only projectionEffect A) — would require publicly
+  exposing the full operator identity and a generalized trace computation;
+  documented precisely in Main.lean, section QB8.3.
+- ProjectiveBridge.lean (an optional adapter connecting projectionEffect
+  back to the projective BornRule.Perspective carrier, distinct from the
+  QB11 Naimark bridge): not attempted in this pass.
+- Naimark (QB11) supplies an operational realization, not the Born rule or
+  contextual independence: those remain the province of Busch (QB6–QB9).
+- No claim of physical availability of effects, no decision-theoretic/
+  Bayesian reading of the derived weights, no Everettian claim.
+
 ## HistoriesKent — Kent's contrary-inferences theorem
 
 Statement. Kent, Quasiclassical Dynamics in a Closed Quantum System,
@@ -3049,8 +3230,8 @@ no `Branches` module (only `BranchesRiedel`).
   (Pos)/(Norm)/(Grain)/(Null) throughout), (Grain) restricted to
   physically realized perspectives, approximate branch-uniqueness for the
   noisy model, and generic many-body branch canonicity. Restricted-domain
-  Born uniqueness over only physically admissible record perspectives
-  remains the separate **C15** problem.
+  Born uniqueness is handled abstractly by C15; its physical saturation
+  bridge remains the separate **C16** problem.
 
 ### Résumé français
 
@@ -3134,8 +3315,10 @@ C10 ne satisfait que la redondance approximative, pas l'exacte
 `IsRecordedOn` : aucune unicité de branche exacte n'y est conclue. Les
 poids de Born des branches évoluées sous une évolution norm-préservante
 conservent leur norme au carré, via l'identité de polarisation en termes
-de normes. L'unicité de Born restreinte à un domaine de perspectives
-physiquement admissibles reste le problème **C15** séparé.
+de normes. L'unicité de Born restreinte à un domaine de situations de record
+physiquement admissibles est traitée séparément par **C15** ci-dessous; le
+fait que les situations physiques de C14 satisfassent sa saturation exacte
+reste, lui, différé.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 
@@ -3150,3 +3333,126 @@ physiquement admissibles reste le problème **C15** séparé.
 - [x] Imports racine, dépendances internes de Complexity, références
   documentaires et sorties d'axiomes mis à jour sans alias résiduel.
 - [x] `lake build QuantumFoundations`: vert, 8705 jobs.
+
+## C15 — Unicité quadratique sur les secteurs de records restreints — ✅ CLOS (2026-07-24)
+
+**Source.** Formalisation Lean et intégration au dépôt du Théorème 3 et du
+Corollaire 2 de Marko Lela, « The Born Rule as the Unique Refinement-Stable
+Induced Weight on Robust Record Sectors », arXiv:2603.24619v1.
+
+**Cible.** C15 porte sur un poids induit `W : σ → ℝ≥0` sur un type abstrait
+de situations de record déjà admissibles. Ce n'est ni une mesure sur le
+treillis complet des projecteurs, ni une restriction du Théorème de
+Cohérence de Grain, ni une instanciation de C14.
+
+**Architecture fermée.**
+
+- `Additive.lean` prouve sans hypothèse de continuité que toute fonction
+  additive `ℝ≥0 → ℝ≥0` vaut `x ↦ f 1 * x`. La positivité donne la monotonie;
+  l'homogénéité rationnelle et la densité des rationnels positifs donnent
+  l'identification sur tous les réels non négatifs.
+- `Basic.lean` sépare système de raffinement binaire, stabilité du poids,
+  réalisation de toutes les magnitudes, saturation binaire exacte et
+  fermeture optionnelle par changement d'échelle.
+- `Profiles.lean` définit l'équivalence interne comme égalité des profils de
+  raffinement binaire, et non comme égalité des normes. La saturation prouve
+  ensuite `BinaryProfile S x = BinaryProfile S y ↔
+  S.magnitude x = S.magnitude y`.
+- Le choix d'un représentant de chaque magnitude est éliminé des conclusions
+  publiques. La fonction de profil vérifie l'équation pythagoricienne; après
+  la reparamétrisation `f u = g (NNReal.sqrt u)`, elle devient additive.
+- `Main.lean` conclut `W x = c * S.magnitude x ^ 2`. Le comportement nul est
+  un corollaire, pas une prémisse. Deux normalisations finies égales à `1`
+  fixent `c = 1` globalement.
+- `Hilbert.lean` prend pour magnitude
+  `‖(sector x).starProjection (state x)‖₊` et exporte
+  `W = c ‖P_R Ψ‖²`, puis la formule normalisée, sans seuil de dimension.
+- `Continuation.lean` montre qu'une valuation extensive finiment additive
+  sur des faisceaux disjoints de continuations induit la stabilité par
+  raffinement.
+- `Nonvacuity.lean` fournit le modèle saturé non trivial `σ = ℝ≥0`,
+  `parent² = left² + right²`, `W_c x = c x²`, ainsi qu'un exemple fini non
+  nul de faisceaux de continuations.
+
+**Dépendances.** Le cœur générique n'importe ni l'assemblage BornRule global,
+ni les poids C14, ni les théorèmes Gleason/Busch. Aucun argument de Gleason,
+Busch, décision-théorique ou d'envariance n'est utilisé.
+
+**Frontière exacte.** La saturation binaire est supposée; C15 ne prouve pas
+que la dynamique ou les secteurs physiques de C14 la satisfont. La
+saturation dense accompagnée de continuité, les profils approximatifs, le
+pont physique C14/C15 et C16 sont reportés. La première stabilité quantitative
+de la loi exacte est traitée séparément par C17 ci-dessous.
+
+## C17 — Première stabilité quantitative des poids de secteurs restreints — ✅ CLOS (2026-07-24)
+
+**Cible scientifique.** C17 est le premier théorème quantitatif non trivial
+de stabilité dans ce développement. Il part de deux lois quadratiques exactes
+déjà fournies par C15 et compare leurs composantes projetées
+`u = P_(R₁ x) Ψ₁ x` et `v = P_(R₂ x) Ψ₂ x`. La perturbation peut donc porter
+sur l'état, le secteur de record, ou les deux, sans métrique sur les
+sous-espaces.
+
+**Résultats fermés.**
+
+- Le cœur générique, valable dans tout groupe additif normé commutatif,
+  factorise la différence des carrés et prouve
+  `|‖u‖² - ‖v‖²| ≤ (‖u‖ + ‖v‖) ‖u-v‖`.
+- Sur la boule unité, cette borne devient
+  `|‖u‖² - ‖v‖²| ≤ 2 ‖u-v‖`.
+- `QuadraticWeightLaw L W` isole l'interface exacte
+  `W x = ‖projectedComponent L x‖₊²`. L'adaptateur C15 est une application
+  directe de `restricted_record_sector_born`, sans duplication de sa preuve.
+- La stabilité ponctuelle des poids suit immédiatement du cœur générique.
+  La contraction de `starProjection` donne aussi le corollaire pour états de
+  norme au plus `1`, donc pour états normalisés.
+- Sur une famille finie `s`, les estimations sont sommées terme à terme. Sous
+  une erreur uniforme `ε`,
+  `∑ x ∈ s, |W₁ x - W₂ x| ≤ 2 * card(s) * ε`; la demi-distance `L¹` est
+  bornée par `card(s) * ε`.
+- `StabilityNonvacuity.lean` donne le témoin non nul `u=1`, `v=1/2` :
+  différence des poids `3/4`, distance des composantes `1/2`, borne à
+  constante deux égale à `1`, ainsi qu'un exemple fini à deux points.
+
+**Interprétation.** Une fois les poids de secteurs restreints fixés par C15,
+les perturbations des composantes projetées entraînent des perturbations
+linéairement contrôlées des poids correspondants. La demi-`L¹` peut être
+interprétée comme une borne de type variation totale finie lorsque les poids
+sont normalisés sur la famille, sans introduire de bibliothèque générale de
+distributions de probabilité.
+
+**Frontière exacte.** C17 ne prouve pas la stabilité de C15 sous des
+hypothèses approximatives, l'unicité approximative des décompositions en
+branches, ni la production dynamique de la borne sur la distance des
+composantes. C16, l'optimalité de la constante `2` et tout renforcement de
+C17 restent hors de ce jalon. Aucune revendication de priorité historique
+n'est faite.
+
+## C17b — Ponts d'intégration pour la stabilité quantitative — ✅ CLOS (2026-07-24)
+
+**Statut logique.** C17b ne renforce pas le cœur réduit de C17, déjà clos
+avant ce jalon. Il dérive des corollaires à faible coût à partir des API
+existantes C12, C13, C14 et C17.
+
+**Ponts fermés.**
+
+- Pour un secteur fixé et deux états de la boule unité,
+  `|w_R(ψ) - w_R(φ)| ≤ 2 ‖ψ - φ‖`.
+- Une approximation en norme d'opérateur des projecteurs,
+  `‖P_R - P_S‖ ≤ ε`, donne
+  `|w_R(ψ) - w_S(ψ)| ≤ 2 ε` sur un état normalisé.
+- Le pont combiné contrôle simultanément la variation de l'état et du
+  projecteur par `2 (‖ψ - φ‖ + ε)`.
+- Un certificat C13 de simulation par circuit donne, pour chaque secteur
+  fixé, `|w_R(U(t)ψ) - w_R(Cψ)| ≤ 2 ε`, avec une forme existentielle à coût
+  borné et une somme finie explicite.
+- Les poids de branches C14 héritent de
+  `(‖u‖ + ‖v‖) ‖u - v‖`, puis de `2 ‖u - v‖` sur la boule unité, lorsque
+  l'appariement des branches est fourni explicitement.
+
+**Frontière exacte.** Le pont C13 évalue le même secteur fourni sur les états
+exact et simulé; il ne prouve pas que ce secteur reste sélectionné par la
+dynamique de formation des records. C17b ne construit aucun appariement de
+branches et ne prouve ni unicité approximative, ni saturation approximative,
+ni hypothèses C15 approximatives, ni C16, ni renforcement supplémentaire de
+C17. Aucune revendication de priorité historique n'est faite.

@@ -3,11 +3,11 @@ import Gleason.Busch.Effects
 /-!
 **FR.** # POVM finie à `m` issues sur `H n`
 
-Réutilise `Gleason.IsPositiveOp` (ne pas redéfinir la positivité : cf. CLAUDE.md).
+Réutilise `Gleason.IsPositiveOp` ; la positivité n'est pas redéfinie ici.
 
 **EN.** # Finite POVM with m outcomes on H n
 
-Reuses Gleason.IsPositiveOp (do not redefine positivity; see CLAUDE.md).
+Reuses Gleason.IsPositiveOp; positivity is not redefined here.
 -/
 
 namespace QuantumFoundations

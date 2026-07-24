@@ -167,12 +167,12 @@ private theorem refVec_InPerp (hn : 2 ≤ n) : InPerp (refVec n) := by
 
 /--
 **FR.** Rigidité générale (généralise `eq_one_of_norm_one_re_one`, W1, au cas `M`
-quelconque) : un scalaire dont le module ET la partie réelle valent tous deux `M`
-(réel) est EXACTEMENT `M` — aucune ambiguïté de signe sur la partie imaginaire.
+quelconque) : un scalaire dont le module et la partie réelle valent tous deux `M`
+(réel) est exactement `M` — aucune ambiguïté de signe sur la partie imaginaire.
 
 **EN.** General rigidity lemma, extending eq_one_of_norm_one_re_one (W1) to
-arbitrary M: a scalar whose modulus AND real part are both equal to the
-real number M is EXACTLY M, with no ambiguity in the sign of the
+arbitrary M: a scalar whose modulus and real part are both equal to the
+real number M is exactly M, with no ambiguity in the sign of the
 imaginary part.
 -/
 private theorem eq_of_norm_eq_re_eq {z : ℂ} {M : ℝ} (h1 : ‖z‖ = M) (h2 : z.re = M) :
@@ -506,11 +506,11 @@ nécessaire) : le candidat `chi a1 • V f1 + chi a2 • V f2` a même norme que
 vaut EXACTEMENT cette norme commune — rigidité `eq_of_norm_eq_re_eq` appliquée à
 `⟪V(a_p f_p), V x⟫`, qui isole `⟪V f_p, V x⟫ = chi a_p` pour chaque `p`.
 
-**EN.** Two-ORTHOGONAL-direction decomposition formula (Bargmann §4.6–4.7),
-preliminary to additivity. The proof is DIRECT and requires neither Bessel
+**EN.** Two-orthogonal-direction decomposition formula (Bargmann §4.6–4.7),
+preliminary to additivity. The proof is direct and requires neither Bessel
 nor orthonormal_image: the candidate
 chi a1 • V f1 + chi a2 • V f2 has the same norm as V x (Pythagoras +
-‖chi c‖ = ‖c‖), while the real part of their cross inner product is EXACTLY
+‖chi c‖ = ‖c‖), while the real part of their cross inner product is exactly
 this common norm. Applying eq_of_norm_eq_re_eq to
 ⟪V(a_p f_p), V x⟫ isolates ⟪V f_p, V x⟫ = chi a_p for each p.
 -/
