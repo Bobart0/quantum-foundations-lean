@@ -7,8 +7,8 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 Choix d'étape 0 : `K₂ := EuclideanSpace ℂ (Fin m × Fin n)` (version plate), retenu sur
 `K₁ := PiLp 2 (fun _ : Fin m => H n)` (nested) à friction de preuve égale, pour son
 index unique `Fin m × Fin n` (moins de couches `WithLp`/`.ofLp` à traverser dans N3).
-Écart documenté vs Watrous : somme directe hilbertienne, pas produit tensoriel
-(cf. CLAUDE.md, § « Écart documenté »).
+Écart documenté vis-à-vis de Watrous : somme directe hilbertienne, pas
+produit tensoriel.
 
 **EN.** # Dilation space K := ⊕_{i<m} H n
 
@@ -16,8 +16,7 @@ Step-0 choice: K₂ := EuclideanSpace ℂ (Fin m × Fin n) (flat version) was
 selected over K₁ := PiLp 2 (fun _ : Fin m => H n) (nested version) at equal
 proof-engineering cost, because its single index Fin m × Fin n avoids
 additional WithLp/.ofLp layers in N3. Documented deviation from Watrous:
-a Hilbert direct sum, not a tensor product (see CLAUDE.md, § “Documented
-deviation”).
+a Hilbert direct sum, not a tensor product.
 -/
 
 namespace QuantumFoundations

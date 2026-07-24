@@ -325,15 +325,15 @@ retirées de la signature (découvert en écrivant la preuve, comme
 SEULE FOIS, ici, pour l'annulation finale de `K^A` — cas dégénéré `K = 0`
 sans usage réel dans le projet, coût minimal, non filé dans `Defs.lean`.
 
-**EN.** Summation to ψ by iterated resolutions. DEVIATION from the R0
-skeleton: neither IsRecordedOn nor CommuteWitness is needed—this is a
-PURE resolution-of-the-identity fact (sum_pow_relation + cancellation of
-K^A), independent of redundancy or commutation. Superfluous hypotheses
-were removed from the signature (a fact discovered while writing the proof,
-as previously occurred with BornRule.hker_derivation). [NeZero K] is
-needed EXACTLY ONCE, here, for the final cancellation of K^A; the degenerate
-case K = 0 has no genuine use in the project, so this is a minimal cost and
-the assumption is not threaded through Defs.lean.
+**EN.** Summation to ψ by iterated resolutions. Deviation from the R0
+skeleton: neither IsRecordedOn nor CommuteWitness is needed, since this is
+a resolution-of-the-identity fact in its own right (sum_pow_relation +
+cancellation of K^A), independent of redundancy or commutation. Superfluous
+hypotheses were removed from the signature (a fact discovered while writing
+the proof, as previously occurred with BornRule.hker_derivation). [NeZero K]
+is needed exactly once, here, for the final cancellation of K^A; the
+degenerate case K = 0 has no genuine use in the project, so this is a
+minimal cost and the assumption is not threaded through Defs.lean.
 -/
 theorem jointBranch_sum [NeZero R] [NeZero K] (Obs : Fin A → Fin R → LabeledResolution n K)
     (ψ : H n) : ∑ f : Fin A → Fin K, jointBranch Obs ψ f = ψ := by

@@ -34,11 +34,11 @@ noncomputable def dilV (P : POVM n m) : H n →ₗ[ℂ] DilSpace n m :=
 /--
 **FR.** **Pivot 1.** `coordL i` récupère `√(E i)` depuis `dilV P` : une seule somme sur
 l'indice de bloc, effondrée par `coordL_singleL` (N2) — jamais de double somme
-(cf. CLAUDE.md règle 7 / leçon `riesz_rep_assembly`).
+(voir la leçon `riesz_rep_assembly` dans `docs/IMPLEMENTATION_NOTES.md`).
 
 **EN.** Pivot 1. coordL i recovers √(E i) from dilV P: a single sum
-over the block index, collapsed by coordL_singleL (N2)—never a double sum
-(see CLAUDE.md rule 7 / the riesz_rep_assembly lesson).
+over the block index, collapsed by coordL_singleL (N2), never a double sum
+(see the riesz_rep_assembly lesson in docs/IMPLEMENTATION_NOTES.md).
 -/
 private theorem key1 (P : POVM n m) (i : Fin m) :
     coordL n m i ∘ₗ dilV P = sqrtOp (P.E i) := by

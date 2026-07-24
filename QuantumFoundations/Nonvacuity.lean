@@ -4,14 +4,14 @@ import QuantumFoundations.Naimark.Defs
 **FR.** # Nonvacuity — `POVM` est habitée
 
 Habitant concret : la POVM uniforme à 2 issues sur `H 2`, `E i := 2⁻¹ • 1`.
-Leçon fondatrice du projet : toute nouvelle structure d'hypothèses reçoit un
-habitant DANS LE MÊME COMMIT (cf. CLAUDE.md).
+Convention constante du projet : toute nouvelle structure d'hypothèses reçoit
+un habitant concret dans le même commit.
 
 **EN.** # Nonvacuity — POVM is inhabited
 
 Concrete inhabitant: the uniform two-outcome POVM on H 2,
-E i := 2⁻¹ • 1. A foundational project lesson is that every new hypothesis
-structure receives an inhabitant IN THE SAME COMMIT (see CLAUDE.md).
+E i := 2⁻¹ • 1. A standing project convention is that every new hypothesis
+structure receives a concrete inhabitant in the same commit.
 -/
 
 namespace QuantumFoundations

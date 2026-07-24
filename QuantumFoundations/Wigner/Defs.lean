@@ -4,26 +4,27 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 **FR.** # Définitions W0 — construction de Bargmann (§3–§5)
 
-Toutes les définitions sont **totales** (pattern « définition totale + valeur
-poubelle », cf. CLAUDE.md) : jamais de preuve prise en argument. La dimension `n`
-est explicite pour `e`/`refVec` (rien d'autre ne permet de l'inférer) et implicite
-partout où un `T : H n → H n` la fixe déjà.
+Toutes les définitions sont **totales** (convention « définition totale + valeur
+poubelle » suivie dans tout le dépôt) : jamais de preuve prise en argument. La
+dimension `n` est explicite pour `e`/`refVec` (rien d'autre ne permet de
+l'inférer) et implicite partout où un `T : H n → H n` la fixe déjà.
 
-Convention (Bargmann §3) : `𝒫 := e⊥` (ici `InPerp`, une `Prop`, JAMAIS un
-`Submodule` — leçon N5/tentatives 1-2 de Naimark). `U` est construit par une
-formule fermée (§5) ; le théorème de Wigner est un énoncé de COMPARAISON sur la
-sphère, jamais une extension depuis `𝒫` ou depuis une base.
+Convention (Bargmann §3) : `𝒫 := e⊥` (ici `InPerp`, une `Prop`, jamais un
+`Submodule` — leçon tirée des tentatives 1-2 de Naimark en N5). `U` est
+construit par une formule fermée (§5) ; le théorème de Wigner est un énoncé
+de comparaison sur la sphère, jamais une extension depuis `𝒫` ou depuis une
+base.
 
 **EN.** # Definitions W0 — Bargmann's construction (§3–§5)
 
-All definitions are total, following the “total definition + junk value”
-pattern described in CLAUDE.md: no proof is ever passed as an argument. The
-dimension n is explicit for e/refVec, because nothing else determines
-it, and implicit wherever a term T : H n → H n already fixes it.
+All definitions are total, following the total-definition-with-junk-value
+convention used throughout this repository: no proof is ever passed as an
+argument. The dimension n is explicit for e/refVec, because nothing else
+determines it, and implicit wherever a term T : H n → H n already fixes it.
 
 Convention (Bargmann §3): 𝒫 := e⊥, represented here by InPerp, a Prop,
-NEVER a Submodule—the lesson from N5 / Naimark attempts 1–2. U is
-constructed by a closed formula (§5); Wigner's theorem is a COMPARISON
+never a Submodule, a lesson drawn from Naimark attempts 1–2 in N5. U is
+constructed by a closed formula (§5); Wigner's theorem is a comparison
 statement on the sphere, never an extension from 𝒫 or from a basis.
 -/
 

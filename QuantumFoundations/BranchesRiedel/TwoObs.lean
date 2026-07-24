@@ -46,18 +46,18 @@ fichiers.
 
 A deliberately limited milestone: validate, at minimal cost, the tunneling
 mechanism (the five-step chain, Riedel's Eqs. (13)–(15)) and the
-diagonal-action mechanism BEFORE the general induction in Induction.lean.
-The COMPLETE two-observable decomposition and uniqueness results are NOT
+diagonal-action mechanism before the general induction in Induction.lean.
+The complete two-observable decomposition and uniqueness results are not
 separate theorems here; they follow as the instance A = 2 of the general
 theorem Induction.riedel.
 
 ## Deviation from the R0 skeleton: twoObs_eigen restricted to record 0
 
-The R0 skeleton stated twoObs_eigen for an ARBITRARY record r : Fin R of
-the target observable a. During the proof attempt, this turned out to be
-STRICTLY STRONGER than the diagonal-action mechanism itself, which concerns
-only the record ρ c actually used to construct the chain, here 0.
-Generalization to an arbitrary r would additionally require composing
+The R0 skeleton stated twoObs_eigen for an arbitrary record r : Fin R of
+the target observable a. During the proof, this turned out to be strictly
+stronger than the diagonal-action mechanism itself, which concerns only the
+record ρ c actually used to construct the chain, here 0. Generalization to
+an arbitrary r would additionally require composing
 Basic.branch_wellDefined/IsRecordedOn on top, without contributing to the
 validation of the mechanism targeted by this milestone. The statement is
 therefore restricted to record 0, the record used by
@@ -67,15 +67,15 @@ remains an immediate corollary and is not needed here.
 
 ## Confirmed validation
 
-The three proofs below follow EXACTLY the five-step mechanism described in
-the design prompt. For chain_two_0/chain_two_1: target-record identity by
-redundancy, commutation with witness ĝ, record identity for the OTHER target
-by redundancy, commutation, and target-record identity by redundancy
-(restoration). chain_two is the direct instance (L = [1], a = 0);
-swap_two combines two applications of this mechanism, one for each
-observable, with ONE additional commutation; twoObs_eigen combines the same
-mechanism with operator contraction (Basic.rproj_contract, here in
-pointwise form) at the point of contact. No permutation manipulation is used.
+The three proofs below follow the five-step mechanism (target-record
+identity by redundancy, commutation with witness ĝ, record identity for the
+other target by redundancy, commutation, and target-record identity by
+redundancy, i.e. restoration) exactly as described above. chain_two is the
+direct instance (L = [1], a = 0); swap_two combines two applications of
+this mechanism, one for each observable, with one additional commutation;
+twoObs_eigen combines the same mechanism with operator contraction
+(Basic.rproj_contract, here in pointwise form) at the point of contact. No
+permutation manipulation is used.
 
 The pointwise utilities commute_apply and rproj_contract_apply were moved
 to Basic.lean and made public upon their second use—because they are also
