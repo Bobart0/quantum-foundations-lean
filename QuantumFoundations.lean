@@ -42,6 +42,8 @@ import QuantumFoundations.BornRule.RestrictedRecordSectors.Main
 import QuantumFoundations.BornRule.RestrictedRecordSectors.Hilbert
 import QuantumFoundations.BornRule.RestrictedRecordSectors.Continuation
 import QuantumFoundations.BornRule.RestrictedRecordSectors.Nonvacuity
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Stability
+import QuantumFoundations.BornRule.RestrictedRecordSectors.StabilityNonvacuity
 import QuantumFoundations.HistoriesKent.Defs
 import QuantumFoundations.HistoriesKent.Nonvacuity
 import QuantumFoundations.HistoriesKent.Basic
