@@ -1,3 +1,311 @@
+# Quantum Foundations in Lean
+
+## English
+
+This repository is the formal companion to the manuscript *One State, Many
+Perspectives: Branch Structure and Born Weights in Everettian Quantum
+Mechanics*, submitted to *Foundations of Physics*. It contains a Lean 4 /
+Mathlib formalization, checked mechanically and free of project-specific
+axioms, of the theorem chains the manuscript relies on.
+
+### Purpose
+
+The repository formalizes, in finite dimension over ℂ, a sequence of
+representation and stability theorems connecting perspective-relative
+estimation rules to Born-rule weights, together with the auxiliary results
+(Naimark dilation, Wigner's theorem, Uhlhorn-type uniqueness, Kent's
+contrary-inference construction) that the manuscript's argument uses or
+contrasts itself with. Every declaration is machine-checked; the axiom
+audit below records the exact trust base.
+
+### Main formal results
+
+Contributions original to this integrated development (stated cautiously;
+"original" means original to this formalization, not necessarily to the
+literature — see `docs/FOP_THEOREM_MAP.md` for exact attribution per
+theorem):
+
+- derivation of context independence from refinement coherence for an
+  initially perspective-indexed estimation rule, in both the projective
+  (`BornRule`) and effect-based (`BornRule.EffectPerspectives`)
+  developments;
+- explicit lower bounds on interference complexity derived from spatially
+  disjoint redundant records, together with robust (noisy-record) and
+  dynamical (simulated-evolution) persistence extensions;
+- the C14 connection from record-induced branch cells (Riedel's
+  decomposition) to Born weights;
+- derivation, in `BornRule.EffectPerspectives`, of the effect measure
+  required by Busch's representation theorem from contextual
+  effect-perspective refinement coherence, reaching the qubit case
+  (`n = 2`) where Gleason-based routes require `n ≥ 3`;
+- C17 and C17b, the first quantitative weight-stability results within this
+  formal development, connecting proximity of projected components to
+  proximity of restricted-sector Born weights, with state, operator-norm,
+  and simulated-evolution bridges.
+
+Known results formalized, adapted, or reused as dependencies rather than
+claimed as original: Gleason's theorem and Busch's generalized-measurement
+representation theorem (via the pinned `gleason-theorem-lean` dependency);
+Riedel's branch-decomposition theorem; the Naimark dilation theorem; Kent's
+contrary-inference construction; Wigner's theorem; Uhlhorn-type uniqueness
+(Šemrl's Corollary 1.2); and Lela's restricted-sector uniqueness theorem
+underlying the C15 development. See `docs/FOP_THEOREM_MAP.md` for the
+per-theorem status of every manuscript-facing declaration, and
+`docs/SCOPE_AND_LIMITATIONS.md` for what is deliberately not claimed.
+
+### Relation to the Foundations of Physics manuscript
+
+The repository's architecture mirrors the manuscript's central chains:
+grain coherence to context independence to Born representation; unitary
+record formation to Riedel branch uniqueness to record-induced branch
+cells to Born weights (C14); redundant records to complexity separation
+to robust and dynamical persistence; restricted record sectors to
+quadratic uniqueness (C15) to quantitative weight stability (C17) to the
+C17b state/operator/simulation/branch bridges; and effect perspectives to
+context independence to effect additivity to the Busch qubit
+representation to its Naimark projective realization. Naimark dilation is
+an auxiliary operational result; HistoriesKent is a conceptual contrast
+with the branch-theoretic development, not a premise of it; Wigner and the
+full Uhlhorn theorem are infrastructural results reused only through
+specific lemmas, not presented as substantive premises of the manuscript's
+argument. See `docs/FOP_THEOREM_MAP.md` for the complete correspondence.
+
+### Theorem and module map
+
+`docs/FOP_THEOREM_MAP.md` records, for every theorem used substantively in
+the manuscript: its exact Lean declaration and module, its mathematical
+status (original result, connection theorem, new reduction to a known
+theorem, formalization of a known theorem, auxiliary operational theorem,
+conceptual contrast, or nonvacuity witness), its principal dependencies,
+dimension assumptions, and axiom-audit status.
+
+### Scope and limitations
+
+`docs/SCOPE_AND_LIMITATIONS.md` states explicitly what this release does
+not establish, including (among other points) that Born weights are not
+derived from unitarity alone, that no universal decoherence theorem is
+proved, that no absolute or uniquely fundamental branch ontology is
+asserted, that C15 is not shown stable under approximate hypotheses, and
+that C16 remains open.
+
+### Repository structure
+
+The Lean sources live under `QuantumFoundations/`, organized by subsystem
+(`Naimark/`, `Wigner/`, `Uhlhorn/`, `BornRule/` and its
+`EffectPerspectives/` and `RestrictedRecordSectors/` subdirectories,
+`HistoriesKent/`, `BranchesRiedel/` and its `BornBridge/` subdirectory,
+`Complexity/`). Each subsystem directory that reaches a public theorem
+carries its own `README.md` with a detailed, subsystem-specific account.
+`MILESTONES.md` and `ARCHITECTURE_NOTES.md` are the project's detailed
+internal development record (milestone-by-milestone history and
+architectural decisions); they are retained for engineering continuity and
+are not required reading for assessing the manuscript's formal claims,
+which are summarized in `docs/FOP_THEOREM_MAP.md`.
+
+### Reproducibility
+
+See `docs/REPRODUCIBILITY.md` for exact, copy-pasteable build, audit, and
+guard commands (POSIX shell and PowerShell), the exact Lean toolchain and
+dependency revisions, and the expected outputs.
+
+### Axiom audit
+
+`QuantumFoundations/Audit/FoP.lean` runs `#print axioms` on the principal
+manuscript-facing declarations. Every one of them depends only on the
+standard Lean/Mathlib kernel trio `[propext, Classical.choice, Quot.sound]`
+— that is, there are no project-specific axioms, no `sorry`, and no
+`native_decide` anywhere in the release. See `docs/REPRODUCIBILITY.md` for
+the exact audit commands and `RELEASE_NOTES_v1.0-fop-companion.md` for the
+recorded output at the release commit.
+
+### Software and code availability
+
+The source is available at
+`https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
+dependency revisions recorded in `lake-manifest.json` and
+`docs/REPRODUCIBILITY.md`. The release described here corresponds to the
+annotated tag `v1.0-fop-companion`.
+
+### Citation
+
+See `CITATION.cff` for structured citation metadata. In brief: Bertrand
+Dalimier, *Quantum Foundations in Lean: Formal Companion to One State, Many
+Perspectives*, version 1.0.0.
+
+### AI-assisted development
+
+AI coding assistance was used throughout this project's development. See
+`docs/AI_ASSISTANCE.md` for the full disclosure; the author reviewed every
+theorem statement, scientific claim, and proof dependency, and accepts full
+responsibility for the content.
+
+## Français
+
+Ce dépôt est le compagnon formel du manuscrit *One State, Many
+Perspectives: Branch Structure and Born Weights in Everettian Quantum
+Mechanics*, soumis à *Foundations of Physics*. Il contient une
+formalisation Lean 4 / Mathlib, vérifiée mécaniquement et sans axiome
+propre au projet, des chaînes de théorèmes sur lesquelles s'appuie le
+manuscrit.
+
+### Objet du dépôt
+
+Le dépôt formalise, en dimension finie sur ℂ, une suite de théorèmes de
+représentation et de stabilité reliant des règles d'estimation relatives à
+une perspective aux poids de la règle de Born, ainsi que les résultats
+auxiliaires (dilatation de Naimark, théorème de Wigner, unicité de type
+Uhlhorn, construction des inférences contraires de Kent) que l'argument du
+manuscrit utilise ou dont il se distingue explicitement. Chaque déclaration
+est vérifiée mécaniquement ; l'audit des axiomes ci-dessous enregistre
+exactement la base de confiance.
+
+### Principaux résultats formalisés
+
+Contributions propres à ce développement intégré (formulation prudente :
+« propre » signifie propre à cette formalisation, pas nécessairement à la
+littérature — voir `docs/FOP_THEOREM_MAP.md` pour l'attribution exacte de
+chaque théorème) :
+
+- dérivation de l'indépendance du contexte à partir de la cohérence sous
+  raffinement pour une règle d'estimation initialement indexée par les
+  perspectives, dans les deux développements, projectif (`BornRule`) et à
+  base d'effets (`BornRule.EffectPerspectives`) ;
+- bornes inférieures explicites sur la complexité d'interférence dérivées
+  de records redondants spatialement disjoints, avec des extensions de
+  persistance robuste (records bruités) et dynamique (évolution simulée) ;
+- le pont C14 des cellules de branche induites par les records (issues de
+  la décomposition de Riedel) vers les poids de Born ;
+- dérivation, dans `BornRule.EffectPerspectives`, de la mesure d'effets
+  requise par le théorème de représentation de Busch à partir de la
+  cohérence sous raffinement des perspectives d'effets contextuelles,
+  atteignant le cas du qubit (`n = 2`) là où les voies fondées sur Gleason
+  exigent `n ≥ 3` ;
+- C17 et C17b, les premiers résultats quantitatifs de stabilité des poids
+  au sein de ce développement formel, reliant la proximité des composantes
+  projetées à la proximité des poids de Born sur des secteurs restreints,
+  avec des ponts d'état, de norme d'opérateur et d'évolution simulée.
+
+Résultats connus formalisés, adaptés ou réutilisés comme dépendances,
+sans revendication d'originalité : le théorème de Gleason et le théorème
+de représentation généralisée de Busch (via la dépendance épinglée
+`gleason-theorem-lean`) ; le théorème de décomposition en branches de
+Riedel ; le théorème de dilatation de Naimark ; la construction des
+inférences contraires de Kent ; le théorème de Wigner ; l'unicité de type
+Uhlhorn (Corollaire 1.2 de Šemrl) ; et le théorème d'unicité sur les
+secteurs restreints de Lela, sous-jacent au développement C15. Voir
+`docs/FOP_THEOREM_MAP.md` pour le statut précis de chaque déclaration
+pertinente pour le manuscrit, et `docs/SCOPE_AND_LIMITATIONS.md` pour ce
+qui n'est délibérément pas revendiqué.
+
+### Relation avec le manuscrit Foundations of Physics
+
+L'architecture du dépôt reflète les chaînes centrales du manuscrit :
+cohérence de grain vers indépendance du contexte vers représentation de
+Born ; formation unitaire des records vers unicité des branches de Riedel
+vers cellules de branche induites par les records vers poids de Born
+(C14) ; records redondants vers séparation de complexité vers persistance
+robuste et dynamique ; secteurs de records restreints vers unicité
+quadratique (C15) vers stabilité quantitative des poids (C17) vers les
+ponts d'état/opérateur/simulation/branche de C17b ; et perspectives
+d'effets vers indépendance du contexte vers additivité des effets vers la
+représentation qubit de Busch vers sa réalisation projective de Naimark.
+La dilatation de Naimark est un résultat opérationnel auxiliaire ;
+HistoriesKent constitue un contraste conceptuel avec le développement
+fondé sur les branches, non une prémisse de celui-ci ; Wigner et le
+théorème d'Uhlhorn complet sont des résultats infrastructurels réutilisés
+seulement via des lemmes ponctuels, non présentés comme des prémisses
+substantielles de l'argument du manuscrit. Voir `docs/FOP_THEOREM_MAP.md`
+pour la correspondance complète.
+
+### Carte des théorèmes et modules
+
+`docs/FOP_THEOREM_MAP.md` enregistre, pour chaque théorème utilisé de
+façon substantielle dans le manuscrit : sa déclaration Lean exacte et son
+module, son statut mathématique (résultat original, théorème de connexion,
+nouvelle réduction à un théorème connu, formalisation d'un théorème connu,
+théorème opérationnel auxiliaire, contraste conceptuel, ou témoin de
+non-vacuité), ses dépendances principales, ses hypothèses de dimension, et
+son statut d'audit des axiomes.
+
+### Portée et limites
+
+`docs/SCOPE_AND_LIMITATIONS.md` énonce explicitement ce que cette version
+n'établit pas, notamment (entre autres points) que les poids de Born ne
+sont pas dérivés de l'unitarité seule, qu'aucun théorème de décohérence
+universelle n'est prouvé, qu'aucune ontologie de branches absolue ou
+uniquement fondamentale n'est affirmée, que la stabilité de C15 sous
+hypothèses approximatives n'est pas établie, et que C16 reste ouvert.
+
+### Structure du dépôt
+
+Les sources Lean se trouvent sous `QuantumFoundations/`, organisées par
+sous-système (`Naimark/`, `Wigner/`, `Uhlhorn/`, `BornRule/` et ses
+sous-répertoires `EffectPerspectives/` et `RestrictedRecordSectors/`,
+`HistoriesKent/`, `BranchesRiedel/` et son sous-répertoire `BornBridge/`,
+`Complexity/`). Chaque répertoire de sous-système aboutissant à un
+théorème public possède son propre `README.md` détaillé et spécifique.
+`MILESTONES.md` et `ARCHITECTURE_NOTES.md` constituent le registre interne
+détaillé du développement du projet (historique jalon par jalon et
+décisions d'architecture) ; ils sont conservés pour la continuité du génie
+logiciel et ne sont pas nécessaires à l'évaluation des affirmations
+formelles du manuscrit, résumées dans `docs/FOP_THEOREM_MAP.md`.
+
+### Reproductibilité
+
+Voir `docs/REPRODUCIBILITY.md` pour des commandes de compilation, d'audit
+et de garde exactes et directement utilisables (shell POSIX et
+PowerShell), la chaîne d'outils Lean exacte, les révisions de dépendances,
+et les sorties attendues.
+
+### Audit des axiomes
+
+`QuantumFoundations/Audit/FoP.lean` exécute `#print axioms` sur les
+principales déclarations pertinentes pour le manuscrit. Chacune d'entre
+elles ne dépend que du trio standard du noyau Lean/Mathlib
+`[propext, Classical.choice, Quot.sound]` — autrement dit, aucun axiome
+propre au projet, aucun `sorry`, et aucun `native_decide` nulle part dans
+cette version. Voir `docs/REPRODUCIBILITY.md` pour les commandes d'audit
+exactes et `RELEASE_NOTES_v1.0-fop-companion.md` pour la sortie enregistrée
+au commit de la version.
+
+### Disponibilité du logiciel et du code
+
+Les sources sont disponibles à l'adresse
+`https://github.com/Bobart0/quantum-foundations-lean`, épinglées aux
+révisions de dépendances enregistrées dans `lake-manifest.json` et dans
+`docs/REPRODUCIBILITY.md`. La version décrite ici correspond à l'étiquette
+annotée `v1.0-fop-companion`.
+
+### Citation
+
+Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
+Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
+State, Many Perspectives*, version 1.0.0.
+
+### Assistance par intelligence artificielle
+
+Une assistance au codage par IA a été utilisée tout au long du
+développement de ce projet. Voir `docs/AI_ASSISTANCE.md` pour la
+divulgation complète ; l'auteur a vérifié chaque énoncé de théorème,
+chaque affirmation scientifique et chaque dépendance de preuve, et assume
+l'entière responsabilité du contenu.
+
+---
+
+## Documentation bilingue détaillée (contenu historique préservé) / Detailed bilingual reference documentation (preserved)
+
+Les sections qui suivent reproduisent intégralement la documentation
+bilingue (français puis anglais), développée sous-système par
+sous-système au fil du projet. Elles sont conservées en totalité pour la
+continuité et la référence technique détaillée ; le résumé ci-dessus
+constitue le point d'entrée destiné à la relecture externe.
+
+The sections that follow reproduce in full the bilingual (French, then
+English) documentation accumulated subsystem by subsystem over the course
+of the project. They are retained in full for continuity and detailed
+technical reference; the summary above is the publication-facing entry
+point intended for external review.
+
 # quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel et Complexity
 
 **Statut : Naimark v2 COMPLET (`v2.0-naimark`, 2026-07-11), Wigner COMPLET avec
