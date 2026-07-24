@@ -1,6 +1,6 @@
 {
   "title": "Quantum Foundations in Lean: Formal Companion to One State, Many Perspectives",
-  "description": "A Lean 4 and Mathlib formal companion to the manuscript \"One State, Many Perspectives: Branch Structure and Born Weights in Everettian Quantum Mechanics\" (submitted to Foundations of Physics). Contains machine-checked formalizations of Naimark dilation, Wigner's theorem, Uhlhorn-type uniqueness, the grain-coherence-to-Born representation theorem, an effect-perspective route to the Born rule via Busch's theorem (including its Naimark realization), Kent's contrary-inferences construction, Riedel's branch-decomposition theorem with its record-induced Born-weight connection, redundant-record interference-complexity lower bounds with robust and dynamical persistence extensions, and restricted record-sector uniqueness (C15) with its quantitative weight-stability extensions (C17/C17b).",
+  "description": "A Lean 4 and Mathlib formal companion to the manuscript \"One State, Many Perspectives: Branch Structure and Born Weights in Everettian Quantum Mechanics\". Contains machine-checked formalizations of Naimark dilation, Wigner's theorem, Uhlhorn-type uniqueness, the grain-coherence-to-Born representation theorem, an effect-perspective route to the Born rule via Busch's theorem (including its Naimark realization), Kent's contrary-inferences construction, Riedel's branch-decomposition theorem with its record-induced Born-weight connection, redundant-record interference-complexity lower bounds with robust and dynamical persistence extensions, and restricted record-sector uniqueness (C15) with its quantitative weight-stability extensions (C17/C17b).",
   "creators": [
     {
       "name": "Dalimier, Bertrand",
@@ -10,7 +10,7 @@
   ],
   "license": "Apache-2.0",
   "upload_type": "software",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "quantum foundations",
     "Born rule",

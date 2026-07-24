@@ -12,9 +12,9 @@ authors:
 abstract: >-
   A Lean 4 and Mathlib formal companion to the manuscript "One State, Many
   Perspectives: Branch Structure and Born Weights in Everettian Quantum
-  Mechanics" (submitted to Foundations of Physics). Contains machine-checked
-  formalizations of Naimark dilation, Wigner's theorem, Uhlhorn-type
-  uniqueness, the grain-coherence-to-Born representation theorem, an
+  Mechanics". Contains machine-checked formalizations of Naimark dilation,
+  Wigner's theorem, Uhlhorn-type uniqueness, the grain-coherence-to-Born
+  representation theorem, an
   effect-perspective route to the Born rule via Busch's theorem (including
   its Naimark realization), Kent's contrary-inferences construction, Riedel's
   branch-decomposition theorem with its record-induced Born-weight
@@ -31,6 +31,6 @@ keywords:
   - Lean 4
   - formal verification
 license: Apache-2.0
-version: 1.0.0
+version: 1.0.1
 date-released: 2026-07-24
 repository-code: "https://github.com/Bobart0/quantum-foundations-lean"

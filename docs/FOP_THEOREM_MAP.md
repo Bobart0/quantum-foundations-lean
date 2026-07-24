@@ -184,7 +184,7 @@ audit module.
 | Dimension | as required by the restricted-sector construction |
 | Exactness | exact |
 | Axiom audit | standard trio |
-| Scope limitation | establishes uniqueness on the restricted sector under the stated saturation hypotheses; does not establish stability under approximate versions of those hypotheses (that is C17, below) |
+| Scope limitation | establishes exact uniqueness on the restricted sector under the stated exact saturation hypotheses. C17 (below) controls perturbations of this already-established exact quadratic law; it does not establish that the C15 uniqueness conclusion itself remains valid, even approximately, when the C15 hypotheses hold only approximately — see the C17 entry for the precise statement of what is and is not proved. |
 
 | Field | Value |
 |---|---|
@@ -196,7 +196,7 @@ audit module.
 | Dimension | as required by the restricted-sector construction |
 | Exactness | approximate (explicit quantitative bound) |
 | Axiom audit | standard trio |
-| Scope limitation | states that projected-component proximity implies quantitative weight proximity; does not state stability under approximate versions of the C15 hypotheses themselves, approximate branch uniqueness, or a physical derivation of component proximity |
+| Scope limitation | **Proves:** projected-component proximity implies quantitative weight proximity — i.e. C17 controls perturbations of the already-established exact quadratic law (C15) around the exact hypotheses, quantitatively. **Does not prove:** (i) that approximate refinement stability implies an approximately quadratic law; (ii) that approximate binary saturation implies approximate uniqueness; (iii) approximate matching or uniqueness of branch decompositions; (iv) a physical derivation of projected-component proximity itself; (v) persistence of record selection under arbitrary dynamics. In particular, C17 does not establish stability of the C15 uniqueness conclusion under approximate versions of the C15 assumptions. |
 
 | Field | Value |
 |---|---|
@@ -208,7 +208,7 @@ audit module.
 | Dimension | as required by the restricted-sector construction |
 | Exactness | approximate (explicit quantitative bound) |
 | Axiom audit | standard trio |
-| Scope limitation | as for C17, specialized to a simulated-circuit evolution model; does not establish persistence of record selection under arbitrary physical dynamics |
+| Scope limitation | Proves the same projected-component-proximity-implies-weight-proximity statement as C17, specialized to a simulated-circuit evolution model. Does not prove any of the five items listed under C17's scope limitation, and does not establish persistence of record selection under arbitrary physical dynamics. |
 
 | Field | Value |
 |---|---|
@@ -220,7 +220,7 @@ audit module.
 | Dimension | `n ≥ 3` (inherited from C14) |
 | Exactness | approximate (explicit quantitative bound) |
 | Axiom audit | standard trio |
-| Scope limitation | as for C17/C17b, specialized to record-induced branch cells |
+| Scope limitation | Proves the same projected-component-proximity-implies-weight-proximity statement as C17/C17b, specialized to record-induced branch cells. Does not prove any of the five items listed under C17's scope limitation. |
 
 ## Auxiliary operational theorem: Naimark dilation
 
