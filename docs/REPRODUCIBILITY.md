@@ -6,6 +6,13 @@ reproduce the source guard used to enforce the no-`sorry`,
 no-`native_decide`, no-project-specific-`axiom` discipline of this
 repository.
 
+The recommended immutable release to build from is the annotated tag
+`v1.0.1-fop-companion` (a documentation- and metadata-only corrective
+release relative to `v1.0-fop-companion`; see
+`RELEASE_NOTES_v1.0.1-fop-companion.md`). The earlier `v1.0-fop-companion`
+tag is preserved as historical evidence and is never moved, deleted, or
+recreated.
+
 ## Exact toolchain and dependency revisions
 
 - Lean toolchain (from `lean-toolchain`): `leanprover/lean4:v4.32.0-rc1`
@@ -24,7 +31,7 @@ POSIX shell:
 ```sh
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 cd quantum-foundations-lean
-git checkout v1.0-fop-companion
+git checkout v1.0.1-fop-companion
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -34,7 +41,7 @@ Windows PowerShell:
 ```powershell
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 Set-Location quantum-foundations-lean
-git checkout v1.0-fop-companion
+git checkout v1.0.1-fop-companion
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -82,12 +89,13 @@ POSIX shell / Git Bash (`scripts/guard.sh`):
 bash scripts/guard.sh
 ```
 
-Expected output: a confirmation that no axiom and no `native_decide`
-occurrence were found, together with a `sorry` count of `0`.
+Expected output: `AXIOM_HITS=0`, `NATIVE_DECIDE_HITS=0`,
+`SORRY_COUNT=0`, `GUARD_RESULT=PASS` (exit code `0`).
 
 PowerShell-equivalent reproduction (used interchangeably with the shell
-script; some environments provide a WSL-launcher `bash.exe` stub with no
-functioning Bash, in which case this is the reference guard):
+script and reporting the same fields; some environments provide a
+WSL-launcher `bash.exe` stub with no functioning Bash, in which case this
+is the reference guard):
 
 ```powershell
 $files = Get-ChildItem -Recurse -Path QuantumFoundations -Filter *.lean
@@ -140,3 +148,12 @@ may legitimately match prose discussing the audit itself, e.g. in
 - Every principal manuscript-facing theorem depends only on
   `[propext, Classical.choice, Quot.sound]`.
 - `lake build QuantumFoundations` completes with no build failure.
+
+## Continuous integration
+
+`.github/workflows/lean.yml` reproduces this same sequence (checkout,
+`leanprover/lean-action@v1`, `lake build QuantumFoundations`, the
+consolidated axiom audit, the source guard, and `git diff --check`) on
+every push and pull request targeting `master`, and on manual dispatch. It
+relies exclusively on the toolchain and dependency revisions already
+pinned in this repository and never updates them.

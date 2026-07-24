@@ -10,7 +10,14 @@ This release integrates every completed, manuscript-relevant Lean 4 /
 Mathlib development in this repository into a single, reproducible,
 publication-facing artifact: the formal companion to the manuscript *One
 State, Many Perspectives: Branch Structure and Born Weights in Everettian
-Quantum Mechanics*, submitted to *Foundations of Physics*.
+Quantum Mechanics*, prepared for *Foundations of Physics*.
+
+> **Editorial correction (v1.0.1):** at the time of this v1.0 release, this
+> file stated that the manuscript had been "submitted to *Foundations of
+> Physics*". That was inaccurate; the manuscript had not been submitted.
+> This historical file is otherwise left unchanged, per the corrective
+> release's policy of preserving the historical record; see
+> `RELEASE_NOTES_v1.0.1-fop-companion.md` for the corrective release notes.
 
 It is an integration and editorial release. No theorem statement,
 definition, proof body, or mathematical assumption of any previously
@@ -178,7 +185,7 @@ Cette version intègre l'ensemble des développements Lean 4 / Mathlib
 achevés et pertinents pour le manuscrit dans une seule version
 reproductible : le compagnon formel du manuscrit *One State, Many
 Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, soumis à *Foundations of Physics*. Il s'agit d'une version
+Mechanics*, préparé pour *Foundations of Physics*. Il s'agit d'une version
 d'intégration et de révision éditoriale : aucun énoncé de théorème,
 aucune définition, aucun corps de preuve et aucune hypothèse mathématique
 d'un jalon déjà validé n'a été modifié ; seules la documentation, les

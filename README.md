@@ -4,7 +4,7 @@
 
 This repository is the formal companion to the manuscript *One State, Many
 Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, submitted to *Foundations of Physics*. It contains a Lean 4 /
+Mechanics*, prepared for *Foundations of Physics*. It contains a Lean 4 /
 Mathlib formalization, checked mechanically and free of project-specific
 axioms, of the theorem chains the manuscript relies on.
 
@@ -115,22 +115,25 @@ manuscript-facing declarations. Every one of them depends only on the
 standard Lean/Mathlib kernel trio `[propext, Classical.choice, Quot.sound]`
 — that is, there are no project-specific axioms, no `sorry`, and no
 `native_decide` anywhere in the release. See `docs/REPRODUCIBILITY.md` for
-the exact audit commands and `RELEASE_NOTES_v1.0-fop-companion.md` for the
-recorded output at the release commit.
+the exact audit commands and `RELEASE_NOTES_v1.0.1-fop-companion.md` for
+the recorded output at the release commit.
 
 ### Software and code availability
 
 The source is available at
 `https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
 dependency revisions recorded in `lake-manifest.json` and
-`docs/REPRODUCIBILITY.md`. The release described here corresponds to the
-annotated tag `v1.0-fop-companion`.
+`docs/REPRODUCIBILITY.md`. The recommended immutable release is the
+annotated tag `v1.0.1-fop-companion` (a documentation- and metadata-only
+corrective release; see `RELEASE_NOTES_v1.0.1-fop-companion.md`). The
+earlier `v1.0-fop-companion` tag remains available as historical evidence
+and is not moved, deleted, or recreated.
 
 ### Citation
 
 See `CITATION.cff` for structured citation metadata. In brief: Bertrand
 Dalimier, *Quantum Foundations in Lean: Formal Companion to One State, Many
-Perspectives*, version 1.0.0.
+Perspectives*, version 1.0.1.
 
 ### AI-assisted development
 
@@ -143,7 +146,7 @@ responsibility for the content.
 
 Ce dépôt est le compagnon formel du manuscrit *One State, Many
 Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, soumis à *Foundations of Physics*. Il contient une
+Mechanics*, préparé pour *Foundations of Physics*. Il contient une
 formalisation Lean 4 / Mathlib, vérifiée mécaniquement et sans axiome
 propre au projet, des chaînes de théorèmes sur lesquelles s'appuie le
 manuscrit.
@@ -265,22 +268,26 @@ elles ne dépend que du trio standard du noyau Lean/Mathlib
 `[propext, Classical.choice, Quot.sound]` — autrement dit, aucun axiome
 propre au projet, aucun `sorry`, et aucun `native_decide` nulle part dans
 cette version. Voir `docs/REPRODUCIBILITY.md` pour les commandes d'audit
-exactes et `RELEASE_NOTES_v1.0-fop-companion.md` pour la sortie enregistrée
-au commit de la version.
+exactes et `RELEASE_NOTES_v1.0.1-fop-companion.md` pour la sortie
+enregistrée au commit de la version.
 
 ### Disponibilité du logiciel et du code
 
 Les sources sont disponibles à l'adresse
 `https://github.com/Bobart0/quantum-foundations-lean`, épinglées aux
 révisions de dépendances enregistrées dans `lake-manifest.json` et dans
-`docs/REPRODUCIBILITY.md`. La version décrite ici correspond à l'étiquette
-annotée `v1.0-fop-companion`.
+`docs/REPRODUCIBILITY.md`. La version immuable recommandée est l'étiquette
+annotée `v1.0.1-fop-companion` (version corrective, ne portant que sur la
+documentation et les métadonnées ; voir
+`RELEASE_NOTES_v1.0.1-fop-companion.md`). L'étiquette antérieure
+`v1.0-fop-companion` reste disponible comme trace historique ; elle n'est
+ni déplacée, ni supprimée, ni recréée.
 
 ### Citation
 
 Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
 Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
-State, Many Perspectives*, version 1.0.0.
+State, Many Perspectives*, version 1.0.1.
 
 ### Assistance par intelligence artificielle
 
