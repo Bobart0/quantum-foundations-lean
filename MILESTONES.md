@@ -3315,8 +3315,10 @@ C10 ne satisfait que la redondance approximative, pas l'exacte
 `IsRecordedOn` : aucune unicité de branche exacte n'y est conclue. Les
 poids de Born des branches évoluées sous une évolution norm-préservante
 conservent leur norme au carré, via l'identité de polarisation en termes
-de normes. L'unicité de Born restreinte à un domaine de perspectives
-physiquement admissibles reste le problème **C15** séparé.
+de normes. L'unicité de Born restreinte à un domaine de situations de record
+physiquement admissibles est traitée séparément par **C15** ci-dessous; le
+fait que les situations physiques de C14 satisfassent sa saturation exacte
+reste, lui, différé.
 
 ## Renommage de modules — ✅ CLOSED (2026-07-22)
 
@@ -3331,3 +3333,52 @@ physiquement admissibles reste le problème **C15** séparé.
 - [x] Imports racine, dépendances internes de Complexity, références
   documentaires et sorties d'axiomes mis à jour sans alias résiduel.
 - [x] `lake build QuantumFoundations`: vert, 8705 jobs.
+
+## C15 — Unicité quadratique sur les secteurs de records restreints — ✅ CLOS (2026-07-24)
+
+**Source.** Formalisation Lean et intégration au dépôt du Théorème 3 et du
+Corollaire 2 de Marko Lela, « The Born Rule as the Unique Refinement-Stable
+Induced Weight on Robust Record Sectors », arXiv:2603.24619v1.
+
+**Cible.** C15 porte sur un poids induit `W : σ → ℝ≥0` sur un type abstrait
+de situations de record déjà admissibles. Ce n'est ni une mesure sur le
+treillis complet des projecteurs, ni une restriction du Théorème de
+Cohérence de Grain, ni une instanciation de C14.
+
+**Architecture fermée.**
+
+- `Additive.lean` prouve sans hypothèse de continuité que toute fonction
+  additive `ℝ≥0 → ℝ≥0` vaut `x ↦ f 1 * x`. La positivité donne la monotonie;
+  l'homogénéité rationnelle et la densité des rationnels positifs donnent
+  l'identification sur tous les réels non négatifs.
+- `Basic.lean` sépare système de raffinement binaire, stabilité du poids,
+  réalisation de toutes les magnitudes, saturation binaire exacte et
+  fermeture optionnelle par changement d'échelle.
+- `Profiles.lean` définit l'équivalence interne comme égalité des profils de
+  raffinement binaire, et non comme égalité des normes. La saturation prouve
+  ensuite `BinaryProfile S x = BinaryProfile S y ↔
+  S.magnitude x = S.magnitude y`.
+- Le choix d'un représentant de chaque magnitude est éliminé des conclusions
+  publiques. La fonction de profil vérifie l'équation pythagoricienne; après
+  la reparamétrisation `f u = g (NNReal.sqrt u)`, elle devient additive.
+- `Main.lean` conclut `W x = c * S.magnitude x ^ 2`. Le comportement nul est
+  un corollaire, pas une prémisse. Deux normalisations finies égales à `1`
+  fixent `c = 1` globalement.
+- `Hilbert.lean` prend pour magnitude
+  `‖(sector x).starProjection (state x)‖₊` et exporte
+  `W = c ‖P_R Ψ‖²`, puis la formule normalisée, sans seuil de dimension.
+- `Continuation.lean` montre qu'une valuation extensive finiment additive
+  sur des faisceaux disjoints de continuations induit la stabilité par
+  raffinement.
+- `Nonvacuity.lean` fournit le modèle saturé non trivial `σ = ℝ≥0`,
+  `parent² = left² + right²`, `W_c x = c x²`, ainsi qu'un exemple fini non
+  nul de faisceaux de continuations.
+
+**Dépendances.** Le cœur générique n'importe ni l'assemblage BornRule global,
+ni les poids C14, ni les théorèmes Gleason/Busch. Aucun argument de Gleason,
+Busch, décision-théorique ou d'envariance n'est utilisé.
+
+**Frontière exacte.** La saturation binaire est supposée; C15 ne prouve pas
+que la dynamique ou les secteurs physiques de C14 la satisfont. La
+saturation dense accompagnée de continuité, les profils approximatifs, le
+pont physique C14/C15, C16 et C17 sont reportés.

@@ -5,7 +5,8 @@ unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
 2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13, et désormais
-le pont **C14 records → poids de Born**.** Sept blocs
+le pont **C14 records → poids de Born** ainsi que **C15, unicité quadratique
+sur les secteurs de records restreints**.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
@@ -647,9 +648,22 @@ records redondants et poids de Born pour un modèle donné, sous (Pos),
 (Norm), (Grain), (Null) — il ne prétend pas que les records seuls
 impliquent la règle de Born, ni que (Grain) n'a besoin de valoir que sur
 les perspectives physiquement réalisées, ni une unicité de décomposition
-en branches approximative ou générique en système à N corps (l'unicité
-canonique restreinte à un domaine de perspectives physiquement admissibles
-reste le problème C15).
+en branches approximative ou générique en système à N corps.
+
+**C15** est la formalisation Lean et l’intégration au dépôt du Théorème 3 et
+du Corollaire 2 de Marko Lela, « The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors »
+(arXiv:2603.24619v1). Son objet est un poids induit sur des situations de
+record admissibles, pas une mesure sur le treillis complet des projecteurs.
+L’équivalence interne est d’abord l’égalité des profils de raffinement
+binaire; la saturation binaire exacte prouve ensuite que ces profils sont
+classifiés par la norme projetée. L’équation fonctionnelle qui en résulte
+force `W = c ‖P_R Ψ‖²`, et une normalisation finie fixe `c = 1`.
+L’additivité peut être héritée d’une valuation extensive sur des faisceaux de
+continuations disjoints. Aucun théorème de Gleason, Busch,
+décision-théorique ou d’envariance n’est utilisé. La saturation binaire est
+supposée, non dérivée de la dynamique C14; saturation dense plus continuité,
+le pont physique C14/C15, C16 et C17 sont explicitement différés.
 
 ## Assistance IA
 
@@ -945,6 +959,7 @@ détail complet (portée, dérivations, non-revendications interprétatives).
 | C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
 | C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
 | C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
+| C15 | Unicité `W = c ‖P_R Ψ‖²` sur les situations de record admissibles sous stabilité, équivalence interne et saturation binaire | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -1653,8 +1668,22 @@ connects redundant records to Born weights for a given model, under (Pos),
 (Norm), (Grain), (Null) — it does not claim that records alone imply the
 Born rule, that (Grain) need only hold on physically realized
 perspectives, or approximate/generic many-body branch-decomposition
-uniqueness (canonical uniqueness restricted to a physically admissible
-domain of perspectives remains problem C15).
+uniqueness.
+
+**C15** is the Lean formalization and repository integration of Theorem 3
+and Corollary 2 of Marko Lela, “The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors”
+(arXiv:2603.24619v1). It concerns induced weights on admissible record
+situations, not a measure on the full projector lattice. Internal
+equivalence initially means equality of binary refinement profiles; exact
+binary saturation then proves that projected magnitude classifies those
+profiles. The resulting functional equation forces
+`W = c ‖P_R Ψ‖²`, and finite normalization fixes `c = 1`. Additivity may be
+inherited from an extensive valuation on disjoint continuation bundles. No
+Gleason, Busch, decision-theoretic, or envariance theorem is used. Binary
+saturation is assumed rather than derived from C14 dynamics; dense
+saturation plus continuity, the physical C14/C15 bridge, C16, and C17 are
+explicitly deferred.
 
 ## AI assistance
 
@@ -1953,6 +1982,7 @@ full detail (scope, derivations, interpretive non-claims).
 | C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
 | C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
 | C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
+| C15 | Uniqueness `W = c ‖P_R Ψ‖²` on admissible record situations under stability, internal equivalence, and binary saturation | ✅ |
 
 ## Main theorems — reference table
 
