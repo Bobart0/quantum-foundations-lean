@@ -1,16 +1,36 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata in this file."
-title: quantum-foundations-lean
+title: "Quantum Foundations in Lean: Formal Companion to One State, Many Perspectives"
 type: software
 authors:
   - family-names: Dalimier
     given-names: Bertrand
     affiliation: Independent Researcher
+    city: Nogent-sur-Marne
+    country: FR
+    orcid: "https://orcid.org/0009-0000-2457-375X"
 abstract: >-
-  A Lean 4 and Mathlib library containing formalizations of Naimark dilation,
-  Wigner's theorem, Uhlhorn-type results, the grain-coherence-to-Born theorem,
-  and contrary inferences in consistent histories.
+  A Lean 4 and Mathlib formal companion to the manuscript "One State, Many
+  Perspectives: Branch Structure and Born Weights in Everettian Quantum
+  Mechanics" (submitted to Foundations of Physics). Contains machine-checked
+  formalizations of Naimark dilation, Wigner's theorem, Uhlhorn-type
+  uniqueness, the grain-coherence-to-Born representation theorem, an
+  effect-perspective route to the Born rule via Busch's theorem (including
+  its Naimark realization), Kent's contrary-inferences construction, Riedel's
+  branch-decomposition theorem with its record-induced Born-weight
+  connection, redundant-record interference-complexity lower bounds with
+  robust and dynamical persistence extensions, and restricted record-sector
+  uniqueness (C15) with its quantitative weight-stability extensions
+  (C17/C17b).
+keywords:
+  - quantum foundations
+  - Born rule
+  - Everett interpretation
+  - redundant records
+  - Gleason theorem
+  - Lean 4
+  - formal verification
 license: Apache-2.0
-version: 2.1.1-bornrule
-date-released: 2026-07-21
+version: 1.0.0
+date-released: 2026-07-24
 repository-code: "https://github.com/Bobart0/quantum-foundations-lean"
