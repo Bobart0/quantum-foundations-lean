@@ -5,7 +5,9 @@ unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
 2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13, et désormais
-le pont **C14 records → poids de Born**.** Sept blocs
+le pont **C14 records → poids de Born** ainsi que **C15, unicité quadratique
+sur les secteurs de records restreints**, désormais complété par **C17,
+première stabilité quantitative des poids restreints**.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
@@ -647,9 +649,43 @@ records redondants et poids de Born pour un modèle donné, sous (Pos),
 (Norm), (Grain), (Null) — il ne prétend pas que les records seuls
 impliquent la règle de Born, ni que (Grain) n'a besoin de valoir que sur
 les perspectives physiquement réalisées, ni une unicité de décomposition
-en branches approximative ou générique en système à N corps (l'unicité
-canonique restreinte à un domaine de perspectives physiquement admissibles
-reste le problème C15).
+en branches approximative ou générique en système à N corps.
+
+**C15** est la formalisation Lean et l’intégration au dépôt du Théorème 3 et
+du Corollaire 2 de Marko Lela, « The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors »
+(arXiv:2603.24619v1). Son objet est un poids induit sur des situations de
+record admissibles, pas une mesure sur le treillis complet des projecteurs.
+L’équivalence interne est d’abord l’égalité des profils de raffinement
+binaire; la saturation binaire exacte prouve ensuite que ces profils sont
+classifiés par la norme projetée. L’équation fonctionnelle qui en résulte
+force `W = c ‖P_R Ψ‖²`, et une normalisation finie fixe `c = 1`.
+L’additivité peut être héritée d’une valuation extensive sur des faisceaux de
+continuations disjoints. Aucun théorème de Gleason, Busch,
+décision-théorique ou d’envariance n’est utilisé. La saturation binaire est
+supposée, non dérivée de la dynamique C14; saturation dense plus continuité,
+le pont physique C14/C15 et C16 sont explicitement différés.
+
+**C17** est le premier théorème de stabilité quantitative de ce
+développement. Il suppose que les deux poids satisfont déjà la loi
+quadratique exacte fournie par C15 et mesure la perturbation par la distance
+entre composantes projetées `u = P_(R₁)x Ψ₁x` et `v = P_(R₂)x Ψ₂x`. Il prouve
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, puis `|W₁-W₂| ≤ 2‖u-v‖` sur la boule unité, ainsi
+que les bornes finies `L¹`, `2·card(s)·ε` et demi-`L¹`. Il ne traite ni des
+hypothèses C15 approximatives, ni de l’unicité approximative des branches, ni
+de la production dynamique de la proximité des composantes. Aucune
+revendication de priorité historique n’est faite.
+
+**C17b** est un jalon d’intégration, pas un renforcement du cœur C17 déjà
+clos. Sur la boule unité, un secteur fixé vérifie
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; deux projecteurs à distance au plus `ε` en norme
+d’opérateur vérifient `|w_R(ψ)-w_S(ψ)| ≤ 2ε`. Un certificat de simulation C13
+donne donc, pour chaque secteur fixé,
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε`. Les poids de branches C14 héritent aussi de la
+borne générique sur les vecteurs de branches lorsqu’une correspondance entre
+branches est fournie explicitement. Ces ponts ne prouvent ni unicité ou
+appariement approximatif des branches, ni saturation approximative, ni
+persistance physique de la sélection des records.
 
 ## Assistance IA
 
@@ -898,6 +934,25 @@ consolidée de tous les écarts vs les plans initiaux).
 | B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
 | Nonvacuity | `E₀ v` (règle de Born) habite simultanément Grain+Norm+Pos+Null            | ✅ |
 
+## Jalons — BornRule/EffectPerspectives (extension qubit/Busch)
+
+Voir aussi `QuantumFoundations/BornRule/EffectPerspectives/README.md` pour le
+détail complet (portée, dérivations, non-revendications interprétatives).
+
+| Jalon | Contenu | État |
+|-------|---------|------|
+| QB1 | `Effect` (sous-type de `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (POVM finie étiquetée), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (raffinement par `parent` + reconstruction par fibre) ; `Refines.trans` différé (documenté, non bloquant) | ✅ |
+| QB4 | `EstimationRule` (poids/positivité/normalisation/`grain`), hypothèse strictement plus large que `AxGrain` projectif | ✅ |
+| QB5 | Indépendance contextuelle, poids nul/unité et additivité binaire **dérivés** de `grain` seul (jamais des axiomes) | ✅ |
+| QB6 | Construction de `Gleason.EffectMeasure` ; application directe de `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (état-relatif) ; pinning de repli `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born` : poids de Born pour les effets de projection, en dimension quelconque | ✅ |
+| QB9 | Corollaire explicite en dimension deux (qubit), sans passer par `Gleason.gleason` | ✅ |
+| QB10 | Non-vacuité : `pureStateEstimationRule` (preuve directe, sans Busch), témoins qubit exacts | ✅ |
+| QB11 | Pont vers Naimark : `EffectPerspective.toPOVM`, réalisation projective dilatée (`naimark`/`naimark_born`/`naimark_projective_form`), simple couche d'intégration | ✅ |
+
 ## Jalons — HistoriesKent
 
 | Jalon | Contenu                                                                        | État |
@@ -926,6 +981,9 @@ consolidée de tous les écarts vs les plans initiaux).
 | C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
 | C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
 | C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
+| C15 | Unicité `W = c ‖P_R Ψ‖²` sur les situations de record admissibles sous stabilité, équivalence interne et saturation binaire | ✅ |
+| C17 | Première stabilité quantitative des poids C15 sous perturbation des composantes projetées, avec bornes ponctuelle, `L¹` et uniforme | ✅ |
+| C17b | Ponts de stabilité vers les secteurs fixes, la norme d’opérateur C12, la simulation C13 et les poids de branches C14 explicitement appariées | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -940,6 +998,8 @@ consolidée de tous les écarts vs les plans initiaux).
 | `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (111) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
 | `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | Gleason 1957 (théorème sous-jacent) | `BornRule/Assembly.lean` (215) | 0 sorry, 0 axiome | `v2.0-bornrule` |
 | `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.projectionEffect_weight_eq_born` | Sous non-vacuité d'effets et support nul état-relatif, le poids d'un effet de projection égale le poids de Born `‖A.starProjection ψ‖²`, en dimension quelconque `n ≥ 1` | Busch 2003, PRL 91, 120403 | `BornRule/EffectPerspectives/Main.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.qubit_projectionEffect_weight_eq_born` | Corollaire explicite en dimension deux (qubit) du théorème précédent, sans invoquer `Gleason.gleason` | Busch 2003 (spécialisé `n = 2`) | `BornRule/EffectPerspectives/Qubit.lean` | 0 sorry, 0 axiome | — |
 | `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
 | `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisée non nulle imposent `R ≤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | — |
 | `redundant_records_give_interference_lower_bound` | Tout circuit satisfaisant le proxy exact a longueur au moins `ceilHalf R` | Proxy exact + C2 dans les deux orientations | `Complexity/RecordInterferenceBound.lean` (96) | 0 sorry, 0 axiome | — |
@@ -1004,7 +1064,16 @@ Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvab
   directement, mais en hérite par transitivité via `BornRule.Perspective`
   (chaîne à trois niveaux HistoriesKent → BornRule → Uhlhorn/Gleason externe) —
   même absence de fuite d'axiome, confirmée sur `contrary_inferences` et les
-  35 autres déclarations publiques du bloc.
+  35 autres déclarations publiques du bloc. **`BornRule/EffectPerspectives`**
+  (extension qubit/Busch) réutilise, dans la même révision épinglée déjà en
+  place, `Gleason.Busch.Effects`/`Gleason.Busch.Main` : `Gleason.IsEffect`,
+  `Gleason.EffectMeasure`, et surtout `Gleason.busch`/`Gleason.busch_born_rule`
+  (le théorème de Busch complet, appliqué directement en un seul point,
+  `EffectMeasure.lean`, jamais reprouvé). Contrairement à `Gleason.gleason`
+  (dimension `≥ 3`), Busch s'applique dès la dimension `1`, ce qui permet
+  d'atteindre le qubit (`n = 2`) sans emprunter la voie projective. Aucune
+  déclaration de dépendance n'a été ajoutée ou modifiée : toutes ces
+  déclarations existaient déjà dans la révision épinglée.
 - `mathlib`, `rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"`.
 
 `./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'état exact
@@ -1623,8 +1692,42 @@ connects redundant records to Born weights for a given model, under (Pos),
 (Norm), (Grain), (Null) — it does not claim that records alone imply the
 Born rule, that (Grain) need only hold on physically realized
 perspectives, or approximate/generic many-body branch-decomposition
-uniqueness (canonical uniqueness restricted to a physically admissible
-domain of perspectives remains problem C15).
+uniqueness.
+
+**C15** is the Lean formalization and repository integration of Theorem 3
+and Corollary 2 of Marko Lela, “The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors”
+(arXiv:2603.24619v1). It concerns induced weights on admissible record
+situations, not a measure on the full projector lattice. Internal
+equivalence initially means equality of binary refinement profiles; exact
+binary saturation then proves that projected magnitude classifies those
+profiles. The resulting functional equation forces
+`W = c ‖P_R Ψ‖²`, and finite normalization fixes `c = 1`. Additivity may be
+inherited from an extensive valuation on disjoint continuation bundles. No
+Gleason, Busch, decision-theoretic, or envariance theorem is used. Binary
+saturation is assumed rather than derived from C14 dynamics; dense
+saturation plus continuity, the physical C14/C15 bridge, and C16 are
+explicitly deferred.
+
+**C17** is the first quantitative stability theorem within this
+development. It assumes that both weights already obey the exact quadratic
+law supplied by C15 and measures perturbations by the distance between
+projected components `u = P_(R₁)x Ψ₁x` and `v = P_(R₂)x Ψ₂x`. It proves
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, the unit-ball estimate
+`|W₁-W₂| ≤ 2‖u-v‖`, and explicit finite-`L¹`, `2·card(s)·ε`, and half-`L¹`
+bounds. It does not address approximate C15 hypotheses, approximate branch
+uniqueness, or a dynamical derivation of component proximity. No historical
+priority claim is made.
+
+**C17b** is an integration milestone, not a strengthening of the already
+completed reduced C17 core. On the unit ball, a fixed sector satisfies
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; projectors within operator-norm error `ε` satisfy
+`|w_R(ψ)-w_S(ψ)| ≤ 2ε`. A C13 simulation certificate therefore gives
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε` for every fixed sector. C14 branch weights also
+inherit the generic branch-vector bound when the caller supplies an explicit
+branch correspondence. These bridges do not establish approximate branch
+matching or uniqueness, approximate saturation, or physical persistence of
+record selection.
 
 ## AI assistance
 
@@ -1876,6 +1979,25 @@ initial plans).
 | B4 | Final assembly, theorem grainCoherenceTheorem | ✅ |
 | Nonvacuity | E₀ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | ✅ |
 
+## Milestones — BornRule/EffectPerspectives (qubit/Busch extension)
+
+See also `QuantumFoundations/BornRule/EffectPerspectives/README.md` for the
+full detail (scope, derivations, interpretive non-claims).
+
+| Milestone | Content | Status |
+|-----------|---------|--------|
+| QB1 | `Effect` (subtype of `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (finite labelled POVM-like family), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (refinement via `parent` + fiber-sum reconstruction); `Refines.trans` deferred (documented, non-blocking) | ✅ |
+| QB4 | `EstimationRule` (weight/non-negativity/normalization/`grain`), a strictly larger hypothesis domain than the projective `AxGrain` | ✅ |
+| QB5 | Context independence, zero/unit-effect weight, and binary additivity **derived** from `grain` alone (never axioms) | ✅ |
+| QB6 | Construction of `Gleason.EffectMeasure`; direct application of `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (state-relative); fallback pinning theorem `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born`: Born weight for projection effects, in arbitrary finite dimension | ✅ |
+| QB9 | Explicit dimension-two (qubit) corollary, without invoking `Gleason.gleason` | ✅ |
+| QB10 | Nonvacuity: `pureStateEstimationRule` (proved directly, without Busch), exact qubit witnesses | ✅ |
+| QB11 | Bridge to Naimark: `EffectPerspective.toPOVM`, dilated projective realization (`naimark`/`naimark_born`/`naimark_projective_form`), a pure integration layer | ✅ |
+
 ## Milestones — HistoriesKent
 
 | Milestone | Content | Status |
@@ -1904,6 +2026,9 @@ initial plans).
 | C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
 | C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
 | C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
+| C15 | Uniqueness `W = c ‖P_R Ψ‖²` on admissible record situations under stability, internal equivalence, and binary saturation | ✅ |
+| C17 | First quantitative stability theorem for C15 weights under projected-component perturbations, with pointwise, `L¹`, and uniform bounds | ✅ |
+| C17b | Stability bridges to fixed sectors, C12 operator norm, C13 simulation, and explicitly matched C14 branch weights | ✅ |
 
 ## Main theorems — reference table
 
@@ -1918,6 +2043,8 @@ initial plans).
 | uhlhorn_finite_dim | In dimension n ≥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (111) | 0 sorry, 0 axioms | v1.0-uhlhorn |
 | grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (∑ᵢ‖⟨v,fᵢ⟩‖²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (215) | 0 sorry, 0 axioms | v2.0-bornrule |
 | grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.projectionEffect_weight_eq_born | Under effect nonvacuity and state-relative null support, the weight of a projection effect equals the Born weight ‖A.starProjection ψ‖², in arbitrary finite dimension n ≥ 1 | Busch 2003, PRL 91, 120403 | BornRule/EffectPerspectives/Main.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.qubit_projectionEffect_weight_eq_born | Explicit dimension-two (qubit) corollary of the preceding theorem, without invoking Gleason.gleason | Busch 2003 (specialized n = 2) | BornRule/EffectPerspectives/Qubit.lean | 0 sorry, 0 axioms | — |
 | contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | HistoriesKent/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
 | regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R ≤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | — |
 | redundant_records_give_interference_lower_bound | Every circuit satisfying the exact proxy has length at least `ceilHalf R` | Exact proxy + C2 in both orientations | Complexity/RecordInterferenceBound.lean (96) | 0 sorry, 0 axioms | — |
@@ -1983,7 +2110,16 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  transitively through BornRule.Perspective (the three-level chain
  HistoriesKent → BornRule → external Uhlhorn/Gleason). The same absence of axiom
  leakage was confirmed for contrary_inferences and the other 35 public
- declarations in the block.
+ declarations in the block. **BornRule/EffectPerspectives** (the qubit/Busch
+ extension) reuses, within the same already-pinned revision,
+ Gleason.Busch.Effects/Gleason.Busch.Main: Gleason.IsEffect,
+ Gleason.EffectMeasure, and above all Gleason.busch/Gleason.busch_born_rule
+ (the full Busch theorem, applied directly at a single point,
+ EffectMeasure.lean, never reproved). Unlike Gleason.gleason (dimension
+ ≥ 3), Busch applies from dimension 1 onward, which is what makes the qubit
+ case (n = 2) reachable without the projective route. No dependency
+ declaration was added or changed: every one of these declarations already
+ existed in the pinned revision.
 - mathlib, rev = "8bba4200986270d3b30be2bb2f8840af47a7854f".
 
 ./setup.sh (lake exe cache get, then lake build) reproduces the exact
