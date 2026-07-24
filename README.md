@@ -898,6 +898,24 @@ consolidée de tous les écarts vs les plans initiaux).
 | B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
 | Nonvacuity | `E₀ v` (règle de Born) habite simultanément Grain+Norm+Pos+Null            | ✅ |
 
+## Jalons — BornRule/EffectPerspectives (extension qubit/Busch)
+
+Voir aussi `QuantumFoundations/BornRule/EffectPerspectives/README.md` pour le
+détail complet (portée, dérivations, non-revendications interprétatives).
+
+| Jalon | Contenu | État |
+|-------|---------|------|
+| QB1 | `Effect` (sous-type de `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (POVM finie étiquetée), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (raffinement par `parent` + reconstruction par fibre) ; `Refines.trans` différé (documenté, non bloquant) | ✅ |
+| QB4 | `EstimationRule` (poids/positivité/normalisation/`grain`), hypothèse strictement plus large que `AxGrain` projectif | ✅ |
+| QB5 | Indépendance contextuelle, poids nul/unité et additivité binaire **dérivés** de `grain` seul (jamais des axiomes) | ✅ |
+| QB6 | Construction de `Gleason.EffectMeasure` ; application directe de `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (état-relatif) ; pinning de repli `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born` : poids de Born pour les effets de projection, en dimension quelconque | ✅ |
+| QB9 | Corollaire explicite en dimension deux (qubit), sans passer par `Gleason.gleason` | ✅ |
+| QB10 | Non-vacuité : `pureStateEstimationRule` (preuve directe, sans Busch), témoins qubit exacts | ✅ |
+
 ## Jalons — HistoriesKent
 
 | Jalon | Contenu                                                                        | État |
@@ -940,6 +958,8 @@ consolidée de tous les écarts vs les plans initiaux).
 | `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (111) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
 | `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | Gleason 1957 (théorème sous-jacent) | `BornRule/Assembly.lean` (215) | 0 sorry, 0 axiome | `v2.0-bornrule` |
 | `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.projectionEffect_weight_eq_born` | Sous non-vacuité d'effets et support nul état-relatif, le poids d'un effet de projection égale le poids de Born `‖A.starProjection ψ‖²`, en dimension quelconque `n ≥ 1` | Busch 2003, PRL 91, 120403 | `BornRule/EffectPerspectives/Main.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.qubit_projectionEffect_weight_eq_born` | Corollaire explicite en dimension deux (qubit) du théorème précédent, sans invoquer `Gleason.gleason` | Busch 2003 (spécialisé `n = 2`) | `BornRule/EffectPerspectives/Qubit.lean` | 0 sorry, 0 axiome | — |
 | `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
 | `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisée non nulle imposent `R ≤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | — |
 | `redundant_records_give_interference_lower_bound` | Tout circuit satisfaisant le proxy exact a longueur au moins `ceilHalf R` | Proxy exact + C2 dans les deux orientations | `Complexity/RecordInterferenceBound.lean` (96) | 0 sorry, 0 axiome | — |
@@ -1004,7 +1024,16 @@ Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvab
   directement, mais en hérite par transitivité via `BornRule.Perspective`
   (chaîne à trois niveaux HistoriesKent → BornRule → Uhlhorn/Gleason externe) —
   même absence de fuite d'axiome, confirmée sur `contrary_inferences` et les
-  35 autres déclarations publiques du bloc.
+  35 autres déclarations publiques du bloc. **`BornRule/EffectPerspectives`**
+  (extension qubit/Busch) réutilise, dans la même révision épinglée déjà en
+  place, `Gleason.Busch.Effects`/`Gleason.Busch.Main` : `Gleason.IsEffect`,
+  `Gleason.EffectMeasure`, et surtout `Gleason.busch`/`Gleason.busch_born_rule`
+  (le théorème de Busch complet, appliqué directement en un seul point,
+  `EffectMeasure.lean`, jamais reprouvé). Contrairement à `Gleason.gleason`
+  (dimension `≥ 3`), Busch s'applique dès la dimension `1`, ce qui permet
+  d'atteindre le qubit (`n = 2`) sans emprunter la voie projective. Aucune
+  déclaration de dépendance n'a été ajoutée ou modifiée : toutes ces
+  déclarations existaient déjà dans la révision épinglée.
 - `mathlib`, `rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"`.
 
 `./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'état exact
@@ -1876,6 +1905,24 @@ initial plans).
 | B4 | Final assembly, theorem grainCoherenceTheorem | ✅ |
 | Nonvacuity | E₀ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | ✅ |
 
+## Milestones — BornRule/EffectPerspectives (qubit/Busch extension)
+
+See also `QuantumFoundations/BornRule/EffectPerspectives/README.md` for the
+full detail (scope, derivations, interpretive non-claims).
+
+| Milestone | Content | Status |
+|-----------|---------|--------|
+| QB1 | `Effect` (subtype of `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (finite labelled POVM-like family), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (refinement via `parent` + fiber-sum reconstruction); `Refines.trans` deferred (documented, non-blocking) | ✅ |
+| QB4 | `EstimationRule` (weight/non-negativity/normalization/`grain`), a strictly larger hypothesis domain than the projective `AxGrain` | ✅ |
+| QB5 | Context independence, zero/unit-effect weight, and binary additivity **derived** from `grain` alone (never axioms) | ✅ |
+| QB6 | Construction of `Gleason.EffectMeasure`; direct application of `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (state-relative); fallback pinning theorem `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born`: Born weight for projection effects, in arbitrary finite dimension | ✅ |
+| QB9 | Explicit dimension-two (qubit) corollary, without invoking `Gleason.gleason` | ✅ |
+| QB10 | Nonvacuity: `pureStateEstimationRule` (proved directly, without Busch), exact qubit witnesses | ✅ |
+
 ## Milestones — HistoriesKent
 
 | Milestone | Content | Status |
@@ -1918,6 +1965,8 @@ initial plans).
 | uhlhorn_finite_dim | In dimension n ≥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (111) | 0 sorry, 0 axioms | v1.0-uhlhorn |
 | grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (∑ᵢ‖⟨v,fᵢ⟩‖²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (215) | 0 sorry, 0 axioms | v2.0-bornrule |
 | grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.projectionEffect_weight_eq_born | Under effect nonvacuity and state-relative null support, the weight of a projection effect equals the Born weight ‖A.starProjection ψ‖², in arbitrary finite dimension n ≥ 1 | Busch 2003, PRL 91, 120403 | BornRule/EffectPerspectives/Main.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.qubit_projectionEffect_weight_eq_born | Explicit dimension-two (qubit) corollary of the preceding theorem, without invoking Gleason.gleason | Busch 2003 (specialized n = 2) | BornRule/EffectPerspectives/Qubit.lean | 0 sorry, 0 axioms | — |
 | contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | HistoriesKent/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
 | regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R ≤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | — |
 | redundant_records_give_interference_lower_bound | Every circuit satisfying the exact proxy has length at least `ceilHalf R` | Exact proxy + C2 in both orientations | Complexity/RecordInterferenceBound.lean (96) | 0 sorry, 0 axioms | — |
@@ -1983,7 +2032,16 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  transitively through BornRule.Perspective (the three-level chain
  HistoriesKent → BornRule → external Uhlhorn/Gleason). The same absence of axiom
  leakage was confirmed for contrary_inferences and the other 35 public
- declarations in the block.
+ declarations in the block. **BornRule/EffectPerspectives** (the qubit/Busch
+ extension) reuses, within the same already-pinned revision,
+ Gleason.Busch.Effects/Gleason.Busch.Main: Gleason.IsEffect,
+ Gleason.EffectMeasure, and above all Gleason.busch/Gleason.busch_born_rule
+ (the full Busch theorem, applied directly at a single point,
+ EffectMeasure.lean, never reproved). Unlike Gleason.gleason (dimension
+ ≥ 3), Busch applies from dimension 1 onward, which is what makes the qubit
+ case (n = 2) reachable without the projective route. No dependency
+ declaration was added or changed: every one of these declarations already
+ existed in the pinned revision.
 - mathlib, rev = "8bba4200986270d3b30be2bb2f8840af47a7854f".
 
 ./setup.sh (lake exe cache get, then lake build) reproduces the exact

@@ -1198,6 +1198,80 @@ axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
 courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
 Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
 
+## BornRule/EffectPerspectives — extension qubit/Busch (QB1–QB10) — ✅ CLOS (2026-07-24)
+
+**Énoncé.** Route alternative vers le poids de Born, fondée sur les effets
+(`0 ≤ T ≤ 1`, ordre de Loewner) plutôt que sur des sous-espaces projectifs
+deux à deux orthogonaux, réutilisant sans le modifier le théorème de Busch
+(P. Busch, *Quantum states and generalized observables: a simple proof of
+Gleason's theorem*, PRL 91, 120403, 2003), pinné dans `gleason-theorem-lean`
+(`Gleason.busch`/`Gleason.busch_born_rule`). Contrairement à Gleason
+(`n ≥ 3`), Busch s'applique dès `n = 1`, atteignant le qubit (`n = 2`) là où
+la voie projective `BornRule` est muette. Voir le détail complet dans
+`QuantumFoundations/BornRule/EffectPerspectives/README.md`.
+
+- [x] **QB1 — `Basic.lean`** : `Effect n` (sous-type de `Gleason.IsEffect`,
+      réutilisant — pas recréant — la notion de positivité de Busch) ;
+      `zeroEffect`, `oneEffect`, `complementEffect`, `projectionEffect`
+- [x] **QB2 — `Perspective.lean`** : `EffectPerspective` (famille finie
+      étiquetée d'effets sommant à `1`, sans contrainte de non-nullité,
+      d'injectivité ni de commutativité) ; `binaryPerspective`,
+      `splitPerspective`, `duplicateZeroPerspective`
+- [x] **QB3 — `Refinement.lean`** : `Refines` (raffinement par `parent` +
+      reconstruction par somme de fibre) ; `Refines.refl`,
+      `collapseToChosen`, `splitRefinesBinary`, `duplicateZeroRefinesBinary`.
+      **`Refines.trans` différé** (documenté dans le fichier : réindexation
+      de double somme finie disproportionnée par rapport à un objectif
+      secondaire explicitement différable ; aucun jalon QB4–QB10 n'en a
+      besoin)
+- [x] **QB4 — `Estimation.lean`** : `EstimationRule` (poids, positivité,
+      normalisation par perspective, `grain` — cohérence de raffinement sur
+      le carrier `EffectPerspective`, distincte de `AxGrain` projectif)
+- [x] **QB5 — `ContextIndependence.lean`** : indépendance contextuelle,
+      poids de l'effet nul, poids de l'effet unité, et additivité binaire
+      des effets — quatre **théorèmes dérivés** de `grain` seul, jamais des
+      axiomes ni des champs de structure
+- [x] **QB6 — `EffectMeasure.lean`** : `EstimationRule.toEffectMeasure :
+      Gleason.EffectMeasure n` ; application directe de `Gleason.busch` et
+      `Gleason.busch_born_rule` (la preuve de Busch elle-même n'est jamais
+      reproduite)
+- [x] **QB7 — `PureStatePinning.lean`** : `ContextualNullSupport`
+      (support nul état-relatif, posé directement sur les occurrences
+      d'effet) ; théorème de repli `density_bornValue_eq_pure_of_null`,
+      réutilisant `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal`
+      (B3) et `Gleason.bornValue_span_singleton` (aucune des deux n'est
+      reprouvée)
+- [x] **QB8 — `Main.lean`** : `projectionEffect_weight_eq_born` et
+      `contextual_projection_weight_eq_born` — le poids de Born pour les
+      effets de projection, en dimension finie quelconque, sous support nul
+      état-relatif
+- [x] **QB9 — `Qubit.lean`** : `qubit_projectionEffect_weight_eq_born` et
+      `qubit_contextual_projection_weight_eq_born` — spécialisations pures
+      de QB8 à `n := 2`, sans répétition de preuve
+- [x] **QB10 — `Nonvacuity.lean`** : `pureStateEstimationRule` (positivité/
+      normalisation/`grain` prouvées directement, jamais via
+      `Gleason.busch`) ; témoins qubit concrets (`qubitZeroState`,
+      `qubitOneState`), exemples exacts poids-un/poids-zéro
+- [x] **Intégration** : dix imports ajoutés à `QuantumFoundations.lean`,
+      dans l'ordre de dépendance ; aucun fichier existant modifié au-delà de
+      ces dix lignes d'import
+- [x] **Audit `#print axioms`** : 16 déclarations représentatives (QB5–QB10)
+      dépendent uniquement de `[propext, Classical.choice, Quot.sound]`
+- [x] `guard.sh` (et sa reproduction PowerShell) : 0 axiome, 0
+      `native_decide`, 0 sorry sur tout le dépôt après intégration
+
+### Hors scope (extensions futures possibles, pas des manques de ce jalon)
+
+- **`Refines.trans`** (QB3.2), voir ci-dessus.
+- **`effectWeight_eq_pure_expectation`** : généralisation optionnelle de QB8
+  aux effets arbitraires (pas seulement `projectionEffect A`) — demanderait
+  d'exposer publiquement l'identité opératorielle complète et un calcul de
+  trace généralisé ; documenté précisément dans `Main.lean`, section QB8.3.
+- **`ProjectiveBridge.lean`** (adaptateur optionnel reliant `projectionEffect`
+  au carrier projectif `BornRule.Perspective`) : non tenté dans cette passe.
+- Aucune revendication de disponibilité physique des effets, aucune lecture
+  décision-théorique/bayésienne des poids, aucune revendication everettienne.
+
 ## HistoriesKent — Théorème des inférences contraires de Kent
 
 **Énoncé.** Kent, *Quasiclassical Dynamics in a Closed Quantum System*, PRL 78,
@@ -2373,6 +2447,77 @@ final statement, with grainCoherenceTheorem equivalent to
 theorem1_general), one fewer axiom (gleason proved rather than postulated),
 and a shorter proof at several points thanks to reuse of the Uhlhorn
 infrastructure (U2, U3a) and the Proj1-first design of g.
+
+## BornRule/EffectPerspectives — qubit/Busch extension (QB1–QB10) — ✅ CLOSED (2026-07-24)
+
+Statement. An alternative route to the Born weight, built on effects
+(0 ≤ T ≤ 1, Loewner order) rather than pairwise-orthogonal projective
+subspaces, reusing without modification Busch's theorem (P. Busch,
+Quantum states and generalized observables: a simple proof of Gleason's
+theorem, PRL 91, 120403, 2003), pinned in gleason-theorem-lean
+(Gleason.busch/Gleason.busch_born_rule). Unlike Gleason (n ≥ 3), Busch
+applies from n = 1 onward, reaching the qubit (n = 2) where the projective
+BornRule route is silent. See the full detail in
+QuantumFoundations/BornRule/EffectPerspectives/README.md.
+
+- [x] QB1 — Basic.lean: Effect n (subtype of Gleason.IsEffect, reusing —
+      not recreating — Busch's positivity notion); zeroEffect, oneEffect,
+      complementEffect, projectionEffect
+- [x] QB2 — Perspective.lean: EffectPerspective (finite labelled family of
+      effects summing to 1, with no nonzero, injectivity, or commutativity
+      constraint); binaryPerspective, splitPerspective,
+      duplicateZeroPerspective
+- [x] QB3 — Refinement.lean: Refines (refinement via parent + fiber-sum
+      reconstruction); Refines.refl, collapseToChosen, splitRefinesBinary,
+      duplicateZeroRefinesBinary. Refines.trans deferred (documented in the
+      file: the double finite-sum reindexing it needs proved
+      disproportionate relative to an explicitly deferrable secondary
+      goal; no QB4–QB10 milestone needs it)
+- [x] QB4 — Estimation.lean: EstimationRule (weight, non-negativity,
+      per-perspective normalization, grain — refinement coherence on the
+      EffectPerspective carrier, distinct from the projective AxGrain)
+- [x] QB5 — ContextIndependence.lean: context independence, zero-effect
+      weight, unit-effect weight, and binary effect additivity — four
+      derived theorems from grain alone, never axioms or structure fields
+- [x] QB6 — EffectMeasure.lean: EstimationRule.toEffectMeasure :
+      Gleason.EffectMeasure n; direct application of Gleason.busch and
+      Gleason.busch_born_rule (the Busch proof itself is never reproduced)
+- [x] QB7 — PureStatePinning.lean: ContextualNullSupport (state-relative
+      null support, stated directly on effect occurrences); fallback
+      theorem density_bornValue_eq_pure_of_null, reusing
+      QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal (B3)
+      and Gleason.bornValue_span_singleton (neither is reproved)
+- [x] QB8 — Main.lean: projectionEffect_weight_eq_born and
+      contextual_projection_weight_eq_born — the Born weight for
+      projection effects, in arbitrary finite dimension, under
+      state-relative null support
+- [x] QB9 — Qubit.lean: qubit_projectionEffect_weight_eq_born and
+      qubit_contextual_projection_weight_eq_born — pure specializations of
+      QB8 at n := 2, with no proof repetition
+- [x] QB10 — Nonvacuity.lean: pureStateEstimationRule (non-negativity/
+      normalization/grain proved directly, never via Gleason.busch);
+      concrete qubit witnesses (qubitZeroState, qubitOneState), exact
+      weight-one/weight-zero examples
+- [x] Integration: ten imports added to QuantumFoundations.lean, in
+      dependency order; no existing file modified beyond these ten import
+      lines
+- [x] #print axioms audit: 16 representative declarations (QB5–QB10)
+      depend only on [propext, Classical.choice, Quot.sound]
+- [x] guard.sh (and its PowerShell reproduction): 0 axioms, 0
+      native_decide, 0 sorry across the whole repository after integration
+
+### Out of scope (possible future extensions, not deficiencies of this milestone)
+
+- Refines.trans (QB3.2), see above.
+- effectWeight_eq_pure_expectation: an optional generalization of QB8 to
+  arbitrary effects (not only projectionEffect A) — would require publicly
+  exposing the full operator identity and a generalized trace computation;
+  documented precisely in Main.lean, section QB8.3.
+- ProjectiveBridge.lean (an optional adapter connecting projectionEffect
+  back to the projective BornRule.Perspective carrier): not attempted in
+  this pass.
+- No claim of physical availability of effects, no decision-theoretic/
+  Bayesian reading of the derived weights, no Everettian claim.
 
 ## HistoriesKent — Kent's contrary-inferences theorem
 

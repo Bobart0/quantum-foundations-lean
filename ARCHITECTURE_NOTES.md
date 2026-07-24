@@ -211,6 +211,66 @@ section `MILESTONES.md` correspondante pour le détail de la dérivation.
   et la convergence intersubjective entre observateurs comme corollaire du
   théorème principal — voir `MILESTONES.md`, section « Hors scope ».
 
+## BornRule/EffectPerspectives (QB1–QB10) — extension qubit/Busch
+
+- **Carrier délibérément distinct, jamais interchangeable.**
+  `EffectPerspective` (POVM finie étiquetée, sans contrainte de non-nullité,
+  d'injectivité ni de commutativité) et `EstimationRule.grain` sont des
+  types et prédicats différents de `BornRule.Perspective`/`AxGrain`
+  (famille de sous-espaces non nuls deux à deux orthogonaux). Aucune des
+  deux paires n'est dérivée de l'autre : le domaine d'hypothèse d'`Effect`
+  est strictement plus large, ce qui est précisément ce qui permet
+  d'atteindre `n = 2` via Busch là où Gleason exige `n ≥ 3`.
+- **`Refines.trans` (QB3.2) différé, documenté dans `Refinement.lean`.** La
+  composition de deux raffinements nécessite une réindexation de double
+  somme finie (fusionner deux sommes conditionnelles indexées par des types
+  de sorties différents, puis effondrer la somme interne) ; la route
+  naturelle a produit des échecs `simp`/`rw` disproportionnés par rapport à
+  un objectif secondaire que la tâche autorise explicitement à différer.
+  Aucun jalon QB4–QB10 ne compose deux raffinements
+  (`collapseToChosen`/`splitRefinesBinary`/`duplicateZeroRefinesBinary`
+  suffisent).
+- **QB7 — réutilisation, pas reproduction, du pinning existant.** Le
+  théorème de repli `density_bornValue_eq_pure_of_null` réutilise
+  directement `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal`
+  (B3) pour l'identification opératorielle difficile de `ρ`, et
+  `Gleason.bornValue_span_singleton`/`Gleason.positive_inner_self_eq_zero`
+  pour dériver l'hypothèse `hker` plus faible à partir du seul support nul
+  projectif. La formule de Born pour une sous-espace `A` *arbitraire* (pas
+  seulement la droite `ℂ∙ψ`) est ensuite obtenue par un calcul direct
+  `InnerProductSpace.rankOne`/`trace_rankOne`, généralisation immédiate de
+  la même technique que `Gleason.bornValue_span_singleton` elle-même.
+- **Convention `inner_conj_symm` à vérifier empiriquement.** Le sens exact
+  (`starRingEnd 𝕜 ⟪b,a⟫ = ⟪a,b⟫`, pas l'inverse) est facile à mal appliquer ;
+  déterminé ici par les messages d'erreur du compilateur plutôt que supposé.
+- **Piège d'élaboration récurrent : `Fin (def).outcomes`.** Les numéraux
+  (`0`, `1`, `2`) utilisés comme arguments d'un type `Fin` dérivé d'un champ
+  de structure opaque échouent la synthèse `OfNat` (Lean ne déplie pas les
+  `def` pendant la recherche d'instance, même si le type est définitionnellement
+  un `Fin k` concret). Corrigé systématiquement par ascription explicite
+  (`(0 : Fin 2)`) dans les énoncés, `show`/`change` pour forcer la réduction
+  défEq avant `Fin.sum_univ_two`/`_three`, et des lemmes locaux
+  `fin2_cases`/`fin3_cases` remplaçant `fin_cases` brut (qui produit des
+  termes `⟨0,⋯⟩` peu maniables face aux lemmes `simp` écrits pour des
+  littéraux `OfNat` propres).
+- **QB8/QB9 — aucun détour par `Gleason.gleason`.** La seule voie vers une
+  représentation Busch/Gleason est `Gleason.busch`/`Gleason.busch_born_rule`,
+  invoqué une seule fois, dans `EffectMeasure.lean` (QB6) ; confirmé par
+  recherche directe (`rg 'Gleason\.gleason|grainCoherenceTheorem_projector'`
+  sur le répertoire, aucune occurrence de code, seulement des mentions en
+  prose de ce qui n'est PAS utilisé).
+- **Différé, non bloquant : `effectWeight_eq_pure_expectation`.** Une
+  généralisation optionnelle de QB8 aux effets arbitraires (pas seulement
+  `projectionEffect A`) demanderait d'exposer publiquement l'identité
+  opératorielle complète `ρ = Gleason.projL (ℂ ∙ ψ)` (actuellement interne à
+  la preuve de `density_bornValue_eq_pure_of_null`) et un calcul de trace
+  généralisé au-delà du cas `T = Gleason.projL A` ; documenté précisément
+  dans `Main.lean`, section QB8.3, non tenté.
+- **Hors scope explicite.** Aucune revendication de disponibilité physique
+  des effets, aucune lecture décision-théorique/bayésienne des poids
+  dérivés, aucune revendication everettienne — voir
+  `BornRule/EffectPerspectives/README.md`.
+
 ## HistoriesKent (K0–K3)
 
 - **Relocalisation préalable de `norm_sq_sum_of_pairwise_orthogonal` et
@@ -649,6 +709,63 @@ corresponding section of MILESTONES.md for details of the derivation.
  of the axioms (Grain)/(Norm)/(Pos)/(Null) themselves, and intersubjective
  convergence between observers as a corollary of the main theorem—see
  MILESTONES.md, section “Out of scope.”
+
+## BornRule/EffectPerspectives (QB1–QB10) — qubit/Busch extension
+
+- Deliberately distinct carrier, never interchangeable. EffectPerspective
+ (a finite labelled POVM-like family, with no nonzero, injectivity, or
+ commutativity constraint) and EstimationRule.grain are different types
+ and predicates from BornRule.Perspective/AxGrain (a family of pairwise-
+ orthogonal nonzero subspaces). Neither pair is derived from the other:
+ Effect's hypothesis domain is strictly larger, which is exactly what
+ makes n = 2 reachable via Busch where Gleason requires n ≥ 3.
+- Refines.trans (QB3.2) deferred, documented in Refinement.lean. Composing
+ two refinements requires reindexing a double finite sum (merging two
+ conditional sums indexed by different outcome types, then collapsing the
+ inner sum); the natural proof route produced simp/rw failures
+ disproportionate to a secondary goal the task explicitly permits
+ deferring. No QB4–QB10 milestone composes two refinements
+ (collapseToChosen/splitRefinesBinary/duplicateZeroRefinesBinary suffice).
+- QB7 — reuse, not reproduction, of the existing pinning theorem. The
+ fallback theorem density_bornValue_eq_pure_of_null directly reuses
+ QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal (B3) for
+ the hard operator identification of ρ, and
+ Gleason.bornValue_span_singleton/Gleason.positive_inner_self_eq_zero to
+ derive the weaker hker hypothesis from projective null support alone.
+ The Born-value formula for an arbitrary subspace A (not only the line
+ ℂ∙ψ) is then obtained by a direct
+ InnerProductSpace.rankOne/trace_rankOne computation, an immediate
+ generalization of the same technique Gleason.bornValue_span_singleton
+ itself uses.
+- inner_conj_symm's convention had to be verified empirically. The exact
+ direction (starRingEnd 𝕜 ⟪b,a⟫ = ⟪a,b⟫, not the reverse) is easy to
+ misapply; determined here from compiler error messages rather than
+ assumed.
+- Recurring elaboration pitfall: Fin (def).outcomes. Numerals (0, 1, 2)
+ used as arguments of a Fin type derived from an opaque structure field
+ fail OfNat synthesis (Lean does not unfold plain defs during instance
+ search, even though the type is definitionally a concrete Fin k). Fixed
+ systematically by explicit type ascription ((0 : Fin 2)) in statements,
+ show/change to force defeq reduction before Fin.sum_univ_two/_three, and
+ local fin2_cases/fin3_cases lemmas replacing raw fin_cases (which
+ produces unwieldy ⟨0,⋯⟩ terms that don't match simp lemmas written for
+ clean OfNat literals).
+- QB8/QB9 — no detour through Gleason.gleason. The only route to a
+ Busch/Gleason-type representation is Gleason.busch/Gleason.busch_born_rule,
+ invoked exactly once, in EffectMeasure.lean (QB6); confirmed by direct
+ search (rg 'Gleason\.gleason|grainCoherenceTheorem_projector' over the
+ directory returns no code occurrence, only prose mentions of what is NOT
+ used).
+- Deferred, non-blocking: effectWeight_eq_pure_expectation. An optional
+ generalization of QB8 to arbitrary effects (not only projectionEffect A)
+ would require publicly exposing the full operator identity
+ ρ = Gleason.projL (ℂ ∙ ψ) (currently internal to the proof of
+ density_bornValue_eq_pure_of_null) and a trace computation generalized
+ beyond the T = Gleason.projL A case; documented precisely in Main.lean,
+ section QB8.3, not attempted.
+- Explicitly out of scope. No claim of physical availability of effects,
+ no decision-theoretic/Bayesian reading of the derived weights, no
+ Everettian claim — see BornRule/EffectPerspectives/README.md.
 
 ## HistoriesKent (K0–K3)
 
