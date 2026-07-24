@@ -35,6 +35,13 @@ import QuantumFoundations.BornRule.EffectPerspectives.Main
 import QuantumFoundations.BornRule.EffectPerspectives.Qubit
 import QuantumFoundations.BornRule.EffectPerspectives.Nonvacuity
 import QuantumFoundations.BornRule.EffectPerspectives.NaimarkBridge
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Additive
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Basic
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Profiles
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Main
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Hilbert
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Continuation
+import QuantumFoundations.BornRule.RestrictedRecordSectors.Nonvacuity
 import QuantumFoundations.HistoriesKent.Defs
 import QuantumFoundations.HistoriesKent.Nonvacuity
 import QuantumFoundations.HistoriesKent.Basic
