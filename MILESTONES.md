@@ -3230,8 +3230,8 @@ no `Branches` module (only `BranchesRiedel`).
   (Pos)/(Norm)/(Grain)/(Null) throughout), (Grain) restricted to
   physically realized perspectives, approximate branch-uniqueness for the
   noisy model, and generic many-body branch canonicity. Restricted-domain
-  Born uniqueness over only physically admissible record perspectives
-  remains the separate **C15** problem.
+  Born uniqueness is handled abstractly by C15; its physical saturation
+  bridge remains the separate **C16** problem.
 
 ### Résumé français
 
@@ -3381,4 +3381,49 @@ Busch, décision-théorique ou d'envariance n'est utilisé.
 **Frontière exacte.** La saturation binaire est supposée; C15 ne prouve pas
 que la dynamique ou les secteurs physiques de C14 la satisfont. La
 saturation dense accompagnée de continuité, les profils approximatifs, le
-pont physique C14/C15, C16 et C17 sont reportés.
+pont physique C14/C15 et C16 sont reportés. La première stabilité quantitative
+de la loi exacte est traitée séparément par C17 ci-dessous.
+
+## C17 — Première stabilité quantitative des poids de secteurs restreints — ✅ CLOS (2026-07-24)
+
+**Cible scientifique.** C17 est le premier théorème quantitatif non trivial
+de stabilité dans ce développement. Il part de deux lois quadratiques exactes
+déjà fournies par C15 et compare leurs composantes projetées
+`u = P_(R₁ x) Ψ₁ x` et `v = P_(R₂ x) Ψ₂ x`. La perturbation peut donc porter
+sur l'état, le secteur de record, ou les deux, sans métrique sur les
+sous-espaces.
+
+**Résultats fermés.**
+
+- Le cœur générique, valable dans tout groupe additif normé commutatif,
+  factorise la différence des carrés et prouve
+  `|‖u‖² - ‖v‖²| ≤ (‖u‖ + ‖v‖) ‖u-v‖`.
+- Sur la boule unité, cette borne devient
+  `|‖u‖² - ‖v‖²| ≤ 2 ‖u-v‖`.
+- `QuadraticWeightLaw L W` isole l'interface exacte
+  `W x = ‖projectedComponent L x‖₊²`. L'adaptateur C15 est une application
+  directe de `restricted_record_sector_born`, sans duplication de sa preuve.
+- La stabilité ponctuelle des poids suit immédiatement du cœur générique.
+  La contraction de `starProjection` donne aussi le corollaire pour états de
+  norme au plus `1`, donc pour états normalisés.
+- Sur une famille finie `s`, les estimations sont sommées terme à terme. Sous
+  une erreur uniforme `ε`,
+  `∑ x ∈ s, |W₁ x - W₂ x| ≤ 2 * card(s) * ε`; la demi-distance `L¹` est
+  bornée par `card(s) * ε`.
+- `StabilityNonvacuity.lean` donne le témoin non nul `u=1`, `v=1/2` :
+  différence des poids `3/4`, distance des composantes `1/2`, borne à
+  constante deux égale à `1`, ainsi qu'un exemple fini à deux points.
+
+**Interprétation.** Une fois les poids de secteurs restreints fixés par C15,
+les perturbations des composantes projetées entraînent des perturbations
+linéairement contrôlées des poids correspondants. La demi-`L¹` peut être
+interprétée comme une borne de type variation totale finie lorsque les poids
+sont normalisés sur la famille, sans introduire de bibliothèque générale de
+distributions de probabilité.
+
+**Frontière exacte.** C17 ne prouve pas la stabilité de C15 sous des
+hypothèses approximatives, l'unicité approximative des décompositions en
+branches, ni la production dynamique de la borne sur la distance des
+composantes. C16, l'optimalité de la constante `2` et tout renforcement de
+C17 restent hors de ce jalon. Aucune revendication de priorité historique
+n'est faite.

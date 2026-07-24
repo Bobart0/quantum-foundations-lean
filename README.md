@@ -6,7 +6,8 @@ unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
 2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13, et désormais
 le pont **C14 records → poids de Born** ainsi que **C15, unicité quadratique
-sur les secteurs de records restreints**.** Sept blocs
+sur les secteurs de records restreints**, désormais complété par **C17,
+première stabilité quantitative des poids restreints**.** Sept blocs
 mécanisés, **sans axiome**
 (au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
 voir plus bas), en dimension finie sur ℂ.
@@ -663,7 +664,17 @@ L’additivité peut être héritée d’une valuation extensive sur des faiscea
 continuations disjoints. Aucun théorème de Gleason, Busch,
 décision-théorique ou d’envariance n’est utilisé. La saturation binaire est
 supposée, non dérivée de la dynamique C14; saturation dense plus continuité,
-le pont physique C14/C15, C16 et C17 sont explicitement différés.
+le pont physique C14/C15 et C16 sont explicitement différés.
+
+**C17** est le premier théorème de stabilité quantitative de ce
+développement. Il suppose que les deux poids satisfont déjà la loi
+quadratique exacte fournie par C15 et mesure la perturbation par la distance
+entre composantes projetées `u = P_(R₁)x Ψ₁x` et `v = P_(R₂)x Ψ₂x`. Il prouve
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, puis `|W₁-W₂| ≤ 2‖u-v‖` sur la boule unité, ainsi
+que les bornes finies `L¹`, `2·card(s)·ε` et demi-`L¹`. Il ne traite ni des
+hypothèses C15 approximatives, ni de l’unicité approximative des branches, ni
+de la production dynamique de la proximité des composantes. Aucune
+revendication de priorité historique n’est faite.
 
 ## Assistance IA
 
@@ -960,6 +971,7 @@ détail complet (portée, dérivations, non-revendications interprétatives).
 | C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
 | C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
 | C15 | Unicité `W = c ‖P_R Ψ‖²` sur les situations de record admissibles sous stabilité, équivalence interne et saturation binaire | ✅ |
+| C17 | Première stabilité quantitative des poids C15 sous perturbation des composantes projetées, avec bornes ponctuelle, `L¹` et uniforme | ✅ |
 
 ## Théorèmes principaux — table de référence
 
@@ -1682,8 +1694,18 @@ profiles. The resulting functional equation forces
 inherited from an extensive valuation on disjoint continuation bundles. No
 Gleason, Busch, decision-theoretic, or envariance theorem is used. Binary
 saturation is assumed rather than derived from C14 dynamics; dense
-saturation plus continuity, the physical C14/C15 bridge, C16, and C17 are
+saturation plus continuity, the physical C14/C15 bridge, and C16 are
 explicitly deferred.
+
+**C17** is the first quantitative stability theorem within this
+development. It assumes that both weights already obey the exact quadratic
+law supplied by C15 and measures perturbations by the distance between
+projected components `u = P_(R₁)x Ψ₁x` and `v = P_(R₂)x Ψ₂x`. It proves
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, the unit-ball estimate
+`|W₁-W₂| ≤ 2‖u-v‖`, and explicit finite-`L¹`, `2·card(s)·ε`, and half-`L¹`
+bounds. It does not address approximate C15 hypotheses, approximate branch
+uniqueness, or a dynamical derivation of component proximity. No historical
+priority claim is made.
 
 ## AI assistance
 
@@ -1983,6 +2005,7 @@ full detail (scope, derivations, interpretive non-claims).
 | C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
 | C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
 | C15 | Uniqueness `W = c ‖P_R Ψ‖²` on admissible record situations under stability, internal equivalence, and binary saturation | ✅ |
+| C17 | First quantitative stability theorem for C15 weights under projected-component perturbations, with pointwise, `L¹`, and uniform bounds | ✅ |
 
 ## Main theorems — reference table
 
