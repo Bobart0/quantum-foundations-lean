@@ -24,6 +24,16 @@ import QuantumFoundations.BornRule.GleasonBridge
 import QuantumFoundations.BornRule.Pinning
 import QuantumFoundations.BornRule.Assembly
 import QuantumFoundations.BornRule.Nonvacuity
+import QuantumFoundations.BornRule.EffectPerspectives.Basic
+import QuantumFoundations.BornRule.EffectPerspectives.Perspective
+import QuantumFoundations.BornRule.EffectPerspectives.Refinement
+import QuantumFoundations.BornRule.EffectPerspectives.Estimation
+import QuantumFoundations.BornRule.EffectPerspectives.ContextIndependence
+import QuantumFoundations.BornRule.EffectPerspectives.EffectMeasure
+import QuantumFoundations.BornRule.EffectPerspectives.PureStatePinning
+import QuantumFoundations.BornRule.EffectPerspectives.Main
+import QuantumFoundations.BornRule.EffectPerspectives.Qubit
+import QuantumFoundations.BornRule.EffectPerspectives.Nonvacuity
 import QuantumFoundations.HistoriesKent.Defs
 import QuantumFoundations.HistoriesKent.Nonvacuity
 import QuantumFoundations.HistoriesKent.Basic
