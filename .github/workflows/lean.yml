@@ -1,0 +1,41 @@
+# **FR.** Validation continue minimale : construit le dépôt intégré, exécute
+# l'audit consolidé des axiomes, et fait tourner la garde source anti-régression.
+# S'appuie uniquement sur la chaîne d'outils Lean et les révisions de
+# dépendances déjà épinglées dans ce dépôt (`lean-toolchain`,
+# `lake-manifest.json`) ; ce workflow ne les modifie jamais.
+#
+# **EN.** Minimal continuous validation: builds the integrated repository,
+# runs the consolidated axiom audit, and runs the anti-regression source
+# guard. Relies only on the Lean toolchain and dependency revisions already
+# pinned in this repository (`lean-toolchain`, `lake-manifest.json`); this
+# workflow never updates them.
+name: Lean
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: leanprover/lean-action@v1
+
+      - name: Build the integrated QuantumFoundations library
+        run: lake build QuantumFoundations
+
+      - name: Consolidated FoP axiom audit
+        run: lake env lean QuantumFoundations/Audit/FoP.lean
+
+      - name: Source guard (no project-specific axiom, no native_decide, no sorry)
+        run: bash scripts/guard.sh
+
+      - name: Whitespace and diff hygiene check
+        run: git diff --check
