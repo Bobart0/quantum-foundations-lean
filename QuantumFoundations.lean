@@ -34,6 +34,7 @@ import QuantumFoundations.BornRule.EffectPerspectives.PureStatePinning
 import QuantumFoundations.BornRule.EffectPerspectives.Main
 import QuantumFoundations.BornRule.EffectPerspectives.Qubit
 import QuantumFoundations.BornRule.EffectPerspectives.Nonvacuity
+import QuantumFoundations.BornRule.EffectPerspectives.NaimarkBridge
 import QuantumFoundations.HistoriesKent.Defs
 import QuantumFoundations.HistoriesKent.Nonvacuity
 import QuantumFoundations.HistoriesKent.Basic
