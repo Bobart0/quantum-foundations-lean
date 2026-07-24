@@ -1198,7 +1198,7 @@ axiome de moins (`gleason` prouvé plutôt que postulé), et une preuve plus
 courte à plusieurs endroits grâce à la réutilisation de l'infrastructure
 Uhlhorn (U2, U3a) et à la conception `Proj1`-first de `g`.
 
-## BornRule/EffectPerspectives — extension qubit/Busch (QB1–QB10) — ✅ CLOS (2026-07-24)
+## BornRule/EffectPerspectives — extension qubit/Busch (QB1–QB11) — ✅ CLOS (2026-07-24)
 
 **Énoncé.** Route alternative vers le poids de Born, fondée sur les effets
 (`0 ≤ T ≤ 1`, ordre de Loewner) plutôt que sur des sous-espaces projectifs
@@ -1252,11 +1252,26 @@ la voie projective `BornRule` est muette. Voir le détail complet dans
       normalisation/`grain` prouvées directement, jamais via
       `Gleason.busch`) ; témoins qubit concrets (`qubitZeroState`,
       `qubitOneState`), exemples exacts poids-un/poids-zéro
-- [x] **Intégration** : dix imports ajoutés à `QuantumFoundations.lean`,
-      dans l'ordre de dépendance ; aucun fichier existant modifié au-delà de
-      ces dix lignes d'import
+- [x] **QB11 — `NaimarkBridge.lean`** : couche d'intégration pure vers le
+      pont de Naimark existant (`QuantumFoundations.Naimark/`), sans
+      reproduire Naimark, Busch, Gleason ni QB1–QB10. `EffectPerspective.toPOVM`
+      (aucune hypothèse nouvelle : `IsEffect` donne déjà la positivité,
+      `sum_eq_one` donne déjà la complétude POVM) ; réalisation projective
+      dilatée (`effectPerspective_naimark_realization`, application directe
+      de `QuantumFoundations.naimark`) ; préservation exacte des valeurs
+      d'espérance d'effet sous dilatation, pour tout vecteur
+      (`effectPerspective_born_preserved_under_dilation`, `naimark_born`) ;
+      forme ancilla/unitaire globale explicite avec indice `i₀` gardé
+      explicite (`effectPerspective_projective_ancilla_realization`,
+      `naimark_projective_form`). Corollaire optionnel
+      `pureStateEstimationRule_weight_eq_dilated_expectation` ajouté (courte
+      composition de théorèmes existants, aucune nouvelle algèbre de trace)
+- [x] **Intégration** : dix imports ajoutés à `QuantumFoundations.lean` pour
+      QB1–QB10, un onzième pour QB11, dans l'ordre de dépendance ; aucun
+      fichier existant modifié au-delà de ces onze lignes d'import
 - [x] **Audit `#print axioms`** : 16 déclarations représentatives (QB5–QB10)
-      dépendent uniquement de `[propext, Classical.choice, Quot.sound]`
+      plus les 4 déclarations QB11 dépendent uniquement de
+      `[propext, Classical.choice, Quot.sound]`
 - [x] `guard.sh` (et sa reproduction PowerShell) : 0 axiome, 0
       `native_decide`, 0 sorry sur tout le dépôt après intégration
 
@@ -1268,7 +1283,11 @@ la voie projective `BornRule` est muette. Voir le détail complet dans
   d'exposer publiquement l'identité opératorielle complète et un calcul de
   trace généralisé ; documenté précisément dans `Main.lean`, section QB8.3.
 - **`ProjectiveBridge.lean`** (adaptateur optionnel reliant `projectionEffect`
-  au carrier projectif `BornRule.Perspective`) : non tenté dans cette passe.
+  au carrier projectif `BornRule.Perspective`, distinct du pont Naimark
+  QB11) : non tenté dans cette passe.
+- Naimark (QB11) fournit une réalisation opérationnelle, pas la règle de
+  Born ni l'indépendance contextuelle : ces dernières restent du ressort de
+  Busch (QB6–QB9).
 - Aucune revendication de disponibilité physique des effets, aucune lecture
   décision-théorique/bayésienne des poids, aucune revendication everettienne.
 
@@ -2448,7 +2467,7 @@ theorem1_general), one fewer axiom (gleason proved rather than postulated),
 and a shorter proof at several points thanks to reuse of the Uhlhorn
 infrastructure (U2, U3a) and the Proj1-first design of g.
 
-## BornRule/EffectPerspectives — qubit/Busch extension (QB1–QB10) — ✅ CLOSED (2026-07-24)
+## BornRule/EffectPerspectives — qubit/Busch extension (QB1–QB11) — ✅ CLOSED (2026-07-24)
 
 Statement. An alternative route to the Born weight, built on effects
 (0 ≤ T ≤ 1, Loewner order) rather than pairwise-orthogonal projective
@@ -2498,11 +2517,26 @@ QuantumFoundations/BornRule/EffectPerspectives/README.md.
       normalization/grain proved directly, never via Gleason.busch);
       concrete qubit witnesses (qubitZeroState, qubitOneState), exact
       weight-one/weight-zero examples
-- [x] Integration: ten imports added to QuantumFoundations.lean, in
-      dependency order; no existing file modified beyond these ten import
-      lines
-- [x] #print axioms audit: 16 representative declarations (QB5–QB10)
-      depend only on [propext, Classical.choice, Quot.sound]
+- [x] QB11 — NaimarkBridge.lean: a pure integration layer connecting to the
+      existing Naimark bridge (QuantumFoundations.Naimark/), without
+      reproving Naimark, Busch, Gleason, or QB1–QB10. EffectPerspective.toPOVM
+      (no new hypothesis: IsEffect already gives positivity, sum_eq_one
+      already gives POVM completeness); the dilated projective realization
+      (effectPerspective_naimark_realization, direct application of
+      QuantumFoundations.naimark); exact preservation of effect expectation
+      values under dilation, for every vector
+      (effectPerspective_born_preserved_under_dilation, naimark_born); the
+      explicit global-unitary/ancilla form with i₀ kept explicit
+      (effectPerspective_projective_ancilla_realization,
+      naimark_projective_form). Optional corollary
+      pureStateEstimationRule_weight_eq_dilated_expectation added (a short
+      composition of existing theorems, no new trace algebra)
+- [x] Integration: ten imports added to QuantumFoundations.lean for
+      QB1–QB10, an eleventh for QB11, in dependency order; no existing file
+      modified beyond these eleven import lines
+- [x] #print axioms audit: 16 representative declarations (QB5–QB10) plus
+      the 4 QB11 declarations depend only on
+      [propext, Classical.choice, Quot.sound]
 - [x] guard.sh (and its PowerShell reproduction): 0 axioms, 0
       native_decide, 0 sorry across the whole repository after integration
 
@@ -2514,8 +2548,10 @@ QuantumFoundations/BornRule/EffectPerspectives/README.md.
   exposing the full operator identity and a generalized trace computation;
   documented precisely in Main.lean, section QB8.3.
 - ProjectiveBridge.lean (an optional adapter connecting projectionEffect
-  back to the projective BornRule.Perspective carrier): not attempted in
-  this pass.
+  back to the projective BornRule.Perspective carrier, distinct from the
+  QB11 Naimark bridge): not attempted in this pass.
+- Naimark (QB11) supplies an operational realization, not the Born rule or
+  contextual independence: those remain the province of Busch (QB6–QB9).
 - No claim of physical availability of effects, no decision-theoretic/
   Bayesian reading of the derived weights, no Everettian claim.
 

@@ -1,4 +1,4 @@
-# BornRule/EffectPerspectives — the qubit/Busch extension (QB1–QB10)
+# BornRule/EffectPerspectives — the qubit/Busch extension (QB1–QB11)
 
 This directory formalizes a second, independent route to the Born rule,
 built on **effects** (`0 ≤ T ≤ 1` in the Loewner order) rather than on
@@ -44,6 +44,60 @@ this directory.
 | `Main.lean` | QB8 | `projectionEffect_weight_eq_born` and `contextual_projection_weight_eq_born`: the Born-rule weight formula for projection effects, under a state-relative null-support hypothesis, in arbitrary finite dimension |
 | `Qubit.lean` | QB9 | `qubit_projectionEffect_weight_eq_born` and `qubit_contextual_projection_weight_eq_born`: pure specializations of QB8 at `n := 2`, with no proof repetition |
 | `Nonvacuity.lean` | QB10 | `pureStateEstimationRule` (proved directly, never via `Gleason.busch`); concrete qubit witnesses (`qubitZeroState`, `qubitOneState`) and exact weight-one/weight-zero examples |
+| `NaimarkBridge.lean` | QB11 | Integration only: `EffectPerspective.toPOVM`, and thin wrappers around `QuantumFoundations.naimark`/`naimark_born`/`naimark_projective_form` |
+
+## QB11 — the Naimark bridge
+
+`NaimarkBridge.lean` connects `EffectPerspective` to the existing
+finite-dimensional Naimark dilation
+(`QuantumFoundations.POVM`/`naimark`/`naimark_born`/`naimark_projective_form`,
+in `QuantumFoundations/Naimark/`). This is a pure integration layer: no
+Naimark, Busch, Gleason, or QB1–QB10 theorem is reproved or modified, and no
+file under `QuantumFoundations/Naimark/` was touched. The bridge is direct
+because `Gleason.IsEffect T = Gleason.IsPositiveOp T ∧
+Gleason.IsPositiveOp (1 - T)`, so every effect is already positive in the
+sense `QuantumFoundations.POVM` requires, and `EffectPerspective.sum_eq_one`
+already supplies POVM completeness — no new hypothesis is needed for
+`EffectPerspective.toPOVM`.
+
+Precisely:
+
+- Every finite `EffectPerspective` canonically gives a
+  `QuantumFoundations.POVM` (`EffectPerspective.toPOVM`), with no extra
+  hypothesis.
+- `QuantumFoundations.naimark`, applied to that POVM, realizes it as a
+  projective measurement on the dilated space `DilSpace n D.outcomes`
+  (`effectPerspective_naimark_realization`).
+- Effect expectation values are preserved *exactly* under the dilation, for
+  every vector — not only unit vectors
+  (`effectPerspective_born_preserved_under_dilation`, wrapping
+  `QuantumFoundations.naimark_born`).
+- With an explicit ancilla index `i₀` (kept explicit; no default is chosen),
+  the same realization is obtained via a single *global unitary* on
+  `DilSpace n D.outcomes`
+  (`effectPerspective_projective_ancilla_realization`, wrapping
+  `QuantumFoundations.naimark_projective_form`).
+- This bridge is generic in the dimension `n` and the outcome count
+  `D.outcomes`: nothing here is qubit-specific or restricted to the effects
+  produced by QB1–QB10's constructions.
+- **Naimark supplies an operational realization, not the Born rule or
+  contextual independence.** `QuantumFoundations.naimark` dilates a POVM
+  into a projective measurement; it says nothing by itself about *why* the
+  effect weights take the values they do. That question is exactly what
+  Busch (QB6) answers. The two are complementary, not competing: **Busch
+  supplies the weight representation** (`Gleason.busch`/`busch_born_rule`,
+  QB6–QB9), while **Naimark supplies the projective operational
+  realization** of whatever POVM those weights are evaluated against. QB11
+  does not derive contextual independence, and does not claim that the
+  dilated projective measurement is *the* physical way an effect
+  perspective is implemented — only that one always exists.
+- The optional corollary
+  `pureStateEstimationRule_weight_eq_dilated_expectation` identifies the
+  QB10 pure-state weight with the real part of the dilated projective
+  expectation value, by composing `pureStateEstimationRule_weight` (QB10),
+  the effect's own symmetry (already part of `Gleason.IsPositiveOp`, not new
+  mathematics), and `effectPerspective_born_preserved_under_dilation` above
+  — no new trace algebra and no new pinning theorem.
 
 ## What is derived, never assumed
 
@@ -98,10 +152,12 @@ formalization of a representation theorem.
 No file in `QuantumFoundations/BornRule/` outside this directory was
 modified, and no existing C0–C14 theorem statement was changed. No file
 under the C15 development (`restricted-record-born-c15` / the C15
-directory) was read, touched, or referenced. This directory is additive
-only: it introduces a new namespace
+directory) was read, touched, or referenced. No file under a C17 directory
+was read, touched, or referenced. This directory is additive only: it
+introduces a new namespace
 (`QuantumFoundations.BornRule.EffectPerspectives`) and new files, integrated
-into `QuantumFoundations.lean` purely by adding ten import lines.
+into `QuantumFoundations.lean` purely by adding import lines (ten for
+QB1–QB10, one more for QB11).
 
 ## Dependency
 
@@ -111,14 +167,22 @@ reuses declarations that already existed in that pinned revision
 `Gleason.busch_born_rule`, `Gleason.projL`, `Gleason.bornValue`,
 `Gleason.IsDensityOperator`, `Gleason.positive_inner_self_eq_zero`,
 `Gleason.bornValue_span_singleton`) — no new dependency declaration was
-required, and none was added.
+required, and none was added. QB11 additionally reuses the existing
+internal Naimark infrastructure (`QuantumFoundations.POVM`, `naimark`,
+`naimark_born`, `naimark_projective_form`, `DilSpace`, `dilProj`, `dilV`,
+`singleL`, all already present under `QuantumFoundations/Naimark/`); no
+file in that directory was modified.
 
 ## Axiom audit
 
 Every public declaration in this directory (verified via `#print axioms`
 on 16 representative theorems spanning QB5–QB10, including the two
 headline theorems `projectionEffect_weight_eq_born` and
-`qubit_projectionEffect_weight_eq_born`) depends only on
+`qubit_projectionEffect_weight_eq_born`, plus all four QB11 declarations —
+`effectPerspective_naimark_realization`,
+`effectPerspective_born_preserved_under_dilation`,
+`effectPerspective_projective_ancilla_realization`, and
+`pureStateEstimationRule_weight_eq_dilated_expectation`) depends only on
 `[propext, Classical.choice, Quot.sound]` — the standard Mathlib trio, with
 no additional or leaked axiom.
 
@@ -132,6 +196,11 @@ no additional or leaked axiom.
   it.
 - The optional `ProjectiveBridge.lean` adapter (connecting
   `projectionEffect` back to the projective `BornRule.Perspective` carrier)
-  was not attempted in this pass.
+  was not attempted in this pass. This is unrelated to, and not
+  superseded by, `NaimarkBridge.lean` (QB11): the former would connect two
+  carriers *within* this repository (`EffectPerspective` and
+  `BornRule.Perspective`); the latter connects `EffectPerspective` to the
+  external-facing operational Naimark dilation.
 
-None of these deferrals affects any mandatory QB1–QB10 milestone.
+None of these deferrals affects any mandatory QB1–QB10 milestone or the
+QB11 integration layer.

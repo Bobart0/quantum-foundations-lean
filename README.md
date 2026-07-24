@@ -915,6 +915,7 @@ détail complet (portée, dérivations, non-revendications interprétatives).
 | QB8 | `projectionEffect_weight_eq_born` : poids de Born pour les effets de projection, en dimension quelconque | ✅ |
 | QB9 | Corollaire explicite en dimension deux (qubit), sans passer par `Gleason.gleason` | ✅ |
 | QB10 | Non-vacuité : `pureStateEstimationRule` (preuve directe, sans Busch), témoins qubit exacts | ✅ |
+| QB11 | Pont vers Naimark : `EffectPerspective.toPOVM`, réalisation projective dilatée (`naimark`/`naimark_born`/`naimark_projective_form`), simple couche d'intégration | ✅ |
 
 ## Jalons — HistoriesKent
 
@@ -1922,6 +1923,7 @@ full detail (scope, derivations, interpretive non-claims).
 | QB8 | `projectionEffect_weight_eq_born`: Born weight for projection effects, in arbitrary finite dimension | ✅ |
 | QB9 | Explicit dimension-two (qubit) corollary, without invoking `Gleason.gleason` | ✅ |
 | QB10 | Nonvacuity: `pureStateEstimationRule` (proved directly, without Busch), exact qubit witnesses | ✅ |
+| QB11 | Bridge to Naimark: `EffectPerspective.toPOVM`, dilated projective realization (`naimark`/`naimark_born`/`naimark_projective_form`), a pure integration layer | ✅ |
 
 ## Milestones — HistoriesKent
 
