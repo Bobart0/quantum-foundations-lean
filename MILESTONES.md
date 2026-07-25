@@ -3456,3 +3456,54 @@ dynamique de formation des records. C17b ne construit aucun appariement de
 branches et ne prouve ni unicité approximative, ni saturation approximative,
 ni hypothèses C15 approximatives, ni C16, ni renforcement supplémentaire de
 C17. Aucune revendication de priorité historique n'est faite.
+
+## API amont pour `everettian-probability-lean` — ✅ CLOS (2026-07-25)
+
+**Nature du jalon.** Strictement additif, sur le dépôt archivé (tag
+`v1.0.1-fop-companion`, Zenodo). Aucun énoncé, signature, ou visibilité
+existants n'est modifié. Aucune structure d'hypothèses nouvelle n'est
+introduite (vérifié explicitement — la règle Nonvacuity ne s'applique donc
+pas à ce jalon).
+
+**Cinq constats d'audit corrigés**, tous des reformulations ou conséquences
+immédiates de résultats déjà validés, aucun nouveau contenu mathématique :
+
+- **C1/C2** — `BornRule.RefinementAPI` (nouveau fichier) : `Refines.refl`,
+  `Refines.trans` sur les perspectives projectives ; `parentOf` (carte
+  parent totale par choix classique sur le témoin de `Refines`),
+  `parentOf_mem`, `parentOf_le`, `parentOf_eq_of_le` (dérivé de
+  `Perspective.unique_parent`, non reprouvé).
+- **C3** — `EffectPerspectives.Refines.trans` (ajouté à
+  `Refinement.lean` existant) : composition de deux raffinements côté
+  effets, différée depuis QB3 (voir MILESTONES QB1–QB11), fournie ici sur
+  demande d'un consommateur aval réel.
+- **C4** — `coarseCells`, `mem_coarseCells_iff`, `axGrain_iff_coarseCells`,
+  `coarseCells_eq_fiber_parentOf` : présentation stabilisée du filtre de
+  `AxGrain` sous une instance de décidabilité nommée et fixée
+  (`leDecidablePred`).
+- **C5** — `QuantumFoundations/ProbabilityAPI.lean` (nouveau fichier) :
+  point d'entrée unique réexportant exactement la surface aval nécessaire ;
+  collision de noms `Refines` (`BornRule` vs `EffectPerspectives`)
+  documentée et résolue par séparation en sous-espaces de noms, sans
+  renommage.
+- **Non-constat vérifié et écarté** : l'accessibilité des modules depuis la
+  racine était déjà correcte ; rien n'a été « corrigé » de ce côté.
+
+**Audit et régression.** `QuantumFoundations/Audit/DownstreamAPI.lean`
+(nouveau fichier, non importé par la racine, exécuté séparément en CI)
+exerce chaque wrapper ajouté par un `example` sans `sorry`, y compris
+l'exemple de bout en bout imposé (`grainCoherenceTheorem_projector`) et un
+exemple chaîné (`Refines.trans`, `parentOf`, `parentOf_eq_of_le`,
+`coarseCells_eq_fiber_parentOf`) sur une perspective binaire concrète
+construite dans `H 2`. `#print axioms` sur les 11 déclarations ajoutées :
+`[propext, Classical.choice, Quot.sound]`, sans exception.
+
+**Décompte `sorry` : 0 introduit, 0 restant.** `bash scripts/guard.sh` :
+`AXIOM_HITS=0`, `NATIVE_DECIDE_HITS=0`, `SORRY_COUNT=0`,
+`GUARD_RESULT=PASS`.
+
+**Explicitement exclu de ce jalon** (voir `ARCHITECTURE_NOTES.md`) : toute
+classe abstraite unifiant `BornRule.Refines` et
+`EffectPerspectives.Refines` ; tout résultat de théorie de la décision ; toute
+généralisation d'un énoncé existant ; tout nouveau `Refines` remplaçant
+l'ancien.

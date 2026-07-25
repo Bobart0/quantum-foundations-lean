@@ -129,11 +129,27 @@ corrective release; see `RELEASE_NOTES_v1.0.1-fop-companion.md`). The
 earlier `v1.0-fop-companion` tag remains available as historical evidence
 and is not moved, deleted, or recreated.
 
+### Downstream API
+
+`QuantumFoundations.ProbabilityAPI` is a single, deliberately minimal entry
+point re-exporting exactly the declarations that downstream developments
+(currently: a Born-weight decision-theory layer,
+`Bobart0/everettian-probability-lean`) may rely on. It has **no role in
+this repository's manuscript**: it contains no new mathematical result,
+only reformulations and immediate consequences of already-validated
+declarations (reflexivity/transitivity of refinement, a total parent map
+built by classical choice on an existing uniqueness lemma, and a stabilized
+decidability instance for an existing filter). Any declaration not
+re-exported from `ProbabilityAPI` is internal and may change without
+notice. `QuantumFoundations/Audit/DownstreamAPI.lean` is a regression
+module exercising every wrapper, so that a future refactor breaking a
+downstream-consumed contract fails here rather than downstream.
+
 ### Citation
 
 See `CITATION.cff` for structured citation metadata. In brief: Bertrand
 Dalimier, *Quantum Foundations in Lean: Formal Companion to One State, Many
-Perspectives*, version 1.0.1.
+Perspectives*, version 1.1.0.
 
 ### AI-assisted development
 
@@ -283,11 +299,29 @@ documentation et les métadonnées ; voir
 `v1.0-fop-companion` reste disponible comme trace historique ; elle n'est
 ni déplacée, ni supprimée, ni recréée.
 
+### API pour développements aval
+
+`QuantumFoundations.ProbabilityAPI` est un point d'entrée unique et
+délibérément minimal, réexportant exactement les déclarations dont peuvent
+avoir besoin les développements aval (actuellement : une couche de théorie
+de la décision fondée sur les poids de Born,
+`Bobart0/everettian-probability-lean`). Il **n'a aucun rôle dans le
+manuscrit** de ce dépôt : il ne contient aucun résultat mathématique
+nouveau, seulement des reformulations et des conséquences immédiates de
+déclarations déjà validées (réflexivité/transitivité du raffinement, une
+carte parent totale construite par choix classique sur un lemme d'unicité
+existant, et une instance de décidabilité stabilisée pour un filtre déjà
+existant). Toute déclaration non réexportée depuis `ProbabilityAPI` est
+interne et peut changer sans préavis. `QuantumFoundations/Audit/
+DownstreamAPI.lean` est un module de non-régression exerçant chaque
+wrapper, pour qu'un futur refactor cassant un contrat consommé en aval
+échoue ici plutôt qu'en aval.
+
 ### Citation
 
 Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
 Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
-State, Many Perspectives*, version 1.0.1.
+State, Many Perspectives*, version 1.1.0.
 
 ### Assistance par intelligence artificielle
 

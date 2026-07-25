@@ -1787,3 +1787,77 @@ The directory, import path, and namespace renames are uniform:
 `QuantumFoundations.HistoriesKent`. No compatibility aliases are retained;
 declaration types are unchanged, while fully qualified names and module paths
 change.
+
+## API amont pour `everettian-probability-lean` (2026-07-25)
+
+Jalon strictement additif sur un dépôt archivé (tag `v1.0.1-fop-companion`,
+Zenodo) : aucun énoncé, aucune signature et aucune visibilité existants ne
+changent. Trois choix d'architecture méritent d'être expliqués.
+
+- **(i) `parentOf` passe par `Classical.choice` plutôt que par un
+  `Refines` « bundlé » portant directement un champ `parent`.** La
+  contrainte d'additivité stricte interdit de modifier la définition
+  existante de `BornRule.Refines` (une `Prop` existentielle `∀∃`, sans
+  champ). Reconstruire `Refines` comme une structure portant `parent`
+  (à l'image de `EffectPerspectives.Refines`) aurait changé la signature
+  d'un type déjà utilisé dans plusieurs preuves existantes
+  (`refinePerspective_refines`, `grainCoherenceTheorem`) — un renforcement
+  non additif explicitement exclu. `parentOf` extrait donc, par choix
+  classique, le témoin unique que `Refines` garantit déjà exister
+  (`Perspective.unique_parent` assure qu'il est unique), sans toucher à
+  `Refines` lui-même.
+- **(ii) `coarseCells` existe pour neutraliser le piège de l'instance
+  `DecidablePred`.** `AxGrain` s'énonce avec `D'.cells.filter (· ≤ c)` sous
+  `open scoped Classical` ; toute instance de décidabilité différente (mais
+  propositionnellement équivalente) introduite en aval produirait des
+  échecs d'unification opaques sur un énoncé par ailleurs identique.
+  `coarseCells` fixe explicitement l'instance (`leDecidablePred`, construite
+  sur `Classical.propDecidable`, comme l'instance ambiante), rendant le
+  filtre stable face à ce qui pourrait être importé en aval.
+- **(iii) l'interface abstraite unifiant les perspectives projectives et
+  les perspectives d'effets a été délibérément écartée de cette version.**
+  `BornRule.Refines` (une `Prop` existentielle) et
+  `EffectPerspectives.Refines` (une structure portant `parent`) restent
+  deux notions distinctes, non interchangeables, chacune dans son espace de
+  noms. Une classe abstraite les unifiant serait tentante, mais graver une
+  abstraction non éprouvée par un usage réel dans un artefact archivé
+  (DOI, tag immuable) serait irréversible sans bénéfice démontré ; une
+  telle abstraction sera d'abord construite et éprouvée en aval
+  (`everettian-probability-lean`), et ne remontera ici que si elle se
+  stabilise.
+
+### English summary
+
+A strictly additive milestone on an archived repository (tag
+`v1.0.1-fop-companion`, Zenodo): no existing statement, signature, or
+visibility changes. Three architectural choices are worth explaining.
+
+- **(i) `parentOf` goes through `Classical.choice` rather than a bundled
+  `Refines` carrying a `parent` field directly.** The strict-additivity
+  constraint forbids changing the existing definition of `BornRule.Refines`
+  (an existential `∀∃` `Prop`, with no field). Rebuilding `Refines` as a
+  structure carrying `parent` (mirroring `EffectPerspectives.Refines`)
+  would have changed the signature of a type already used in several
+  existing proofs (`refinePerspective_refines`, `grainCoherenceTheorem`) —
+  a non-additive strengthening explicitly excluded. `parentOf` therefore
+  extracts, by classical choice, the unique witness `Refines` already
+  guarantees exists (`Perspective.unique_parent` ensures uniqueness),
+  without touching `Refines` itself.
+- **(ii) `coarseCells` exists to neutralize the `DecidablePred` instance
+  pitfall.** `AxGrain` is stated with `D'.cells.filter (· ≤ c)` under
+  `open scoped Classical`; a different (but propositionally equivalent)
+  decidability instance introduced downstream would produce opaque
+  unification failures on an otherwise identical statement. `coarseCells`
+  explicitly pins the instance (`leDecidablePred`, built on
+  `Classical.propDecidable`, matching the ambient one), making the filter
+  stable against whatever might be imported downstream.
+- **(iii) the abstract interface unifying projective and effect
+  perspectives was deliberately excluded from this release.**
+  `BornRule.Refines` (an existential `Prop`) and
+  `EffectPerspectives.Refines` (a structure carrying `parent`) remain two
+  distinct, non-interchangeable notions, each in its own namespace. An
+  abstract class unifying them is tempting, but carving an unproven
+  abstraction into an archived artifact (DOI, immutable tag) would be
+  irreversible without demonstrated benefit; such an abstraction will
+  first be built and exercised downstream (`everettian-probability-lean`),
+  and will only migrate here if it stabilizes.

@@ -80,6 +80,14 @@ results summarized in `docs/FOP_THEOREM_MAP.md`.
   internal lemmas from the Uhlhorn development are reused by `BornRule`
   (see `docs/FOP_THEOREM_MAP.md`); the assembled Uhlhorn theorem itself is
   not.
+- **The `RefinementAPI` wrappers strengthen nothing.**
+  `QuantumFoundations.BornRule.parentOf` and its specification lemmas
+  (`ProbabilityAPI`, downstream-facing, no manuscript role) do not supply a
+  canonical choice of branch or a physically privileged parent cell; they
+  only expose, as a total function, the unique representative already
+  guaranteed to exist by `Perspective.unique_parent`. No new mathematical
+  content is added by this API; see `docs/FOP_THEOREM_MAP.md`'s
+  "Downstream-facing API" section.
 
 ## Résumé en français
 
@@ -95,4 +103,8 @@ toute sélection de secteur de records. Aucune revendication de priorité
 historique non restreinte n'est formulée pour C17/C17b ; les résultats
 connus réutilisés (Gleason, Busch, Naimark, Riedel, Kent, Wigner, unicité
 de type Uhlhorn, unicité sur les secteurs restreints de Lela) sont
-attribués à leurs auteurs d'origine.
+attribués à leurs auteurs d'origine. Les wrappers de `RefinementAPI` (API
+pour développements aval, sans rôle dans le manuscrit) ne renforcent aucun
+résultat : `parentOf` ne fournit pas de choix canonique de branche, mais
+seulement le représentant unique déjà garanti par
+`Perspective.unique_parent`.

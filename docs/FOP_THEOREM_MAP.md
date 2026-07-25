@@ -288,3 +288,33 @@ satisfies (Grain)/(Norm)/(Pos)/(Null)),
 `QuantumFoundations.BornRule.RestrictedRecordSectors.Nonvacuity`'s saturated
 scalar model (C15). These are not listed exhaustively here; see each
 subsystem's own `README.md` and `Nonvacuity.lean` file.
+
+## Downstream-facing API (no manuscript role)
+
+The declarations below were added to support downstream developments
+(currently `Bobart0/everettian-probability-lean`, a Born-weight decision-
+theory layer). **None of them plays any role in the manuscript's
+argument.** Each is an auxiliary API wrapper with no independent
+mathematical content: a reformulation or an immediate consequence of an
+already-validated declaration. No existing theorem statement, definition,
+proof body, or public declaration name was changed to add them.
+
+| Lean declaration | Module | Status | Immediate consequence of |
+|---|---|---|---|
+| `QuantumFoundations.BornRule.Refines.refl` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | reflexivity of `≤`; no independent mathematical content |
+| `QuantumFoundations.BornRule.Refines.trans` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | transitivity of `≤`; no independent mathematical content |
+| `QuantumFoundations.BornRule.parentOf` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | a total parent map built by `Classical.choice` on the existence witness `Refines` already supplies; no independent mathematical content |
+| `QuantumFoundations.BornRule.parentOf_mem` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | immediate consequence of `parentOf`'s defining choice; no independent mathematical content |
+| `QuantumFoundations.BornRule.parentOf_le` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | immediate consequence of `parentOf`'s defining choice; no independent mathematical content |
+| `QuantumFoundations.BornRule.parentOf_eq_of_le` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | immediate consequence of `Perspective.unique_parent`; no independent mathematical content |
+| `QuantumFoundations.BornRule.coarseCells` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | a stabilized presentation of `AxGrain`'s existing `Finset.filter (· ≤ c)` under a named, fixed decidability instance; no independent mathematical content |
+| `QuantumFoundations.BornRule.mem_coarseCells_iff` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | `Finset.mem_filter`; no independent mathematical content |
+| `QuantumFoundations.BornRule.axGrain_iff_coarseCells` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | restatement of `AxGrain` via `coarseCells`; the two sides coincide definitionally; no independent mathematical content |
+| `QuantumFoundations.BornRule.coarseCells_eq_fiber_parentOf` | `BornRule/RefinementAPI.lean` | auxiliary API wrapper | immediate consequence of `parentOf_eq_of_le`/`parentOf_le`; no independent mathematical content |
+| `QuantumFoundations.BornRule.EffectPerspectives.Refines.trans` | `BornRule/EffectPerspectives/Refinement.lean` | auxiliary API wrapper | composition of two existing refinements via `parent := parent₂ ∘ parent₁`, reindexing a double finite sum; no independent mathematical content; deferred through QB1–QB11, added here once a downstream consumer needs it |
+| `QuantumFoundations.ProbabilityAPI` (module) | `ProbabilityAPI.lean` | auxiliary API wrapper | a pure re-export surface; imports and re-exports existing declarations only, adds none |
+
+Every declaration above depends only on the standard trio
+`[propext, Classical.choice, Quot.sound]`, verified by
+`QuantumFoundations/Audit/DownstreamAPI.lean` (not imported by the
+repository root, run separately in CI, mirroring `Audit/FoP.lean`).
