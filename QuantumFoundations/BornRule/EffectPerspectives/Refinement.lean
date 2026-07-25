@@ -8,17 +8,17 @@ assigned to a coarse outcome (`parent`) and every coarse effect equals the
 sum of its fine preimage. `parent` need not be surjective: a coarse zero
 effect may have an empty preimage.
 
-**Transitivity deferred.** `Refines.trans` requires reindexing a double
-finite sum (merging two conditional sums indexed by different outcome
-types, then collapsing the inner sum). The natural proof route was
-attempted and repeatedly produced brittle `simp`/`rw` failures
-disproportionate to a secondary goal the task explicitly permits deferring
-("If finite-sum reindexing becomes disproportionately difficult, defer it
-and document the reason. Do not block QB3 on transitivity."). None of
-QB4–QB10 requires `Refines.trans`: `contextual_weight_eq_effectWeight` uses
+**Transitivity.** `Refines.trans` composes two refinements via
+`parent := parent₂ ∘ parent₁`, reindexing the double finite sum by fixing
+the fine outcome and collapsing the inner sum over the middle perspective's
+outcomes at the single point `parent₁ i` (`Finset.sum_ite_eq'`), after
+swapping summation order (`Finset.sum_comm`). None of QB4–QB10 requires
+`Refines.trans`: `contextual_weight_eq_effectWeight` uses
 `collapseToChosen`, `effectWeight_zero` uses `duplicateZeroRefinesBinary`,
 and `effectWeight_add` uses `splitRefinesBinary`, none of which compose two
-refinements. Deferred to future work, not silently dropped.
+refinements — `Refines.trans` was deferred through QB1–QB11 for exactly
+this reason, and is added here (downstream-facing, no manuscript role) once
+a real consumer (`everettian-probability-lean`) needs refinement chains.
 -/
 
 namespace QuantumFoundations.BornRule.EffectPerspectives
@@ -138,6 +138,53 @@ def duplicateZeroRefinesBinary (n : ℕ) :
             then ((duplicateZeroPerspective n).effects i : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0
       rw [Fin.sum_univ_three]
       simp
+
+/-! ## QB3.5 — Transitivity (downstream-facing; no manuscript role) -/
+
+/-- Composition of two refinements, via `parent := parent₂ ∘ parent₁`. This
+declaration serves downstream developments (e.g. `everettian-probability-lean`)
+that need to compose refinement chains; it plays no role in the manuscript
+*One State, Many Perspectives*. -/
+def Refines.trans {fine mid coarse : EffectPerspective n}
+    (r1 : Refines fine mid) (r2 : Refines mid coarse) : Refines fine coarse where
+  parent := r2.parent ∘ r1.parent
+  coarse_eq_fiber_sum j := by
+    have step1 := r2.coarse_eq_fiber_sum j
+    rw [step1]
+    have step2 : ∀ i' : Fin mid.outcomes,
+        (if r2.parent i' = j then (mid.effects i' : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0)
+          = ∑ i : Fin fine.outcomes,
+              (if r2.parent i' = j then
+                (if r1.parent i = i' then (fine.effects i : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0)
+              else 0) := by
+      intro i'
+      by_cases h : r2.parent i' = j
+      · simp only [h, if_true]
+        exact r1.coarse_eq_fiber_sum i'
+      · simp only [h, if_false]
+        simp
+    trans (∑ i' : Fin mid.outcomes, ∑ i : Fin fine.outcomes,
+        (if r2.parent i' = j then
+          (if r1.parent i = i' then (fine.effects i : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0)
+        else 0))
+    · exact Finset.sum_congr rfl (fun i' _ => step2 i')
+    · rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro i _
+      trans (∑ i' : Fin mid.outcomes,
+          if i' = r1.parent i then
+            (if r2.parent i' = j then (fine.effects i : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0)
+          else 0)
+      · apply Finset.sum_congr rfl
+        intro i' _
+        by_cases h1 : i' = r1.parent i
+        · rw [h1]
+          simp
+        · have h1' : r1.parent i ≠ i' := fun h => h1 h.symm
+          simp [h1, h1']
+      · rw [Finset.sum_ite_eq' Finset.univ (r1.parent i)
+          (fun i' => if r2.parent i' = j then (fine.effects i : Gleason.H n →ₗ[ℂ] Gleason.H n) else 0)]
+        simp [Function.comp_apply]
 
 end
 
