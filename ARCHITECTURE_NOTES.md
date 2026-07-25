@@ -1861,3 +1861,46 @@ visibility changes. Three architectural choices are worth explaining.
   irreversible without demonstrated benefit; such an abstraction will
   first be built and exercised downstream (`everettian-probability-lean`),
   and will only migrate here if it stabilizes.
+
+## Release API : cibles Lake explicitement exportées
+
+Le test initial depuis un paquet Lake tiers a réussi localement parce que le
+clone source contenait déjà les fichiers `.olean` des modules API. Le premier
+runner GitHub Actions propre a révélé le diagnostic décisif : après un
+`lake build` réussi, `Audit/DownstreamAPI.lean` ne trouvait pas
+`QuantumFoundations/ProbabilityAPI.olean`.
+
+Sans `globs`, la bibliothèque `QuantumFoundations` ne construit que le module
+racine et sa clôture d'imports. Les deux façades destinées aux consommateurs,
+`QuantumFoundations.ProbabilityAPI` et
+`QuantumFoundations.BornRule.RefinementAPI`, restent volontairement hors de
+cette clôture. Elles sont donc déclarées comme cibles supplémentaires par des
+`globs` précis. Un glob global n'est pas utilisé, afin de ne pas incorporer les
+modules d'audit dans chaque build.
+
+`QuantumFoundations.lean` n'a pas été modifié : sa clôture d'imports décrit
+l'intégration mathématique liée au manuscrit, tandis que `lakefile.toml`
+décrit quels modules publics un paquet aval doit pouvoir construire et
+importer. Confondre ces deux rôles aurait changé la signification architecturale
+du module racine sans nécessité mathématique.
+
+### English summary
+
+The initial third-party Lake test passed locally because the source clone
+already contained `.olean` files for the API modules. The first clean GitHub
+Actions runner exposed the decisive failure: after a successful `lake build`,
+`Audit/DownstreamAPI.lean` could not find
+`QuantumFoundations/ProbabilityAPI.olean`.
+
+Without `globs`, the `QuantumFoundations` library builds only its root module
+and import closure. The two downstream-facing façades,
+`QuantumFoundations.ProbabilityAPI` and
+`QuantumFoundations.BornRule.RefinementAPI`, intentionally lie outside that
+closure. Targeted `globs` now make them buildable public modules. A global glob
+is deliberately avoided so audit modules are not included in every build.
+
+`QuantumFoundations.lean` remains unchanged: its import closure records the
+manuscript-facing mathematical integration, whereas `lakefile.toml` declares
+which public modules downstream packages must be able to build and import.
+Conflating those roles would alter the architectural meaning of the root
+module without mathematical need.
