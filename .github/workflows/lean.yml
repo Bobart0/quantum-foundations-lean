@@ -34,6 +34,9 @@ jobs:
       - name: Consolidated FoP axiom audit
         run: lake env lean QuantumFoundations/Audit/FoP.lean
 
+      - name: Downstream API regression audit
+        run: lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
+
       - name: Source guard (no project-specific axiom, no native_decide, no sorry)
         run: bash scripts/guard.sh
 

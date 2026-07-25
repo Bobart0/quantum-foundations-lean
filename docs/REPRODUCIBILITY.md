@@ -77,6 +77,21 @@ were originally used to audit each milestone at the time it closed; the
 consolidated module above is the single entry point for the release-wide
 audit.
 
+## Downstream-facing API regression audit
+
+```sh
+lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
+```
+
+Not imported by the repository root (mirroring `Audit/FoP.lean`), this
+module exercises every wrapper in `QuantumFoundations.ProbabilityAPI` with
+a `sorry`-free `example`, then runs `#print axioms` on each. It exists so
+that a future refactor breaking a contract consumed by a downstream
+development (currently `Bobart0/everettian-probability-lean`) fails here
+rather than there. Every declaration it audits is expected to depend only
+on the standard trio above; see `docs/FOP_THEOREM_MAP.md`'s
+"Downstream-facing API" section.
+
 ## Source guard
 
 The repository enforces, by construction, that no file under
