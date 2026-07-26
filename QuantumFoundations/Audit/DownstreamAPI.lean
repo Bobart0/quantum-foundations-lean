@@ -122,6 +122,48 @@ example {n : ℕ} {fine mid coarse : EffectPerspectives.EffectPerspective n} :
       EffectPerspectives.Refines fine coarse :=
   EffectPerspectives.Refines.trans
 
+/-! ## General-dimension Born-weight theorems at `n = 3` (not the qubit)
+
+This is the entire point of the `v1.1.2` upstream release: the theorems
+below are proved for every `n` with `1 ≤ n`, not only `n = 2`. `ψ3` is a
+concrete unit vector in `H 3`; `pureStateEstimationRule`/
+`pureStateEstimationRule_nullSupport` (already re-exported, general in `n`)
+supply a concrete `ContextualNullSupport` witness with no new proof here. -/
+
+open QuantumFoundations.ProbabilityAPI.EffectPerspectives in
+private noncomputable def ψ3 : H 3 := EuclideanSpace.single (0 : Fin 3) (1 : ℂ)
+
+open QuantumFoundations.ProbabilityAPI.EffectPerspectives in
+private theorem ψ3_norm : ‖ψ3‖ = 1 := by simp [ψ3]
+
+open QuantumFoundations.ProbabilityAPI.EffectPerspectives in
+example : ContextualNullSupport (pureStateEstimationRule ψ3 ψ3_norm) ψ3 :=
+  pureStateEstimationRule_nullSupport ψ3 ψ3_norm
+
+open QuantumFoundations.ProbabilityAPI.EffectPerspectives in
+example :
+    (pureStateEstimationRule ψ3 ψ3_norm).effectWeight (projectionEffect (⊤ : Submodule ℂ (H 3)))
+      = ‖(⊤ : Submodule ℂ (H 3)).starProjection ψ3‖ ^ 2 :=
+  projectionEffect_weight_eq_born (by norm_num) ψ3 ψ3_norm
+    (pureStateEstimationRule ψ3 ψ3_norm) (pureStateEstimationRule_nullSupport ψ3 ψ3_norm) ⊤
+
+/-! ## Repetition site-cell scaffolding (`ProbabilityAPI.Repetition`)
+
+`sitesCell_ortho`/`sitesCell_covers` are exercised directly, exactly as
+re-exported, on a concrete `R = 3` instance — the fallback this milestone
+explicitly permits in place of a full `Perspective (2^R)` construction,
+which would require additional injectivity and transport lemmas not
+supplied by this façade and therefore out of scope for a regression
+audit. -/
+
+open QuantumFoundations.ProbabilityAPI.Repetition in
+example (r : Fin 3) : sitesCell 3 r 0 ⟂ sitesCell 3 r 1 :=
+  sitesCell_ortho r (by decide)
+
+open QuantumFoundations.ProbabilityAPI.Repetition in
+example (r : Fin 3) : sitesCell 3 r 0 ⊔ sitesCell 3 r 1 = ⊤ :=
+  sitesCell_covers r
+
 /-! ## `BornBridge`'s re-exported record-induced Born theorem -/
 
 example {n K R A : ℕ} [NeZero R] [NeZero K]
@@ -151,5 +193,9 @@ end
 #print axioms QuantumFoundations.BornRule.EffectPerspectives.Refines.trans
 #print axioms QuantumFoundations.BornRule.refine_filter_sup_eq
 #print axioms QuantumFoundations.BornRule.E₀_satisfies_axioms
+#print axioms QuantumFoundations.BornRule.EffectPerspectives.projectionEffect_weight_eq_born
+#print axioms QuantumFoundations.BornRule.EffectPerspectives.contextual_projection_weight_eq_born
+#print axioms QuantumFoundations.Complexity.RepetitionModel.sitesCell_ortho
+#print axioms QuantumFoundations.Complexity.RepetitionModel.sitesCell_covers
 
 end QuantumFoundations.Audit.DownstreamAPI
