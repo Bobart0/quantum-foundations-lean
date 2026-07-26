@@ -3507,3 +3507,57 @@ classe abstraite unifiant `BornRule.Refines` et
 `EffectPerspectives.Refines` ; tout résultat de théorie de la décision ; toute
 généralisation d'un énoncé existant ; tout nouveau `Refines` remplaçant
 l'ancien.
+
+## Patch API `v1.1.1-probability-api` — ✅ CLOS (2026-07-26)
+
+**Cause et périmètre.** La façade `ProbabilityAPI` de `v1.1.0` exposait les
+théorèmes nécessaires en aval, mais pas les témoins de non-vacuité sur lesquels
+les sous-systèmes aval construisent leurs propres preuves de consistance. Le
+correctif est strictement additif et ne contient aucune preuve mathématique
+nouvelle : il réexporte 7 déclarations existantes de `BornRule.Nonvacuity`, 9 de
+`EffectPerspectives.Nonvacuity` et 6 témoins décisionnels de
+`BornBridge.Nonvacuity`.
+
+**Contrat de noms.** Les nouvelles surfaces sont accessibles sous
+`ProbabilityAPI.BornRule`, `ProbabilityAPI.EffectPerspectives` et
+`ProbabilityAPI.BornBridge`. Les réexports historiques à plat restent
+inchangés. `RestrictedRecordSectors` est différé faute de besoin aval démontré :
+son modèle scalaire témoigne d'une saturation physique que la couche
+décisionnelle ne doit pas adopter comme hypothèse implicite. Les `example`
+anonymes ne sont pas réexportables et devront recevoir un nom public amont si
+un consommateur en a besoin.
+
+**Audit local.** `Audit/DownstreamAPI.lean` exerce sans `sorry`
+`E₀_satisfies_axioms` et `refine_filter_sup_eq` sur une perspective binaire
+concrète. Les deux `#print axioms` ajoutés affichent exactement
+`[propext, Classical.choice, Quot.sound]`.
+
+**Décompte `sorry` : 0 introduit, 0 restant.** Aucun `axiom`, aucun
+`native_decide`, aucune modification d'énoncé, de signature ou de visibilité.
+
+### English summary
+
+**Cause and scope.** The `v1.1.0` `ProbabilityAPI` façade exposed the theorem
+surface required downstream but omitted the nonvacuity witnesses on which
+downstream subsystems build their own consistency proofs. This strictly
+additive patch adds no new mathematical proof: it re-exports 7 existing
+declarations from `BornRule.Nonvacuity`, 9 from
+`EffectPerspectives.Nonvacuity`, and 6 decision-relevant witnesses from
+`BornBridge.Nonvacuity`.
+
+**Namespace contract.** The new surfaces are available under
+`ProbabilityAPI.BornRule`, `ProbabilityAPI.EffectPerspectives`, and
+`ProbabilityAPI.BornBridge`; historical flat re-exports remain unchanged.
+`RestrictedRecordSectors` is deferred because no downstream need has been
+demonstrated: its scalar model witnesses physical saturation, which the
+decision layer must not adopt implicitly. Anonymous `example` declarations
+cannot be re-exported and will need public upstream names if a consumer needs
+them.
+
+**Local audit.** `Audit/DownstreamAPI.lean` exercises
+`E₀_satisfies_axioms` and `refine_filter_sup_eq` on a concrete binary
+perspective without `sorry`. Both added `#print axioms` commands report exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+**Sorry count: 0 introduced, 0 remaining.** No `axiom`, `native_decide`,
+statement, signature, or visibility change was introduced.

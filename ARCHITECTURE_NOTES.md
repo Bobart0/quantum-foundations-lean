@@ -1904,3 +1904,50 @@ manuscript-facing mathematical integration, whereas `lakefile.toml` declares
 which public modules downstream packages must be able to build and import.
 Conflating those roles would alter the architectural meaning of the root
 module without mathematical need.
+
+## Correctif de façade pour les témoins de non-vacuité (2026-07-26)
+
+La release `v1.1.0-probability-api` a correctement exposé la surface des
+théorèmes consommés en aval, mais a omis la surface complémentaire des témoins
+de non-vacuité. Cette asymétrie est la cause du correctif `v1.1.1` : le dépôt
+aval applique la même discipline de non-vacuité par sous-système et doit donc
+pouvoir construire ses témoins à partir de ceux déjà établis ici, sans
+réimporter des modules internes ni reprendre leurs preuves.
+
+Les témoins retenus sont regroupés sous les espaces de noms stables
+`ProbabilityAPI.BornRule`, `ProbabilityAPI.EffectPerspectives` et
+`ProbabilityAPI.BornBridge`. Les anciens réexports projectifs à plat sont
+conservés pour respecter l'additivité. `RestrictedRecordSectors` est
+délibérément différé : son modèle scalaire témoigne d'une saturation physique,
+et non d'un objet décisionnel. L'exposer autoriserait prématurément la couche
+décisionnelle à dépendre d'une hypothèse que l'argument visé exclut. Un futur
+`v1.1.2` pourra l'ajouter si un besoin aval concret le justifie.
+
+Enfin, les `example` anonymes présents dans les modules `Nonvacuity` ne sont
+pas réexportables. Si un développement aval a besoin de l'un d'eux, la bonne
+correction sera de lui donner d'abord un nom public en amont, dans un changement
+additif explicite, puis de réexporter ce nom. Une façade ne peut pas stabiliser
+un terme anonyme.
+
+### English summary
+
+Release `v1.1.0-probability-api` correctly exposed the downstream theorem
+surface but omitted the complementary nonvacuity-witness surface. This
+asymmetry is the cause of the `v1.1.1` patch: the downstream repository applies
+the same per-subsystem nonvacuity discipline and must build its witnesses from
+the witnesses already proved here, without importing internal modules or
+reproving their results.
+
+The selected witnesses are grouped under the stable namespaces
+`ProbabilityAPI.BornRule`, `ProbabilityAPI.EffectPerspectives`, and
+`ProbabilityAPI.BornBridge`. Existing flat projective re-exports are preserved
+for additive compatibility. `RestrictedRecordSectors` is deliberately
+deferred: its scalar model witnesses physical saturation, not a decision-
+theoretic object. Exporting it would prematurely allow the decision layer to
+depend on an assumption excluded by the intended argument. A future `v1.1.2`
+may add it if a concrete downstream need appears.
+
+Finally, anonymous `example` declarations in `Nonvacuity` modules cannot be
+re-exported. If downstream needs one, it must first receive a public upstream
+name in an explicit additive change; that name can then be re-exported. A
+façade cannot stabilize an anonymous term.
