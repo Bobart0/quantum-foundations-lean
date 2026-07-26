@@ -1,6 +1,9 @@
 import QuantumFoundations.BornRule.RefinementAPI
+import QuantumFoundations.BornRule.Nonvacuity
 import QuantumFoundations.BornRule.EffectPerspectives.Qubit
+import QuantumFoundations.BornRule.EffectPerspectives.Nonvacuity
 import QuantumFoundations.BranchesRiedel.BornBridge.Synthesis
+import QuantumFoundations.BranchesRiedel.BornBridge.Nonvacuity
 import Gleason.Operator
 
 /-!
@@ -52,6 +55,21 @@ the first is re-exported at the root of `QuantumFoundations.ProbabilityAPI`
 (accessible as `ProbabilityAPI.EffectPerspectives.Refines`). The two
 notions remain distinct and not interchangeable; see
 `BornRule/EffectPerspectives/README.md` for why they are kept separate.
+
+**Convention des témoins de non-vacuité.** Les témoins réexportés par cette
+façade sont systématiquement placés dans des sous-espaces de noms reflétant
+leur sous-système d'origine : `ProbabilityAPI.BornRule`,
+`ProbabilityAPI.EffectPerspectives` et `ProbabilityAPI.BornBridge`. Cette
+convention fait partie du contrat d'import aval. Les réexports projectifs
+historiques à la racine de `ProbabilityAPI` restent inchangés afin de préserver
+la compatibilité additive.
+
+**Nonvacuity-witness convention.** Witnesses re-exported by this façade are
+systematically placed in sub-namespaces reflecting their source subsystem:
+`ProbabilityAPI.BornRule`, `ProbabilityAPI.EffectPerspectives`, and
+`ProbabilityAPI.BornBridge`. This convention is part of the downstream import
+contract. The historical projective re-exports at the root of
+`ProbabilityAPI` remain unchanged to preserve additive compatibility.
 -/
 
 namespace QuantumFoundations.ProbabilityAPI
@@ -87,6 +105,32 @@ export QuantumFoundations.BornRule
    axGrain_iff_coarseCells
    coarseCells_eq_fiber_parentOf)
 
+/-! ## Nonvacuity witnesses
+
+**FR.** Ces déclarations sont des témoins de non-vacuité déjà existants,
+réexportés afin que les développements aval construisent leurs propres témoins
+sans reprouver les résultats ni importer directement des modules internes.
+Elles n'ajoutent aucun contenu mathématique indépendant.
+
+**EN.** These declarations are existing nonvacuity witnesses, re-exported so
+that downstream developments can build their own witnesses without reproving
+results or importing internal modules directly. They add no independent
+mathematical content.
+-/
+
+namespace BornRule
+
+export QuantumFoundations.BornRule
+  (refine_filter_sup_eq
+   E₀
+   E₀_isPos
+   E₀_isNul
+   E₀_isNorm
+   E₀_isGrain
+   E₀_satisfies_axioms)
+
+end BornRule
+
 /-! ## From `BornRule.EffectPerspectives` (effect perspectives)
 
 **FR.** Isolé dans son propre sous-espace de noms pour éviter la collision
@@ -107,6 +151,17 @@ export QuantumFoundations.BornRule.EffectPerspectives
    qubit_projectionEffect_weight_eq_born
    qubit_contextual_projection_weight_eq_born)
 
+export QuantumFoundations.BornRule.EffectPerspectives
+  (pureStateEstimationRule
+   pureStateEstimationRule_nullSupport
+   pureStateEstimationRule_weight
+   qubitZeroState
+   qubitOneState
+   qubitZeroState_norm
+   qubitOneState_norm
+   qubitZeroState_inner_qubitOneState
+   nonempty_estimationRule_two)
+
 end EffectPerspectives
 
 /-! ## From `BranchesRiedel.BornBridge` (record-induced branches) -/
@@ -123,6 +178,14 @@ export QuantumFoundations.BranchesRiedel.BornBridge
    sum_activeBranch_weights_eq_one
    RecordInducedBornConclusion
    record_induced_Born_decomposition)
+
+export QuantumFoundations.BranchesRiedel.BornBridge
+  (concrete_activeBranchIndex_nonempty
+   concrete_exists_branchPerspectivePackage
+   concrete_branch0_weight_ne_zero
+   concrete_branch1_weight_ne_zero
+   concrete_recordChoice_distinct
+   concrete_recordChoice_weight_invariant_nonvacuous)
 
 end BornBridge
 

@@ -57,6 +57,16 @@ private theorem K_mem_Dfine : K ∈ Dfine.cells := by
   show K ∈ ({K, Kᗮ} : Finset (Submodule ℂ (H 2)))
   simp
 
+/-! ## Nonvacuity witnesses re-exported under `ProbabilityAPI.BornRule` -/
+
+open QuantumFoundations.ProbabilityAPI.BornRule
+
+example {n : ℕ} (v : H n) (hv : ‖v‖ = 1) : AxGrain (E₀ v) :=
+  (E₀_satisfies_axioms v hv).1
+
+example : (Dfine.cells.filter (· ≤ K)).sup id = K :=
+  refine_filter_sup_eq Dfine Dfine (Refines.refl Dfine) K K_mem_Dfine
+
 /-! ## QB8.1 — Mandated end-to-end example (`grainCoherenceTheorem_projector`) -/
 
 example {n : ℕ} (Est : Perspective n → Submodule ℂ (H n) → ℝ)
@@ -139,5 +149,7 @@ end
 #print axioms QuantumFoundations.BornRule.axGrain_iff_coarseCells
 #print axioms QuantumFoundations.BornRule.coarseCells_eq_fiber_parentOf
 #print axioms QuantumFoundations.BornRule.EffectPerspectives.Refines.trans
+#print axioms QuantumFoundations.BornRule.refine_filter_sup_eq
+#print axioms QuantumFoundations.BornRule.E₀_satisfies_axioms
 
 end QuantumFoundations.Audit.DownstreamAPI
