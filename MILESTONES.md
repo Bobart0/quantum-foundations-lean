@@ -3561,3 +3561,55 @@ perspective without `sorry`. Both added `#print axioms` commands report exactly
 
 **Sorry count: 0 introduced, 0 remaining.** No `axiom`, `native_decide`,
 statement, signature, or visibility change was introduced.
+
+## Grouped API release `v1.1.2-probability-api` — ✅ CLOSED (2026-07-26)
+
+**Two downstream needs, batched to avoid a third round-trip session.**
+
+**Block A — general-dimension qubit route.** `projectionEffect_weight_eq_born`
+and `contextual_projection_weight_eq_born` (proved upstream for `1 ≤ n`,
+`BornRule/EffectPerspectives/Main.lean`) are now re-exported alongside
+their existing `qubit_`-prefixed `n := 2` specializations, lifting the
+downstream `n ≥ 3` restriction inherited from the projective route.
+`projectionEffect` and `ContextualNullSupport` are re-exported with them,
+closing a signature-closure gap that also silently affected the `qubit_`
+variants exported since `v1.1.0` (see `ARCHITECTURE_NOTES.md` for the
+general rule adopted from this finding).
+
+**Block B — repetition-model site-cell scaffolding.** `Sites`,
+`configurationEquiv`, `sitesEquivR`, `configurationBasis`, `sitesCell`,
+`siteCell`, `siteResolution`, `sitesCell_ortho`, `sitesCell_covers`, and
+`sitesCell_iSup` are re-exported under `ProbabilityAPI.Repetition`. Decision
+B-export over B-rebuild was grounded in a computed import-closure survey
+(six new internal files, all already compiled elsewhere in the repository;
+no `NoiseProfile`; none of the five excluded circuit-complexity siblings;
+no `lakefile.toml` globs adjustment needed), reported in full to, and
+approved by, the author before any code was written. The second half of
+`Records.lean` (noise/approximate-readout machinery) remains internal, by
+deliberate, documented omission.
+
+**No i.i.d. product-state construction is exported**, because none exists
+upstream: the reconnaissance confirmed, via `IdealFanout.lean`'s own
+docstring, that the existing `concreteSourceProfile`/`idealFanoutCircuit`
+route produces a correlated GHZ-type state, unsuitable for independent
+trials. This is recorded as a scope boundary, not a defect, in
+`ARCHITECTURE_NOTES.md`.
+
+**Audit.** `Audit/DownstreamAPI.lean` adds an example applying
+`projectionEffect_weight_eq_born` at `n = 3` (not the qubit) using the
+already-exported `pureStateEstimationRule`/`pureStateEstimationRule_nullSupport`
+witnesses, and exercises `sitesCell_ortho`/`sitesCell_covers` directly at
+`R = 3` (the permitted fallback to a full `Perspective (2^R)` construction,
+which would have required new injectivity/transport lemmas out of
+proportion for a regression audit). All four new `#print axioms` report
+exactly `[propext, Classical.choice, Quot.sound]`.
+
+**Third-party consumability test.** A throwaway Lake package outside both
+repositories, requiring `quantum_foundations` by `path` and importing only
+`QuantumFoundations.ProbabilityAPI`, `#check`-ed all 14 newly re-exported
+identifiers (4 from Block A, 10 from Block B) and built successfully with
+no `lakefile.toml` changes.
+
+**Sorry count: 0 introduced, 0 remaining.** No theorem statement,
+definition, proof body, `axiom`, or `native_decide` was introduced; only
+re-exports, one audit module extension, and documentation changed.

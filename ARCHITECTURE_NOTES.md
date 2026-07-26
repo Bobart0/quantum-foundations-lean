@@ -1951,3 +1951,129 @@ Finally, anonymous `example` declarations in `Nonvacuity` modules cannot be
 re-exported. If downstream needs one, it must first receive a public upstream
 name in an explicit additive change; that name can then be re-exported. A
 façade cannot stabilize an anonymous term.
+
+## API amont groupée `v1.1.2` : route qubit générale et échafaudage des tirages répétés (2026-07-26)
+
+Deux besoins aval, traités ensemble pour éviter un troisième aller-retour
+(chaque cycle précédent — `refine_filter_sup_eq`, puis les témoins de
+non-vacuité — a coûté une session complète).
+
+**Bloc A — la clôture des signatures est une règle, pas un cas particulier.**
+`projectionEffect_weight_eq_born` et `contextual_projection_weight_eq_born`
+étaient déjà prouvés en amont pour `1 ≤ n`, et seules leurs spécialisations
+`qubit_` avaient été réexportées en `v1.1.0`. En les exportant, la
+reconnaissance a révélé que `projectionEffect` et `ContextualNullSupport` —
+qui apparaissent dans la signature de ces théorèmes, **et déjà dans celle
+des variantes `qubit_` réexportées depuis `v1.1.0`** — n'étaient eux-mêmes
+pas réexportables : l'aval pouvait voir le théorème sans pouvoir nommer
+l'hypothèse à construire pour l'appliquer. **Règle générale retenue pour
+toute façade future : si l'énoncé d'une déclaration réexportée mentionne
+`X`, alors `X` doit être nommable depuis la façade.** C'est la même classe
+de défaut que l'omission des témoins de non-vacuité en `v1.1.0` (théorèmes
+exportés, témoins nécessaires pour les appliquer restés internes) ; une
+troisième occurrence de ce défaut serait une négligence, pas un oubli
+isolé. Les deux déclarations manquantes sont désormais exportées aux côtés
+des théorèmes qui les utilisent.
+
+**Bloc B — décision B-export, fondée sur un relevé de clôture, pas une
+préférence.** L'échafaudage des cellules de site
+(`Sites`/`sitesEquivR`/`sitesCell`/`siteResolution` et leurs lemmes
+d'orthogonalité et de recouvrement) a été exporté sous
+`ProbabilityAPI.Repetition` plutôt que laissé à une reconstruction aval
+directe depuis Mathlib, sur la base d'un relevé précis plutôt que d'une
+inclination : la clôture minimale ajoute exactement six fichiers internes
+déjà compilés et validés ailleurs dans le dépôt (`ApproxRecordBasic`,
+`ApproxRecordDefs`, `CircuitLocality`, `Complexity.Defs`,
+`NormalizedBranches`, `RecordInterference`), sans `NoiseProfile`, sans
+aucune des cinq machineries sœurs explicitement exclues
+(`Interference`/`Readout`/`Persistence`/`Complexities`/`Distinguishability`),
+et sans nécessiter d'ajustement de `globs` dans `lakefile.toml` (les deux
+fichiers `Repetition/{States,Records}.lean` étaient déjà dans la clôture
+transitive de la racine `QuantumFoundations`, via `Complexity.Models.
+Repetition.Persistence`). Seules les dix déclarations nommées sont
+exportées ; la seconde moitié de `Records.lean` (`IsLocalTo`,
+`transportedRecordProj`, `ApproxRecordedPairOn`, `repetitionState`)
+appartient à l'appareil de bruit/lecture approximative et reste interne —
+omission délibérée, documentée dans le docstring de section de
+`ProbabilityAPI.lean`.
+
+**L'échafaudage n'est pas l'état : l'amont ne fournit aucun état produit
+i.i.d.** La reconnaissance a confirmé, docstring à l'appui
+(`IdealFanout.lean` : *"the same CNOT-fanout used to prepare a GHZ-type
+state ... It does not clone an arbitrary quantum state"*), qu'aucune
+construction amont ne produit un état produit indépendant sur `Sites R 2` :
+`concreteSourceProfile`/`idealFanoutCircuit` construisent un état
+**corrélé** de type GHZ, et `prepUnitary`/`amplitudeRotationGate` opèrent
+porte-par-porte au sein d'un `Circuit`, paramétrés par un `NoiseProfile` —
+aucun des deux ne donne directement un produit tensoriel de qubits
+indépendants. **Ce n'est pas une lacune à combler ici** : le jalon aval P10
+(fréquences et typicalité) devra définir cet état lui-même, ce qui est
+directement faisable dans `Sites R 2` sans machinerie tensorielle, puisqu'un
+élément de `Sites R 2` est déjà une fonction `(Fin R → Fin 2) → ℂ` : l'état
+i.i.d. de paramètre d'amplitude `amp : Fin 2 → ℂ` s'écrit directement
+`fun g => ∏ r, amp (g r)`, et sa norme au carré se calcule en distribuant le
+produit sur la somme (le type de lemme `Finset.prod_univ_sum`/analogue,
+côté aval — non vérifié dans ce dépôt, à confirmer en stdin avant usage).
+Consigné ici pour que l'aval n'ait pas à redécouvrir cette route.
+
+### English summary
+
+Two downstream needs, handled together to avoid a third round-trip (each
+previous cycle — `refine_filter_sup_eq`, then the nonvacuity witnesses —
+cost a full session).
+
+**Block A — signature closure is a rule, not a special case.**
+`projectionEffect_weight_eq_born` and `contextual_projection_weight_eq_born`
+were already proved upstream for `1 ≤ n`, and only their `qubit_`
+specializations had been re-exported in `v1.1.0`. Exporting them, the
+reconnaissance revealed that `projectionEffect` and `ContextualNullSupport`
+— which appear in these theorems' signatures, **and already in the
+`qubit_` variants re-exported since `v1.1.0`** — were themselves not
+re-exportable: downstream code could see the theorem without being able to
+name the hypothesis it must construct to apply it. **General rule adopted
+for every future façade: if a re-exported declaration's statement mentions
+`X`, then `X` must be nameable from the façade.** This is the same class
+of defect as the `v1.1.0` nonvacuity-witness omission (theorems exported,
+the witnesses needed to apply them left internal); a third occurrence of
+this defect would be negligence, not an isolated oversight. Both missing
+declarations are now exported alongside the theorems that use them.
+
+**Block B — B-export decision, grounded in a closure survey, not a
+preference.** The site-cell scaffolding
+(`Sites`/`sitesEquivR`/`sitesCell`/`siteResolution` and their orthogonality
+and covering lemmas) was exported under `ProbabilityAPI.Repetition` rather
+than left to a direct downstream rebuild from Mathlib, on the basis of a
+precise survey rather than an inclination: the minimal closure adds
+exactly six internal files already compiled and validated elsewhere in the
+repository (`ApproxRecordBasic`, `ApproxRecordDefs`, `CircuitLocality`,
+`Complexity.Defs`, `NormalizedBranches`, `RecordInterference`), with no
+`NoiseProfile`, none of the five explicitly excluded sibling machineries
+(`Interference`/`Readout`/`Persistence`/`Complexities`/`Distinguishability`),
+and no `globs` adjustment needed in `lakefile.toml` (both
+`Repetition/{States,Records}.lean` files were already in the root
+`QuantumFoundations` module's transitive closure, via `Complexity.Models.
+Repetition.Persistence`). Only the ten named declarations are exported;
+the second half of `Records.lean` (`IsLocalTo`, `transportedRecordProj`,
+`ApproxRecordedPairOn`, `repetitionState`) belongs to the noise/approximate-
+readout apparatus and remains internal — a deliberate omission, documented
+in `ProbabilityAPI.lean`'s section docstring.
+
+**The scaffolding is not the state: upstream supplies no i.i.d. product
+state.** The reconnaissance confirmed, with the module's own docstring as
+evidence (`IdealFanout.lean`: *"the same CNOT-fanout used to prepare a
+GHZ-type state ... It does not clone an arbitrary quantum state"*), that no
+upstream construction produces an independent product state over
+`Sites R 2`: `concreteSourceProfile`/`idealFanoutCircuit` build a
+**correlated** GHZ-type state, and `prepUnitary`/`amplitudeRotationGate`
+operate gate-by-gate within a `Circuit`, parameterized by a `NoiseProfile`
+— neither directly gives a tensor product of independent qubits. **This is
+not a gap to close here**: downstream milestone P10 (frequencies and
+typicality) must define this state itself, which is directly feasible in
+`Sites R 2` without tensor-product machinery, since an element of
+`Sites R 2` is already a function `(Fin R → Fin 2) → ℂ`: the i.i.d. state
+with amplitude parameter `amp : Fin 2 → ℂ` is directly
+`fun g => ∏ r, amp (g r)`, and its squared norm is computed by
+distributing the product over the sum (a `Finset.prod_univ_sum`-type
+lemma, downstream side — not checked in this repository, to be confirmed
+in stdin before use). Recorded here so downstream does not have to
+rediscover this route.
