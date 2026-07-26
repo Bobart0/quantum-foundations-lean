@@ -4,6 +4,7 @@ import QuantumFoundations.BornRule.EffectPerspectives.Qubit
 import QuantumFoundations.BornRule.EffectPerspectives.Nonvacuity
 import QuantumFoundations.BranchesRiedel.BornBridge.Synthesis
 import QuantumFoundations.BranchesRiedel.BornBridge.Nonvacuity
+import QuantumFoundations.Complexity.Models.Repetition.Records
 import Gleason.Operator
 
 /-!
@@ -162,6 +163,37 @@ export QuantumFoundations.BornRule.EffectPerspectives
    qubitZeroState_inner_qubitOneState
    nonempty_estimationRule_two)
 
+/-! ### General-dimension Born-weight theorems
+
+**FR.** `projectionEffect_weight_eq_born` et
+`contextual_projection_weight_eq_born` sont prouvés en amont pour toute
+dimension `n` satisfaisant `1 ≤ n`, et non seulement pour le qubit ; les
+variantes `qubit_` ci-dessus en sont de pures spécialisations à `n := 2`,
+conservées telles quelles (d'autres déclarations aval peuvent déjà les
+référencer). `projectionEffect` et `ContextualNullSupport` sont réexportés
+avec elles : ils apparaissent dans la signature de ces théorèmes (et déjà
+dans celle des variantes `qubit_`), et une façade doit exporter la clôture
+des signatures de ce qu'elle exporte — sinon l'aval peut voir un théorème
+sans pouvoir nommer l'hypothèse qu'il doit construire pour l'appliquer.
+
+**EN.** `projectionEffect_weight_eq_born` and
+`contextual_projection_weight_eq_born` are proved upstream for every
+dimension `n` satisfying `1 ≤ n`, not only for the qubit; the `qubit_`
+variants above are pure specializations at `n := 2`, kept unchanged (other
+downstream declarations may already reference them). `projectionEffect`
+and `ContextualNullSupport` are re-exported alongside them: both appear in
+these theorems' signatures (and already in the `qubit_` variants'), and a
+façade must export the closure of the signatures of what it exports —
+otherwise downstream code can see a theorem without being able to name the
+hypothesis it must construct to apply it.
+-/
+
+export QuantumFoundations.BornRule.EffectPerspectives
+  (projectionEffect
+   ContextualNullSupport
+   projectionEffect_weight_eq_born
+   contextual_projection_weight_eq_born)
+
 end EffectPerspectives
 
 /-! ## From `BranchesRiedel.BornBridge` (record-induced branches) -/
@@ -188,5 +220,71 @@ export QuantumFoundations.BranchesRiedel.BornBridge
    concrete_recordChoice_weight_invariant_nonvacuous)
 
 end BornBridge
+
+/-! ## From `BranchesRiedel.Sites` and `Complexity.RepetitionModel` (site-cell scaffolding)
+
+**FR.** Échafaudage de l'espace de configurations pour `R` tirages
+binaires : l'espace plat `Sites R 2`, l'isométrie de reréindexation vers
+`H (2^R)`, et les cellules par site avec leurs lemmes d'orthogonalité et de
+recouvrement, déjà raccordés à `LabeledResolution`. C'est l'échafaudage du
+jalon aval P10 (fréquences et typicalité), pas l'état i.i.d. lui-même :
+**aucune construction d'état amont n'est fournie ici**, et aucune n'est
+attendue de cette façade — voir `ARCHITECTURE_NOTES.md` pour le détail et
+pour une route directe de construction en aval.
+
+**Désambiguïsation `sitesCell` / `siteCell` (à lire avant tout usage) :**
+`sitesCell` vit dans `Sites R 2` (l'espace plat `EuclideanSpace ℂ ((Fin R)
+→ Fin 2)`) ; `siteCell` vit dans `H (2^R)` (l'espace standard), obtenu en
+transportant `sitesCell` le long de `sitesEquivR`. Les deux ne sont **pas**
+le même objet et ne sont **pas** interchangeables sans passer par
+`sitesEquivR`.
+
+**Frontière délibérée.** Seules les dix déclarations ci-dessous sont
+réexportées. La seconde moitié de `Records.lean` (`IsLocalTo`,
+`transportedRecordProj`, `ApproxRecordedPairOn`, `repetitionState`, et les
+déclarations qui en dépendent) appartient à l'appareil de complexité de
+circuits (bruit, lecture approximative) et reste interne : son omission
+est délibérée, pas un oubli.
+
+**EN.** Configuration-space scaffolding for `R` binary trials: the flat
+space `Sites R 2`, the reindexing isometry to `H (2^R)`, and the per-site
+cells with their orthogonality and covering lemmas, already wired to
+`LabeledResolution`. This is the scaffolding for downstream milestone P10
+(frequencies and typicality), not the i.i.d. state itself: **no upstream
+state construction is provided here**, nor is one expected from this
+façade — see `ARCHITECTURE_NOTES.md` for detail and for a direct
+downstream construction route.
+
+**`sitesCell` / `siteCell` disambiguation (read before any use):**
+`sitesCell` lives in `Sites R 2` (the flat space
+`EuclideanSpace ℂ ((Fin R) → Fin 2)`); `siteCell` lives in `H (2^R)` (the
+standard space), obtained by transporting `sitesCell` along `sitesEquivR`.
+The two are **not** the same object and are **not** interchangeable
+without going through `sitesEquivR`.
+
+**Deliberate boundary.** Only the ten declarations below are re-exported.
+The second half of `Records.lean` (`IsLocalTo`, `transportedRecordProj`,
+`ApproxRecordedPairOn`, `repetitionState`, and declarations depending on
+them) belongs to the circuit-complexity apparatus (noise, approximate
+readout) and remains internal: its omission is deliberate, not an
+oversight.
+-/
+
+namespace Repetition
+
+export QuantumFoundations.BranchesRiedel (Sites)
+
+export QuantumFoundations.Complexity.RepetitionModel
+  (configurationEquiv
+   sitesEquivR
+   configurationBasis
+   sitesCell
+   siteCell
+   siteResolution
+   sitesCell_ortho
+   sitesCell_covers
+   sitesCell_iSup)
+
+end Repetition
 
 end QuantumFoundations.ProbabilityAPI
