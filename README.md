@@ -115,7 +115,7 @@ manuscript-facing declarations. Every one of them depends only on the
 standard Lean/Mathlib kernel trio `[propext, Classical.choice, Quot.sound]`
 — that is, there are no project-specific axioms, no `sorry`, and no
 `native_decide` anywhere in the release. See `docs/REPRODUCIBILITY.md` for
-the exact audit commands and `RELEASE_NOTES_v1.0.1-fop-companion.md` for
+the exact audit commands and `RELEASE_NOTES_v1.0.2-fop-companion.md` for
 the recorded output at the release commit.
 
 ### Software and code availability
@@ -124,16 +124,18 @@ The source is available at
 `https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
 dependency revisions recorded in `lake-manifest.json` and
 `docs/REPRODUCIBILITY.md`. The recommended immutable release is the
-annotated tag `v1.0.1-fop-companion` (a documentation- and metadata-only
-corrective release; see `RELEASE_NOTES_v1.0.1-fop-companion.md`). The
-earlier `v1.0-fop-companion` tag remains available as historical evidence
-and is not moved, deleted, or recreated.
+annotated tag `v1.0.2-fop-companion`, a documentation-only correction of
+`v1.0.1-fop-companion`: no signature, definition, or proof changed. It
+aligns the documented roles of Grain and Norm and the documented scope of
+Riedel's theorem; see `RELEASE_NOTES_v1.0.2-fop-companion.md`.
+`v1.0.1-fop-companion` remains immutable and available as the preceding
+release.
 
 ### Citation
 
 See `CITATION.cff` for structured citation metadata. In brief: Bertrand
 Dalimier, *Quantum Foundations in Lean: Formal Companion to One State, Many
-Perspectives*, version 1.0.1.
+Perspectives*, version 1.0.2.
 
 ### AI-assisted development
 
@@ -268,7 +270,7 @@ elles ne dépend que du trio standard du noyau Lean/Mathlib
 `[propext, Classical.choice, Quot.sound]` — autrement dit, aucun axiome
 propre au projet, aucun `sorry`, et aucun `native_decide` nulle part dans
 cette version. Voir `docs/REPRODUCIBILITY.md` pour les commandes d'audit
-exactes et `RELEASE_NOTES_v1.0.1-fop-companion.md` pour la sortie
+exactes et `RELEASE_NOTES_v1.0.2-fop-companion.md` pour la sortie
 enregistrée au commit de la version.
 
 ### Disponibilité du logiciel et du code
@@ -277,17 +279,17 @@ Les sources sont disponibles à l'adresse
 `https://github.com/Bobart0/quantum-foundations-lean`, épinglées aux
 révisions de dépendances enregistrées dans `lake-manifest.json` et dans
 `docs/REPRODUCIBILITY.md`. La version immuable recommandée est l'étiquette
-annotée `v1.0.1-fop-companion` (version corrective, ne portant que sur la
-documentation et les métadonnées ; voir
-`RELEASE_NOTES_v1.0.1-fop-companion.md`). L'étiquette antérieure
-`v1.0-fop-companion` reste disponible comme trace historique ; elle n'est
-ni déplacée, ni supprimée, ni recréée.
+annotée `v1.0.2-fop-companion`, correction documentaire de
+`v1.0.1-fop-companion` : aucune signature, définition ou preuve n'a changé.
+Elle aligne la description des rôles de Grain et Norm et la portée documentée
+du théorème de Riedel ; voir `RELEASE_NOTES_v1.0.2-fop-companion.md`.
+`v1.0.1-fop-companion` reste immuable et disponible comme version précédente.
 
 ### Citation
 
 Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
 Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
-State, Many Perspectives*, version 1.0.1.
+State, Many Perspectives*, version 1.0.2.
 
 ### Assistance par intelligence artificielle
 

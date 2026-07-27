@@ -7,11 +7,11 @@ no-`native_decide`, no-project-specific-`axiom` discipline of this
 repository.
 
 The recommended immutable release to build from is the annotated tag
-`v1.0.1-fop-companion` (a documentation- and metadata-only corrective
-release relative to `v1.0-fop-companion`; see
-`RELEASE_NOTES_v1.0.1-fop-companion.md`). The earlier `v1.0-fop-companion`
-tag is preserved as historical evidence and is never moved, deleted, or
-recreated.
+`v1.0.2-fop-companion` (a documentation and metadata corrective release
+relative to `v1.0.1-fop-companion`; see
+`RELEASE_NOTES_v1.0.2-fop-companion.md`). The earlier
+`v1.0.1-fop-companion` tag remains immutable and available as the preceding
+release; it is never moved, deleted, or recreated.
 
 ## Exact toolchain and dependency revisions
 
@@ -31,7 +31,7 @@ POSIX shell:
 ```sh
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 cd quantum-foundations-lean
-git checkout v1.0.1-fop-companion
+git checkout v1.0.2-fop-companion
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -41,7 +41,7 @@ Windows PowerShell:
 ```powershell
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 Set-Location quantum-foundations-lean
-git checkout v1.0.1-fop-companion
+git checkout v1.0.2-fop-companion
 lake exe cache get
 lake build QuantumFoundations
 ```
