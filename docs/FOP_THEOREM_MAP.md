@@ -36,15 +36,15 @@ audit module.
 
 | Field | Value |
 |---|---|
-| Manuscript role | Context independence derived from refinement coherence; Born-rule weight representation |
+| Manuscript role | Context independence derived from refinement coherence for proper nonzero cells, with normalization fixing the top cell; Born-rule weight representation |
 | Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual` |
 | Module | `QuantumFoundations/BornRule/Perspective.lean` |
-| Status | original result (context independence derived from `AxGrain` alone, not assumed) |
-| Dependencies | `BornRule.Perspective`, `AxGrain`/`AxNorm`/`AxPos`/`AxNul` |
+| Status | result established in this development: context independence is derived rather than assumed; `AxGrain` handles proper nonzero cells and `AxNorm` fixes the top cell |
+| Dependencies | `BornRule.Perspective`, `AxGrain`, `AxNorm` |
 | Dimension | generic `n` |
 | Exactness | exact |
 | Axiom audit | standard trio |
-| Scope limitation | establishes non-contextuality of the estimation rule under (Grain); does not by itself derive the numerical Born weight |
+| Scope limitation | establishes context independence from `AxGrain` for proper nonzero cells and from `AxNorm` for the top cell; it does not by itself derive the numerical Born weight |
 
 | Field | Value |
 |---|---|
