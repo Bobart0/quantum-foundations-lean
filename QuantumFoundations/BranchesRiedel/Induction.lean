@@ -25,10 +25,12 @@ sur `List.Perm`, INTERDITE ici car la commutation n'est vraie qu'APPLIQUÉE À
   elle-même), **T** (cible `c`, records `ρ c → k` puis restauration) suivi de
   la contraction opératorielle `Basic.rproj_contract`.
 
-**PUIS** : la somme-à-`ψ` par résolutions itérées, l'invariance d'ordre de
-`chainProj`, l'invariance du choix de records, et l'unicité de la
-décomposition deviennent des COROLLAIRES D'UNE LIGNE de **E** (appliqué à
-`ψ = ∑ g, v_g` — seul le terme `g = f` survit à la projection diagonale).
+**PUIS** : la somme-à-`ψ` par résolutions itérées et l'unicité relative à la
+présentation canonique à record `0` deviennent des conséquences de **E**
+(appliqué à `ψ = ∑ g, v_g` — seul le terme `g = f` survit à la projection
+diagonale). L'invariance des vecteurs de branches construits sous un choix
+admissible de records redondants est établie séparément dans les théorèmes de
+`BornBridge.RecordChoice`; elle n'est pas une clause littérale de `riedel`.
 AUCUNE manipulation de permutations nulle part dans ce fichier.
 
 **EN.** # R3 — General induction: tunneling (T), diagonal action (E), and Riedel's theorem
@@ -57,10 +59,12 @@ APPLICATION TO ψ, not at the level of bare operators):
  T (target c, replacing records ρ c → k and then restoring them),
  followed by the operator contraction Basic.rproj_contract.
 
-THEN: summation to ψ by iterated resolutions, order invariance of
-chainProj, invariance under the choice of records, and uniqueness of the
-decomposition become ONE-LINE COROLLARIES of E (applied to
+THEN: summation to ψ by iterated resolutions and uniqueness relative to the
+canonical record-0 presentation become consequences of E (applied to
 ψ = ∑ g, v_g: only the term g = f survives the diagonal projection).
+Invariance of the constructed branch vectors under admissible choices of
+redundant records is established separately by the theorems in
+BornBridge.RecordChoice; it is not a literal clause of riedel.
 There is NO permutation manipulation anywhere in this file.
 -/
 
@@ -452,73 +456,22 @@ private theorem chainProj_sum {ι : Type*} (s : Finset ι)
 **FR.** **Théorème de Riedel (Main Result, PRL 118, 120402 (2017)).** Sous
 redondance (`IsRecordedOn` de chaque observable) et témoin de commutation
 (`CommuteWitness`, issu en pratique de la disjonction spatiale des supports —
-`Local.commute_of_disjoint`), `ψ` se décompose de façon UNIQUE en branches
-jointes orthogonales, chacune état propre SIMULTANÉ de tous les records de
-toutes les observables. **Contrepoint POSITIF de
-`HistoriesKent.contrary_inferences`** : la cohérence seule (Kent) autorise les
-inférences contraires ; les records redondants (Riedel) forcent au contraire
-l'unicité de la décomposition — deux mécanismes structurellement distincts
-gouvernant la même notion d'« histoire »/« branche ».
-
-L'invariance de `chainProj`/`jointBranch` par rapport à l'ordre de la liste
-`L` et au choix des records `ρ` (au-delà du corollaire `branch_wellDefined`)
-n'est PAS énoncée séparément ici : une fois ce théorème et `diagonal` clos,
-elle s'obtient en une ligne (deux branches jointes construites par des
-`chainProj` différant seulement par l'ordre/le choix de records satisfont
-toutes deux la propriété d'état propre ci-dessous pour le MÊME `f`, donc
-coïncident par le volet unicité) — à ajouter comme corollaire sans but
-ouvert supplémentaire une fois ce jalon fermé, pas comme but ouvert séparé
-du squelette.
-
-## Écart vs le squelette R0 : état propre et unicité restreints au record `0`
-
-Testé explicitement avant de choisir : l'invariance par choix de record
-arbitraire `r` (au lieu du seul `0` utilisé par `chainProj`/`jointBranch`)
-n'est PAS immédiate depuis `E`/`T` seuls — `T` ne s'applique qu'à une
-observable ABSENTE de la liste, et ici l'observable cible `a` est déjà
-présente dans `List.finRange A` ; substituer son propre record demanderait
-de composer deux projections de records DIFFÉRENTS de la MÊME observable en
-un point de contact interne à la chaîne, ce que `rproj_contract` ne couvre
-pas (il ne couvre que deux étiquettes du MÊME record). Restreint au record
-`0`, comme `TwoObs.twoObs_eigen`. La version forte (`∀ r`) est une extension
-séparée, à tenter une fois l'invariance de choix de record établie pour
-elle-même — non bloquante ici.
+`Local.commute_of_disjoint`), `ψ` admet la décomposition canonique en branches
+jointes orthogonales construite avec le record `0`. Le théorème prouve l'action
+diagonale et l'unicité relativement à cette présentation canonique par record
+`0`. Les corollaires séparés d'invariance sous un choix admissible de records
+redondants établissent que les vecteurs de branches construits ne dépendent pas
+de ce choix ; ces énoncés ne doivent pas être confondus.
 
 **EN.** Riedel's theorem (Main Result, PRL 118, 120402 (2017)). Under
 redundancy (IsRecordedOn for each observable) and the commutation-witness
 hypothesis (CommuteWitness, arising in practice from spatial disjointness
-of the supports through Local.commute_of_disjoint), ψ admits a UNIQUE
-decomposition into orthogonal joint branches, each of which is a
-SIMULTANEOUS eigenstate of every record of every observable. The POSITIVE
-counterpart of HistoriesKent.contrary_inferences: consistency alone (Kent)
-permits contrary inferences, whereas redundant records (Riedel) enforce
-uniqueness of the decomposition—two structurally distinct mechanisms
-governing the same notion of “history”/“branch.”
-
-Invariance of chainProj/jointBranch under the ordering of the list L and
-under the choice of records ρ (beyond the corollary
-branch_wellDefined) is NOT stated separately here: once this theorem and
-diagonal are established, it follows in one line (two joint branches built
-from chainProj expressions differing only in ordering or record choice
-both satisfy the eigenstate property below for the SAME f, and hence agree
-by uniqueness). It should be added as a corollary once this milestone is
-closed, without introducing an additional open goal, rather than as a
-separate open goal in the skeleton.
-
-## Deviation from the R0 skeleton: eigenstate property and uniqueness restricted to record 0
-
-This choice was tested explicitly beforehand: invariance under an arbitrary
-record choice r (rather than only 0, as used by
-chainProj/jointBranch) does NOT follow immediately from E/T alone.
-T applies only to an observable ABSENT from the list, whereas the target
-observable a is already present in List.finRange A; replacing its own
-record would require composing two projections from DIFFERENT records of the
-SAME observable at an internal point of contact in the chain, which
-rproj_contract does not cover (it covers only two labels of the SAME
-record). The statement is therefore restricted to record 0, as in
-TwoObs.twoObs_eigen. The stronger version (∀ r) is a separate extension
-to be attempted once invariance under record choice has itself been proved;
-it is not blocking here.
+of the supports through Local.commute_of_disjoint), ψ admits the canonical
+orthogonal joint-branch decomposition constructed with record 0. The theorem
+proves diagonal action and uniqueness relative to that canonical record
+presentation. Separate corollaries establish invariance of the constructed
+branch vectors under admissible changes of redundant-record choice. These
+statements must not be conflated.
 -/
 theorem riedel [NeZero R] [NeZero K] (Obs : Fin A → Fin R → LabeledResolution n K) (ψ : H n)
     (hrec : ∀ a, IsRecordedOn ψ (Obs a)) (hcw : CommuteWitness Obs) :

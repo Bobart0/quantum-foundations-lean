@@ -162,16 +162,18 @@ def AxPos : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, 0 ≤ Est D c
 def AxNul (v : H n) : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, v ∈ cᗮ → Est D c = 0
 
 /--
-**FR.** **Lemme 4** : under (Grain) alone, the weight of a cell shared by
-    two perspectives does not depend on which perspective it is
-    evaluated in. Non-contextuality, usually postulated in
-    Gleason-type derivations, is here a consequence of grain coherence
-    alone.
+**FR.** **Lemme 4** : pour toute cellule propre non nulle partagée par deux
+perspectives, la cohérence sous raffinement (Grain) suffit à rendre son poids
+indépendant de la perspective. Le cas exceptionnel de la cellule totale `⊤`
+est fixé par la normalisation (Norm). L'indépendance de contexte sur
+l'ensemble des cellules résulte donc de (Grain) avec (Norm) pour le cas de la
+cellule totale ; elle n'est pas postulée séparément.
 
-**EN.** Lemma 4: under (Grain) alone, the weight of a cell shared by
- two perspectives does not depend on the perspective in which it is
- evaluated. Non-contextuality, usually postulated in Gleason-type
- derivations, is here a consequence of grain coherence alone.
+**EN.** Lemma 4: for every proper nonzero cell shared by two perspectives,
+refinement coherence (Grain) suffices to make its weight independent of the
+perspective. The exceptional top-cell case is fixed by normalization (Norm).
+Context independence for all cells therefore follows from Grain, with Norm
+used for the top cell; it is not postulated separately.
 -/
 theorem lemma4_noncontextual (hA : AxGrain Est) (hN : AxNorm Est)
     {D₁ D₂ : Perspective n} {c : Submodule ℂ (H n)}
