@@ -33,13 +33,33 @@ noncomputable section
 
 variable {n : ℕ}
 
+/-- **FR.** `U (P_A) U† = P_{A.map U}`, comme opérateurs (pas seulement
+ponctuellement) : `LinearMap.ext` + `Submodule.starProjection_map_apply`.
+
+**EN.** `U (P_A) U† = P_{A.map U}`, as operators (not merely pointwise):
+`LinearMap.ext` + `Submodule.starProjection_map_apply`. -/
+private theorem conj_projL (U : H n ≃ₗᵢ[ℂ] H n) (A : Submodule ℂ (H n)) :
+    U.toLinearMap ∘ₗ projL A ∘ₗ U.symm.toLinearMap = projL (A.map U.toLinearMap) := by
+  apply LinearMap.ext
+  intro x
+  exact (Submodule.starProjection_map_apply U A x).symm
+
+/-- **FR.** `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`.
+
+**EN.** `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`. -/
+private theorem map_span_singleton (U : H n ≃ₗᵢ[ℂ] H n) (ψ : H n) :
+    (ℂ ∙ ψ).map U.toLinearMap = ℂ ∙ (U ψ) := by
+  rw [Submodule.map_span, Set.image_singleton]; rfl
+
 /--
 **FR.** Le sélecteur de Born est unitairement covariant.
 
 **EN.** The Born selector is unitarily covariant.
 -/
 theorem bornSelector_isCovariant : IsCovariant (bornSelector n) := by
-  sorry
+  intro U ψ _hψ
+  show projL (ℂ ∙ (U ψ)) = U.toLinearMap ∘ₗ projL (ℂ ∙ ψ) ∘ₗ U.symm.toLinearMap
+  rw [conj_projL, map_span_singleton]
 
 /--
 **FR.** Toute la famille candidate `tSelector` est unitairement covariante :
@@ -50,7 +70,17 @@ covariance alone therefore does not fix the parameter `t`.
 -/
 theorem tSelector_isCovariant (hn : 2 ≤ n) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
     IsCovariant (tSelector n hn t ht0 ht1) := by
-  sorry
+  intro U ψ _hψ
+  show tDensity n t (U ψ) = U.toLinearMap ∘ₗ tDensity n t ψ ∘ₗ U.symm.toLinearMap
+  have hmap := map_span_singleton U ψ
+  have hmapc : ((ℂ ∙ ψ)ᗮ).map U.toLinearMap = (ℂ ∙ (U ψ))ᗮ := by
+    rw [← hmap]; exact Submodule.map_orthogonal_equiv (ℂ ∙ ψ) U
+  show tDensity n t (U ψ)
+    = U.toLinearMap ∘ₗ ((t : ℂ) • projL (ℂ ∙ ψ) + (((1 - t) / ((n : ℝ) - 1) : ℝ) : ℂ) • projL (ℂ ∙ ψ)ᗮ)
+      ∘ₗ U.symm.toLinearMap
+  rw [LinearMap.add_comp, LinearMap.comp_add, LinearMap.smul_comp, LinearMap.comp_smul,
+    LinearMap.smul_comp, LinearMap.comp_smul, conj_projL, conj_projL, hmap, hmapc]
+  rfl
 
 end
 end QuantumFoundations.Selector
