@@ -62,16 +62,18 @@ theorem bornSelector_isCovariant : IsCovariant (bornSelector n) := by
   rw [conj_projL, map_span_singleton]
 
 /--
-**FR.** Toute la famille candidate `tSelector` est unitairement covariante :
-la covariance seule ne fixe donc pas le paramètre `t`.
+**FR.** Conjugaison de `tDensity` par une isométrie : `ρ_t(Uψ) = U ρ_t(ψ) U†`.
+Non `private` : réutilisé tel quel par `Classification.lean` (`t_indep_of_psi`),
+qui a besoin exactement de ce fait sur `tDensity`, indépendamment de tout
+`Selector`.
 
-**EN.** The entire candidate family `tSelector` is unitarily covariant:
-covariance alone therefore does not fix the parameter `t`.
+**EN.** Conjugation of `tDensity` by an isometry: `ρ_t(Uψ) = U ρ_t(ψ) U†`.
+Not `private`: reused as-is by `Classification.lean` (`t_indep_of_psi`),
+which needs exactly this fact about `tDensity`, independently of any
+`Selector`.
 -/
-theorem tSelector_isCovariant (hn : 2 ≤ n) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
-    IsCovariant (tSelector n hn t ht0 ht1) := by
-  intro U ψ _hψ
-  show tDensity n t (U ψ) = U.toLinearMap ∘ₗ tDensity n t ψ ∘ₗ U.symm.toLinearMap
+theorem tDensity_conj (U : H n ≃ₗᵢ[ℂ] H n) (t : ℝ) (ψ : H n) :
+    tDensity n t (U ψ) = U.toLinearMap ∘ₗ tDensity n t ψ ∘ₗ U.symm.toLinearMap := by
   have hmap := map_span_singleton U ψ
   have hmapc : ((ℂ ∙ ψ)ᗮ).map U.toLinearMap = (ℂ ∙ (U ψ))ᗮ := by
     rw [← hmap]; exact Submodule.map_orthogonal_equiv (ℂ ∙ ψ) U
@@ -81,6 +83,18 @@ theorem tSelector_isCovariant (hn : 2 ≤ n) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t 
   rw [LinearMap.add_comp, LinearMap.comp_add, LinearMap.smul_comp, LinearMap.comp_smul,
     LinearMap.smul_comp, LinearMap.comp_smul, conj_projL, conj_projL, hmap, hmapc]
   rfl
+
+/--
+**FR.** Toute la famille candidate `tSelector` est unitairement covariante :
+la covariance seule ne fixe donc pas le paramètre `t`.
+
+**EN.** The entire candidate family `tSelector` is unitarily covariant:
+covariance alone therefore does not fix the parameter `t`.
+-/
+theorem tSelector_isCovariant (hn : 2 ≤ n) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    IsCovariant (tSelector n hn t ht0 ht1) := by
+  intro U ψ _hψ
+  exact tDensity_conj U t ψ
 
 end
 end QuantumFoundations.Selector
