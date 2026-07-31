@@ -86,6 +86,12 @@ import QuantumFoundations.Complexity.SimulatedEvolution.HamiltonianEvolution
 import QuantumFoundations.BranchesRiedel.BornBridge.ConcreteModel
 import QuantumFoundations.BranchesRiedel.BornBridge.Stability
 import QuantumFoundations.Complexity.Nonvacuity
+import QuantumFoundations.Selectors.Defs
+import QuantumFoundations.Selectors.Unitaries
+import QuantumFoundations.Selectors.Covariance
+import QuantumFoundations.Selectors.Classification
+import QuantumFoundations.Selectors.Pinning
+import QuantumFoundations.Selectors.Nonvacuity
 
 namespace QuantumFoundations
 
