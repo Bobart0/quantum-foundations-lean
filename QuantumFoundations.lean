@@ -93,6 +93,7 @@ import QuantumFoundations.Selectors.Classification
 import QuantumFoundations.Selectors.Pinning
 import QuantumFoundations.Selectors.SingleEffect
 import QuantumFoundations.Selectors.Nonvacuity
+import QuantumFoundations.Selectors.Dephasing
 
 namespace QuantumFoundations
 
