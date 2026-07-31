@@ -94,6 +94,8 @@ import QuantumFoundations.Selectors.Pinning
 import QuantumFoundations.Selectors.SingleEffect
 import QuantumFoundations.Selectors.Nonvacuity
 import QuantumFoundations.Selectors.Dephasing
+import QuantumFoundations.Selectors.SubgroupCovariance
+import QuantumFoundations.Selectors.BasisStabilizer
 
 namespace QuantumFoundations
 
