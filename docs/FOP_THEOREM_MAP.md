@@ -324,3 +324,57 @@ Every declaration above depends only on the standard trio
 `[propext, Classical.choice, Quot.sound]`, verified by
 `QuantumFoundations/Audit/DownstreamAPI.lean` (not imported by the
 repository root, run separately in CI, mirroring `Audit/FoP.lean`).
+
+## Selectors (interpretively neutral, no manuscript role)
+
+`QuantumFoundations/Selectors/` is an independent, interpretively neutral
+development — nothing Everettian enters it, and no manuscript-facing
+theorem elsewhere in this repository depends on it. It is not part of the
+manuscript's argument chain and is not audited by `Audit/FoP.lean` (see
+that module's own scope note); see `Selectors/README.md` for the full
+architecture. It studies **selectors** (pure-state ↦ density-operator
+maps) from two independent angles: unitary covariance plus a bridge
+premise (`NSNC1`), and a general classification of single-effect
+constraints (Proposition 2).
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.covariant_iff_tSelector` |
+| Module | `Selectors/Classification.lean` |
+| Status | original result (this development's classification, via an elementary vector-stabilizer argument; no Schur's lemma or representation theory) |
+| Dependencies | `Selector`, `IsCovariant`, `tDensity`; the sign-reflection/transposition toolbox in `Selectors/Unitaries.lean` |
+| Dimension | `n ≥ 2` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | the `tDensity` family itself is the well-known isotropic/depolarizing family in quantum information, not original; the classification (this theorem) shows covariance alone cannot select the Born member of that family |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.covariant_and_nsnc1_iff_born` (assembling `nsnc1_iff_born`, `tSelector_nsnc1_iff_t_eq_one`) |
+| Module | `Selectors/Pinning.lean` |
+| Status | original result (this development's assembly); `nsnc1_iff_born` itself does not use covariance and reuses the existing `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal` for the operator identification |
+| Dependencies | `covariant_iff_tSelector`, `NSNC1`, `apply_eq_zero_of_quadratic_eq_zero` (a positive-operator quadratic-vanishing lemma proved here via `sqrtOp`, not reused from elsewhere) |
+| Dimension | `n ≥ 2` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `NSNC1` ("no successor, no chance") is a bridge premise studied as a hypothesis, not derived from anything more primitive; no claim is made that it must be accepted as a principle of chance |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.single_effect_selector_iff` (Proposition 2) |
+| Module | `Selectors/SingleEffect.lean` |
+| Status | original result (this development's convex/spectral classification) |
+| Dependencies | `density_supported_on_kernel_of_extremal_trace` (a general spectral-support lemma via `LinearMap.IsSymmetric.eigenvectorBasis`, proved here); `apply_eq_zero_of_quadratic_eq_zero` (reused from `Selectors/Pinning.lean`, not reproved); `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal` (reused, not reproved) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | a convex/spectral geometry statement about which single-effect constraints *would* select a pure state; it takes no position on whether any specific effect/value pair is physically realized or should be adopted as a probability postulate. `NSNC1` (above) is recovered as the special case `E₀ = P_{ψ⊥}`, `c = 0` (`nsnc1_iff_born_from_proposition_two`) — a proved corollary, not a re-derivation of one classification from the other |
+
+Every declaration in `Selectors/` depends only on the standard trio
+`[propext, Classical.choice, Quot.sound]` (verified individually via
+`#print axioms` on each public declaration; there is no dedicated audit
+module for this interpretively neutral subsystem, matching its exclusion
+from `Audit/FoP.lean`).
