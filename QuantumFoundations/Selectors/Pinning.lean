@@ -47,13 +47,16 @@ variable {n : ℕ}
 /--
 **FR.** Un opérateur positif annule tout vecteur isotrope de sa forme
 quadratique. Route : `sqrtOp`. `⟪ρ w, w⟫ = ⟪√ρ w, √ρ w⟫ = ‖√ρ w‖²` par symétrie
-de `√ρ` et `sqrtOp_mul_self` ; d'où `√ρ w = 0` puis `ρ w = 0`.
+de `√ρ` et `sqrtOp_mul_self` ; d'où `√ρ w = 0` puis `ρ w = 0`. Public : réutilisé
+tel quel par `SingleEffect.lean` (règle « pas de preuve monolithique répétée »).
 
 **EN.** A positive operator vanishes on every isotropic vector of its
 quadratic form. Route: `sqrtOp`. `⟪ρ w, w⟫ = ⟪√ρ w, √ρ w⟫ = ‖√ρ w‖²` by
 symmetry of `√ρ` and `sqrtOp_mul_self`; hence `√ρ w = 0` then `ρ w = 0`.
+Public: reused as-is by `SingleEffect.lean` (the "no repeated monolithic
+proof" rule).
 -/
-private theorem apply_eq_zero_of_quadratic_eq_zero {ρ : H n →ₗ[ℂ] H n}
+theorem apply_eq_zero_of_quadratic_eq_zero {ρ : H n →ₗ[ℂ] H n}
     (hρ : IsPositiveOp ρ) {w : H n} (h : ⟪ρ w, w⟫_ℂ = 0) : ρ w = 0 := by
   have hsym : LinearMap.IsSymmetric (QuantumFoundations.sqrtOp ρ) :=
     (QuantumFoundations.sqrtOp_isPositive hρ).1

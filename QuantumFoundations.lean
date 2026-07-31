@@ -91,6 +91,7 @@ import QuantumFoundations.Selectors.Unitaries
 import QuantumFoundations.Selectors.Covariance
 import QuantumFoundations.Selectors.Classification
 import QuantumFoundations.Selectors.Pinning
+import QuantumFoundations.Selectors.SingleEffect
 import QuantumFoundations.Selectors.Nonvacuity
 
 namespace QuantumFoundations
