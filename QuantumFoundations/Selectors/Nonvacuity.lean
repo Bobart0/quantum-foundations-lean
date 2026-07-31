@@ -64,8 +64,8 @@ theorem isCovariant_nonempty : ∃ σ : Selector 2, IsCovariant σ :=
 
 **EN.** `NSNC1` is inhabited.
 -/
-theorem nsnc1_nonempty : ∃ σ : Selector 2, NSNC1 σ := by
-  sorry
+theorem nsnc1_nonempty : ∃ σ : Selector 2, NSNC1 σ :=
+  ⟨bornSelector 2, (nsnc1_iff_born (bornSelector 2)).mpr (fun _ _ => rfl)⟩
 
 /--
 **FR.** Le témoin qui compte : `tSelector 2 _ (1/2) _ _` est unitairement
@@ -78,7 +78,9 @@ enough.
 theorem tSelector_half_covariant_not_nsnc1 :
     IsCovariant (tSelector 2 (le_refl 2) (1 / 2) (by norm_num) (by norm_num)) ∧
       ¬ NSNC1 (tSelector 2 (le_refl 2) (1 / 2) (by norm_num) (by norm_num)) := by
-  sorry
+  refine ⟨tSelector_isCovariant (le_refl 2) (by norm_num) (by norm_num), ?_⟩
+  rw [tSelector_nsnc1_iff_t_eq_one (le_refl 2) (by norm_num) (by norm_num)]
+  norm_num
 
 end
 end QuantumFoundations.Selector

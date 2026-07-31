@@ -16,8 +16,9 @@ Décomposition en lemmes `private`, dans l'ordre :
    par paire, en `k` si `k ≠ i₀`, sinon en `j`).
 3. `diag_const_off_psi` : coefficients diagonaux hors `i₀` tous égaux (une
    transposition suffit).
-4. `projL_add_projL_compl`, `tDensity_apply_self` : faits techniques sur
-   `tDensity`.
+4. `projL_add_projL_compl`, `tDensity_apply_self` (`Defs.lean`, publics et
+   réutilisés tel quel par `Pinning.lean` — pas de preuve répétée) : faits
+   techniques sur `tDensity`.
 5. `eq_tDensity_at_psi` : combine 1–4 avec la trace = 1 pour obtenir, à `ψ`
    fixé, `σ.ρ ψ = tDensity n t ψ` pour un unique `t ∈ [0,1]`.
 6. `t_indep_of_psi` : ce `t` ne dépend pas de `ψ` (transitivité unitaire +
@@ -44,6 +45,9 @@ Decomposed into `private` lemmas, in order:
    suffices per pair, at `k` if `k ≠ i₀`, otherwise at `j`).
 3. `diag_const_off_psi`: diagonal coefficients off `i₀` are all equal (one
    transposition suffices).
+4. `projL_add_projL_compl`, `tDensity_apply_self` (`Defs.lean`, public and
+   reused as-is by `Pinning.lean` — no repeated proof): technical facts about
+   `tDensity`.
 4. `projL_add_projL_compl`, `tDensity_apply_self`: technical facts about
    `tDensity`.
 5. `eq_tDensity_at_psi`: combines 1–4 with trace = 1 to get, at a fixed `ψ`,
@@ -145,41 +149,6 @@ private theorem diag_const_off_psi (σ : Selector n) (hσ : IsCovariant σ) {ψ 
     have hinner := congrArg (fun w => ⟪b j, w⟫_ℂ) happly
     rw [adjoint_apply, swapIso_symm, swapIso_apply, Equiv.swap_apply_right] at hinner
     exact hinner.symm
-
-/-- **FR.** `P_A + P_{Aᗮ} = id`, la résolution de l'identité en deux blocs
-orthogonaux (`projL_sup_of_isOrtho` + `starProjection_top`).
-
-**EN.** `P_A + P_{Aᗮ} = id`, the resolution of the identity into two
-orthogonal blocks (`projL_sup_of_isOrtho` + `starProjection_top`). -/
-private theorem projL_add_projL_compl (A : Submodule ℂ (H n)) :
-    projL A + projL Aᗮ = LinearMap.id := by
-  have hortho : A ⟂ Aᗮ := Submodule.le_orthogonal_orthogonal _
-  have hsup : A ⊔ Aᗮ = ⊤ := Submodule.sup_orthogonal_of_hasOrthogonalProjection
-  have hproj_sum : projL (A ⊔ Aᗮ) = projL A + projL Aᗮ := Gleason.projL_sup_of_isOrtho hortho
-  rw [hsup] at hproj_sum
-  rw [← hproj_sum]
-  show ((⊤ : Submodule ℂ (H n)).starProjection : H n →L[ℂ] H n).toLinearMap = LinearMap.id
-  rw [Submodule.starProjection_top]
-  rfl
-
-/-- **FR.** `tDensity n r φ φ = r · φ` : au point `φ` lui-même, seul le terme
-`P_φ` contribue (`P_{φᗮ} φ = 0` par `projL_add_projL_compl`).
-
-**EN.** `tDensity n r φ φ = r · φ`: at the point `φ` itself, only the `P_φ`
-term contributes (`P_{φᗮ} φ = 0` by `projL_add_projL_compl`). -/
-private theorem tDensity_apply_self {φ : H n} (hφ : ‖φ‖ = 1) (r : ℝ) :
-    tDensity n r φ φ = (r : ℂ) • φ := by
-  unfold tDensity
-  rw [LinearMap.add_apply, LinearMap.smul_apply, LinearMap.smul_apply]
-  have hp1 : projL (ℂ ∙ φ) φ = φ := by
-    rw [projL_singleton_unit φ φ hφ, inner_self_eq_norm_sq_to_K, hφ]
-    norm_num
-  have hp2 : projL (ℂ ∙ φ) φ + projL (ℂ ∙ φ)ᗮ φ = φ :=
-    congrArg (· φ) (projL_add_projL_compl (ℂ ∙ φ))
-  have hp2' : projL (ℂ ∙ φ)ᗮ φ = 0 := by
-    rw [hp1] at hp2
-    exact add_left_cancel (hp2.trans (add_zero φ).symm)
-  rw [hp1, hp2', smul_zero, add_zero]
 
 /-- **FR.** À `ψ` fixé, `σ.ρ ψ` est exactement `tDensity n t ψ` pour un
 `t ∈ [0,1]`. Étend `ψ` en base orthonormée `b` (`b i₀ = ψ`) ; `offDiag_eq_zero`

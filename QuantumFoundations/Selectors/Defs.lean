@@ -82,6 +82,26 @@ pattern, `AGENTS.md` §Conventions): it takes no proof as an argument.
 noncomputable def tDensity (n : ℕ) (t : ℝ) (ψ : H n) : H n →ₗ[ℂ] H n :=
   (t : ℂ) • projL (ℂ ∙ ψ) + (((1 - t) / ((n : ℝ) - 1) : ℝ) : ℂ) • projL (ℂ ∙ ψ)ᗮ
 
+/-- **FR.** `P_A + P_{Aᗮ} = id`, la résolution de l'identité en deux blocs
+orthogonaux (`projL_sup_of_isOrtho` + `starProjection_top`). Public : réutilisé
+tel quel par `Classification.lean` et `Pinning.lean` (règle « pas de preuve
+monolithique répétée »).
+
+**EN.** `P_A + P_{Aᗮ} = id`, the resolution of the identity into two
+orthogonal blocks (`projL_sup_of_isOrtho` + `starProjection_top`). Public:
+reused as-is by `Classification.lean` and `Pinning.lean` (the "no repeated
+monolithic proof" rule). -/
+theorem projL_add_projL_compl (A : Submodule ℂ (H n)) :
+    projL A + projL Aᗮ = LinearMap.id := by
+  have hortho : A ⟂ Aᗮ := Submodule.le_orthogonal_orthogonal _
+  have hsup : A ⊔ Aᗮ = ⊤ := Submodule.sup_orthogonal_of_hasOrthogonalProjection
+  have hproj_sum : projL (A ⊔ Aᗮ) = projL A + projL Aᗮ := Gleason.projL_sup_of_isOrtho hortho
+  rw [hsup] at hproj_sum
+  rw [← hproj_sum]
+  show ((⊤ : Submodule ℂ (H n)).starProjection : H n →L[ℂ] H n).toLinearMap = LinearMap.id
+  rw [Submodule.starProjection_top]
+  rfl
+
 /-- **FR.** Trace de la projection de rang 1 sur un vecteur unitaire : `1`, via
 `InnerProductSpace.rankOne`/`trace_rankOne` (même route que
 `Uhlhorn.GleasonTwice.isDensityOperator_projL_of_proj1`, spécifique à
@@ -91,7 +111,7 @@ noncomputable def tDensity (n : ℕ) (t : ℝ) (ψ : H n) : H n →ₗ[ℂ] H n 
 `InnerProductSpace.rankOne`/`trace_rankOne` (same route as
 `Uhlhorn.GleasonTwice.isDensityOperator_projL_of_proj1`, specific to `Proj1 n`
 there; here directly on `‖ψ‖ = 1`). -/
-private theorem trace_projL_singleton {ψ : H n} (hψ : ‖ψ‖ = 1) :
+theorem trace_projL_singleton {ψ : H n} (hψ : ‖ψ‖ = 1) :
     LinearMap.trace ℂ (H n) (projL (ℂ ∙ ψ)) = 1 := by
   have heq : projL (ℂ ∙ ψ) = (InnerProductSpace.rankOne ℂ ψ ψ : H n →ₗ[ℂ] H n) := by
     apply LinearMap.ext
@@ -110,23 +130,50 @@ private theorem trace_projL_singleton {ψ : H n} (hψ : ‖ψ‖ = 1) :
 vector: `n − 1`, via `projL A + projL Aᗮ = projL ⊤ = id`
 (`projL_sup_of_isOrtho`, `Submodule.starProjection_top`) and linearity of the
 trace. -/
-private theorem trace_projL_compl_singleton {ψ : H n} (hψ : ‖ψ‖ = 1) :
+theorem trace_projL_compl_singleton {ψ : H n} (hψ : ‖ψ‖ = 1) :
     LinearMap.trace ℂ (H n) (projL (ℂ ∙ ψ)ᗮ) = (n : ℂ) - 1 := by
-  have hortho : (ℂ ∙ ψ) ⟂ (ℂ ∙ ψ)ᗮ := Submodule.le_orthogonal_orthogonal _
-  have hsup : (ℂ ∙ ψ) ⊔ (ℂ ∙ ψ)ᗮ = ⊤ := Submodule.sup_orthogonal_of_hasOrthogonalProjection
-  have hproj_sum : projL ((ℂ ∙ ψ) ⊔ (ℂ ∙ ψ)ᗮ) = projL (ℂ ∙ ψ) + projL (ℂ ∙ ψ)ᗮ :=
-    Gleason.projL_sup_of_isOrtho hortho
-  rw [hsup] at hproj_sum
-  have htop : projL (⊤ : Submodule ℂ (H n)) = LinearMap.id := by
-    show ((⊤ : Submodule ℂ (H n)).starProjection : H n →L[ℂ] H n).toLinearMap = LinearMap.id
-    rw [Submodule.starProjection_top]
-    rfl
-  rw [htop] at hproj_sum
   have hfinrank : Module.finrank ℂ (H n) = n := by simp [H]
   have htrace_sum : LinearMap.trace ℂ (H n) (projL (ℂ ∙ ψ) + projL (ℂ ∙ ψ)ᗮ) = (n : ℂ) := by
-    rw [← hproj_sum, LinearMap.trace_id, hfinrank]
+    rw [projL_add_projL_compl, LinearMap.trace_id, hfinrank]
   rw [map_add, trace_projL_singleton hψ] at htrace_sum
   linear_combination htrace_sum
+
+/-- **FR.** `tDensity n t ψ ψ = t · ψ` : au point `ψ` lui-même, seul le terme
+`P_ψ` contribue (`P_{ψᗮ} ψ = 0` par `projL_add_projL_compl`). Public :
+réutilisé par `Classification.lean` (`t_indep_of_psi`) et `Pinning.lean`
+(`tSelector_nsnc1_iff_t_eq_one`).
+
+**EN.** `tDensity n t ψ ψ = t · ψ`: at the point `ψ` itself, only the `P_ψ`
+term contributes (`P_{ψᗮ} ψ = 0` by `projL_add_projL_compl`). Public: reused
+by `Classification.lean` (`t_indep_of_psi`) and `Pinning.lean`
+(`tSelector_nsnc1_iff_t_eq_one`). -/
+theorem tDensity_apply_self {ψ : H n} (hψ : ‖ψ‖ = 1) (t : ℝ) :
+    tDensity n t ψ ψ = (t : ℂ) • ψ := by
+  unfold tDensity
+  rw [LinearMap.add_apply, LinearMap.smul_apply, LinearMap.smul_apply]
+  have hp1 : projL (ℂ ∙ ψ) ψ = ψ := by
+    rw [projL_singleton_unit ψ ψ hψ, inner_self_eq_norm_sq_to_K, hψ]; norm_num
+  have hp2 : projL (ℂ ∙ ψ) ψ + projL (ℂ ∙ ψ)ᗮ ψ = ψ :=
+    congrArg (· ψ) (projL_add_projL_compl (ℂ ∙ ψ))
+  have hp2' : projL (ℂ ∙ ψ)ᗮ ψ = 0 := by
+    rw [hp1] at hp2
+    exact add_left_cancel (hp2.trans (add_zero ψ).symm)
+  rw [hp1, hp2', smul_zero, add_zero]
+
+/-- **FR.** `bornValue ρ A + bornValue ρ Aᗮ = Re(tr ρ)` : additivité de la
+valeur de Born sur une résolution de l'identité en deux blocs orthogonaux
+(`projL_add_projL_compl`). Public : donne, combiné à `trace_one`, la valeur
+de Born sur `Aᗮ` à partir de celle sur `A` sans recalcul.
+
+**EN.** `bornValue ρ A + bornValue ρ Aᗮ = Re(tr ρ)`: additivity of the Born
+value over a resolution of the identity into two orthogonal blocks
+(`projL_add_projL_compl`). Public: combined with `trace_one`, gives the Born
+value on `Aᗮ` from the one on `A` without recomputation. -/
+theorem bornValue_add_bornValue_compl (ρ : H n →ₗ[ℂ] H n) (A : Submodule ℂ (H n)) :
+    bornValue ρ A + bornValue ρ Aᗮ = (LinearMap.trace ℂ (H n) ρ).re := by
+  show (LinearMap.trace ℂ (H n) (ρ ∘ₗ projL A)).re + (LinearMap.trace ℂ (H n) (ρ ∘ₗ projL Aᗮ)).re
+    = (LinearMap.trace ℂ (H n) ρ).re
+  rw [← Complex.add_re, ← map_add, ← LinearMap.comp_add, projL_add_projL_compl, LinearMap.comp_id]
 
 /--
 **FR.** Pour `n ≥ 2` et `t ∈ [0,1]`, `tDensity n t ψ` est un opérateur densité
