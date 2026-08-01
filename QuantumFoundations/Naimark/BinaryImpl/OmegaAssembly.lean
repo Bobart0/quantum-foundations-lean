@@ -251,31 +251,6 @@ private theorem cell_residualComplementEmbed (I : BinaryImpl n E ι) (s : ℕ)
   change residualComplementEmbedOfDim I s hs v ∈ LinearMap.ker I.cell ⊓ residualSubspace I at hv
   exact hv.1
 
-private theorem cell_combinedLeg_local (I : BinaryImpl n E ι) (w : DilSpace n 2) :
-    I.cell (combinedLeg I w) =
-      combinedLeg I (singleL n 2 0 (coordL n 2 0 w)) := by
-  rw [combinedLeg_apply, combinedLeg_apply]
-  have h0 := LinearMap.congr_fun (coordL_singleL (n := n) (m := 2) 0 0)
-    (coordL n 2 0 w)
-  have h1 := LinearMap.congr_fun (coordL_singleL (n := n) (m := 2) 1 0)
-    (coordL n 2 0 w)
-  simp only [LinearMap.comp_apply] at h0 h1
-  simp at h0 h1
-  rw [h0, h1, map_zero, add_zero, map_add]
-  have ha : I.cell (eventLeg I (coordL n 2 0 w)) =
-      eventLeg I (coordL n 2 0 w) := by
-    show I.cell (I.cell (I.encoding (coordL n 2 0 w))) =
-      I.cell (I.encoding (coordL n 2 0 w))
-    have h := LinearMap.congr_fun I.cell_idempotent
-      (I.encoding (coordL n 2 0 w))
-    simpa using h
-  have hb : I.cell (complementLeg I (coordL n 2 1 w)) = 0 := by
-    show I.cell (I.complementCell (I.encoding (coordL n 2 1 w))) = 0
-    have h := LinearMap.congr_fun I.cell_comp_complement_eq_zero
-      (I.encoding (coordL n 2 1 w))
-    simpa using h
-  rw [ha, hb, add_zero]
-
 theorem cell_omegaAssembly (I : BinaryImpl n E ι) (r s : ℕ)
     (hr : excessEventDim I = r) (hs : excessComplementDim I = s) :
     I.cell ∘ₗ omegaAssembly I r s hr hs =
@@ -299,7 +274,7 @@ theorem cell_omegaAssembly (I : BinaryImpl n E ι) (r s : ℕ)
     _ = combinedLeg I (singleL n 2 0 (coordL n 2 0
           (omegaMinimalCoord n r s z))) +
         residualEventEmbedOfDim I r hr (omegaEventCoord n r s z) := by
-              rw [omegaAssembly_minimal_single, cell_combinedLeg_local,
+              rw [omegaAssembly_minimal_single, cell_combinedLeg,
                 omegaAssembly_event_single, cell_residualEventEmbed,
                 omegaAssembly_complement_single, cell_residualComplementEmbed]
               simp only [add_zero]
@@ -457,6 +432,7 @@ theorem omegaAssembly_gram_eq (I : BinaryImpl n E ι) (J : BinaryImpl n E κ)
 
 end
 end QuantumFoundations.Naimark.BinaryImpl
+
 
 
 

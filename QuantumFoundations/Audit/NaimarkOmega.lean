@@ -104,7 +104,22 @@ open Gleason
 #check @combinedLeg_apply
 #check @range_combinedLeg
 #check @combinedLeg_gram_eq
+#check @combinedLeg_doubled
+#check @cell_combinedLeg
 #check @minimal_strictIso
+
+/-! ## SumCoordinates.lean and OmegaAssembly.lean -/
+
+#check @euclideanSumInl
+#check @euclideanSumInr
+#check @euclideanSumFst
+#check @euclideanSumSnd
+#check @euclideanSum_decomposition
+#check @omega_decomposition
+#check @omegaSourceCell_isProjection
+#check @omegaAssembly_surjective
+#check @cell_omegaAssembly
+#check @omegaAssembly_gram_eq
 
 /-! ## `Residual.lean` -/
 
@@ -132,6 +147,8 @@ open Gleason
 
 #check @StrictIso.excessEventDim_eq
 #check @StrictIso.excessComplementDim_eq
+#check @strictIso_of_residualDims_eq
+#check @strictIso_iff_residualDims_eq
 
 /-! ## `ReplicatedAncilla.lean` -/
 
@@ -205,6 +222,8 @@ open Gleason
 #print axioms projectorRank_decomposition
 #print axioms StrictIso.excessEventDim_eq
 #print axioms StrictIso.excessComplementDim_eq
+#print axioms strictIso_of_residualDims_eq
+#print axioms strictIso_iff_residualDims_eq
 #print axioms finrank_range_replicateOperator
 #print axioms replicatedAncillaImpl
 #print axioms rankRatio_replicatedAncilla
@@ -214,3 +233,4 @@ open Gleason
 #print axioms rankRatio_eq_of_isMinimal
 
 end QuantumFoundations.Audit.NaimarkOmega
+

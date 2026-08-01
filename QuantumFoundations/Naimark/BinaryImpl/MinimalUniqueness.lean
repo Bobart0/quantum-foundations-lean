@@ -152,7 +152,7 @@ theorem combinedLeg_gram_eq (I : BinaryImpl n E ι) (J : BinaryImpl n E κ) :
 
 /-- The doubled witness `singleL 0 x + singleL 1 x`, whose `combinedLeg`
 value is exactly the ambient encoding `I.encoding x`. -/
-private theorem combinedLeg_doubled (I : BinaryImpl n E ι) (x : H n) :
+theorem combinedLeg_doubled (I : BinaryImpl n E ι) (x : H n) :
     combinedLeg I (singleL n 2 0 x + singleL n 2 1 x) = I.encoding x := by
   rw [combinedLeg_apply]
   simp only [map_add]
@@ -169,7 +169,7 @@ private theorem combinedLeg_doubled (I : BinaryImpl n E ι) (x : H n) :
 
 /-- `I.cell` applied to a `combinedLeg` value collapses to the
 event-side-only witness `singleL 0 (coordL 0 w)`. -/
-private theorem cell_combinedLeg {ι : Type} [Fintype ι] [DecidableEq ι] (I : BinaryImpl n E ι)
+theorem cell_combinedLeg {ι : Type} [Fintype ι] [DecidableEq ι] (I : BinaryImpl n E ι)
     (w : DilSpace n 2) :
     I.cell (combinedLeg I w) = combinedLeg I (singleL n 2 0 (coordL n 2 0 w)) := by
   rw [combinedLeg_apply, combinedLeg_apply]
@@ -216,3 +216,4 @@ theorem minimal_strictIso {I : BinaryImpl n E ι} {J : BinaryImpl n E κ}
 end
 
 end QuantumFoundations.Naimark.BinaryImpl
+

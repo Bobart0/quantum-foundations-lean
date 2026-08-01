@@ -1,5 +1,5 @@
 import QuantumFoundations.Naimark.BinaryImpl.Nontriviality
-import QuantumFoundations.Naimark.BinaryImpl.MinimalUniqueness
+import QuantumFoundations.Naimark.BinaryImpl.StrictClassification
 
 /-!
 **FR.** # Module C (Porte Ω) — synthèse : classification stricte des implémentations de Naimark
@@ -25,10 +25,13 @@ incomplète, sans axiome, sans décision native forcée) :**
 4. **`minimal_strictIso`** (`MinimalUniqueness.lean`) : deux implémentations
    MINIMALES d'un même effet sont TOUJOURS strictement isomorphes —
    théorème central du module.
-5. `excessEventDim`/`excessComplementDim` (`Residual.lean`) et la
-   direction NÉCESSAIRE `StrictIso.excessEventDim_eq`/
-   `StrictIso.excessComplementDim_eq` (`StrictClassification.lean`) : un
-   isomorphisme strict force l'égalité des deux multiplicités résiduelles.
+5. La classification stricte complète `strictIso_iff_residualDims_eq`
+   (`StrictClassification.lean`) identifie exactement les deux dimensions
+   résiduelles `excessEventDim` et `excessComplementDim` comme invariants
+   de `StrictIso`. Les coordonnées binaires, l'espace Ω commun,
+   `omegaAssembly`, son entrelacement et son Gram sont établis dans
+   `SumCoordinates.lean`, `OrthogonalCoordinates.lean` et
+   `OmegaAssembly.lean`.
 6. `replicatedAncillaImpl`/`rankRatio`/`rankRatio_replicatedAncilla`
    (`ReplicatedAncilla.lean`) : ajouter une ancilla répliquée ne change
    JAMAIS le ratio de rang.
@@ -41,35 +44,10 @@ incomplète, sans axiome, sans décision native forcée) :**
 9. `Nonvacuity.lean`/`Nontriviality.lean` : les structures ci-dessus sont
    satisfiables ET non-triviales (témoins concrets).
 
-**Ce qui N'EST PAS établi, et pourquoi (protocole de blocage de la
-mission, §29) :**
+**Phases suivantes :**
 
-- La direction SUFFISANTE de `strictIso_iff_residualDims_eq` (égalité des
-  dimensions résiduelles ⟹ isomorphisme strict), et donc l'équivalence
-  complète elle-même, ne sont PAS formalisées
-  (`StrictClassification.lean`). Leur construction demande de recoller
-  TROIS isométries orthogonales (partie minimale, plus deux secteurs
-  résiduels de dimension égale mais sans domaine commun naturel) en une
-  seule isométrie ambiante — l'obstacle "construction de l'unitaire
-  global à partir des trois secteurs" anticipé par la mission. Aucun
-  énoncé ne l'utilise ni ne prétend la substituer par une implication
-  unique.
-- `ResidualExtension.lean`/`minimalCore` (extension par somme directe
-  d'un cœur minimal et de secteurs résiduels, et la décomposition de
-  TOUTE implémentation sous cette forme) NE SONT PAS construits : leur
-  usage prévu dépend directement du point précédent.
-- `ResidualExtensionNeutral`/`MinimalImplValuation`/l'équivalence
-  "valuations résiduellement neutres ≃ valuations minimales"/
-  `implementationIndependent_of_residualNeutral` (`Valuation.lean`) NE
-  SONT PAS formalisées, pour la même raison.
-- La non-vacuité de `IsMinimal` (un témoin CONCRET d'implémentation
-  minimale) n'est pas établie (`Nonvacuity.lean`) : elle demanderait une
-  identité entre le noyau de `eventLeg`/`complementLeg` et celui de
-  `E`/`1-E`, non encore formalisée.
-
-Un blocage sur une phase tardive n'autorise pas à documenter le théorème
-correspondant comme terminé : ces lacunes sont donc explicitement
-signalées ici, dans le fichier de synthèse, plutôt que masquées.
+Les extensions résiduelles et les valuations qui en dépendent restent des
+jalons distincts ; elles ne sont pas nécessaires à la classification stricte.
 
 **EN.** # Module C (Omega Gate) — synthesis: strict classification of Naimark implementations
 
@@ -94,10 +72,13 @@ proof, no axiom, no forced native decision):**
 4. **`minimal_strictIso`** (`MinimalUniqueness.lean`): two MINIMAL
    implementations of the same effect are ALWAYS strictly isomorphic —
    the module's central theorem.
-5. `excessEventDim`/`excessComplementDim` (`Residual.lean`) and the
-   NECESSARY direction `StrictIso.excessEventDim_eq`/
-   `StrictIso.excessComplementDim_eq` (`StrictClassification.lean`): a
-   strict isomorphism forces equality of the two residual multiplicities.
+5. The complete strict classification
+   `strictIso_iff_residualDims_eq` (`StrictClassification.lean`) identifies
+   exactly the two residual dimensions `excessEventDim` and
+   `excessComplementDim` as the invariants of `StrictIso`. The binary
+   coordinates, common Ω-space, `omegaAssembly`, cell intertwining and Gram
+   identity are established in `SumCoordinates.lean`,
+   `OrthogonalCoordinates.lean` and `OmegaAssembly.lean`.
 6. `replicatedAncillaImpl`/`rankRatio`/`rankRatio_replicatedAncilla`
    (`ReplicatedAncilla.lean`): adding a replicated ancilla NEVER changes
    the rank ratio.
@@ -110,18 +91,11 @@ proof, no axiom, no forced native decision):**
 9. `Nonvacuity.lean`/`Nontriviality.lean`: the structures above are
    satisfiable AND nontrivial (concrete witnesses).
 
-**What is NOT established, and why (the mission's blocking protocol,
-§29):**
+**Next phases:**
 
-- The SUFFICIENT direction of `strictIso_iff_residualDims_eq` (equal
-  residual dimensions ⟹ strict isomorphism), and hence the full
-  equivalence itself, are NOT formalized (`StrictClassification.lean`).
-  Their construction requires gluing THREE orthogonal isometries (the
-  minimal part, plus two residual sectors of equal dimension but with no
-  natural common domain) into a single ambient isometry — the "gluing
-  the global unitary from the three sectors" obstacle anticipated by the
-  mission. No statement uses it or substitutes it with a single
-  implication.
+Residual extensions and the valuations depending on them remain separate
+milestones; they are not needed for the strict classification.
+
 - `ResidualExtension.lean`/`minimalCore` (direct-sum extension of a
   minimal core by residual sectors, and the decomposition of ANY
   implementation into this form) are NOT built: their intended use
@@ -152,8 +126,7 @@ variable {n : ℕ} {E : H n →ₗ[ℂ] H n}
 /-- Capstone: combining `minimal_strictIso` (`MinimalUniqueness.lean`)
 with `StrictIso.rankRatio_eq` (`ReplicatedAncilla.lean`) -- `rankRatio` is
 already a COMPLETE invariant on minimal implementations: any two minimal
-implementations of the same effect agree on it, with no need for the
-blocked sufficiency direction of `strictIso_iff_residualDims_eq`. -/
+implementations of the same effect agree on it, with the complete strict classification `strictIso_iff_residualDims_eq`. -/
 theorem rankRatio_eq_of_isMinimal {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ]
     [DecidableEq κ] {I : BinaryImpl n E ι} {J : BinaryImpl n E κ} (hI : IsMinimal I)
     (hJ : IsMinimal J) : rankRatio I = rankRatio J :=
@@ -162,3 +135,7 @@ theorem rankRatio_eq_of_isMinimal {ι κ : Type} [Fintype ι] [DecidableEq ι] [
 end
 
 end QuantumFoundations.Naimark.BinaryImpl
+
+
+
+
