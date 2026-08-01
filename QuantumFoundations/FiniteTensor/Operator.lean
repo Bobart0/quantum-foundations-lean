@@ -28,6 +28,9 @@ theorem operator_apply_eq_sum_entries {d : ℕ} (A : H d →ₗ[ℂ] H d) (x : H
       rw [hcoeff, hA, smul_smul, mul_comm]
       rfl
     _ = ∑ i : Fin d, ∑ j : Fin d, (operatorEntry A i j * x j) • stdKet i := by rw [Finset.sum_comm]
+theorem operator_apply_eq_sum_entries_coord {d : ℕ} (A : H d →ₗ[ℂ] H d) (x : H d) (i : Fin d) : (A x) i = ∑ j : Fin d, operatorEntry A i j * x j := by
+  have h := congrArg (fun y : H d => y i) (operator_apply_eq_sum_entries A x)
+  simpa [stdKet_apply, smul_eq_mul] using h
 noncomputable def tensorOperator {n a : ℕ} (A : H n →ₗ[ℂ] H n) (B : H a →ₗ[ℂ] H a) : BipartiteSpace n a →ₗ[ℂ] BipartiteSpace n a :=
   ∑ j : Fin a, ∑ k : Fin a, operatorEntry B j k • (ancillaBlockSingle (n := n) j ∘ₗ A ∘ₗ ancillaBlockCoord (n := n) k)
 theorem tensorOperator_apply {n a : ℕ} (A : H n →ₗ[ℂ] H n) (B : H a →ₗ[ℂ] H a) (z : BipartiteSpace n a) : tensorOperator A B z = ∑ j : Fin a, ∑ k : Fin a, operatorEntry B j k • ancillaBlockSingle (n := n) j (A (ancillaBlockCoord (n := n) k z)) := by simp [tensorOperator, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply]
@@ -43,7 +46,22 @@ theorem ancillaBlockCoord_tensorOperator {n a : ℕ} (A : H n →ₗ[ℂ] H n) (
     · rw [if_neg hj] at h; simpa [hj] using h
   simp_rw [hcomp]
   simp [Finset.sum_ite_eq', mul_comm]
+theorem ancillaBlockCoord_productStateCoordinates {n a : ℕ} (j : Fin a) (ψ : H n) (η : H a) : ancillaBlockCoord (n := n) j (productStateCoordinates ψ η) = η j • ψ := by
+  ext i
+  rfl
 theorem tensorOperator_zero_left {n a : ℕ} (B : H a →ₗ[ℂ] H a) : tensorOperator (0 : H n →ₗ[ℂ] H n) B = 0 := by ext z; simp [tensorOperator, LinearMap.sum_apply]
 theorem tensorOperator_zero_right {n a : ℕ} (A : H n →ₗ[ℂ] H n) : tensorOperator A (0 : H a →ₗ[ℂ] H a) = 0 := by ext z; simp [tensorOperator, operatorEntry, LinearMap.sum_apply]
+theorem tensorOperator_apply_productState {n a : ℕ} (A : H n →ₗ[ℂ] H n) (B : H a →ₗ[ℂ] H a) (ψ : H n) (η : H a) : tensorOperator A B (productStateCoordinates ψ η) = productStateCoordinates (A ψ) (B η) := by
+  ext p
+  rcases p with ⟨j, i⟩
+  rw [tensorOperator_apply]
+  simp only [productStateCoordinates_apply, ancillaBlockCoord_productStateCoordinates]
+  have hB' := operator_apply_eq_sum_entries_coord B η j
+  rw [hB']
+  simp [QuantumFoundations.Naimark.BinaryImpl.blockSingle, LinearMap.coe_mk, AddHom.coe_mk, Finset.sum_ite_eq', mul_comm]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  ring
 end
 end QuantumFoundations.FiniteTensor
