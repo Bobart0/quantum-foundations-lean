@@ -7,14 +7,25 @@ open QuantumFoundations.Selector
 #check TensorDecomposition
 #check canonicalTensorDecomposition
 #check productStateCoordinates
+#check inner_productStateCoordinates
+#check norm_productStateCoordinates
 #check tensorOperator
+#check ancillaBlockCoord_tensorOperator
+#check ancillaBlockCoord_productStateCoordinates
+#check tensorOperator_apply_productState
 #check partialTraceAncilla
+#check partialTraceAncilla_id
+#check trace_eq_sum_operatorEntry
+#check partialTraceAncilla_tensorOperator
 #check AncillaNeutralUnder
 #check TensorMultiplicativeUnder
+#check conjugate_projL
 #check isotropicDensity
 #check isotropicResidual
 #check ancilla_self_value_eq_forces_t_eq_one
 #check covariance_without_nsnc1
 
+#print axioms QuantumFoundations.FiniteTensor.tensorOperator_apply_productState
+#print axioms QuantumFoundations.FiniteTensor.partialTraceAncilla_tensorOperator
 #print axioms QuantumFoundations.FiniteTensor.partialTraceAncilla_id
 #print axioms QuantumFoundations.Selector.ancilla_self_value_eq_forces_t_eq_one
