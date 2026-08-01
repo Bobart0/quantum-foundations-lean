@@ -117,6 +117,47 @@ vectors, and the eigenequation (again via
 `apply_eq_zero_of_quadratic_eq_zero`) plus a one-vector uniqueness
 argument close the loop.
 
+## Module B — additional structure, relative covariance, and monotonicity
+
+**FR.** Deuxième couche, indépendante de S1-S6 ci-dessus : au lieu de la
+covariance sous le groupe unitaire ENTIER, Module B étudie l'invariance
+d'un opérateur densité FIXE sous des SOUS-GROUPES associés à une structure
+supplémentaire — une base orthonormée, ou une perspective quelconque
+(`QuantumFoundations.BornRule.Perspective`, cellules de dimension
+arbitraire). Rien d'everettien n'entre ici non plus.
+
+**EN.** Second, independent layer on top of S1-S6 above: instead of
+covariance under the FULL unitary group, Module B studies the invariance
+of a FIXED density operator under SUBGROUPS tied to additional structure —
+an orthonormal basis, or an arbitrary perspective
+(`QuantumFoundations.BornRule.Perspective`, cells of arbitrary dimension).
+Nothing Everettian enters here either.
+
+| File | Milestone | Content |
+|---|---|---|
+| `Dephasing.lean` | B1-B5 | `dephasedDensity` (basis pinching selector), Hadamard non-covariance witness, NSNC1 violation |
+| `SubgroupCovariance.lean` | B6-B7 | `IsCovariantUnder G σ`, `IsInvariantUnder G ρ` (a property of a FIXED operator, not a selector), `isInvariantUnder_mono` |
+| `BasisStabilizer.lean` | B8-B9 | `BasisPhaseStabilizer b`, `BasisMonomialStabilizer b`, `phaseInvariant_density_iff_diagonal`, `monomialInvariant_density_iff_maximallyMixed`, strictness `BasisPhaseStabilizer < BasisMonomialStabilizer` |
+| `PerspectiveDephasing.lean` | B10 | `perspectiveDephasedDensity D ψ` (pinching on `D`'s cells), `perspectiveDephasingSelector`, compatibility with `dephasedDensity` at `D = basisPerspective b` |
+| `PerspectiveStabilizer.lean` | B11 | `PerspectiveCellwiseStabilizer D`, `PerspectiveSetwiseStabilizer D`, covariance of `perspectiveDephasingSelector` under both |
+| `PerspectiveClassification.lean` | B12-B13 | `cellwiseInvariant_density_iff_blockScalar`, `setwiseInvariant_density_iff_blockScalar_orbitConstant` — no Schur's lemma, via `reflIso`/`swapIso` witnesses and Gram-Schmidt |
+| `Monotonicity.lean` | B14 | `PerspectiveCellwiseStabilizer_mono_of_refines` — refining a perspective only shrinks its cellwise stabilizer; the two extreme cases (`⊥` trivially invariant, single-cell `⊤` fully unconstrained) |
+| `StructureNonvacuity.lean` | B15 | The maximally mixed state witnesses nonvacuity of both classifications, for every perspective |
+| `StructureNontriviality.lean` | B15 | `PerspectiveCellwiseStabilizer < PerspectiveSetwiseStabilizer` for a basis perspective in dimension `≥ 2`, via a `swapIso` witness |
+| `StructureMain.lean` | B16 | Synthesis: the four notions not to confuse (`Selector`/`IsCovariantUnder` vs `IsInvariantUnder` vs basis stabilizers vs perspective stabilizers), and a capstone combining B12+B14 |
+
+### The four notions not to confuse
+
+1. **`Selector n`** (Module A): a rule `ψ ↦ ρ ψ`. `IsCovariantUnder G σ`
+   is a property of that RULE.
+2. **`IsInvariantUnder G ρ`**: a property of a FIXED operator `ρ`, not a
+   selector. This is what `PerspectiveClassification.lean` classifies.
+3. **`BasisPhaseStabilizer`/`BasisMonomialStabilizer`**: subgroups tied to
+   a single basis (cells = lines).
+4. **`PerspectiveCellwiseStabilizer`/`PerspectiveSetwiseStabilizer`**: the
+   general perspective version (cells of arbitrary dimension); (3) is the
+   special case `D = basisPerspective b`.
+
 ## What is not claimed
 
 - The `tDensity` family of S2/S3 is the well-known isotropic/depolarizing

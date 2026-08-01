@@ -3613,3 +3613,79 @@ no `lakefile.toml` changes.
 **Sorry count: 0 introduced, 0 remaining.** No theorem statement,
 definition, proof body, `axiom`, or `native_decide` was introduced; only
 re-exports, one audit module extension, and documentation changed.
+
+## Selectors Module B — additional structure, relative covariance, and monotonicity (B1–B16) — ✅ CLOSED
+
+**Interpretively neutral, independent of Module A's S1–S6** (unitary
+covariance / NSNC1 / single-effect classification). Where Module A studies
+covariance of a *selector* (a rule `ψ ↦ ρ ψ`) under the full unitary group,
+Module B studies the invariance of a *fixed density operator* under
+subgroups tied to additional structure: an orthonormal basis, or an
+arbitrary `QuantumFoundations.BornRule.Perspective` (cells of arbitrary
+dimension, not just lines). Nothing Everettian enters either module.
+
+**B1–B9 (`Dephasing.lean`, `SubgroupCovariance.lean`,
+`BasisStabilizer.lean`).** `dephasedDensity` (basis-pinching selector) is
+covariant under the full unitary group but not under a smaller phase-only
+subgroup by default; `IsInvariantUnder G ρ` is introduced as the relevant
+notion for a *fixed* operator; `BasisPhaseStabilizer b` and
+`BasisMonomialStabilizer b` classify exactly the diagonal
+(`phaseInvariant_density_iff_diagonal`) and maximally mixed
+(`monomialInvariant_density_iff_maximallyMixed`) densities respectively,
+with `BasisPhaseStabilizer < BasisMonomialStabilizer` strict.
+
+**B10–B11 (`PerspectiveDephasing.lean`, `PerspectiveStabilizer.lean`).**
+The pinching construction and its stabilizers generalize from a single
+basis to an arbitrary perspective `D`: `perspectiveDephasedDensity D ψ`,
+`PerspectiveCellwiseStabilizer D` (fixes every cell setwise) and
+`PerspectiveSetwiseStabilizer D` (permits cell permutations), with the
+pinching selector proved covariant under both.
+
+**B12–B13 (`PerspectiveClassification.lean`).** The headline classification
+theorems: `cellwiseInvariant_density_iff_blockScalar` and
+`setwiseInvariant_density_iff_blockScalar_orbitConstant` show that density
+operators invariant under a perspective's cellwise/setwise stabilizer are
+exactly the "block-scalar" operators (`blockScalarOperator`, acting as a
+real scalar times identity on each cell), with weights constant across
+each setwise orbit for the setwise case. Deliberately **no Schur's
+lemma**: the proof reuses the pre-existing `reflIso`/`swapIso` witnesses
+from `Unitaries.lean` as-is (a chosen basis vector merely needs to land in
+the target cell — no adapted-basis or block-reflection construction was
+built), combined with a Gram-Schmidt decomposition (rather than a full
+orthonormal basis of each cell) to extend a scalar-eigenvalue fact from
+unit vectors to the whole cell.
+
+**B14 (`Monotonicity.lean`).** `PerspectiveCellwiseStabilizer_mono_of_refines`:
+refining a perspective only shrinks its cellwise stabilizer (fixing more,
+smaller cells setwise is a strictly stronger constraint), proved via the
+resolution of the identity plus vanishing of off-cell projections — no
+setwise analogue is claimed, since a setwise permutation of fine cells has
+no reason to respect a coarser grouping. The two extreme cases close the
+picture: the trivial subgroup trivially leaves every operator invariant,
+and the single-cell (whole space) perspective has full cellwise
+stabilizer.
+
+**B15 (`StructureNonvacuity.lean`, `StructureNontriviality.lean`).** The
+maximally mixed state `(1/n) • id` witnesses that both classifications are
+nonvacuous for every perspective (it is trivially invariant under any
+subgroup). `PerspectiveCellwiseStabilizer_lt_PerspectiveSetwiseStabilizer_of_basisPerspective`
+witnesses strictness of the subgroup hierarchy via an explicit `swapIso`
+that permutes two cells without fixing either.
+
+**B16 (`StructureMain.lean`).** Synthesis module: documents the four
+notions not to confuse (`Selector`/`IsCovariantUnder` vs `IsInvariantUnder`
+vs the basis-level vs perspective-level stabilizers), and a capstone
+theorem combining B12 and B14 with no further proof.
+
+**Method note.** Following an explicit "lighter-weight finish" directive
+from the author partway through B12–B16 (given the remaining scope was
+comparable to everything already completed), later proofs favor direct,
+computational arguments (e.g. Gram-Schmidt over a full adapted basis,
+concrete `swapIso`/`reflIso` witnesses over a general representation-theory
+argument) over maximal generality, while keeping every stated theorem
+exactly as strong as claimed — no statement was weakened to ease its proof.
+
+**Sorry count: 0 introduced, 0 remaining. No `axiom`, no `native_decide`.**
+`Audit/SelectorStructure.lean` `#check`s the full Module B public API and
+`#print axioms` on the headline theorems reports exactly
+`[propext, Classical.choice, Quot.sound]`.

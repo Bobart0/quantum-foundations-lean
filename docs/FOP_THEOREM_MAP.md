@@ -373,8 +373,21 @@ constraints (Proposition 2).
 | Axiom audit | standard trio |
 | Scope limitation | a convex/spectral geometry statement about which single-effect constraints *would* select a pure state; it takes no position on whether any specific effect/value pair is physically realized or should be adopted as a probability postulate. `NSNC1` (above) is recovered as the special case `E₀ = P_{ψ⊥}`, `c = 0` (`nsnc1_iff_born_from_proposition_two`) — a proved corollary, not a re-derivation of one classification from the other |
 
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.{cellwiseInvariant_density_iff_blockScalar, setwiseInvariant_density_iff_blockScalar_orbitConstant}` |
+| Module | `Selectors/PerspectiveClassification.lean` |
+| Status | original result (this development's classification of density operators invariant under a perspective's cellwise/setwise stabilizer; no Schur's lemma or representation theory) |
+| Dependencies | `PerspectiveCellwiseStabilizer`/`PerspectiveSetwiseStabilizer` (`Selectors/PerspectiveStabilizer.lean`); `reflIso`/`swapIso` (`Selectors/Unitaries.lean`, reused as-is, not extended); `sum_projL_cells_eq_id` (resolution of the identity, proved here from `Gleason.projL_sup_of_pairwise_isOrtho`) |
+| Dimension | generic `n` (setwise orbit-constancy witness needs `n ≥ 2` inside a two-cell orbit) |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | a pure classification of a FIXED operator's invariance under a subgroup (`IsInvariantUnder`, `Selectors/SubgroupCovariance.lean`); distinct from selector covariance (`IsCovariantUnder`) — `Selectors/StructureMain.lean` documents the distinction. `PerspectiveCellwiseStabilizer_mono_of_refines` (`Selectors/Monotonicity.lean`) shows the classification is monotone under perspective refinement; nonvacuity and strict-hierarchy witnesses are in `Selectors/StructureNonvacuity.lean`/`StructureNontriviality.lean` |
+
 Every declaration in `Selectors/` depends only on the standard trio
 `[propext, Classical.choice, Quot.sound]` (verified individually via
 `#print axioms` on each public declaration; there is no dedicated audit
 module for this interpretively neutral subsystem, matching its exclusion
-from `Audit/FoP.lean`).
+from `Audit/FoP.lean`; `Audit/SelectorStructure.lean` runs the same
+`#check`/`#print axioms` sweep specifically over Module B's public API).

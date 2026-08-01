@@ -102,6 +102,7 @@ import QuantumFoundations.Selectors.PerspectiveClassification
 import QuantumFoundations.Selectors.Monotonicity
 import QuantumFoundations.Selectors.StructureNonvacuity
 import QuantumFoundations.Selectors.StructureNontriviality
+import QuantumFoundations.Selectors.StructureMain
 
 namespace QuantumFoundations
 
