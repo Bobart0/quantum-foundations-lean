@@ -103,6 +103,11 @@ import QuantumFoundations.Selectors.Monotonicity
 import QuantumFoundations.Selectors.StructureNonvacuity
 import QuantumFoundations.Selectors.StructureNontriviality
 import QuantumFoundations.Selectors.StructureMain
+import QuantumFoundations.Naimark.BinaryImpl.Defs
+import QuantumFoundations.Naimark.BinaryImpl.Canonical
+import QuantumFoundations.Naimark.BinaryImpl.Minimal
+import QuantumFoundations.Naimark.BinaryImpl.GramRange
+import QuantumFoundations.Naimark.BinaryImpl.MinimalUniqueness
 
 namespace QuantumFoundations
 
