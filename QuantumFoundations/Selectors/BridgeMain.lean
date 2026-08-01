@@ -1,14 +1,14 @@
+import QuantumFoundations.Selectors.BridgeDefs
+import QuantumFoundations.Selectors.ReducedIsotropic
+import QuantumFoundations.Selectors.AncillaNeutrality
+import QuantumFoundations.Selectors.TensorMultiplicativity
+import QuantumFoundations.Selectors.TensorClassification
+import QuantumFoundations.Selectors.TensorMultiplicativityTheorems
+import QuantumFoundations.Selectors.TensorDiagnostics
+import QuantumFoundations.Selectors.BridgeNonvacuity
 import QuantumFoundations.Selectors.BridgeNontriviality
 
-/-!
-# Selector bridges
-
-This import surface keeps the tensor-coordinate definitions and the already
-proved selector countermodel together.  The two neutrality notions remain
-separate: `AncillaNeutralUnder` concerns a supplied system--ancilla
-decomposition, whereas Module C's `ResidualExtensionNeutral` concerns binary
-implementation extensions.
--/
+/-! Public import surface for all Module D selector bridges. -/
 
 namespace QuantumFoundations.Selector
 end QuantumFoundations.Selector
