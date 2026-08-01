@@ -112,6 +112,9 @@ import QuantumFoundations.Naimark.BinaryImpl.Residual
 import QuantumFoundations.Naimark.BinaryImpl.StrictClassification
 import QuantumFoundations.Naimark.BinaryImpl.ReplicatedAncilla
 import QuantumFoundations.Naimark.BinaryImpl.TernaryFusion
+import QuantumFoundations.Naimark.BinaryImpl.Valuation
+import QuantumFoundations.Naimark.BinaryImpl.Nonvacuity
+import QuantumFoundations.Naimark.BinaryImpl.Nontriviality
 
 namespace QuantumFoundations
 
