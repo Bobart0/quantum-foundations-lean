@@ -107,8 +107,65 @@ theorem strictIso_iff_residualDims_eq {I : BinaryImpl n E ι} {J : BinaryImpl n 
   · rintro ⟨hr, hs⟩
     exact strictIso_of_residualDims_eq hr hs
 
+/-- The dimension of the minimal subspace. -/
+def minimalDim (I : BinaryImpl n E ι) : ℕ :=
+  Module.finrank ℂ (minimalSubspace I)
+
+/-- The dimension of the event-generated minimal sector. -/
+def minimalEventDim (I : BinaryImpl n E ι) : ℕ :=
+  Module.finrank ℂ (eventGenerated I)
+
+theorem minimalDim_le_ambientDim (I : BinaryImpl n E ι) :
+    minimalDim I ≤ I.ambientDim := by
+  have h := ambientDim_decomposition I
+  unfold minimalDim at h ⊢
+  omega
+
+theorem minimalEventDim_le_projectorRank (I : BinaryImpl n E ι) :
+    minimalEventDim I ≤ I.projectorRank := by
+  have h := projectorRank_decomposition I
+  unfold minimalEventDim at h ⊢
+  omega
+
+theorem ambientDim_sub_minimalDim_eq (I : BinaryImpl n E ι) :
+    I.ambientDim - minimalDim I =
+      excessEventDim I + excessComplementDim I := by
+  have h := ambientDim_decomposition I
+  unfold minimalDim at h ⊢
+  omega
+
+theorem projectorRank_sub_minimalEventDim_eq (I : BinaryImpl n E ι) :
+    I.projectorRank - minimalEventDim I = excessEventDim I := by
+  have h := projectorRank_decomposition I
+  unfold minimalEventDim at h ⊢
+  omega
+
+theorem strictIso_iff_dim_rank_excess_eq
+    {I : BinaryImpl n E ι} {J : BinaryImpl n E κ} :
+    BinaryImpl.StrictIso I J ↔
+      (I.ambientDim - minimalDim I = J.ambientDim - minimalDim J) ∧
+      (I.projectorRank - minimalEventDim I =
+        J.projectorRank - minimalEventDim J) := by
+  constructor
+  · intro h
+    have hr := StrictIso.excessEventDim_eq h
+    have hs := StrictIso.excessComplementDim_eq h
+    constructor
+    · rw [ambientDim_sub_minimalDim_eq I, ambientDim_sub_minimalDim_eq J, hr, hs]
+    · rw [projectorRank_sub_minimalEventDim_eq I,
+        projectorRank_sub_minimalEventDim_eq J, hr]
+  · rintro ⟨htotal, hevent⟩
+    have htotal' := htotal
+    have hevent' := hevent
+    rw [ambientDim_sub_minimalDim_eq I, ambientDim_sub_minimalDim_eq J] at htotal'
+    rw [projectorRank_sub_minimalEventDim_eq I,
+      projectorRank_sub_minimalEventDim_eq J] at hevent'
+    apply strictIso_of_residualDims_eq hevent'
+    omega
+
 end
 
 end QuantumFoundations.Naimark.BinaryImpl
+
 
 
