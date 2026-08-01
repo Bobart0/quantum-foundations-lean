@@ -443,3 +443,30 @@ Every declaration in `Naimark/BinaryImpl/` depends only on the standard
 trio `[propext, Classical.choice, Quot.sound]`, verified by
 `QuantumFoundations/Audit/NaimarkOmega.lean` (not imported by the
 repository root, run separately in CI, mirroring `Audit/SelectorStructure.lean`).
+## Module D — selector/tensor bridge results
+
+Module D is a finite-dimensional bridge layer, not a new physical postulate.
+The tensor factorization is supplied explicitly by
+`TensorDecomposition n a`; no preferred factorization is derived.
+
+| Declaration | Informal content | File |
+|---|---|---|
+| `partialTrace_tDensity_product` | Generic transport formula for the reduced isotropic state | `FiniteTensor/Transport.lean` |
+| `reduced_tDensity_apply_self` / `reduced_tDensity_selfValue` | Reduced action and self-value (t+(a-1)(1-t)/(na-1)) | `Selectors/ReducedIsotropic.lean` |
+| `tSelector_ancillaNeutral_iff_t_eq_one` | Ancilla neutrality in the isotropic family iff (t=1) | `Selectors/AncillaNeutrality.lean` |
+| `tSelectors_tensorMultiplicative_iff` | With composite parameter (tu), exactly ((1,1)) or ((1/n,1/a)) | `Selectors/TensorMultiplicativityTheorems.lean` |
+| `tSelector_tensorMult_iff_t_mem` | Equal dimensions: (tin{1,1/d}) for composite parameter (t^2) | `Selectors/TensorDiagnostics.lean` |
+| `tSelector_sameParameterComposite_tensorMult_iff_t_eq_one` | Same parameter on the composite: iff (t=1) | `Selectors/TensorDiagnostics.lean` |
+| `tensorMultiplicative_not_implies_nsnc1` | Maximally mixed multiplicative countermodel to NSNC1 | `Selectors/TensorDiagnostics.lean` |
+| `covariant_and_tensorMultiplicative_not_implies_nsnc1` | The countermodel also remains covariant | `Selectors/BridgeNontriviality.lean` |
+
+The maximally mixed point (t=1/n) is multiplicative but does not satisfy
+NSNC1. Consequently tensor multiplicativity, even combined with covariance,
+does not select the Born point. Ancilla neutrality and NSNC1 both select
+(t=1) in their respective stated domains, but no general equivalence is
+asserted; the former is decomposition-relative and is distinct from Module C
+residual neutrality.
+
+All declarations in this table are audited by
+`QuantumFoundations/Audit/SelectorBridges.lean`; their outputs use only the
+standard kernel trio `[propext, Classical.choice, Quot.sound]`.

@@ -171,3 +171,35 @@ Nothing Everettian enters here either.
   *would* select a pure state; it takes no position on whether any
   specific effect/value pair is physically realized, privileged, or
   should be adopted as a probability postulate.
+## Module D — explicit tensor bridges
+
+Module D adds a supplied finite tensor decomposition
+`D : TensorDecomposition n a` and keeps the tensor-factor choice explicit.
+The generic transport theorem lives in
+`FiniteTensor/Transport.lean`; selector-side reduced-state corollaries
+therefore do not create an import cycle.
+
+For the isotropic family, the reduced state on the system is
+
+`Tr_A[ rho_t^(na)(psi tensor eta) ] = t P_psi
+  + (1-t)/(na-1) (a I - P_psi)`.
+
+The ancilla self-value is
+`t + (a-1)(1-t)/(na-1)`, so ancilla neutrality is equivalent to
+`t = 1` under dimensions at least two. This is a property relative to the
+provided decomposition `D`, not a new primitive and not an identification
+with Module C residual neutrality.
+
+Tensor multiplicativity uses the composite parameter `t*u`. Its three
+orthogonal test vectors yield the scalar equations collected in
+`tensorMultiplicative_parameter_equations`. The complete classification is:
+`(t,u) = (1,1)` (Born/pure) or
+`(t,u) = (1/n,1/a)` (maximally mixed). In equal dimensions the parameter
+belongs to `{1,1/d}`; when the composite selector is instead given the same
+parameter `t`, multiplicativity forces `t = 1`.
+
+The maximally mixed branch is genuinely multiplicative but violates NSNC1.
+Thus covariance plus tensor multiplicativity still does not select Born.
+The concrete `t = 1/2` selector in dimension two is not ancilla-neutral.
+No preferred factorization is derived, and no general equivalence between
+NSNC1 and ancilla neutrality is claimed.

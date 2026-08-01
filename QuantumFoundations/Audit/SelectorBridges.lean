@@ -1,31 +1,52 @@
 import QuantumFoundations.Selectors.BridgeMain
+import QuantumFoundations.Naimark.BinaryImpl.ResidualValuation
 
 open QuantumFoundations
 open QuantumFoundations.FiniteTensor
 open QuantumFoundations.Selector
 
+/-! Public surface and kernel-dependency audit for Module D.  Every declaration
+below is checked through the bridge aggregate, so this file also guards the
+intended acyclic import boundary between `FiniteTensor` and `Selectors`. -/
+
 #check TensorDecomposition
 #check canonicalTensorDecomposition
-#check productStateCoordinates
-#check inner_productStateCoordinates
-#check norm_productStateCoordinates
-#check tensorOperator
-#check ancillaBlockCoord_tensorOperator
-#check ancillaBlockCoord_productStateCoordinates
-#check tensorOperator_apply_productState
-#check partialTraceAncilla
-#check partialTraceAncilla_id
-#check trace_eq_sum_operatorEntry
-#check partialTraceAncilla_tensorOperator
+#check partialTrace_tDensity_product
+#check reduced_tDensity_apply_self
+#check reduced_tDensity_selfValue
+#check tDensity_at_one
+#check tDensity_at_inv_dim
 #check AncillaNeutralUnder
 #check TensorMultiplicativeUnder
-#check conjugate_projL
-#check isotropicDensity
-#check isotropicResidual
-#check ancilla_self_value_eq_forces_t_eq_one
-#check covariance_without_nsnc1
+#check QuantumFoundations.Naimark.BinaryImpl.ResidualExtensionNeutral
+#check tSelector_ancillaNeutral_iff_t_eq_one
+#check tensorMultiplicative_parameter_equations
+#check isotropic_tensor_parameter_classification
+#check tSelectors_tensorMultiplicative_iff
+#check tSelector_tensorMult_iff_t_eq_one_or_inv_dim
+#check tSelector_tensorMult_iff_t_mem
+#check tSelector_sameParameterComposite_tensorMult_iff_t_eq_one
+#check maximallyMixed_tSelector_not_nsnc1
+#check tensorMultiplicative_not_implies_nsnc1
+#check covariant_and_tensorMultiplicative_not_implies_nsnc1
+#check tSelector_not_ancillaNeutral_of_ne_one
+#check tSelector_half_not_ancillaNeutral
+#check bornSelector_nsnc1
+#check bornSelector_tensorMultiplicative
+#check bornSelector_ancillaNeutral
+#check ancillaNeutral_nonempty
+#check tensorMultiplicative_nonempty
+#check tensorMultiplicative_nonBorn_nonempty
+#check covariant_tensorMultiplicative_not_nsnc1_nonempty
 
-#print axioms QuantumFoundations.FiniteTensor.tensorOperator_apply_productState
-#print axioms QuantumFoundations.FiniteTensor.partialTraceAncilla_tensorOperator
-#print axioms QuantumFoundations.FiniteTensor.partialTraceAncilla_id
-#print axioms QuantumFoundations.Selector.ancilla_self_value_eq_forces_t_eq_one
+#print axioms partialTrace_tDensity_product
+#print axioms reduced_tDensity_apply_self
+#print axioms reduced_tDensity_selfValue
+#print axioms tSelector_ancillaNeutral_iff_t_eq_one
+#print axioms tensorMultiplicative_parameter_equations
+#print axioms isotropic_tensor_parameter_classification
+#print axioms tSelectors_tensorMultiplicative_iff
+#print axioms tSelector_tensorMult_iff_t_mem
+#print axioms tSelector_sameParameterComposite_tensorMult_iff_t_eq_one
+#print axioms tensorMultiplicative_not_implies_nsnc1
+#print axioms covariant_and_tensorMultiplicative_not_implies_nsnc1

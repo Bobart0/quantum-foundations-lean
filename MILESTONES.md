@@ -3752,3 +3752,37 @@ block does not license documenting the corresponding theorem as finished.
 Residual,StrictClassification,ReplicatedAncilla,TernaryFusion,Valuation,
 Nonvacuity,Nontriviality,Main}.lean` and `#print axioms` on the headline
 theorems reports exactly `[propext, Classical.choice, Quot.sound]`.
+## Module D — explicit selector bridges — CLOSED (2026-08-02)
+
+Module D closes the tensor bridge layer without changing Modules A-C.
+
+- The import cycle is removed by placing the generic
+  `partialTrace_isotropicDensity_product` and
+  `partialTrace_tDensity_product` results in
+  `FiniteTensor/Transport.lean`. `Selectors/ReducedIsotropic.lean`
+  contains only selector-side corollaries. `FiniteTensor/Main.lean`
+  remains finite-tensor-only, while `Selectors/BridgeMain.lean` is the
+  aggregate public selector surface.
+- The reduced state is
+  `Tr_A[rho_t^(na)(psi tensor eta)] =
+  t P_psi + (1-t)/(na-1) (a I - P_psi)`.
+  Its self-value is
+  `t + (a-1)(1-t)/(na-1)`, and the isotropic ancilla-neutrality
+  classification is exactly `t=1`, relative to the supplied
+  `TensorDecomposition`.
+- Tensor multiplicativity with composite parameter `t*u` yields three
+  scalar equations. Their real classification is exactly
+  `(t,u)=(1,1)` or `(t,u)=(1/n,1/a)`. In equal dimensions the
+  composite-parameter-`t^2` diagnostic is `t in {1,1/d}`; with the
+  same parameter `t` on the composite it is iff `t=1`.
+- The maximally mixed branch is a positive countermodel: it is tensor
+  multiplicative and covariant, but it violates NSNC1. The concrete
+  dimension-two selector with `t=1/2` is not ancilla-neutral.
+- No preferred tensor factorization is derived. Ancilla neutrality is not
+  declared equivalent to NSNC1 and is explicitly kept distinct from Module C
+  residual neutrality.
+
+The public declarations and their standard-kernel axiom outputs are audited
+in `QuantumFoundations/Audit/SelectorBridges.lean`; the audit reports only
+`[propext, Classical.choice, Quot.sound]` and no `sorryAx`. See also the
+module-specific and theorem-map documentation for the exact signatures.
