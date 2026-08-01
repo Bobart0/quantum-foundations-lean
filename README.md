@@ -10,7 +10,7 @@ axioms, of the theorem chains the manuscript relies on.
 
 ### Purpose
 
-The repository formalizes, in finite dimension over â„‚, a sequence of
+The repository formalizes, in finite dimension over ℂ, a sequence of
 representation and stability theorems connecting perspective-relative
 estimation rules to Born-rule weights, together with the auxiliary results
 (Naimark dilation, Wigner's theorem, Uhlhorn-type uniqueness, Kent's
@@ -22,7 +22,7 @@ audit below records the exact trust base.
 
 Contributions original to this integrated development (stated cautiously;
 "original" means original to this formalization, not necessarily to the
-literature â€” see `docs/FOP_THEOREM_MAP.md` for exact attribution per
+literature — see `docs/FOP_THEOREM_MAP.md` for exact attribution per
 theorem):
 
 - derivation of context independence from refinement coherence for an
@@ -37,7 +37,7 @@ theorem):
 - derivation, in `BornRule.EffectPerspectives`, of the effect measure
   required by Busch's representation theorem from contextual
   effect-perspective refinement coherence, reaching the qubit case
-  (`n = 2`) where Gleason-based routes require `n â‰¥ 3`;
+  (`n = 2`) where Gleason-based routes require `n ≥ 3`;
 - C17 and C17b, the first quantitative weight-stability results within this
   formal development, connecting proximity of projected components to
   proximity of restricted-sector Born weights, with state, operator-norm,
@@ -48,7 +48,7 @@ claimed as original: Gleason's theorem and Busch's generalized-measurement
 representation theorem (via the pinned `gleason-theorem-lean` dependency);
 Riedel's branch-decomposition theorem; the Naimark dilation theorem; Kent's
 contrary-inference construction; Wigner's theorem; Uhlhorn-type uniqueness
-(Å emrl's Corollary 1.2); and Lela's restricted-sector uniqueness theorem
+(Šemrl's Corollary 1.2); and Lela's restricted-sector uniqueness theorem
 underlying the C15 development. See `docs/FOP_THEOREM_MAP.md` for the
 per-theorem status of every manuscript-facing declaration, and
 `docs/SCOPE_AND_LIMITATIONS.md` for what is deliberately not claimed.
@@ -113,7 +113,7 @@ dependency revisions, and the expected outputs.
 `QuantumFoundations/Audit/FoP.lean` runs `#print axioms` on the principal
 manuscript-facing declarations. Every one of them depends only on the
 standard Lean/Mathlib kernel trio `[propext, Classical.choice, Quot.sound]`
-â€” that is, there are no project-specific axioms, no `sorry`, and no
+— that is, there are no project-specific axioms, no `sorry`, and no
 `native_decide` anywhere in the release. See `docs/REPRODUCIBILITY.md` for
 the exact audit commands and `RELEASE_NOTES_v1.0.1-fop-companion.md` for
 the recorded output at the release commit.
@@ -158,188 +158,188 @@ AI coding assistance was used throughout this project's development. See
 theorem statement, scientific claim, and proof dependency, and accepts full
 responsibility for the content.
 
-## FranÃ§ais
+## Français
 
-Ce dÃ©pÃ´t est le compagnon formel du manuscrit *One State, Many
+Ce dépôt est le compagnon formel du manuscrit *One State, Many
 Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, prÃ©parÃ© pour *Foundations of Physics*. Il contient une
-formalisation Lean 4 / Mathlib, vÃ©rifiÃ©e mÃ©caniquement et sans axiome
-propre au projet, des chaÃ®nes de thÃ©orÃ¨mes sur lesquelles s'appuie le
+Mechanics*, préparé pour *Foundations of Physics*. Il contient une
+formalisation Lean 4 / Mathlib, vérifiée mécaniquement et sans axiome
+propre au projet, des chaînes de théorèmes sur lesquelles s'appuie le
 manuscrit.
 
-### Objet du dÃ©pÃ´t
+### Objet du dépôt
 
-Le dÃ©pÃ´t formalise, en dimension finie sur â„‚, une suite de thÃ©orÃ¨mes de
-reprÃ©sentation et de stabilitÃ© reliant des rÃ¨gles d'estimation relatives Ã 
-une perspective aux poids de la rÃ¨gle de Born, ainsi que les rÃ©sultats
-auxiliaires (dilatation de Naimark, thÃ©orÃ¨me de Wigner, unicitÃ© de type
-Uhlhorn, construction des infÃ©rences contraires de Kent) que l'argument du
-manuscrit utilise ou dont il se distingue explicitement. Chaque dÃ©claration
-est vÃ©rifiÃ©e mÃ©caniquement ; l'audit des axiomes ci-dessous enregistre
+Le dépôt formalise, en dimension finie sur ℂ, une suite de théorèmes de
+représentation et de stabilité reliant des règles d'estimation relatives à
+une perspective aux poids de la règle de Born, ainsi que les résultats
+auxiliaires (dilatation de Naimark, théorème de Wigner, unicité de type
+Uhlhorn, construction des inférences contraires de Kent) que l'argument du
+manuscrit utilise ou dont il se distingue explicitement. Chaque déclaration
+est vérifiée mécaniquement ; l'audit des axiomes ci-dessous enregistre
 exactement la base de confiance.
 
-### Principaux rÃ©sultats formalisÃ©s
+### Principaux résultats formalisés
 
-Contributions propres Ã  ce dÃ©veloppement intÃ©grÃ© (formulation prudente :
-Â« propre Â» signifie propre Ã  cette formalisation, pas nÃ©cessairement Ã  la
-littÃ©rature â€” voir `docs/FOP_THEOREM_MAP.md` pour l'attribution exacte de
-chaque thÃ©orÃ¨me) :
+Contributions propres à ce développement intégré (formulation prudente :
+« propre » signifie propre à cette formalisation, pas nécessairement à la
+littérature — voir `docs/FOP_THEOREM_MAP.md` pour l'attribution exacte de
+chaque théorème) :
 
-- dÃ©rivation de l'indÃ©pendance du contexte Ã  partir de la cohÃ©rence sous
-  raffinement pour une rÃ¨gle d'estimation initialement indexÃ©e par les
-  perspectives, dans les deux dÃ©veloppements, projectif (`BornRule`) et Ã 
+- dérivation de l'indépendance du contexte à partir de la cohérence sous
+  raffinement pour une règle d'estimation initialement indexée par les
+  perspectives, dans les deux développements, projectif (`BornRule`) et à
   base d'effets (`BornRule.EffectPerspectives`) ;
-- bornes infÃ©rieures explicites sur la complexitÃ© d'interfÃ©rence dÃ©rivÃ©es
+- bornes inférieures explicites sur la complexité d'interférence dérivées
   de records redondants spatialement disjoints, avec des extensions de
-  persistance robuste (records bruitÃ©s) et dynamique (Ã©volution simulÃ©e) ;
+  persistance robuste (records bruités) et dynamique (évolution simulée) ;
 - le pont C14 des cellules de branche induites par les records (issues de
-  la dÃ©composition de Riedel) vers les poids de Born ;
-- dÃ©rivation, dans `BornRule.EffectPerspectives`, de la mesure d'effets
-  requise par le thÃ©orÃ¨me de reprÃ©sentation de Busch Ã  partir de la
-  cohÃ©rence sous raffinement des perspectives d'effets contextuelles,
-  atteignant le cas du qubit (`n = 2`) lÃ  oÃ¹ les voies fondÃ©es sur Gleason
-  exigent `n â‰¥ 3` ;
-- C17 et C17b, les premiers rÃ©sultats quantitatifs de stabilitÃ© des poids
-  au sein de ce dÃ©veloppement formel, reliant la proximitÃ© des composantes
-  projetÃ©es Ã  la proximitÃ© des poids de Born sur des secteurs restreints,
-  avec des ponts d'Ã©tat, de norme d'opÃ©rateur et d'Ã©volution simulÃ©e.
+  la décomposition de Riedel) vers les poids de Born ;
+- dérivation, dans `BornRule.EffectPerspectives`, de la mesure d'effets
+  requise par le théorème de représentation de Busch à partir de la
+  cohérence sous raffinement des perspectives d'effets contextuelles,
+  atteignant le cas du qubit (`n = 2`) là où les voies fondées sur Gleason
+  exigent `n ≥ 3` ;
+- C17 et C17b, les premiers résultats quantitatifs de stabilité des poids
+  au sein de ce développement formel, reliant la proximité des composantes
+  projetées à la proximité des poids de Born sur des secteurs restreints,
+  avec des ponts d'état, de norme d'opérateur et d'évolution simulée.
 
-RÃ©sultats connus formalisÃ©s, adaptÃ©s ou rÃ©utilisÃ©s comme dÃ©pendances,
-sans revendication d'originalitÃ© : le thÃ©orÃ¨me de Gleason et le thÃ©orÃ¨me
-de reprÃ©sentation gÃ©nÃ©ralisÃ©e de Busch (via la dÃ©pendance Ã©pinglÃ©e
-`gleason-theorem-lean`) ; le thÃ©orÃ¨me de dÃ©composition en branches de
-Riedel ; le thÃ©orÃ¨me de dilatation de Naimark ; la construction des
-infÃ©rences contraires de Kent ; le thÃ©orÃ¨me de Wigner ; l'unicitÃ© de type
-Uhlhorn (Corollaire 1.2 de Å emrl) ; et le thÃ©orÃ¨me d'unicitÃ© sur les
-secteurs restreints de Lela, sous-jacent au dÃ©veloppement C15. Voir
-`docs/FOP_THEOREM_MAP.md` pour le statut prÃ©cis de chaque dÃ©claration
+Résultats connus formalisés, adaptés ou réutilisés comme dépendances,
+sans revendication d'originalité : le théorème de Gleason et le théorème
+de représentation généralisée de Busch (via la dépendance épinglée
+`gleason-theorem-lean`) ; le théorème de décomposition en branches de
+Riedel ; le théorème de dilatation de Naimark ; la construction des
+inférences contraires de Kent ; le théorème de Wigner ; l'unicité de type
+Uhlhorn (Corollaire 1.2 de Šemrl) ; et le théorème d'unicité sur les
+secteurs restreints de Lela, sous-jacent au développement C15. Voir
+`docs/FOP_THEOREM_MAP.md` pour le statut précis de chaque déclaration
 pertinente pour le manuscrit, et `docs/SCOPE_AND_LIMITATIONS.md` pour ce
-qui n'est dÃ©libÃ©rÃ©ment pas revendiquÃ©.
+qui n'est délibérément pas revendiqué.
 
 ### Relation avec le manuscrit Foundations of Physics
 
-L'architecture du dÃ©pÃ´t reflÃ¨te les chaÃ®nes centrales du manuscrit :
-cohÃ©rence de grain vers indÃ©pendance du contexte vers reprÃ©sentation de
-Born ; formation unitaire des records vers unicitÃ© des branches de Riedel
+L'architecture du dépôt reflète les chaînes centrales du manuscrit :
+cohérence de grain vers indépendance du contexte vers représentation de
+Born ; formation unitaire des records vers unicité des branches de Riedel
 vers cellules de branche induites par les records vers poids de Born
-(C14) ; records redondants vers sÃ©paration de complexitÃ© vers persistance
-robuste et dynamique ; secteurs de records restreints vers unicitÃ©
-quadratique (C15) vers stabilitÃ© quantitative des poids (C17) vers les
-ponts d'Ã©tat/opÃ©rateur/simulation/branche de C17b ; et perspectives
-d'effets vers indÃ©pendance du contexte vers additivitÃ© des effets vers la
-reprÃ©sentation qubit de Busch vers sa rÃ©alisation projective de Naimark.
-La dilatation de Naimark est un rÃ©sultat opÃ©rationnel auxiliaire ;
-HistoriesKent constitue un contraste conceptuel avec le dÃ©veloppement
-fondÃ© sur les branches, non une prÃ©misse de celui-ci ; Wigner et le
-thÃ©orÃ¨me d'Uhlhorn complet sont des rÃ©sultats infrastructurels rÃ©utilisÃ©s
-seulement via des lemmes ponctuels, non prÃ©sentÃ©s comme des prÃ©misses
+(C14) ; records redondants vers séparation de complexité vers persistance
+robuste et dynamique ; secteurs de records restreints vers unicité
+quadratique (C15) vers stabilité quantitative des poids (C17) vers les
+ponts d'état/opérateur/simulation/branche de C17b ; et perspectives
+d'effets vers indépendance du contexte vers additivité des effets vers la
+représentation qubit de Busch vers sa réalisation projective de Naimark.
+La dilatation de Naimark est un résultat opérationnel auxiliaire ;
+HistoriesKent constitue un contraste conceptuel avec le développement
+fondé sur les branches, non une prémisse de celui-ci ; Wigner et le
+théorème d'Uhlhorn complet sont des résultats infrastructurels réutilisés
+seulement via des lemmes ponctuels, non présentés comme des prémisses
 substantielles de l'argument du manuscrit. Voir `docs/FOP_THEOREM_MAP.md`
-pour la correspondance complÃ¨te.
+pour la correspondance complète.
 
-### Carte des thÃ©orÃ¨mes et modules
+### Carte des théorèmes et modules
 
-`docs/FOP_THEOREM_MAP.md` enregistre, pour chaque thÃ©orÃ¨me utilisÃ© de
-faÃ§on substantielle dans le manuscrit : sa dÃ©claration Lean exacte et son
-module, son statut mathÃ©matique (rÃ©sultat original, thÃ©orÃ¨me de connexion,
-nouvelle rÃ©duction Ã  un thÃ©orÃ¨me connu, formalisation d'un thÃ©orÃ¨me connu,
-thÃ©orÃ¨me opÃ©rationnel auxiliaire, contraste conceptuel, ou tÃ©moin de
-non-vacuitÃ©), ses dÃ©pendances principales, ses hypothÃ¨ses de dimension, et
+`docs/FOP_THEOREM_MAP.md` enregistre, pour chaque théorème utilisé de
+façon substantielle dans le manuscrit : sa déclaration Lean exacte et son
+module, son statut mathématique (résultat original, théorème de connexion,
+nouvelle réduction à un théorème connu, formalisation d'un théorème connu,
+théorème opérationnel auxiliaire, contraste conceptuel, ou témoin de
+non-vacuité), ses dépendances principales, ses hypothèses de dimension, et
 son statut d'audit des axiomes.
 
-### PortÃ©e et limites
+### Portée et limites
 
-`docs/SCOPE_AND_LIMITATIONS.md` Ã©nonce explicitement ce que cette version
-n'Ã©tablit pas, notamment (entre autres points) que les poids de Born ne
-sont pas dÃ©rivÃ©s de l'unitaritÃ© seule, qu'aucun thÃ©orÃ¨me de dÃ©cohÃ©rence
-universelle n'est prouvÃ©, qu'aucune ontologie de branches absolue ou
-uniquement fondamentale n'est affirmÃ©e, que la stabilitÃ© de C15 sous
-hypothÃ¨ses approximatives n'est pas Ã©tablie, et que C16 reste ouvert.
+`docs/SCOPE_AND_LIMITATIONS.md` énonce explicitement ce que cette version
+n'établit pas, notamment (entre autres points) que les poids de Born ne
+sont pas dérivés de l'unitarité seule, qu'aucun théorème de décohérence
+universelle n'est prouvé, qu'aucune ontologie de branches absolue ou
+uniquement fondamentale n'est affirmée, que la stabilité de C15 sous
+hypothèses approximatives n'est pas établie, et que C16 reste ouvert.
 
-### Structure du dÃ©pÃ´t
+### Structure du dépôt
 
-Les sources Lean se trouvent sous `QuantumFoundations/`, organisÃ©es par
-sous-systÃ¨me (`Naimark/`, `Wigner/`, `Uhlhorn/`, `BornRule/` et ses
-sous-rÃ©pertoires `EffectPerspectives/` et `RestrictedRecordSectors/`,
-`HistoriesKent/`, `BranchesRiedel/` et son sous-rÃ©pertoire `BornBridge/`,
-`Complexity/`). Chaque rÃ©pertoire de sous-systÃ¨me aboutissant Ã  un
-thÃ©orÃ¨me public possÃ¨de son propre `README.md` dÃ©taillÃ© et spÃ©cifique.
+Les sources Lean se trouvent sous `QuantumFoundations/`, organisées par
+sous-système (`Naimark/`, `Wigner/`, `Uhlhorn/`, `BornRule/` et ses
+sous-répertoires `EffectPerspectives/` et `RestrictedRecordSectors/`,
+`HistoriesKent/`, `BranchesRiedel/` et son sous-répertoire `BornBridge/`,
+`Complexity/`). Chaque répertoire de sous-système aboutissant à un
+théorème public possède son propre `README.md` détaillé et spécifique.
 `MILESTONES.md` et `ARCHITECTURE_NOTES.md` constituent le registre interne
-dÃ©taillÃ© du dÃ©veloppement du projet (historique jalon par jalon et
-dÃ©cisions d'architecture) ; ils sont conservÃ©s pour la continuitÃ© du gÃ©nie
-logiciel et ne sont pas nÃ©cessaires Ã  l'Ã©valuation des affirmations
-formelles du manuscrit, rÃ©sumÃ©es dans `docs/FOP_THEOREM_MAP.md`.
+détaillé du développement du projet (historique jalon par jalon et
+décisions d'architecture) ; ils sont conservés pour la continuité du génie
+logiciel et ne sont pas nécessaires à l'évaluation des affirmations
+formelles du manuscrit, résumées dans `docs/FOP_THEOREM_MAP.md`.
 
-### ReproductibilitÃ©
+### Reproductibilité
 
 Voir `docs/REPRODUCIBILITY.md` pour des commandes de compilation, d'audit
 et de garde exactes et directement utilisables (shell POSIX et
-PowerShell), la chaÃ®ne d'outils Lean exacte, les rÃ©visions de dÃ©pendances,
+PowerShell), la chaîne d'outils Lean exacte, les révisions de dépendances,
 et les sorties attendues.
 
 ### Audit des axiomes
 
-`QuantumFoundations/Audit/FoP.lean` exÃ©cute `#print axioms` sur les
-principales dÃ©clarations pertinentes pour le manuscrit. Chacune d'entre
-elles ne dÃ©pend que du trio standard du noyau Lean/Mathlib
-`[propext, Classical.choice, Quot.sound]` â€” autrement dit, aucun axiome
+`QuantumFoundations/Audit/FoP.lean` exécute `#print axioms` sur les
+principales déclarations pertinentes pour le manuscrit. Chacune d'entre
+elles ne dépend que du trio standard du noyau Lean/Mathlib
+`[propext, Classical.choice, Quot.sound]` — autrement dit, aucun axiome
 propre au projet, aucun `sorry`, et aucun `native_decide` nulle part dans
 cette version. Voir `docs/REPRODUCIBILITY.md` pour les commandes d'audit
 exactes et `RELEASE_NOTES_v1.0.1-fop-companion.md` pour la sortie
-enregistrÃ©e au commit de la version.
+enregistrée au commit de la version.
 
-### DisponibilitÃ© du logiciel et du code
+### Disponibilité du logiciel et du code
 
-Les sources sont disponibles Ã  l'adresse
-`https://github.com/Bobart0/quantum-foundations-lean`, Ã©pinglÃ©es aux
-rÃ©visions de dÃ©pendances enregistrÃ©es dans `lake-manifest.json` et dans
-`docs/REPRODUCIBILITY.md`. La version immuable recommandÃ©e est l'Ã©tiquette
-annotÃ©e `v1.0.1-fop-companion` (version corrective, ne portant que sur la
-documentation et les mÃ©tadonnÃ©es ; voir
-`RELEASE_NOTES_v1.0.1-fop-companion.md`). L'Ã©tiquette antÃ©rieure
+Les sources sont disponibles à l'adresse
+`https://github.com/Bobart0/quantum-foundations-lean`, épinglées aux
+révisions de dépendances enregistrées dans `lake-manifest.json` et dans
+`docs/REPRODUCIBILITY.md`. La version immuable recommandée est l'étiquette
+annotée `v1.0.1-fop-companion` (version corrective, ne portant que sur la
+documentation et les métadonnées ; voir
+`RELEASE_NOTES_v1.0.1-fop-companion.md`). L'étiquette antérieure
 `v1.0-fop-companion` reste disponible comme trace historique ; elle n'est
-ni dÃ©placÃ©e, ni supprimÃ©e, ni recrÃ©Ã©e.
+ni déplacée, ni supprimée, ni recréée.
 
-### API pour dÃ©veloppements aval
+### API pour développements aval
 
-`QuantumFoundations.ProbabilityAPI` est un point d'entrÃ©e unique et
-dÃ©libÃ©rÃ©ment minimal, rÃ©exportant exactement les dÃ©clarations dont peuvent
-avoir besoin les dÃ©veloppements aval (actuellement : une couche de thÃ©orie
-de la dÃ©cision fondÃ©e sur les poids de Born,
-`Bobart0/everettian-probability-lean`). Il **n'a aucun rÃ´le dans le
-manuscrit** de ce dÃ©pÃ´t : il ne contient aucun rÃ©sultat mathÃ©matique
-nouveau, seulement des reformulations et des consÃ©quences immÃ©diates de
-dÃ©clarations dÃ©jÃ  validÃ©es (rÃ©flexivitÃ©/transitivitÃ© du raffinement, une
-carte parent totale construite par choix classique sur un lemme d'unicitÃ©
-existant, et une instance de dÃ©cidabilitÃ© stabilisÃ©e pour un filtre dÃ©jÃ 
-existant). Toute dÃ©claration non rÃ©exportÃ©e depuis `ProbabilityAPI` est
-interne et peut changer sans prÃ©avis. `QuantumFoundations/Audit/
-DownstreamAPI.lean` est un module de non-rÃ©gression exerÃ§ant chaque
-wrapper, pour qu'un futur refactor cassant un contrat consommÃ© en aval
-Ã©choue ici plutÃ´t qu'en aval.
+`QuantumFoundations.ProbabilityAPI` est un point d'entrée unique et
+délibérément minimal, réexportant exactement les déclarations dont peuvent
+avoir besoin les développements aval (actuellement : une couche de théorie
+de la décision fondée sur les poids de Born,
+`Bobart0/everettian-probability-lean`). Il **n'a aucun rôle dans le
+manuscrit** de ce dépôt : il ne contient aucun résultat mathématique
+nouveau, seulement des reformulations et des conséquences immédiates de
+déclarations déjà validées (réflexivité/transitivité du raffinement, une
+carte parent totale construite par choix classique sur un lemme d'unicité
+existant, et une instance de décidabilité stabilisée pour un filtre déjà
+existant). Toute déclaration non réexportée depuis `ProbabilityAPI` est
+interne et peut changer sans préavis. `QuantumFoundations/Audit/
+DownstreamAPI.lean` est un module de non-régression exerçant chaque
+wrapper, pour qu'un futur refactor cassant un contrat consommé en aval
+échoue ici plutôt qu'en aval.
 
 ### Citation
 
-Voir `CITATION.cff` pour les mÃ©tadonnÃ©es de citation structurÃ©es. En bref :
+Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
 Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
 State, Many Perspectives*, version 1.1.0.
 
 ### Assistance par intelligence artificielle
 
-Une assistance au codage par IA a Ã©tÃ© utilisÃ©e tout au long du
-dÃ©veloppement de ce projet. Voir `docs/AI_ASSISTANCE.md` pour la
-divulgation complÃ¨te ; l'auteur a vÃ©rifiÃ© chaque Ã©noncÃ© de thÃ©orÃ¨me,
-chaque affirmation scientifique et chaque dÃ©pendance de preuve, et assume
-l'entiÃ¨re responsabilitÃ© du contenu.
+Une assistance au codage par IA a été utilisée tout au long du
+développement de ce projet. Voir `docs/AI_ASSISTANCE.md` pour la
+divulgation complète ; l'auteur a vérifié chaque énoncé de théorème,
+chaque affirmation scientifique et chaque dépendance de preuve, et assume
+l'entière responsabilité du contenu.
 
 ---
 
-## Documentation bilingue dÃ©taillÃ©e (contenu historique prÃ©servÃ©) / Detailed bilingual reference documentation (preserved)
+## Documentation bilingue détaillée (contenu historique préservé) / Detailed bilingual reference documentation (preserved)
 
-Les sections qui suivent reproduisent intÃ©gralement la documentation
-bilingue (franÃ§ais puis anglais), dÃ©veloppÃ©e sous-systÃ¨me par
-sous-systÃ¨me au fil du projet. Elles sont conservÃ©es en totalitÃ© pour la
-continuitÃ© et la rÃ©fÃ©rence technique dÃ©taillÃ©e ; le rÃ©sumÃ© ci-dessus
-constitue le point d'entrÃ©e destinÃ© Ã  la relecture externe.
+Les sections qui suivent reproduisent intégralement la documentation
+bilingue (français puis anglais), développée sous-système par
+sous-système au fil du projet. Elles sont conservées en totalité pour la
+continuité et la référence technique détaillée ; le résumé ci-dessus
+constitue le point d'entrée destiné à la relecture externe.
 
 The sections that follow reproduce in full the bilingual (French, then
 English) documentation accumulated subsystem by subsystem over the course
@@ -347,722 +347,722 @@ of the project. They are retained in full for continuity and detailed
 technical reference; the summary above is the publication-facing entry
 point intended for external review.
 
-# quantum-foundations-lean â€” Formalisations Lean 4 : Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel et Complexity
+# quantum-foundations-lean — Formalisations Lean 4 : Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel et Complexity
 
 **Statut : Naimark v2 COMPLET (`v2.0-naimark`, 2026-07-11), Wigner COMPLET avec
-unicitÃ©/exclusivitÃ© optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
+unicité/exclusivité optionnelles (`v2.0-wigner`, 2026-07-13), Uhlhorn COMPLET
 (`v1.0-uhlhorn`, 2026-07-14), BornRule COMPLET avec Nonvacuity
 (`v2.0-bornrule`, 2026-07-15) ET HistoriesKent COMPLET (`v1.0-histories`,
-2026-07-16), avec les blocs BranchesRiedel et Complexity C0â€“C13, et dÃ©sormais
-le pont **C14 records â†’ poids de Born** ainsi que **C15, unicitÃ© quadratique
-sur les secteurs de records restreints**, dÃ©sormais complÃ©tÃ© par **C17,
-premiÃ¨re stabilitÃ© quantitative des poids restreints**.** Sept blocs
-mÃ©canisÃ©s, **sans axiome**
-(au sens des rÃ¨gles du projet â€” hors les trois axiomes standards du noyau Lean,
-voir plus bas), en dimension finie sur â„‚.
+2026-07-16), avec les blocs BranchesRiedel et Complexity C0–C13, et désormais
+le pont **C14 records → poids de Born** ainsi que **C15, unicité quadratique
+sur les secteurs de records restreints**, désormais complété par **C17,
+première stabilité quantitative des poids restreints**.** Sept blocs
+mécanisés, **sans axiome**
+(au sens des règles du projet — hors les trois axiomes standards du noyau Lean,
+voir plus bas), en dimension finie sur ℂ.
 
-**En chiffres (recalculÃ©s le 2026-07-23, fichiers du projet hors scratch) :
-119 fichiers `.lean`, 19598 lignes, 663 dÃ©clarations publiques (`theorem`), 0
+**En chiffres (recalculés le 2026-07-23, fichiers du projet hors scratch) :
+119 fichiers `.lean`, 19598 lignes, 663 déclarations publiques (`theorem`), 0
 `sorry`, 0 axiome propre au projet. Le bloc Complexity compte 70 fichiers et
 9490 lignes, dont 12 fichiers et 1224 lignes pour le jalon C13 de
-persistance sous Ã©volution simulÃ©e. Le bloc BranchesRiedel compte 17 fichiers
+persistance sous évolution simulée. Le bloc BranchesRiedel compte 17 fichiers
 et 3250 lignes, dont 11 fichiers et 1438 lignes pour le nouveau
-sous-rÃ©pertoire `BornBridge/` (jalon C14, pont entre la dÃ©composition en
+sous-répertoire `BornBridge/` (jalon C14, pont entre la décomposition en
 branches de Riedel et le poids de Born). Les
-thÃ©orÃ¨mes principaux des blocs Complexity et BornBridge ont Ã©tÃ© vÃ©rifiÃ©s par
-`#print axioms` et dÃ©pendent exactement de
+théorèmes principaux des blocs Complexity et BornBridge ont été vérifiés par
+`#print axioms` et dépendent exactement de
 `[propext, Classical.choice, Quot.sound]`, le trio standard Lean/Mathlib.**
 
 **Noms de modules actuels :** le bloc Riedel est
-`QuantumFoundations.BranchesRiedel` et le bloc des infÃ©rences contraires de
+`QuantumFoundations.BranchesRiedel` et le bloc des inférences contraires de
 Kent est `QuantumFoundations.HistoriesKent`. Les anciens chemins/namespaces
 `QuantumFoundations.Branches` et `QuantumFoundations.Histories` ne sont plus
-exposÃ©s.
+exposés.
 
-Le **thÃ©orÃ¨me de dilation de Naimark** pour les POVM finies (Watrous, *The Theory
-of Quantum Information*, Theorem 2.42) : toute POVM `E : Fin m â†’ (H n â†’â‚—[â„‚] H n)` se
-rÃ©alise comme mesure projective (`dilProj`) sous l'action d'une isomÃ©trie `dilV`,
-avec formule de Born prÃ©servÃ©e.
+Le **théorème de dilation de Naimark** pour les POVM finies (Watrous, *The Theory
+of Quantum Information*, Theorem 2.42) : toute POVM `E : Fin m → (H n →ₗ[ℂ] H n)` se
+réalise comme mesure projective (`dilProj`) sous l'action d'une isométrie `dilV`,
+avec formule de Born préservée.
 
-Le **thÃ©orÃ¨me de Wigner** (Bargmann 1964, *Note on Wigner's Theorem on Symmetry
-Operations*) : toute transformation sur les Ã©tats purs qui prÃ©serve les probabilitÃ©s
-de transition `|âŸ¨Ï†|ÏˆâŸ©|Â²` est induite par un opÃ©rateur unitaire ou antiunitaire â€”
-formulation (A), **sans hypothÃ¨se de bijectivitÃ©** sur la transformation de dÃ©part
-(strictement plus fort que Simonâ€“Mukundaâ€“Chaturvediâ€“Srinivasan 2008, eq. 2.8, qui
-la suppose). ComplÃ©tÃ© (W6, optionnel) par l'**exclusivitÃ©** unitaire/antiunitaire
-et l'**unicitÃ© Ã  phase globale prÃ¨s** (version restreinte), Bargmann Â§1.5 et Â§6.
+Le **théorème de Wigner** (Bargmann 1964, *Note on Wigner's Theorem on Symmetry
+Operations*) : toute transformation sur les états purs qui préserve les probabilités
+de transition `|⟨φ|ψ⟩|²` est induite par un opérateur unitaire ou antiunitaire —
+formulation (A), **sans hypothèse de bijectivité** sur la transformation de départ
+(strictement plus fort que Simon–Mukunda–Chaturvedi–Srinivasan 2008, eq. 2.8, qui
+la suppose). Complété (W6, optionnel) par l'**exclusivité** unitaire/antiunitaire
+et l'**unicité à phase globale près** (version restreinte), Bargmann §1.5 et §6.
 
-Le **Corollaire 1.2 de Å emrl** (Å emrl 2021, *Wigner symmetries and Gleason's
-theorem*, arXiv:2106.06182) : en dimension finie `n â‰¥ 3`, toute application sur
-les projections de rang 1 qui prÃ©serve l'orthogonalitÃ© **dans un seul sens**
-(ni injectivitÃ© ni surjectivitÃ© supposÃ©es) est automatiquement une symÃ©trie de
-Wigner. Contrairement Ã  Naimark et Wigner, ce n'est PAS un rÃ©sultat autonome :
-il **compose** le thÃ©orÃ¨me de Gleason (`gleason-theorem-lean`, dÃ©pendance
-externe Ã©pinglÃ©e) et le thÃ©orÃ¨me de Wigner (bloc interne ci-dessus) â€” voir la
-section dÃ©diÃ©e plus bas pour le dÃ©tail de cette double dÃ©pendance et sa
-vÃ©rification d'axiomes.
+Le **Corollaire 1.2 de Šemrl** (Šemrl 2021, *Wigner symmetries and Gleason's
+theorem*, arXiv:2106.06182) : en dimension finie `n ≥ 3`, toute application sur
+les projections de rang 1 qui préserve l'orthogonalité **dans un seul sens**
+(ni injectivité ni surjectivité supposées) est automatiquement une symétrie de
+Wigner. Contrairement à Naimark et Wigner, ce n'est PAS un résultat autonome :
+il **compose** le théorème de Gleason (`gleason-theorem-lean`, dépendance
+externe épinglée) et le théorème de Wigner (bloc interne ci-dessus) — voir la
+section dédiée plus bas pour le détail de cette double dépendance et sa
+vérification d'axiomes.
 
-Le **ThÃ©orÃ¨me de CohÃ©rence de Grain** (Gleason 1957, *Measures on the closed
-subspaces of a Hilbert space*, comme thÃ©orÃ¨me sous-jacent) : pour une
-Â« perspective Â» (partition orthogonale de `H n` en cellules) et une rÃ¨gle
+Le **Théorème de Cohérence de Grain** (Gleason 1957, *Measures on the closed
+subspaces of a Hilbert space*, comme théorème sous-jacent) : pour une
+« perspective » (partition orthogonale de `H n` en cellules) et une règle
 d'estimation satisfaisant quatre axiomes purement combinatoires (Grain, Norm,
-Pos, Null), la valeur de la rÃ¨gle sur toute cellule est EXACTEMENT la rÃ¨gle de
-Born (`âˆ‘áµ¢ â€–âŸ¨v,fáµ¢âŸ©â€–Â²` sur une base orthonormÃ©e de la cellule) â€” sans jamais
-supposer a priori que la rÃ¨gle est de la forme d'une trace. Comme Uhlhorn,
-c'est un rÃ©sultat qui **compose** un bloc interne (l'infrastructure Uhlhorn,
-U2 et U3a) et une dÃ©pendance externe (`Gleason.gleason`, importÃ© comme vrai
-thÃ©orÃ¨me plutÃ´t que comme axiome) â€” voir la section dÃ©diÃ©e plus bas.
+Pos, Null), la valeur de la règle sur toute cellule est EXACTEMENT la règle de
+Born (`∑ᵢ ‖⟨v,fᵢ⟩‖²` sur une base orthonormée de la cellule) — sans jamais
+supposer a priori que la règle est de la forme d'une trace. Comme Uhlhorn,
+c'est un résultat qui **compose** un bloc interne (l'infrastructure Uhlhorn,
+U2 et U3a) et une dépendance externe (`Gleason.gleason`, importé comme vrai
+théorème plutôt que comme axiome) — voir la section dédiée plus bas.
 
-Le **thÃ©orÃ¨me des infÃ©rences contraires** (Kent 1997, *Quasiclassical Dynamics
+Le **théorème des inférences contraires** (Kent 1997, *Quasiclassical Dynamics
 in a Closed Quantum System*, PRL 78, 2874, arXiv:gr-qc/9604012), dans le cadre
-des histoires cohÃ©rentes en dimension finie : deux ensembles cohÃ©rents
-d'histoires peuvent partager la mÃªme prÃ©paration et la mÃªme post-sÃ©lection,
-tout en impliquant chacun avec CERTITUDE une proposition diffÃ©rente, ces deux
-propositions Ã©tant mutuellement orthogonales. Un Ã©tage temporel d'un ensemble
-d'histoires **rÃ©utilise directement** `BornRule.Perspective`, sans
-redÃ©finition â€” comme Uhlhorn et BornRule le font dÃ©jÃ  pour d'autres briques,
-`HistoriesKent` **compose** l'infrastructure interne du dÃ©pÃ´t (`BornRule` â†’
-`Uhlhorn`/`Gleason`) plutÃ´t que de repartir de zÃ©ro. Le thÃ©orÃ¨me de profusion
-gÃ©nÃ©rique de Dowkerâ€“Kent (1996) â€” qui montrerait que la contrariÃ©tÃ© du tÃ©moin
-n'est pas un cas isolÃ© â€” est explicitement hors scope de ce bloc.
+des histoires cohérentes en dimension finie : deux ensembles cohérents
+d'histoires peuvent partager la même préparation et la même post-sélection,
+tout en impliquant chacun avec CERTITUDE une proposition différente, ces deux
+propositions étant mutuellement orthogonales. Un étage temporel d'un ensemble
+d'histoires **réutilise directement** `BornRule.Perspective`, sans
+redéfinition — comme Uhlhorn et BornRule le font déjà pour d'autres briques,
+`HistoriesKent` **compose** l'infrastructure interne du dépôt (`BornRule` →
+`Uhlhorn`/`Gleason`) plutôt que de repartir de zéro. Le théorème de profusion
+générique de Dowker–Kent (1996) — qui montrerait que la contrariété du témoin
+n'est pas un cas isolé — est explicitement hors scope de ce bloc.
 
-Ce dÃ©pÃ´t s'appuie sur [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean)
-(tag `v1.0-gleason`). Naimark n'y rÃ©utilise que `IsPositiveOp`
+Ce dépôt s'appuie sur [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean)
+(tag `v1.0-gleason`). Naimark n'y réutilise que `IsPositiveOp`
 (`Gleason.Busch.Effects`) ; Uhlhorn et BornRule, en revanche, invoquent
-`Gleason.gleason` lui-mÃªme ainsi qu'une partie de sa machinerie interne ;
-HistoriesKent n'invoque pas `Gleason.gleason` directement mais en hÃ©rite par
-transitivitÃ© via `BornRule.Perspective`/`projL` â€” voir la section
-Â« DÃ©pendances Â» plus bas pour le dÃ©tail et la vÃ©rification de non-fuite
+`Gleason.gleason` lui-même ainsi qu'une partie de sa machinerie interne ;
+HistoriesKent n'invoque pas `Gleason.gleason` directement mais en hérite par
+transitivité via `BornRule.Perspective`/`projL` — voir la section
+« Dépendances » plus bas pour le détail et la vérification de non-fuite
 d'axiome.
 
-## Ã‰noncÃ©
+## Énoncé
 
 ```lean
-structure POVM (n m : â„•) where
-  E : Fin m â†’ (H n â†’â‚—[â„‚] H n)
-  pos : âˆ€ i, IsPositiveOp (E i)
-  sum_eq_one : âˆ‘ i, E i = 1
+structure POVM (n m : ℕ) where
+  E : Fin m → (H n →ₗ[ℂ] H n)
+  pos : ∀ i, IsPositiveOp (E i)
+  sum_eq_one : ∑ i, E i = 1
 
 theorem naimark (P : POVM n m) :
-    âˆƒ V : H n â†’â‚—[â„‚] DilSpace n m, LinearMap.adjoint V âˆ˜â‚— V = LinearMap.id âˆ§
-      âˆ€ i, LinearMap.adjoint V âˆ˜â‚— dilProj n m i âˆ˜â‚— V = P.E i
+    ∃ V : H n →ₗ[ℂ] DilSpace n m, LinearMap.adjoint V ∘ₗ V = LinearMap.id ∧
+      ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i
 
 theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
-    âŸªx, P.E i xâŸ«_â„‚ = âŸªdilV P x, dilProj n m i (dilV P x)âŸ«_â„‚
+    ⟪x, P.E i x⟫_ℂ = ⟪dilV P x, dilProj n m i (dilV P x)⟫_ℂ
 ```
 
-`DilSpace n m := EuclideanSpace â„‚ (Fin m Ã— Fin n)` et `dilProj i` est la projection
-orthogonale sur le `i`-Ã¨me bloc.
+`DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n)` et `dilProj i` est la projection
+orthogonale sur le `i`-ème bloc.
 
-**N5 (optionnel, clos)** : `dilV` s'Ã©tend en un vrai unitaire de `DilSpace n m` (pas
-seulement une isomÃ©trie), pour tout indice ancilla `iâ‚€` fixÃ© (Watrous Cor. 2.43 /
-Paris Â§3.2 Thm 4) :
+**N5 (optionnel, clos)** : `dilV` s'étend en un vrai unitaire de `DilSpace n m` (pas
+seulement une isométrie), pour tout indice ancilla `i₀` fixé (Watrous Cor. 2.43 /
+Paris §3.2 Thm 4) :
 
 ```lean
-theorem exists_unitary_extension (P : POVM n m) (iâ‚€ : Fin m) :
-    âˆƒ U : DilSpace n m â‰ƒâ‚—áµ¢[â„‚] DilSpace n m, U.toLinearMap âˆ˜â‚— singleL n m iâ‚€ = dilV P
+theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
+    ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, U.toLinearMap ∘ₗ singleL n m i₀ = dilV P
 
-theorem naimark_projective_form (P : POVM n m) (iâ‚€ : Fin m) :
-    âˆƒ U : DilSpace n m â‰ƒâ‚—áµ¢[â„‚] DilSpace n m, âˆ€ (i : Fin m) (x : H n),
-      âŸªx, P.E i xâŸ«_â„‚ = âŸªU (singleL n m iâ‚€ x), dilProj n m i (U (singleL n m iâ‚€ x))âŸ«_â„‚
+theorem naimark_projective_form (P : POVM n m) (i₀ : Fin m) :
+    ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, ∀ (i : Fin m) (x : H n),
+      ⟪x, P.E i x⟫_ℂ = ⟪U (singleL n m i₀ x), dilProj n m i (U (singleL n m i₀ x))⟫_ℂ
 ```
 
-## Ã‰cart documentÃ© vs Watrous
+## Écart documenté vs Watrous
 
-Watrous dilate dans un produit tensoriel `X âŠ— â„‚^Î£`. Nous dilatons dans la **somme
-directe hilbertienne** `K := âŠ•_{i<m} H n`, canoniquement isomorphe (l'API Mathlib
-pour `PiLp`/`EuclideanSpace` est plus mÃ»re que celle du produit tensoriel hilbertien
-Ã  cette date). Correspondance : `1_X âŠ— E_{a,a}` devient `dilProj a` ; `âˆšÎ¼(a) âŠ— e_a`
-devient `singleL a âˆ˜â‚— sqrtOp (E a)`. Le contenu mathÃ©matique (isomÃ©trie + formule de
-Born) est identique ; seule la rÃ©alisation concrÃ¨te de l'espace de dilatation diffÃ¨re.
+Watrous dilate dans un produit tensoriel `X ⊗ ℂ^Σ`. Nous dilatons dans la **somme
+directe hilbertienne** `K := ⊕_{i<m} H n`, canoniquement isomorphe (l'API Mathlib
+pour `PiLp`/`EuclideanSpace` est plus mûre que celle du produit tensoriel hilbertien
+à cette date). Correspondance : `1_X ⊗ E_{a,a}` devient `dilProj a` ; `√μ(a) ⊗ e_a`
+devient `singleL a ∘ₗ sqrtOp (E a)`. Le contenu mathématique (isométrie + formule de
+Born) est identique ; seule la réalisation concrète de l'espace de dilatation diffère.
 
-`DilSpace n m := EuclideanSpace â„‚ (Fin m Ã— Fin n)` a Ã©tÃ© choisi (Ã©tape 0, jalon N0)
-sur `PiLp 2 (fun _ : Fin m => H n)` Ã  friction de preuve Ã©gale, pour son index plat
-unique â€” voir `MILESTONES.md` pour le dÃ©tail des deux routes testÃ©es.
+`DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n)` a été choisi (étape 0, jalon N0)
+sur `PiLp 2 (fun _ : Fin m => H n)` à friction de preuve égale, pour son index plat
+unique — voir `MILESTONES.md` pour le détail des deux routes testées.
 
-## ThÃ©orÃ¨me de Wigner
+## Théorème de Wigner
 
 ```lean
-def IsWignerMap (T : H n â†’ H n) : Prop :=
-  âˆ€ x y : H n, â€–xâ€– = 1 â†’ â€–yâ€– = 1 â†’ â€–âŸªT x, T yâŸ«_â„‚â€– = â€–âŸªx, yâŸ«_â„‚â€–
+def IsWignerMap (T : H n → H n) : Prop :=
+  ∀ x y : H n, ‖x‖ = 1 → ‖y‖ = 1 → ‖⟪T x, T y⟫_ℂ‖ = ‖⟪x, y⟫_ℂ‖
 
-theorem wigner (n : â„•) (T : H n â†’ H n) (hT : IsWignerMap T) :
-    (âˆƒ U' : H n â‰ƒâ‚—áµ¢[â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x)
-  âˆ¨ (âˆƒ U' : H n â‰ƒâ‚›â‚—áµ¢[starRingEnd â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x)
+theorem wigner (n : ℕ) (T : H n → H n) (hT : IsWignerMap T) :
+    (∃ U' : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
+  ∨ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
 ```
 
-Aucune hypothÃ¨se de bijectivitÃ© sur `T` : en dimension finie, l'isomÃ©trie construite
-`U'` est automatiquement bijective (`U_bijective`), et l'injectivitÃ© au niveau des
-rayons dÃ©coule de `hT` seul. Blueprint mathÃ©matique : Bargmann 1964, Â§1â€“Â§5 (repris
-quasi tel quel) ; Simonâ€“Mukundaâ€“Chaturvediâ€“Srinivasan 2008 utilisÃ© uniquement en
-contre-vÃ©rification (rejetÃ© comme blueprint principal â€” approche
-trigonomÃ©trique/`Real.Angle`).
+Aucune hypothèse de bijectivité sur `T` : en dimension finie, l'isométrie construite
+`U'` est automatiquement bijective (`U_bijective`), et l'injectivité au niveau des
+rayons découle de `hT` seul. Blueprint mathématique : Bargmann 1964, §1–§5 (repris
+quasi tel quel) ; Simon–Mukunda–Chaturvedi–Srinivasan 2008 utilisé uniquement en
+contre-vérification (rejeté comme blueprint principal — approche
+trigonométrique/`Real.Angle`).
 
-Construction (Bargmann Â§3â€“Â§5) : `V` (colinÃ©aritÃ© dÃ©finitionnelle sur `ð’« := eâŠ¥`, W3)
-puis `Ï‡` (dichotomie `id`/`conj` Ã©tablie sur CHAQUE direction indÃ©pendamment, puis
-globalisÃ©e sans hypothÃ¨se de repÃ¨re orthogonal, W4) puis `U := Ï‡âŸ¨e,Â·âŸ©â€¢e' + V(Â· âˆ’ âŸ¨e,Â·âŸ©â€¢e)`
-Ã©tendant `V`/`Ï‡` Ã  tout l'espace (W5). Aucune coordonnÃ©e, aucune extension de base
-orthonormÃ©e, aucun `Submodule` pour `ð’«` (une simple `Prop`, `InPerp`).
+Construction (Bargmann §3–§5) : `V` (colinéarité définitionnelle sur `𝒫 := e⊥`, W3)
+puis `χ` (dichotomie `id`/`conj` établie sur CHAQUE direction indépendamment, puis
+globalisée sans hypothèse de repère orthogonal, W4) puis `U := χ⟨e,·⟩•e' + V(· − ⟨e,·⟩•e)`
+étendant `V`/`χ` à tout l'espace (W5). Aucune coordonnée, aucune extension de base
+orthonormée, aucun `Submodule` pour `𝒫` (une simple `Prop`, `InPerp`).
 
-**Ã‰carts documentÃ©s vs le plan initial** (voir `MILESTONES.md`, sections W3â€“W5, pour le
-dÃ©tail complet) :
-- W3 (`V_colinear`) : le squelette initial affirmait `â€–Î´â€– = 1` pour le coefficient de
-  colinÃ©aritÃ© â€” FAUX en gÃ©nÃ©ral (rÃ©futÃ© par le contre-exemple `T = id`) ; corrigÃ© en
-  `â€–Î´â€– = â€–zâ€–`.
-- W4 (`chi_eq_chidir`) : l'argument de Bargmann Â§4.3â€“4.5 (`w = fâ‚+fâ‚‚`, orthogonal
-  uniquement) est insuffisant dÃ¨s que `n â‰¥ 3` et que le second vecteur n'est ni
-  colinÃ©aire ni orthogonal Ã  `refVec`. RÃ©solu par rÃ©duction Ã  un seul point de
-  comparaison (`i`, oÃ¹ `id` et `conj` se distinguent) plutÃ´t que l'identitÃ©
-  fonctionnelle complÃ¨te.
-- W5 (`U_bijective`) : la bijectivitÃ© semilinÃ©aire (branche antiunitaire) ne dispose
-  d'aucun lemme Mathlib direct ; rÃ©solue par restriction aux scalaires rÃ©els
-  (`starRingEnd â„‚` est â„-linÃ©aire), sur laquelle `LinearMap.injective_iff_surjective`
+**Écarts documentés vs le plan initial** (voir `MILESTONES.md`, sections W3–W5, pour le
+détail complet) :
+- W3 (`V_colinear`) : le squelette initial affirmait `‖δ‖ = 1` pour le coefficient de
+  colinéarité — FAUX en général (réfuté par le contre-exemple `T = id`) ; corrigé en
+  `‖δ‖ = ‖z‖`.
+- W4 (`chi_eq_chidir`) : l'argument de Bargmann §4.3–4.5 (`w = f₁+f₂`, orthogonal
+  uniquement) est insuffisant dès que `n ≥ 3` et que le second vecteur n'est ni
+  colinéaire ni orthogonal à `refVec`. Résolu par réduction à un seul point de
+  comparaison (`i`, où `id` et `conj` se distinguent) plutôt que l'identité
+  fonctionnelle complète.
+- W5 (`U_bijective`) : la bijectivité semilinéaire (branche antiunitaire) ne dispose
+  d'aucun lemme Mathlib direct ; résolue par restriction aux scalaires réels
+  (`starRingEnd ℂ` est ℝ-linéaire), sur laquelle `LinearMap.injective_iff_surjective`
   s'applique tel quel.
 
-Voir `ARCHITECTURE_NOTES.md` pour la liste consolidÃ©e de tous les Ã©carts
-signalÃ©s (N0â€“N5 et W0â€“W6), compilÃ©e en un seul endroit.
+Voir `ARCHITECTURE_NOTES.md` pour la liste consolidée de tous les écarts
+signalés (N0–N5 et W0–W6), compilée en un seul endroit.
 
-## W6 (optionnel) â€” ExclusivitÃ© et unicitÃ© (Bargmann Â§1.5, Â§6 restreint)
+## W6 (optionnel) — Exclusivité et unicité (Bargmann §1.5, §6 restreint)
 
 ```lean
-def Delta (a b c : H n) : â„‚ := âŸªa, bâŸ«_â„‚ * âŸªb, câŸ«_â„‚ * âŸªc, aâŸ«_â„‚
+def Delta (a b c : H n) : ℂ := ⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ
 
-theorem exclusivity (hT : IsWignerMap T) (hn : 2 â‰¤ n) :
-    Â¬ ((âˆƒ U : H n â‰ƒâ‚—áµ¢[â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U x)
-     âˆ§ (âˆƒ U' : H n â‰ƒâ‚›â‚—áµ¢[starRingEnd â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x))
+theorem exclusivity (hT : IsWignerMap T) (hn : 2 ≤ n) :
+    ¬ ((∃ U : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+     ∧ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x))
 
-theorem U_alt_eq_smul (T : H n â†’ H n) (lam : â„‚) (hlam : â€–lamâ€– = 1) (a : H n) :
-    Up T (lam â€¢ eImg T) a = lam â€¢ U T a
+theorem U_alt_eq_smul (T : H n → H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (a : H n) :
+    Up T (lam • eImg T) a = lam • U T a
 ```
 
-**(A) ExclusivitÃ©** (Bargmann Â§1.5) : un mÃªme `T` ne peut jamais Ãªtre compatible
-Ã  la fois avec une Ã©quivalence unitaire et une Ã©quivalence antiunitaire, pour
-`n â‰¥ 2`. Preuve par tÃ©moin explicite : le triplet `e, eâ‚‚ := (eâˆ’refVec)/âˆš2,
-eâ‚ƒ := (e+refVec(1âˆ’i))/âˆš3` donne `Delta(e,eâ‚‚,eâ‚ƒ) = i/6 âˆ‰ â„`
-(`bargmann_delta_witness`, confirmÃ© par Lean au chiffre prÃ¨s) ; or `Delta` est
-invariant sous une branche unitaire et conjuguÃ© sous une branche antiunitaire
+**(A) Exclusivité** (Bargmann §1.5) : un même `T` ne peut jamais être compatible
+à la fois avec une équivalence unitaire et une équivalence antiunitaire, pour
+`n ≥ 2`. Preuve par témoin explicite : le triplet `e, e₂ := (e−refVec)/√2,
+e₃ := (e+refVec(1−i))/√3` donne `Delta(e,e₂,e₃) = i/6 ∉ ℝ`
+(`bargmann_delta_witness`, confirmé par Lean au chiffre près) ; or `Delta` est
+invariant sous une branche unitaire et conjugué sous une branche antiunitaire
 (`delta_transform_lin`/`delta_transform_conj`), ce qui forcerait `i/6 = -i/6`.
 
-**(B) UnicitÃ© Ã  phase globale prÃ¨s â€” version RESTREINTE** : si l'on reconstruit
-`U` en remplaÃ§ant, dans les formules mÃªmes de `Defs.lean`, le reprÃ©sentant
-unitaire `eImg T := T(e n)` par un autre reprÃ©sentant unitaire `Î» â€¢ eImg T` de
-la mÃªme classe (`â€–Î»â€– = 1`), le nouveau `U` vaut exactement `Î» â€¢ U`
-(`U_alt_eq_smul`). Version strictement plus faible que le ThÃ©orÃ¨me 2 complet
-de Bargmann Â§6 (qui couvrirait un `U'` complÃ¨tement arbitraire, pas seulement
-la libertÃ© de reprÃ©sentant de `eImg`) â€” suffisante pour le cas d'usage rÃ©el du
-dÃ©pÃ´t. `Defs.lean` n'est pas modifiÃ© : la reconstruction paramÃ©trÃ©e (`Vp`,
-`chidirp`, `chip`, `Up`) est locale Ã  `Uniqueness.lean`, reliÃ©e Ã  `V`/`chi`/`U`
-par des lemmes-pont prouvÃ©s `rfl`.
+**(B) Unicité à phase globale près — version RESTREINTE** : si l'on reconstruit
+`U` en remplaçant, dans les formules mêmes de `Defs.lean`, le représentant
+unitaire `eImg T := T(e n)` par un autre représentant unitaire `λ • eImg T` de
+la même classe (`‖λ‖ = 1`), le nouveau `U` vaut exactement `λ • U`
+(`U_alt_eq_smul`). Version strictement plus faible que le Théorème 2 complet
+de Bargmann §6 (qui couvrirait un `U'` complètement arbitraire, pas seulement
+la liberté de représentant de `eImg`) — suffisante pour le cas d'usage réel du
+dépôt. `Defs.lean` n'est pas modifié : la reconstruction paramétrée (`Vp`,
+`chidirp`, `chip`, `Up`) est locale à `Uniqueness.lean`, reliée à `V`/`chi`/`U`
+par des lemmes-pont prouvés `rfl`.
 
-## Corollaire 1.2 de Å emrl (Uhlhorn)
+## Corollaire 1.2 de Šemrl (Uhlhorn)
 
 ```lean
-def PreservesOrthogonality (Ï† : Proj1 n â†’ Proj1 n) : Prop :=
-  âˆ€ P Q : Proj1 n, (P : Submodule â„‚ (H n)) âŸ‚ (Q : Submodule â„‚ (H n)) â†’
-    (Ï† P : Submodule â„‚ (H n)) âŸ‚ (Ï† Q : Submodule â„‚ (H n))
+def PreservesOrthogonality (φ : Proj1 n → Proj1 n) : Prop :=
+  ∀ P Q : Proj1 n, (P : Submodule ℂ (H n)) ⟂ (Q : Submodule ℂ (H n)) →
+    (φ P : Submodule ℂ (H n)) ⟂ (φ Q : Submodule ℂ (H n))
 
-theorem uhlhorn_finite_dim (hn : 3 â‰¤ n) (Ï† : Proj1 n â†’ Proj1 n)
-    (hÏ† : PreservesOrthogonality Ï†) : IsWignerSymmetryProj Ï†
+theorem uhlhorn_finite_dim (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
+    (hφ : PreservesOrthogonality φ) : IsWignerSymmetryProj φ
 ```
 
-`Proj1 n := {A : Submodule â„‚ (H n) // Module.finrank â„‚ A = 1}` (une projection
-de rang 1, pas de wrapper `rankOne` dÃ©diÃ© â€” convention identique Ã  celle de
+`Proj1 n := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1}` (une projection
+de rang 1, pas de wrapper `rankOne` dédié — convention identique à celle de
 `gleason-theorem-lean`). Toute application sur les projections de rang 1 qui
-prÃ©serve l'orthogonalitÃ© **dans un seul sens** (`PQ = 0 âŸ¹ Ï†(P)Ï†(Q) = 0`, ni
-injectivitÃ© ni surjectivitÃ© supposÃ©es) est, en dimension finie `n â‰¥ 3`, une
-symÃ©trie de Wigner â€” Å emrl 2021, *Wigner symmetries and Gleason's theorem*
+préserve l'orthogonalité **dans un seul sens** (`PQ = 0 ⟹ φ(P)φ(Q) = 0`, ni
+injectivité ni surjectivité supposées) est, en dimension finie `n ≥ 3`, une
+symétrie de Wigner — Šemrl 2021, *Wigner symmetries and Gleason's theorem*
 (arXiv:2106.06182), Corollaire 1.2.
 
-**Ce rÃ©sultat COMPOSE deux thÃ©orÃ¨mes plutÃ´t que d'introduire un contenu
-mathÃ©matique autonome** : le cÅ“ur de la preuve applique `Gleason.gleason`
-(dÃ©pendance externe) DEUX FOIS â€” une fois pour construire, Ã  partir d'une
-densitÃ©-test `D` et de l'hypothÃ¨se de prÃ©servation, une seconde densitÃ© `E` ;
-une seconde fois implicitement en spÃ©cialisant `D := projL(Ï†Q)` pour identifier
-`E = projL Q` via le lemme spectral Ã©lÃ©mentaire (U2) â€” puis conclut avec
+**Ce résultat COMPOSE deux théorèmes plutôt que d'introduire un contenu
+mathématique autonome** : le cœur de la preuve applique `Gleason.gleason`
+(dépendance externe) DEUX FOIS — une fois pour construire, à partir d'une
+densité-test `D` et de l'hypothèse de préservation, une seconde densité `E` ;
+une seconde fois implicitement en spécialisant `D := projL(φQ)` pour identifier
+`E = projL Q` via le lemme spectral élémentaire (U2) — puis conclut avec
 `wigner` (bloc interne ci-dessus) via le corollaire (B) de Wigner en langage de
-projections (U1, jamais construit avant ce jalon). DÃ©coupage complet en six
+projections (U1, jamais construit avant ce jalon). Découpage complet en six
 sous-jalons (U1 : corollaire de Wigner en projections ; U2 : lemme spectral ;
 U3a : extension d'une fonction-cadre sur les droites en `ProjMeasure` complet,
-absente de `gleason-theorem-lean` et donc dÃ©rivÃ©e dans ce dÃ©pÃ´t ; U3b :
-Â« Gleason appliquÃ© deux fois Â» ; U4 : assemblage ; U5 : rÃ©duction
-fini-dimensionnelle par comptage de cardinalitÃ©) â€” dÃ©tail complet dans
+absente de `gleason-theorem-lean` et donc dérivée dans ce dépôt ; U3b :
+« Gleason appliqué deux fois » ; U4 : assemblage ; U5 : réduction
+fini-dimensionnelle par comptage de cardinalité) — détail complet dans
 `MILESTONES.md`.
 
-## ThÃ©orÃ¨me de CohÃ©rence de Grain (BornRule)
+## Théorème de Cohérence de Grain (BornRule)
 
 ```lean
-structure Perspective (n : â„•) where
-  cells : Finset (Submodule â„‚ (H n))
-  nz    : âˆ€ c âˆˆ cells, c â‰  âŠ¥
-  ortho : âˆ€ c âˆˆ cells, âˆ€ c' âˆˆ cells, c â‰  c' â†’ c â‰¤ c'á—®
-  span  : sSup (cells : Set (Submodule â„‚ (H n))) = âŠ¤
+structure Perspective (n : ℕ) where
+  cells : Finset (Submodule ℂ (H n))
+  nz    : ∀ c ∈ cells, c ≠ ⊥
+  ortho : ∀ c ∈ cells, ∀ c' ∈ cells, c ≠ c' → c ≤ c'ᗮ
+  span  : sSup (cells : Set (Submodule ℂ (H n))) = ⊤
 
-theorem grainCoherenceTheorem (hn3 : 3 â‰¤ n) (hA : AxGrain Est) (hN : AxNorm Est)
-    (hPos : AxPos Est) {v : H n} (hv : â€–vâ€– = 1) (hNul : AxNul Est v)
-    (D : Perspective n) {c : Submodule â„‚ (H n)} (hc : c âˆˆ D.cells) :
-    Est D c = âˆ‘ i : Fin (Module.finrank â„‚ c),
-      â€–âŸªv, ((stdOrthonormalBasis â„‚ c i : c) : H n)âŸ«_â„‚â€– ^ 2
+theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
+    (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
+    (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
+    Est D c = ∑ i : Fin (Module.finrank ℂ c),
+      ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
 
-theorem grainCoherenceTheorem_projector (hn3 : 3 â‰¤ n) (hA : AxGrain Est)
-    (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : â€–vâ€– = 1)
-    (hNul : AxNul Est v) (D : Perspective n) {c : Submodule â„‚ (H n)}
-    (hc : c âˆˆ D.cells) :
-    Est D c = â€–projL c vâ€– ^ 2
+theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
+    (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
+    (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}
+    (hc : c ∈ D.cells) :
+    Est D c = ‖projL c v‖ ^ 2
 ```
 
 Pour une perspective `D` (partition orthogonale de `H n` en cellules non
-nulles) et une cellule `c` de `D`, toute rÃ¨gle d'estimation `Est` satisfaisant
-(Grain), (Norm), (Pos) et, pour un vecteur unitaire `v` fixÃ©, (Null), vÃ©rifie
-`Est D c = âˆ‘áµ¢ â€–âŸ¨v,fáµ¢âŸ©â€–Â²` sur toute base orthonormÃ©e `(fáµ¢)` de `c` â€” la rÃ¨gle de
-Born en toute gÃ©nÃ©ralitÃ©, dÃ©rivÃ©e des quatre axiomes de cohÃ©rence seuls, sans
+nulles) et une cellule `c` de `D`, toute règle d'estimation `Est` satisfaisant
+(Grain), (Norm), (Pos) et, pour un vecteur unitaire `v` fixé, (Null), vérifie
+`Est D c = ∑ᵢ ‖⟨v,fᵢ⟩‖²` sur toute base orthonormée `(fᵢ)` de `c` — la règle de
+Born en toute généralité, dérivée des quatre axiomes de cohérence seuls, sans
 supposer `Est` a priori de la forme d'une trace. Couvre la route descriptive
-(via le thÃ©orÃ¨me de Gleason) ; une seconde route de dÃ©rivation indÃ©pendante
-(via un axiome de stabilitÃ© dynamique plutÃ´t que de cohÃ©rence de grain),
-l'existence/consistance des quatre axiomes eux-mÃªmes, et la convergence
+(via le théorème de Gleason) ; une seconde route de dérivation indépendante
+(via un axiome de stabilité dynamique plutôt que de cohérence de grain),
+l'existence/consistance des quatre axiomes eux-mêmes, et la convergence
 intersubjective entre observateurs comme corollaire sont des extensions
-futures possibles, non attaquÃ©es ici.
+futures possibles, non attaquées ici.
 
-**Ce rÃ©sultat COMPOSE Gleason et l'infrastructure Uhlhorn plutÃ´t que
-d'introduire un contenu mathÃ©matique autonome** : B2 construit une fonction-
-cadre sur les droites directement depuis la rÃ¨gle d'estimation (via
-`Perspective.binary`) et invoque U3a + `Gleason.gleason` (rÃ©el, pas un axiome)
-pour obtenir une densitÃ© `Ï` ; B3 rÃ©utilise U2 pour montrer qu'un opÃ©rateur
-densitÃ© qui s'annule sur l'orthogonal d'un vecteur unitaire `v` est exactement
-`projL (â„‚âˆ™v)` ; B4 relie (Null) Ã  cette hypothÃ¨se d'annulation et assemble le
-tout via `refinePerspective`/`refine_filter_eq_cellLines` (dÃ©jÃ  prouvÃ©s en B1).
-DÃ©coupage complet en quatre jalons (B1 : scaffolding â€” perspectives, axiomes,
-non-contextualitÃ© ; B2 : pont vers Gleason ; B3 : pinning ; B4 : assemblage
-final) â€” dÃ©tail complet et Ã©carts favorables dans `MILESTONES.md`.
+**Ce résultat COMPOSE Gleason et l'infrastructure Uhlhorn plutôt que
+d'introduire un contenu mathématique autonome** : B2 construit une fonction-
+cadre sur les droites directement depuis la règle d'estimation (via
+`Perspective.binary`) et invoque U3a + `Gleason.gleason` (réel, pas un axiome)
+pour obtenir une densité `ρ` ; B3 réutilise U2 pour montrer qu'un opérateur
+densité qui s'annule sur l'orthogonal d'un vecteur unitaire `v` est exactement
+`projL (ℂ∙v)` ; B4 relie (Null) à cette hypothèse d'annulation et assemble le
+tout via `refinePerspective`/`refine_filter_eq_cellLines` (déjà prouvés en B1).
+Découpage complet en quatre jalons (B1 : scaffolding — perspectives, axiomes,
+non-contextualité ; B2 : pont vers Gleason ; B3 : pinning ; B4 : assemblage
+final) — détail complet et écarts favorables dans `MILESTONES.md`.
 
-`#print axioms grainCoherenceTheorem` ne dÃ©pend que de `[propext,
-Classical.choice, Quot.sound]` : le thÃ©orÃ¨me de Gleason est importÃ© comme un
-vrai thÃ©orÃ¨me (`Gleason.gleason`), jamais postulÃ©.
+`#print axioms grainCoherenceTheorem` ne dépend que de `[propext,
+Classical.choice, Quot.sound]` : le théorème de Gleason est importé comme un
+vrai théorème (`Gleason.gleason`), jamais postulé.
 
 `grainCoherenceTheorem_projector` est uniquement la version en notation
-projecteur du thÃ©orÃ¨me prÃ©cÃ©dent : l'identitÃ© de Parseval identifie sa somme
-sur la base orthonormÃ©e Ã  `â€–projL c vâ€–Â²`. Ce n'est pas un nouveau rÃ©sultat
-mathÃ©matique indÃ©pendant.
+projecteur du théorème précédent : l'identité de Parseval identifie sa somme
+sur la base orthonormée à `‖projL c v‖²`. Ce n'est pas un nouveau résultat
+mathématique indépendant.
 
-## ThÃ©orÃ¨me des infÃ©rences contraires de Kent (HistoriesKent)
+## Théorème des inférences contraires de Kent (HistoriesKent)
 
 ```lean
-abbrev History (n L : â„•) := Fin L â†’ Submodule â„‚ (H n)
+abbrev History (n L : ℕ) := Fin L → Submodule ℂ (H n)
 
-def IsConsistent (Ïˆ : H n) (Ps : Fin L â†’ Perspective n) : Prop :=
-  âˆ€ h k : History n L, IsHistoryOf Ps h â†’ IsHistoryOf Ps k â†’ h â‰  k â†’
-    decFunctional Ïˆ h k = 0
+def IsConsistent (ψ : H n) (Ps : Fin L → Perspective n) : Prop :=
+  ∀ h k : History n L, IsHistoryOf Ps h → IsHistoryOf Ps k → h ≠ k →
+    decFunctional ψ h k = 0
 
-def histProb (Ïˆ : H n) (h : History n L) : â„ := â€–chainOp h Ïˆâ€– ^ 2
+def histProb (ψ : H n) (h : History n L) : ℝ := ‖chainOp h ψ‖ ^ 2
 
 theorem contrary_inferences :
-    âˆƒ (Ps Ps' : Fin 2 â†’ Perspective 3) (Ïˆ : H 3),
-      P 0 âŸ‚ P 1 âˆ§
-      IsConsistent Ïˆ Ps âˆ§ IsConsistent Ïˆ Ps' âˆ§
-      (histProb Ïˆ (![(P 0)á—®, F] : History 3 2) = 0 âˆ§ histProb Ïˆ (![P 0, F] : History 3 2) â‰  0) âˆ§
-      (histProb Ïˆ (![(P 1)á—®, F] : History 3 2) = 0 âˆ§ histProb Ïˆ (![P 1, F] : History 3 2) â‰  0)
+    ∃ (Ps Ps' : Fin 2 → Perspective 3) (ψ : H 3),
+      P 0 ⟂ P 1 ∧
+      IsConsistent ψ Ps ∧ IsConsistent ψ Ps' ∧
+      (histProb ψ (![(P 0)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 0, F] : History 3 2) ≠ 0) ∧
+      (histProb ψ (![(P 1)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 1, F] : History 3 2) ≠ 0)
 ```
 
-En franÃ§ais : il existe deux familles cohÃ©rentes d'histoires Ã  deux Ã©tages sur
-`H 3`, partageant la mÃªme prÃ©paration `Ïˆ` et le mÃªme Ã©tage final de
-post-sÃ©lection `F`, telles que la premiÃ¨re implique avec certitude la
+En français : il existe deux familles cohérentes d'histoires à deux étages sur
+`H 3`, partageant la même préparation `ψ` et le même étage final de
+post-sélection `F`, telles que la première implique avec certitude la
 proposition `P 0`, la seconde implique avec certitude `P 1`, et `P 0` est
-orthogonale Ã  `P 1` â€” Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012. Un Ã©tage
+orthogonale à `P 1` — Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012. Un étage
 temporel d'un ensemble d'histoires **est** une `BornRule.Perspective`,
-rÃ©utilisÃ©e telle quelle. La cohÃ©rence utilisÃ©e est la version Â« medium/forte Â»
-de Kent (`decFunctional Ïˆ h k = 0` pour toute paire d'histoires distinctes de
-la famille, pas seulement sa partie rÃ©elle). TÃ©moin explicite construit en
-dimension 3 : `Ïˆâ‚€ := eâ‚€+eâ‚+eâ‚‚`, `Ï†â‚€ := eâ‚€+eâ‚âˆ’eâ‚‚` (non normalisÃ©s), `P i :=
-â„‚âˆ™(e i)`, `F := â„‚âˆ™Ï†â‚€` â€” l'annulation clÃ© du tÃ©moin est `âŸªÏ†â‚€, e iâŸ« = 1` pour
-`i âˆˆ {0,1}` (`= -1` pour `i = 2`, hors tÃ©moin).
+réutilisée telle quelle. La cohérence utilisée est la version « medium/forte »
+de Kent (`decFunctional ψ h k = 0` pour toute paire d'histoires distinctes de
+la famille, pas seulement sa partie réelle). Témoin explicite construit en
+dimension 3 : `ψ₀ := e₀+e₁+e₂`, `φ₀ := e₀+e₁−e₂` (non normalisés), `P i :=
+ℂ∙(e i)`, `F := ℂ∙φ₀` — l'annulation clé du témoin est `⟪φ₀, e i⟫ = 1` pour
+`i ∈ {0,1}` (`= -1` pour `i = 2`, hors témoin).
 
-**Note de neutralitÃ©.** Le contenu mathÃ©matique ci-dessus â€” deux ensembles
-cohÃ©rents impliquant chacun avec certitude une proposition, ces deux
-propositions Ã©tant orthogonales â€” est un fait incontestÃ©. Son interprÃ©tation
-comme objection Ã  la prÃ©dictibilitÃ© des histoires cohÃ©rentes est dÃ©battue :
-la rÃ©ponse usuelle (Griffiths) invoque la Â« single-framework rule Â» â€” les
-deux infÃ©rences ne sont valides que chacune dans son propre cadre, jamais
-combinÃ©es dans un mÃªme raisonnement. Ce dÃ©pÃ´t fixe l'Ã©noncÃ© mathÃ©matique,
-sans trancher le dÃ©bat interprÃ©tatif.
+**Note de neutralité.** Le contenu mathématique ci-dessus — deux ensembles
+cohérents impliquant chacun avec certitude une proposition, ces deux
+propositions étant orthogonales — est un fait incontesté. Son interprétation
+comme objection à la prédictibilité des histoires cohérentes est débattue :
+la réponse usuelle (Griffiths) invoque la « single-framework rule » — les
+deux inférences ne sont valides que chacune dans son propre cadre, jamais
+combinées dans un même raisonnement. Ce dépôt fixe l'énoncé mathématique,
+sans trancher le débat interprétatif.
 
-Le thÃ©orÃ¨me de profusion gÃ©nÃ©rique de Dowkerâ€“Kent (J. Stat. Phys. 82, 1575
-(1996), comptage de paramÃ¨tres/dimensions de variÃ©tÃ©s montrant que la
-contrariÃ©tÃ© n'est pas un cas isolÃ©) est explicitement hors scope de ce bloc â€”
+Le théorème de profusion générique de Dowker–Kent (J. Stat. Phys. 82, 1575
+(1996), comptage de paramètres/dimensions de variétés montrant que la
+contrariété n'est pas un cas isolé) est explicitement hors scope de ce bloc —
 extension future possible, voir `MILESTONES.md`.
 
-## Borne de circuit dâ€™interfÃ©rence par records redondants (Complexity)
+## Borne de circuit d’interférence par records redondants (Complexity)
 
 Le bloc `QuantumFoundations.Complexity` relie les records spatiaux exacts ou
 approximatifs de
 Riedel aux circuits quantiques 2-locaux. Les circuits sont des listes finies
-de portes unitaires, chacune locale Ã  un `Finset (Fin N)` de cardinal au plus
-deux. Pour `[Gâ‚, Gâ‚‚, Gâ‚ƒ]`, la convention est
-`eval C x = Gâ‚ƒ (Gâ‚‚ (Gâ‚ x))`.
+de portes unitaires, chacune locale à un `Finset (Fin N)` de cardinal au plus
+deux. Pour `[G₁, G₂, G₃]`, la convention est
+`eval C x = G₃ (G₂ (G₁ x))`.
 
-Le thÃ©orÃ¨me principal a le type exact suivant :
+Le théorème principal a le type exact suivant :
 
 ```lean
 theorem regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero
-    {N d K R : â„•} [NeZero R]
-    (e : H (d ^ N) â‰ƒâ‚—áµ¢[â„‚] Sites N d) (C : Circuit N d)
-    (regions : Fin R â†’ Finset (Fin N))
-    (recs : Fin R â†’ LabeledResolution (d ^ N) K) (Ïˆ : H (d ^ N))
-    (hrec : IsRecordedOn Ïˆ recs) (i j : Fin K) (hij : i â‰  j)
-    (hlocal : âˆ€ r, IsLocalTo (transportedRecordProj e (recs r) j) (regions r))
-    (hpairwise : âˆ€ r r', r â‰  r' â†’ Disjoint (regions r) (regions r'))
-    (hcross : âŸªbranch recs Ïˆ j, Circuit.evalOnH C e (branch recs Ïˆ i)âŸ«_â„‚ â‰  0) :
-    R â‰¤ 2 * Circuit.length C
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (C : Circuit N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K) (ψ : H (d ^ N))
+    (hrec : IsRecordedOn ψ recs) (i j : Fin K) (hij : i ≠ j)
+    (hlocal : ∀ r, IsLocalTo (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (hcross : ⟪branch recs ψ j, Circuit.evalOnH C e (branch recs ψ i)⟫_ℂ ≠ 0) :
+    R ≤ 2 * Circuit.length C
 ```
 
-Ainsi, toute amplitude croisÃ©e exacte non nulle entre deux branches
-distinctes force le circuit Ã  toucher chaque rÃ©gion-record ; les rÃ©gions
-Ã©tant deux-Ã -deux disjointes et chaque porte touchant au plus deux sites, on
-obtient la borne explicite `R â‰¤ 2 * C.length`.
+Ainsi, toute amplitude croisée exacte non nulle entre deux branches
+distinctes force le circuit à toucher chaque région-record ; les régions
+étant deux-à-deux disjointes et chaque porte touchant au plus deux sites, on
+obtient la borne explicite `R ≤ 2 * C.length`.
 
-Les jalons C3â€“C6 ajoutent les proxies exacts, sans division :
+Les jalons C3–C6 ajoutent les proxies exacts, sans division :
 
 ```lean
-DistinguishesAt e a b Î´ C :=
-  2 * Î´ â‰¤ â€–âŸªa, C.evalOnH e aâŸ«_â„‚ - âŸªb, C.evalOnH e bâŸ«_â„‚â€–
+DistinguishesAt e a b δ C :=
+  2 * δ ≤ ‖⟪a, C.evalOnH e a⟫_ℂ - ⟪b, C.evalOnH e b⟫_ℂ‖
 
-InterferesAt e a b Î´ C :=
-  2 * Î´ â‰¤ â€–âŸªa, C.evalOnH e bâŸ«_â„‚â€– + â€–âŸªb, C.evalOnH e aâŸ«_â„‚â€–
+InterferesAt e a b δ C :=
+  2 * δ ≤ ‖⟪a, C.evalOnH e b⟫_ℂ‖ + ‖⟪b, C.evalOnH e a⟫_ℂ‖
 ```
 
-Pour deux branches enregistrÃ©es distinctes et non nulles, normalisÃ©es par
-`normalizedBranch`, avec `0 < Î´ â‰¤ 1`, des rÃ©gions-records deux-Ã -deux
-disjointes et la localitÃ© des projecteurs cibles pour **les deux** Ã©tiquettes,
+Pour deux branches enregistrées distinctes et non nulles, normalisées par
+`normalizedBranch`, avec `0 < δ ≤ 1`, des régions-records deux-à-deux
+disjointes et la localité des projecteurs cibles pour **les deux** étiquettes,
 `redundant_records_give_interference_lower_bound` prouve que tout circuit
-interfÃ©rant a longueur au moins `ceilHalf R := (R + 1) / 2`. Si un circuit
-explicite `D` implÃ©mente exactement `2 P_j - I`, alors
-`record_phase_flip_gives_distinguishability_upper_bound` donne un tÃ©moin de
-distinguabilitÃ© de longueur `D.length`. Finalement,
+interférant a longueur au moins `ceilHalf R := (R + 1) / 2`. Si un circuit
+explicite `D` implémente exactement `2 P_j - I`, alors
+`record_phase_flip_gives_distinguishability_upper_bound` donne un témoin de
+distinguabilité de longueur `D.length`. Finalement,
 `redundant_records_give_proxy_gap_certificate` prouve le certificat sans
-soustraction `D.length + g â‰¤ ceilHalf R`, et
+soustraction `D.length + g ≤ ceilHalf R`, et
 `redundant_records_complexity_gap` en donne la version minimale dans
-`WithTop â„•` :
+`WithTop ℕ` :
 
 ```lean
-distinguishabilityComplexity e a b Î´ + (g : WithTop â„•)
-  â‰¤ interferenceComplexity e a b Î´
+distinguishabilityComplexity e a b δ + (g : WithTop ℕ)
+  ≤ interferenceComplexity e a b δ
 ```
 
-Le jalon C7 ajoute une persistance conditionnelle sous Ã©volution rÃ©versible
+Le jalon C7 ajoute une persistance conditionnelle sous évolution réversible
 par circuits finis. Une `ReversibleCircuitEvolution` contient deux circuits
-explicites `forward` et `backward`, dont les Ã©valuations sont inverses, et le
-surcoÃ»t `forward.length + backward.length`. Comme
-`eval (C ++ D) = eval D âˆ˜â‚— eval C`, `backward ++ C ++ forward` implÃ©mente
-`forward âˆ˜â‚— C âˆ˜â‚— backward`, tandis que `forward ++ C ++ backward` implÃ©mente
-le pullback opposÃ©. Les proxies sont exactement invariants sous ces
-conjugaisons. Une borne supÃ©rieure de distinguabilitÃ© augmente d'au plus un
-surcoÃ»t, une borne infÃ©rieure d'interfÃ©rence diminue d'au plus un surcoÃ»t, et
-le gap certifiÃ© diminue donc d'au plus deux surcoÃ»ts.
+explicites `forward` et `backward`, dont les évaluations sont inverses, et le
+surcoût `forward.length + backward.length`. Comme
+`eval (C ++ D) = eval D ∘ₗ eval C`, `backward ++ C ++ forward` implémente
+`forward ∘ₗ C ∘ₗ backward`, tandis que `forward ++ C ++ backward` implémente
+le pullback opposé. Les proxies sont exactement invariants sous ces
+conjugaisons. Une borne supérieure de distinguabilité augmente d'au plus un
+surcoût, une borne inférieure d'interférence diminue d'au plus un surcoût, et
+le gap certifié diminue donc d'au plus deux surcoûts.
 
-L'inverse canonique a Ã©galement Ã©tÃ© construit : chaque porte inverse garde le
-mÃªme support local, et le circuit inverse renverse la liste en inversant ses
-portes. Ainsi `ofCircuit E` a un surcoÃ»t `2 * E.length`, d'oÃ¹ la condition
+L'inverse canonique a également été construit : chaque porte inverse garde le
+même support local, et le circuit inverse renverse la liste en inversant ses
+portes. Ainsi `ofCircuit E` a un surcoût `2 * E.length`, d'où la condition
 exacte sur les records
-`D.length + 4 * E.length + g â‰¤ ceilHalf R`. Les versions minimales dans
-`WithTop â„•` sont prouvÃ©es directement sous l'infimum, y compris dans le cas
-`âŠ¤`, sans supposer qu'un minimum est atteint et sans soustraction.
+`D.length + 4 * E.length + g ≤ ceilHalf R`. Les versions minimales dans
+`WithTop ℕ` sont prouvées directement sous l'infimum, y compris dans le cas
+`⊤`, sans supposer qu'un minimum est atteint et sans soustraction.
 
-Le jalon C8 remplace les identitÃ©s de record exactes par le budget agrÃ©gÃ©
-`ApproxRecordFor P target other Î· :=
-â€–P target - targetâ€– + â€–P otherâ€– â‰¤ Î·`. Cette agrÃ©gation correspond exactement
-aux deux termes produits par la dÃ©composition projecteur/dÃ©faut : une rÃ©gion
-non touchÃ©e donne la constante nette `â€–cross amplitudeâ€– â‰¤ Î·`. Pour les deux
-orientations du proxy, le budget devient `Î·i + Î·j`; la condition stricte
-`Î·i + Î·j < 2 * Î´` force donc encore chaque rÃ©gion Ã  Ãªtre touchÃ©e.
+Le jalon C8 remplace les identités de record exactes par le budget agrégé
+`ApproxRecordFor P target other η :=
+‖P target - target‖ + ‖P other‖ ≤ η`. Cette agrégation correspond exactement
+aux deux termes produits par la décomposition projecteur/défaut : une région
+non touchée donne la constante nette `‖cross amplitude‖ ≤ η`. Pour les deux
+orientations du proxy, le budget devient `ηi + ηj`; la condition stricte
+`ηi + ηj < 2 * δ` force donc encore chaque région à être touchée.
 
-Le circuit de lecture explicite peut lui-mÃªme Ãªtre approchÃ© sur les deux
-vecteurs, avec erreur agrÃ©gÃ©e `Î¾`. La sÃ©paration diagonale idÃ©ale `2` se
-dÃ©grade d'au plus `2 * Î·j + Î¾`, d'oÃ¹ le seuil suffisant
-`2 * Î´ + 2 * Î·j + Î¾ â‰¤ 2`. Ces certificats donnent le gap robuste et sa version
-minimale. Le transport C7 Ã©tant une conjugaison unitaire exacte, il n'ajoute
-aucune erreur analytique : seul subsiste le coÃ»t combinatoire
-`2 * Evo.overhead`, ou `4 * E.length`. Ã€ `Î·i = Î·j = Î¾ = 0`, les rÃ©sultats
-exacts C4â€“C7 sont retrouvÃ©s.
+Le circuit de lecture explicite peut lui-même être approché sur les deux
+vecteurs, avec erreur agrégée `ξ`. La séparation diagonale idéale `2` se
+dégrade d'au plus `2 * ηj + ξ`, d'où le seuil suffisant
+`2 * δ + 2 * ηj + ξ ≤ 2`. Ces certificats donnent le gap robuste et sa version
+minimale. Le transport C7 étant une conjugaison unitaire exacte, il n'ajoute
+aucune erreur analytique : seul subsiste le coût combinatoire
+`2 * Evo.overhead`, ou `4 * E.length`. À `ηi = ηj = ξ = 0`, les résultats
+exacts C4–C7 sont retrouvés.
 
-Les trois prÃ©dicats robustes publics sont exactement :
+Les trois prédicats robustes publics sont exactement :
 
 ```lean
-ApproxRecordFor P target other Î· :=
-  â€–P target - targetâ€– + â€–P otherâ€– â‰¤ Î·
+ApproxRecordFor P target other η :=
+  ‖P target - target‖ + ‖P other‖ ≤ η
 
-ApproxRecordedPairOn recs a b i j Î·i Î·j := âˆ€ r,
-  ApproxRecordFor (rproj (recs r) i) a b Î·i âˆ§
-  ApproxRecordFor (rproj (recs r) j) b a Î·j
+ApproxRecordedPairOn recs a b i j ηi ηj := ∀ r,
+  ApproxRecordFor (rproj (recs r) i) a b ηi ∧
+  ApproxRecordFor (rproj (recs r) j) b a ηj
 
-ApproximatesRecordPhaseFlipOn e D Î› j a b Î¾ :=
-  â€–Circuit.evalOnH D e a - recordPhaseFlip Î› j aâ€– +
-  â€–Circuit.evalOnH D e b - recordPhaseFlip Î› j bâ€– â‰¤ Î¾
+ApproximatesRecordPhaseFlipOn e D Λ j a b ξ :=
+  ‖Circuit.evalOnH D e a - recordPhaseFlip Λ j a‖ +
+  ‖Circuit.evalOnH D e b - recordPhaseFlip Λ j b‖ ≤ ξ
 ```
 
-Le jalon C9 instancie cette architecture dans le modÃ¨le binaire explicite de
-rÃ©pÃ©tition. `zeroBranch R` et `oneBranch R` sont les vecteurs de base des
-configurations constantes zÃ©ro et un, transportÃ©s par `sitesEquivR`; leur somme
-`repetitionState R` n'est volontairement pas normalisÃ©e. Chaque singleton
-`{r}` porte la rÃ©solution computationnelle locale et constitue un record
-indÃ©pendant du mÃªme label binaire. La rÃ©flexion `2 Pâ‚ - I` au premier site est
-une porte de lecture unique, tandis que le circuit ordonnÃ© de `R` portes
-Pauli-X Ã©change exactement les deux branches. On obtient donc
+Le jalon C9 instancie cette architecture dans le modèle binaire explicite de
+répétition. `zeroBranch R` et `oneBranch R` sont les vecteurs de base des
+configurations constantes zéro et un, transportés par `sitesEquivR`; leur somme
+`repetitionState R` n'est volontairement pas normalisée. Chaque singleton
+`{r}` porte la résolution computationnelle locale et constitue un record
+indépendant du même label binaire. La réflexion `2 P₁ - I` au premier site est
+une porte de lecture unique, tandis que le circuit ordonné de `R` portes
+Pauli-X échange exactement les deux branches. On obtient donc
 
 ```lean
 distinguishabilityComplexity (sitesEquivR R) (zeroBranch R) (oneBranch R) 1 = 1
-ceilHalf R â‰¤ interferenceComplexity (sitesEquivR R) (zeroBranch R) (oneBranch R) 1
-interferenceComplexity (sitesEquivR R) (zeroBranch R) (oneBranch R) 1 â‰¤ R
+ceilHalf R ≤ interferenceComplexity (sitesEquivR R) (zeroBranch R) (oneBranch R) 1
+interferenceComplexity (sitesEquivR R) (zeroBranch R) (oneBranch R) 1 ≤ R
 ```
 
-ainsi que le gap pour `1 + g â‰¤ ceilHalf R` et sa persistance conditionnelle
-sous le budget exact `1 + 4 * E.length + g â‰¤ ceilHalf R`. Le majorant fini
-prouve en particulier que l'interference complexity n'est pas `âŠ¤`.
-L'option de sharpness par flips appariÃ©s n'est pas revendiquÃ©e : les bornes
-fermÃ©es sont `ceilHalf R â‰¤ C_I â‰¤ R`.
+ainsi que le gap pour `1 + g ≤ ceilHalf R` et sa persistance conditionnelle
+sous le budget exact `1 + 4 * E.length + g ≤ ceilHalf R`. Le majorant fini
+prouve en particulier que l'interference complexity n'est pas `⊤`.
+L'option de sharpness par flips appariés n'est pas revendiquée : les bornes
+fermées sont `ceilHalf R ≤ C_I ≤ R`.
 
-Le jalon C10 instancie enfin la thÃ©orie robuste C8 sur une famille Ã  bruit
+Le jalon C10 instancie enfin la théorie robuste C8 sur une famille à bruit
 **non nul** explicite, sur `R + 1` sites : un qubit source (site `0`) plus
-`R` qubits de mÃ©moire (`recordSite r := Fin.succ r`). Un `NoiseProfile`
-normalisÃ© `(keep, leak)` (`â€–keepâ€–Â² + â€–leakâ€–Â² = 1`) mÃ©lange deux
-configurations de mÃªme bit source, `noisyZeroBranch := keep â€¢ basis00 + leak
-â€¢ basis01` et `noisyOneBranch := leak â€¢ basis10 + keep â€¢ basis11`, qui restent
-**exactement orthogonales pour tout `leak`** puisque le qubit source diffÃ¨re
-entre elles. Chaque record a une erreur exacte calculÃ©e : il fixe
-exactement la configuration alignÃ©e et fuit exactement `â€–leakâ€–` vers
-l'autre, d'oÃ¹ l'erreur agrÃ©gÃ©e exacte `2 * â€–leakâ€–` par Ã©tiquette â€” un
+`R` qubits de mémoire (`recordSite r := Fin.succ r`). Un `NoiseProfile`
+normalisé `(keep, leak)` (`‖keep‖² + ‖leak‖² = 1`) mélange deux
+configurations de même bit source, `noisyZeroBranch := keep • basis00 + leak
+• basis01` et `noisyOneBranch := leak • basis10 + keep • basis11`, qui restent
+**exactement orthogonales pour tout `leak`** puisque le qubit source diffère
+entre elles. Chaque record a une erreur exacte calculée : il fixe
+exactement la configuration alignée et fuit exactement `‖leak‖` vers
+l'autre, d'où l'erreur agrégée exacte `2 * ‖leak‖` par étiquette — un
 habitant non trivial de `ApproxRecordedPairOn`, sans jamais invoquer
-`IsRecordedOn`. Au seuil `Î´ = 1/2`, la condition robuste est exactement
+`IsRecordedOn`. Au seuil `δ = 1/2`, la condition robuste est exactement
 
 ```lean
-def NoiseProfile.IsRobust (p : NoiseProfile) : Prop := 4 * â€–p.leakâ€– < 1
+def NoiseProfile.IsRobust (p : NoiseProfile) : Prop := 4 * ‖p.leak‖ < 1
 ```
 
-sous laquelle on obtient exactement les mÃªmes bornes que C9 :
+sous laquelle on obtient exactement les mêmes bornes que C9 :
 
 ```lean
 distinguishabilityComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) = 1
-ceilHalf R â‰¤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
-interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) â‰¤ R + 1
+ceilHalf R ≤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
+interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) ≤ R + 1
 ```
 
-ainsi que le gap robuste et sa persistance conditionnelle sous le mÃªme budget
-`1 + 4 * E.length + g â‰¤ ceilHalf R`. Le triplet pythagoricien
-`99Â² + 20Â² = 101Â²` fournit un tÃ©moin rationnel concret
+ainsi que le gap robuste et sa persistance conditionnelle sous le même budget
+`1 + 4 * E.length + g ≤ ceilHalf R`. Le triplet pythagoricien
+`99² + 20² = 101²` fournit un témoin rationnel concret
 `(keep, leak) = (99/101, 20/101)` avec `4 * (20/101) = 80/101 < 1`, auquel
-tous les thÃ©orÃ¨mes C10aâ€“C10g s'appliquent sans hypothÃ¨se supplÃ©mentaire.
-Trois gÃ©nÃ©ralisations additives de C9 (jamais nÃ©cessaires Ã  C9 lui-mÃªme) ont
-servi de brique : une branche de base Ã  configuration arbitraire
-(`configurationBranch`), une lecture par rÃ©flexion Ã  site arbitraire
+tous les théorèmes C10a–C10g s'appliquent sans hypothèse supplémentaire.
+Trois généralisations additives de C9 (jamais nécessaires à C9 lui-même) ont
+servi de brique : une branche de base à configuration arbitraire
+(`configurationBranch`), une lecture par réflexion à site arbitraire
 (`recordReadoutGateAt`/`recordReadoutCircuitAt`), et l'action du circuit
-Â« flip tous les bits Â» sur une configuration arbitraire
-(`allBitFlipCircuit_maps_configurationBranch`) â€” dans chaque cas la
-dÃ©claration C9 existante est reprouvÃ©e comme cas particulier, sans changer
+« flip tous les bits » sur une configuration arbitraire
+(`allBitFlipCircuit_maps_configurationBranch`) — dans chaque cas la
+déclaration C9 existante est reprouvée comme cas particulier, sans changer
 son type public.
 
-Le jalon C11 comble prÃ©cisÃ©ment l'Ã©cart signalÃ© Ã  la fin de C10 : un circuit
-fini explicite de portes `1`- et `2`-locales gÃ©nÃ¨re **unitairement** les
-branches source-record Ã  partir d'un qubit source non corrÃ©lÃ©
-`Î±|0âŸ© + Î²|1âŸ©` et de `R` qubits de mÃ©moire vierges, au lieu de les supposer
-dÃ©jÃ  formÃ©es. `controlledBitFlipGate` (C11a) est une porte de permutation
-`2`-locale; `idealFanoutCircuit R` (C11b) copie l'Ã©tiquette classique du
-qubit source vers chaque record â€” un fanout d'Ã©tiquette en base de calcul,
-jamais un clonage d'un Ã©tat quantique arbitraire (le no-cloning n'est pas
-violÃ© : seule l'Ã©tiquette classique `0`/`1` est propagÃ©e, jamais les
-amplitudes propres du qubit source). La construction la plus dÃ©licate
-(C11e) est une vÃ©ritable rotation unitaire de mÃ©lange d'amplitude sur un
-qubit, Ã©levÃ©e Ã  tous les `N` sites via la reprÃ©sentation plate `Sites N d`
-(aucune infrastructure de facteur tensoriel n'existait dans le dÃ©pÃ´t pour
-cela) : `prepLinearMap p t := keep â€¢ Pâ‚€ + leak â€¢ (F âˆ˜ Pâ‚€) - conj(leak) â€¢
-(F âˆ˜ Pâ‚) + conj(keep) â€¢ Pâ‚`, prouvÃ©e unitaire par expansion directe du
-produit scalaire Ã  16 termes. Cette construction rÃ©ussit **sans condition**
-pour chaque `NoiseProfile` â€” aucune porte supplÃ©mentaire n'a dÃ» Ãªtre
-supposÃ©e. `noisyMeasurementCircuit p R` (C11fâ€“g, longueur `2R`) transforme
-`Î± â€¢ basis00 + Î² â€¢ basis10` en exactement
-`Î± â€¢ noisyZeroBranch p R + Î² â€¢ noisyOneBranch p R` : ce sont les *mÃªmes*
-Ã©tats que ceux de C10, si bien que le gap robuste et sa persistance
-conditionnelle sous un circuit ultÃ©rieur arbitraire s'y transportent
-immÃ©diatement (C11i), sans nouvel argument de distinguabilitÃ©. Le triplet
-pythagoricien `3Â² + 4Â² = 5Â²` fournit un tÃ©moin rationnel concret
-`(amp0, amp1) = (3/5, 4/5)` (C11j), auquel s'applique â€” combinÃ© au profil de
-bruit rationnel `(99/101, 20/101)` de C10h â€” toute la chaÃ®ne C11 sans
-hypothÃ¨se supplÃ©mentaire.
+Le jalon C11 comble précisément l'écart signalé à la fin de C10 : un circuit
+fini explicite de portes `1`- et `2`-locales génère **unitairement** les
+branches source-record à partir d'un qubit source non corrélé
+`α|0⟩ + β|1⟩` et de `R` qubits de mémoire vierges, au lieu de les supposer
+déjà formées. `controlledBitFlipGate` (C11a) est une porte de permutation
+`2`-locale; `idealFanoutCircuit R` (C11b) copie l'étiquette classique du
+qubit source vers chaque record — un fanout d'étiquette en base de calcul,
+jamais un clonage d'un état quantique arbitraire (le no-cloning n'est pas
+violé : seule l'étiquette classique `0`/`1` est propagée, jamais les
+amplitudes propres du qubit source). La construction la plus délicate
+(C11e) est une véritable rotation unitaire de mélange d'amplitude sur un
+qubit, élevée à tous les `N` sites via la représentation plate `Sites N d`
+(aucune infrastructure de facteur tensoriel n'existait dans le dépôt pour
+cela) : `prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) - conj(leak) •
+(F ∘ P₁) + conj(keep) • P₁`, prouvée unitaire par expansion directe du
+produit scalaire à 16 termes. Cette construction réussit **sans condition**
+pour chaque `NoiseProfile` — aucune porte supplémentaire n'a dû être
+supposée. `noisyMeasurementCircuit p R` (C11f–g, longueur `2R`) transforme
+`α • basis00 + β • basis10` en exactement
+`α • noisyZeroBranch p R + β • noisyOneBranch p R` : ce sont les *mêmes*
+états que ceux de C10, si bien que le gap robuste et sa persistance
+conditionnelle sous un circuit ultérieur arbitraire s'y transportent
+immédiatement (C11i), sans nouvel argument de distinguabilité. Le triplet
+pythagoricien `3² + 4² = 5²` fournit un témoin rationnel concret
+`(amp0, amp1) = (3/5, 4/5)` (C11j), auquel s'applique — combiné au profil de
+bruit rationnel `(99/101, 20/101)` de C10h — toute la chaîne C11 sans
+hypothèse supplémentaire.
 
-Le jalon C12 comble le pont optionnel en norme d'opÃ©rateur laissÃ© de cÃ´tÃ©
+Le jalon C12 comble le pont optionnel en norme d'opérateur laissé de côté
 depuis C8 : `toContinuousLinearMapFD` (C12a) est la vue canonique en
-application linÃ©aire continue d'une application linÃ©aire issue d'un espace
-normÃ© complexe de dimension finie (`LinearMap.toContinuousLinearMap` de
-Mathlib) â€” `Circuit.evalOnH`, `recordPhaseFlip` et toute l'API `LinearMap`
-existante restent inchangÃ©es; c'est une vue supplÃ©mentaire, pas un
-remplacement. `ApproximatesOperator A B Îµ := â€–A - Bâ€– â‰¤ Îµ` (C12b) est une
-erreur de norme d'opÃ©rateur gÃ©nÃ©rique, sans rÃ©fÃ©rence aux records ou
-circuits; l'estimation centrale `â€–A x - B xâ€– â‰¤ Îµâ€–xâ€–` donne, sur deux Ã©tats
-unitaires `a, b`, l'accumulation `â€–A a - B aâ€– + â€–A b - B bâ€– â‰¤ 2Îµ` â€” le
-facteur `2` dÃ©rivÃ© par arithmÃ©tique simple, jamais postulÃ©.
-`ApproximatesRecordPhaseFlipOp` (C12c) spÃ©cialise ce pont Ã 
-`recordPhaseFlip` : un budget d'erreur en norme d'opÃ©rateur `Îµ` implique le
-budget ponctuel C8 `Î¾ = 2Îµ`, ce qui restitue directement (C12d) le seuil de
-lecture `2Î´ + 2Î·j + 2Îµ â‰¤ 2` et (C12e) le gap proxy robuste ainsi que sa
-persistance conditionnelle, en rÃ©utilisant tel quel l'estimation analytique
-de C8 â€” aucune nouvelle estimation n'est introduite. Au modÃ¨le bruitÃ© C10
-(C12f), ce seuil devient exactement `4â€–leakâ€– + 2Îµ â‰¤ 1`; l'hypothÃ¨se
-`p.IsRobust` (`4â€–leakâ€– < 1`, stricte) reste nÃ©anmoins nÃ©cessaire en plus de
-ce seuil â€” non redondante, car `hreadout` seul (avec `Îµ â‰¥ 0`) ne donne que
-l'inÃ©galitÃ© large `4â€–leakâ€– â‰¤ 1`, insuffisante pour l'argument
-d'interfÃ©rence strict. Aux branches dynamiquement engendrÃ©es par C11
-(C12g), le mÃªme seuil s'applique directement au couple de branches gÃ©nÃ©rÃ©.
-Le tÃ©moin rationnel concret `Îµ = 1/20` vÃ©rifie exactement
-`80/101 + 2Â·(1/20) â‰¤ 1` par arithmÃ©tique rationnelle exacte. Des lois de
-composition gÃ©nÃ©riques (C12h, facultatives) prÃ©parent l'accumulation
+application linéaire continue d'une application linéaire issue d'un espace
+normé complexe de dimension finie (`LinearMap.toContinuousLinearMap` de
+Mathlib) — `Circuit.evalOnH`, `recordPhaseFlip` et toute l'API `LinearMap`
+existante restent inchangées; c'est une vue supplémentaire, pas un
+remplacement. `ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` (C12b) est une
+erreur de norme d'opérateur générique, sans référence aux records ou
+circuits; l'estimation centrale `‖A x - B x‖ ≤ ε‖x‖` donne, sur deux états
+unitaires `a, b`, l'accumulation `‖A a - B a‖ + ‖A b - B b‖ ≤ 2ε` — le
+facteur `2` dérivé par arithmétique simple, jamais postulé.
+`ApproximatesRecordPhaseFlipOp` (C12c) spécialise ce pont à
+`recordPhaseFlip` : un budget d'erreur en norme d'opérateur `ε` implique le
+budget ponctuel C8 `ξ = 2ε`, ce qui restitue directement (C12d) le seuil de
+lecture `2δ + 2ηj + 2ε ≤ 2` et (C12e) le gap proxy robuste ainsi que sa
+persistance conditionnelle, en réutilisant tel quel l'estimation analytique
+de C8 — aucune nouvelle estimation n'est introduite. Au modèle bruité C10
+(C12f), ce seuil devient exactement `4‖leak‖ + 2ε ≤ 1`; l'hypothèse
+`p.IsRobust` (`4‖leak‖ < 1`, stricte) reste néanmoins nécessaire en plus de
+ce seuil — non redondante, car `hreadout` seul (avec `ε ≥ 0`) ne donne que
+l'inégalité large `4‖leak‖ ≤ 1`, insuffisante pour l'argument
+d'interférence strict. Aux branches dynamiquement engendrées par C11
+(C12g), le même seuil s'applique directement au couple de branches généré.
+Le témoin rationnel concret `ε = 1/20` vérifie exactement
+`80/101 + 2·(1/20) ≤ 1` par arithmétique rationnelle exacte. Des lois de
+composition génériques (C12h, facultatives) préparent l'accumulation
 d'erreur de simulation de C13.
 
-Le jalon C13 Ã©tablit la persistance robuste du gap sous une vÃ©ritable
-Ã©volution `U` prÃ©servant la norme (pas nÃ©cessairement un circuit), tant
-qu'un circuit exact `E` l'approche en norme d'opÃ©rateur Ã  erreur `Îµ`. Le
-point mathÃ©matique central est qu'une persistance au **mÃªme** seuil `Î´` sans
-marge n'est en gÃ©nÃ©ral **pas** justifiÃ©e : perturber deux Ã©tats unitaires de
-`Îµ` chacun dÃ©place la diffÃ©rence diagonale d'au plus `4Îµ` et la somme
-croisÃ©e d'au plus `4Îµ` (C13b), ce qui dÃ©place le seuil de proxy de `2Îµ`
-(puisque les dÃ©finitions utilisent `2Â·seuil`). C13 introduit donc une marge
-`Î¼` : un certificat Ã  seuils Ã©cartÃ©s `Î´-Î¼` (interfÃ©rence) et `Î´+Î¼`
-(distinguabilitÃ©) â€” `HasProxyGapMarginAtLeast` (C13d) â€” persiste sous circuit
-exact (C13e) puis se transporte vers le seuil central `Î´` pour les Ã©tats
-Ã©voluÃ©s par `U`, dÃ¨s que `2Îµ â‰¤ Î¼` (C13f, le thÃ©orÃ¨me principal). Le
+Le jalon C13 établit la persistance robuste du gap sous une véritable
+évolution `U` préservant la norme (pas nécessairement un circuit), tant
+qu'un circuit exact `E` l'approche en norme d'opérateur à erreur `ε`. Le
+point mathématique central est qu'une persistance au **même** seuil `δ` sans
+marge n'est en général **pas** justifiée : perturber deux états unitaires de
+`ε` chacun déplace la différence diagonale d'au plus `4ε` et la somme
+croisée d'au plus `4ε` (C13b), ce qui déplace le seuil de proxy de `2ε`
+(puisque les définitions utilisent `2·seuil`). C13 introduit donc une marge
+`μ` : un certificat à seuils écartés `δ-μ` (interférence) et `δ+μ`
+(distinguabilité) — `HasProxyGapMarginAtLeast` (C13d) — persiste sous circuit
+exact (C13e) puis se transporte vers le seuil central `δ` pour les états
+évolués par `U`, dès que `2ε ≤ μ` (C13f, le théorème principal). Le
 certificat de simulation `CircuitSimulatesEvolutionAt`/`HasCircuitSimulationAt`
-(C13f) et son extension dÃ©pendante du temps `HasCircuitSimulationBound`
-(C13j) rendent ce rÃ©sultat directement rÃ©utilisable. InstanciÃ© au modÃ¨le
-bruitÃ© C10 (C13g) puis aux branches engendrÃ©es par C11 (C13h), avec le
-tÃ©moin rationnel concret `Î´=1/2, Î¼=1/10, Îµ=1/20` (C13i,
-`80/101 < 4/5`, `6/5+80/101 â‰¤ 2`, `2Â·(1/20) â‰¤ 1/10`). Une interface
-optionnelle (C13k) construit une Ã©volution *effectivement* engendrÃ©e par un
-gÃ©nÃ©rateur auto-adjoint `H` â€” `evolve t := exp(-itH)`, via l'exponentielle
-opÃ©ratorielle existante de Mathlib pour les Câ‹†-algÃ¨bres bornÃ©es, sans aucune
-hypothÃ¨se supplÃ©mentaire â€” dont seule la loi de groupe additive reste non
-prouvÃ©e (obstruction de rÃ©solution d'instances Mathlib prÃ©cisÃ©ment
-documentÃ©e dans le fichier, non une lacune mathÃ©matique).
+(C13f) et son extension dépendante du temps `HasCircuitSimulationBound`
+(C13j) rendent ce résultat directement réutilisable. Instancié au modèle
+bruité C10 (C13g) puis aux branches engendrées par C11 (C13h), avec le
+témoin rationnel concret `δ=1/2, μ=1/10, ε=1/20` (C13i,
+`80/101 < 4/5`, `6/5+80/101 ≤ 2`, `2·(1/20) ≤ 1/10`). Une interface
+optionnelle (C13k) construit une évolution *effectivement* engendrée par un
+générateur auto-adjoint `H` — `evolve t := exp(-itH)`, via l'exponentielle
+opératorielle existante de Mathlib pour les C⋆-algèbres bornées, sans aucune
+hypothèse supplémentaire — dont seule la loi de groupe additive reste non
+prouvée (obstruction de résolution d'instances Mathlib précisément
+documentée dans le fichier, non une lacune mathématique).
 
-Le jalon **C14** relie deux thÃ©orÃ¨mes dÃ©jÃ  Ã©tablis plutÃ´t que d'en dÃ©river un
-depuis l'autre : la dÃ©composition en branches jointes, uniques et
+Le jalon **C14** relie deux théorèmes déjà établis plutôt que d'en dériver un
+depuis l'autre : la décomposition en branches jointes, uniques et
 orthogonales de `Induction.riedel` (BranchesRiedel), et le poids de Born
-`grainCoherenceTheorem_projector` (BornRule), qui assigne `â€–projL c vâ€–Â²` Ã 
+`grainCoherenceTheorem_projector` (BornRule), qui assigne `‖projL c v‖²` à
 toute cellule `c` d'une perspective, sous (Pos), (Norm), (Grain), (Null).
 `BranchesRiedel/BornBridge/` distingue quatre objets : un vecteur de branche
-`B f`, sa cellule active `span â„‚ {B f}` (dÃ©finie seulement si `B f â‰  0` â€”
+`B f`, sa cellule active `span ℂ {B f}` (définie seulement si `B f ≠ 0` —
 un vecteur nul n'a pas de cellule formelle), le support `branchSupport`
-(la borne supÃ©rieure des cellules actives, pas nÃ©cessairement tout
-l'espace) et la cellule rÃ©siduelle orthogonale `residualCell` (qui peut
-Ãªtre `âŠ¥`). L'identitÃ© de projection centrale,
-`starProjection_branchCell_apply_state : (branchCell B f).starProjection Ïˆ
-= activeBranchVector B f` (C14c), est un fait d'algÃ¨bre linÃ©aire pur â€” via
-`Submodule.eq_starProjection_of_mem_orthogonal'` â€” indÃ©pendant de toute
-pondÃ©ration. `BranchPerspectivePackage` (C14e) construit une vÃ©ritable
-`Perspective` Ã  partir des cellules actives, en ajoutant la cellule
-rÃ©siduelle seulement si elle est non nulle (`Perspective` interdit les
-cellules `âŠ¥`). `recordBranch_weight_eq_norm_sq` (C14f) chaÃ®ne alors
-`grainCoherenceTheorem_projector` et l'identitÃ© de projection : le poids de
-Born de chaque cellule active vaut exactement `â€–B fâ€–Â²`, le poids rÃ©siduel
-est nul, et les poids actifs somment Ã  `1`. L'invariance de choix de
-record (C14a) â€” `chainProj_choice_invariant`, prouvÃ©e par remplacement
+(la borne supérieure des cellules actives, pas nécessairement tout
+l'espace) et la cellule résiduelle orthogonale `residualCell` (qui peut
+être `⊥`). L'identité de projection centrale,
+`starProjection_branchCell_apply_state : (branchCell B f).starProjection ψ
+= activeBranchVector B f` (C14c), est un fait d'algèbre linéaire pur — via
+`Submodule.eq_starProjection_of_mem_orthogonal'` — indépendant de toute
+pondération. `BranchPerspectivePackage` (C14e) construit une véritable
+`Perspective` à partir des cellules actives, en ajoutant la cellule
+résiduelle seulement si elle est non nulle (`Perspective` interdit les
+cellules `⊥`). `recordBranch_weight_eq_norm_sq` (C14f) chaîne alors
+`grainCoherenceTheorem_projector` et l'identité de projection : le poids de
+Born de chaque cellule active vaut exactement `‖B f‖²`, le poids résiduel
+est nul, et les poids actifs somment à `1`. L'invariance de choix de
+record (C14a) — `chainProj_choice_invariant`, prouvée par remplacement
 d'observable un par un via `Induction.tunneling`, sans jamais composer deux
-records diffÃ©rents de la mÃªme observable â€” donne l'invariance du poids par
+records différents de la même observable — donne l'invariance du poids par
 rapport au record choisi (C14f.5), au niveau des vecteurs, pas seulement
 des normes. `record_induced_Born_decomposition` (C14g) assemble le tout en
-un thÃ©orÃ¨me abstrait unique, spÃ©cialisÃ© au modÃ¨le multi-sites local (C14h)
-puis Ã  la gÃ©nÃ©ration unitaire exacte de C11 (C14i) â€” deux branches
-`q.amp0 â€¢ basis00 R`/`q.amp1 â€¢ basis11 R`, poids `â€–amp0â€–Â²`/`â€–amp1â€–Â²` â€”,
-concrÃ¨tement Ã  `(3/5, 4/5)` donnant les poids rationnels exacts `9/25` et
-`16/25` (C14l). Le modÃ¨le bruitÃ© C10 ne satisfait que la redondance
+un théorème abstrait unique, spécialisé au modèle multi-sites local (C14h)
+puis à la génération unitaire exacte de C11 (C14i) — deux branches
+`q.amp0 • basis00 R`/`q.amp1 • basis11 R`, poids `‖amp0‖²`/`‖amp1‖²` —,
+concrètement à `(3/5, 4/5)` donnant les poids rationnels exacts `9/25` et
+`16/25` (C14l). Le modèle bruité C10 ne satisfait que la redondance
 approximative (`ApproxRecordedPairOn`), pas l'exacte `IsRecordedOn` :
-l'unicitÃ© exacte de branche n'est donc pas conclue pour lui, seule
+l'unicité exacte de branche n'est donc pas conclue pour lui, seule
 l'extraction exacte des composantes de source (C14j) demeure. Enfin, les
-poids de Born des branches Ã©voluÃ©es sous une Ã©volution norm-prÃ©servante
-(C13) conservent leur norme au carrÃ© â€” via l'identitÃ© de polarisation en
-termes de normes, `inner_eq_sum_norm_sq_div_four` â€” sans que la branche
-Ã©voluÃ©e soit encore sÃ©lectionnÃ©e par les projecteurs de record d'origine
+poids de Born des branches évoluées sous une évolution norm-préservante
+(C13) conservent leur norme au carré — via l'identité de polarisation en
+termes de normes, `inner_eq_sum_norm_sq_div_four` — sans que la branche
+évoluée soit encore sélectionnée par les projecteurs de record d'origine
 (C14k).
 
-Le rÃ©sultat porte uniquement
+Le résultat porte uniquement
 sur un nombre fini de sites, une dimension locale finie, des records exacts
 ou des records approximatifs fournis,
-des rÃ©gions deux-Ã -deux disjointes, des portes exactement 2-locales et une
+des régions deux-à-deux disjointes, des portes exactement 2-locales et une
 amplitude/proxy au-dessus du seuil explicite. Il ne traite pas
-la formation gÃ©nÃ©rique de records approximatifs par dÃ©cohÃ©rence (distincte de
-la construction unitaire explicite de C11), la synthÃ¨se
-efficace de projecteurs locaux arbitraires, la complÃ©tion en norme
-d'opÃ©rateur de toute l'API du dÃ©pÃ´t (C12 ne couvre que le pont de lecture de
+la formation générique de records approximatifs par décohérence (distincte de
+la construction unitaire explicite de C11), la synthèse
+efficace de projecteurs locaux arbitraires, la complétion en norme
+d'opérateur de toute l'API du dépôt (C12 ne couvre que le pont de lecture de
 record), le
-critÃ¨re physique complet de Taylorâ€“McCulloch, une borne de simulation de
-Trotter/formule produit ou de Liebâ€“Robinson, une croissance linÃ©aire ou
-polynomiale du coÃ»t de simulation en temps (C13 ne formalise aucune notation
-`O(t)`), la croissance gÃ©nÃ©rique de complexitÃ©, la croissance
-de Brownâ€“Susskind, l'irrÃ©versibilitÃ© macroscopique, l'Ã©quivalence avec
-Weingarten, ni une interprÃ©tation de la mÃ©canique quantique. C14 relie
-records redondants et poids de Born pour un modÃ¨le donnÃ©, sous (Pos),
-(Norm), (Grain), (Null) â€” il ne prÃ©tend pas que les records seuls
-impliquent la rÃ¨gle de Born, ni que (Grain) n'a besoin de valoir que sur
-les perspectives physiquement rÃ©alisÃ©es, ni une unicitÃ© de dÃ©composition
-en branches approximative ou gÃ©nÃ©rique en systÃ¨me Ã  N corps.
+critère physique complet de Taylor–McCulloch, une borne de simulation de
+Trotter/formule produit ou de Lieb–Robinson, une croissance linéaire ou
+polynomiale du coût de simulation en temps (C13 ne formalise aucune notation
+`O(t)`), la croissance générique de complexité, la croissance
+de Brown–Susskind, l'irréversibilité macroscopique, l'équivalence avec
+Weingarten, ni une interprétation de la mécanique quantique. C14 relie
+records redondants et poids de Born pour un modèle donné, sous (Pos),
+(Norm), (Grain), (Null) — il ne prétend pas que les records seuls
+impliquent la règle de Born, ni que (Grain) n'a besoin de valoir que sur
+les perspectives physiquement réalisées, ni une unicité de décomposition
+en branches approximative ou générique en système à N corps.
 
-**C15** est la formalisation Lean et lâ€™intÃ©gration au dÃ©pÃ´t du ThÃ©orÃ¨me 3 et
-du Corollaire 2 de Marko Lela, Â« The Born Rule as the Unique
-Refinement-Stable Induced Weight on Robust Record Sectors Â»
+**C15** est la formalisation Lean et l’intégration au dépôt du Théorème 3 et
+du Corollaire 2 de Marko Lela, « The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors »
 (arXiv:2603.24619v1). Son objet est un poids induit sur des situations de
 record admissibles, pas une mesure sur le treillis complet des projecteurs.
-Lâ€™Ã©quivalence interne est dâ€™abord lâ€™Ã©galitÃ© des profils de raffinement
+L’équivalence interne est d’abord l’égalité des profils de raffinement
 binaire; la saturation binaire exacte prouve ensuite que ces profils sont
-classifiÃ©s par la norme projetÃ©e. Lâ€™Ã©quation fonctionnelle qui en rÃ©sulte
-force `W = c â€–P_R Î¨â€–Â²`, et une normalisation finie fixe `c = 1`.
-Lâ€™additivitÃ© peut Ãªtre hÃ©ritÃ©e dâ€™une valuation extensive sur des faisceaux de
-continuations disjoints. Aucun thÃ©orÃ¨me de Gleason, Busch,
-dÃ©cision-thÃ©orique ou dâ€™envariance nâ€™est utilisÃ©. La saturation binaire est
-supposÃ©e, non dÃ©rivÃ©e de la dynamique C14; saturation dense plus continuitÃ©,
-le pont physique C14/C15 et C16 sont explicitement diffÃ©rÃ©s.
+classifiés par la norme projetée. L’équation fonctionnelle qui en résulte
+force `W = c ‖P_R Ψ‖²`, et une normalisation finie fixe `c = 1`.
+L’additivité peut être héritée d’une valuation extensive sur des faisceaux de
+continuations disjoints. Aucun théorème de Gleason, Busch,
+décision-théorique ou d’envariance n’est utilisé. La saturation binaire est
+supposée, non dérivée de la dynamique C14; saturation dense plus continuité,
+le pont physique C14/C15 et C16 sont explicitement différés.
 
-**C17** est le premier thÃ©orÃ¨me de stabilitÃ© quantitative de ce
-dÃ©veloppement. Il suppose que les deux poids satisfont dÃ©jÃ  la loi
+**C17** est le premier théorème de stabilité quantitative de ce
+développement. Il suppose que les deux poids satisfont déjà la loi
 quadratique exacte fournie par C15 et mesure la perturbation par la distance
-entre composantes projetÃ©es `u = P_(Râ‚)x Î¨â‚x` et `v = P_(Râ‚‚)x Î¨â‚‚x`. Il prouve
-`|Wâ‚-Wâ‚‚| â‰¤ (â€–uâ€–+â€–vâ€–)â€–u-vâ€–`, puis `|Wâ‚-Wâ‚‚| â‰¤ 2â€–u-vâ€–` sur la boule unitÃ©, ainsi
-que les bornes finies `LÂ¹`, `2Â·card(s)Â·Îµ` et demi-`LÂ¹`. Il ne traite ni des
-hypothÃ¨ses C15 approximatives, ni de lâ€™unicitÃ© approximative des branches, ni
-de la production dynamique de la proximitÃ© des composantes. Aucune
-revendication de prioritÃ© historique nâ€™est faite.
+entre composantes projetées `u = P_(R₁)x Ψ₁x` et `v = P_(R₂)x Ψ₂x`. Il prouve
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, puis `|W₁-W₂| ≤ 2‖u-v‖` sur la boule unité, ainsi
+que les bornes finies `L¹`, `2·card(s)·ε` et demi-`L¹`. Il ne traite ni des
+hypothèses C15 approximatives, ni de l’unicité approximative des branches, ni
+de la production dynamique de la proximité des composantes. Aucune
+revendication de priorité historique n’est faite.
 
-**C17b** est un jalon dâ€™intÃ©gration, pas un renforcement du cÅ“ur C17 dÃ©jÃ 
-clos. Sur la boule unitÃ©, un secteur fixÃ© vÃ©rifie
-`|w_R(Ïˆ)-w_R(Ï†)| â‰¤ 2â€–Ïˆ-Ï†â€–`; deux projecteurs Ã  distance au plus `Îµ` en norme
-dâ€™opÃ©rateur vÃ©rifient `|w_R(Ïˆ)-w_S(Ïˆ)| â‰¤ 2Îµ`. Un certificat de simulation C13
-donne donc, pour chaque secteur fixÃ©,
-`|w_R(U(t)Ïˆ)-w_R(CÏˆ)| â‰¤ 2Îµ`. Les poids de branches C14 hÃ©ritent aussi de la
-borne gÃ©nÃ©rique sur les vecteurs de branches lorsquâ€™une correspondance entre
-branches est fournie explicitement. Ces ponts ne prouvent ni unicitÃ© ou
+**C17b** est un jalon d’intégration, pas un renforcement du cœur C17 déjà
+clos. Sur la boule unité, un secteur fixé vérifie
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; deux projecteurs à distance au plus `ε` en norme
+d’opérateur vérifient `|w_R(ψ)-w_S(ψ)| ≤ 2ε`. Un certificat de simulation C13
+donne donc, pour chaque secteur fixé,
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε`. Les poids de branches C14 héritent aussi de la
+borne générique sur les vecteurs de branches lorsqu’une correspondance entre
+branches est fournie explicitement. Ces ponts ne prouvent ni unicité ou
 appariement approximatif des branches, ni saturation approximative, ni
-persistance physique de la sÃ©lection des records.
+persistance physique de la sélection des records.
 
 ## Assistance IA
 
-Ce dÃ©veloppement (squelette, preuves, choix d'architecture) a Ã©tÃ© rÃ©alisÃ© avec
-l'assistance de Claude (Anthropic), sous supervision humaine Ã  chaque Ã©tape : chaque
-API Mathlib incertaine a Ã©tÃ© vÃ©rifiÃ©e en `stdin` avant usage (`lake env lean --stdin`),
-chaque jalon a dÃ©marrÃ© par un squelette en `sorry` validÃ© avant remplissage, et
-`lake build` + `./scripts/guard.sh` ont tournÃ© aprÃ¨s chaque preuve fermÃ©e. Voir
-`AGENTS.md` pour les rÃ¨gles exactes suivies et l'historique des commits pour le dÃ©tail
+Ce développement (squelette, preuves, choix d'architecture) a été réalisé avec
+l'assistance de Claude (Anthropic), sous supervision humaine à chaque étape : chaque
+API Mathlib incertaine a été vérifiée en `stdin` avant usage (`lake env lean --stdin`),
+chaque jalon a démarré par un squelette en `sorry` validé avant remplissage, et
+`lake build` + `./scripts/guard.sh` ont tourné après chaque preuve fermée. Voir
+`AGENTS.md` pour les règles exactes suivies et l'historique des commits pour le détail
 jalon par jalon.
 
-## DÃ©marrage
+## Démarrage
 
 ```bash
 ./setup.sh          # toolchain + mathlib + cache + build (~10 min avec cache)
 ./scripts/guard.sh  # audit : 0 axiome, 0 native_decide, compte des sorry
 ```
 
-## VÃ©rifier les preuves
+## Vérifier les preuves
 
 ```bash
 lake build                    # doit terminer vert
 ./scripts/guard.sh            # 0 axiome, 0 native_decide, 0 sorry (sept blocs)
 ```
 
-`#print axioms` sur les thÃ©orÃ¨mes-tÃªtes de chapitre (liste exhaustive des 155
-dÃ©clarations publiques porteuses de contenu dans `ARCHITECTURE_NOTES.md`/le
-rapport de clÃ´ture â€” toutes dÃ©pendent du mÃªme trio) :
+`#print axioms` sur les théorèmes-têtes de chapitre (liste exhaustive des 155
+déclarations publiques porteuses de contenu dans `ARCHITECTURE_NOTES.md`/le
+rapport de clôture — toutes dépendent du même trio) :
 
 ```
 'QuantumFoundations.naimark' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1083,7 +1083,7 @@ rapport de clÃ´ture â€” toutes dÃ©pendent du mÃªme trio) :
 'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.BornRule.Eâ‚€_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.HistoriesKent.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.HistoriesKent.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1091,351 +1091,351 @@ rapport de clÃ´ture â€” toutes dÃ©pendent du mÃªme trio) :
 'QuantumFoundations.HistoriesKent.isConsistent_single_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
-Ce sont les trois axiomes standards acceptÃ©s par Lean/Mathlib lui-mÃªme (extensionnalitÃ©
-propositionnelle, axiome du choix, soliditÃ© des quotients) â€” aucun `sorryAx`, aucun
-`axiom` spÃ©cifique au projet. **Points vÃ©rifiÃ©s spÃ©cifiquement** : `uhlhorn_finite_dim`
-est le premier thÃ©orÃ¨me du dÃ©pÃ´t Ã  dÃ©pendre Ã  la fois de `Gleason.gleason`
-(dÃ©pendance externe) ET de `QuantumFoundations.Wigner.wigner` (bloc interne) ;
-`grainCoherenceTheorem` dÃ©pend Ã  la fois de `Gleason.gleason` ET de
-l'infrastructure Uhlhorn interne (U2, U3a) â€” dans les deux cas, cette double
-chaÃ®ne de dÃ©pendances ne fait fuiter aucun axiome supplÃ©mentaire, confirmÃ©
-ci-dessus. `contrary_inferences` dÃ©pend transitivement d'une chaÃ®ne Ã  TROIS
-niveaux (`HistoriesKent` â†’ `BornRule.Perspective` â†’ `Uhlhorn`/`Gleason` externe) â€”
-mÃªme trio, confirmÃ© lors de la clÃ´ture de `HistoriesKent` (2026-07-16), ainsi que
-la non-rÃ©gression des axiomes de `BornRule` suite Ã  la relocalisation de
+Ce sont les trois axiomes standards acceptés par Lean/Mathlib lui-même (extensionnalité
+propositionnelle, axiome du choix, solidité des quotients) — aucun `sorryAx`, aucun
+`axiom` spécifique au projet. **Points vérifiés spécifiquement** : `uhlhorn_finite_dim`
+est le premier théorème du dépôt à dépendre à la fois de `Gleason.gleason`
+(dépendance externe) ET de `QuantumFoundations.Wigner.wigner` (bloc interne) ;
+`grainCoherenceTheorem` dépend à la fois de `Gleason.gleason` ET de
+l'infrastructure Uhlhorn interne (U2, U3a) — dans les deux cas, cette double
+chaîne de dépendances ne fait fuiter aucun axiome supplémentaire, confirmé
+ci-dessus. `contrary_inferences` dépend transitivement d'une chaîne à TROIS
+niveaux (`HistoriesKent` → `BornRule.Perspective` → `Uhlhorn`/`Gleason` externe) —
+même trio, confirmé lors de la clôture de `HistoriesKent` (2026-07-16), ainsi que
+la non-régression des axiomes de `BornRule` suite à la relocalisation de
 `norm_sq_sum_of_pairwise_orthogonal`/`sum_sq_projL_of_pairwise_isOrtho`
-(`private` dans `Nonvacuity.lean`, migrÃ©s public vers `Perspective.lean`) :
-les 34 dÃ©clarations PUBLIQUES de `BornRule` (32 prÃ©cÃ©dentes + les 2 lemmes
-relocalisÃ©s, dÃ©sormais publics) re-vÃ©rifiÃ©es individuellement, aucune
-affectÃ©e.
+(`private` dans `Nonvacuity.lean`, migrés public vers `Perspective.lean`) :
+les 34 déclarations PUBLIQUES de `BornRule` (32 précédentes + les 2 lemmes
+relocalisés, désormais publics) re-vérifiées individuellement, aucune
+affectée.
 
-## Carte du dÃ©pÃ´t
+## Carte du dépôt
 
 | Fichier                                     | Contenu                                                                            | Lignes |
 |---|---|---:|
-| `QuantumFoundations/Naimark/Defs.lean`      | `POVM n m` (rÃ©utilise `Gleason.IsPositiveOp`)                                      | 46 |
-| `QuantumFoundations/Naimark/SqrtOp.lean`    | Racine carrÃ©e positive (construction spectrale)                                    | 191 |
+| `QuantumFoundations/Naimark/Defs.lean`      | `POVM n m` (réutilise `Gleason.IsPositiveOp`)                                      | 46 |
+| `QuantumFoundations/Naimark/SqrtOp.lean`    | Racine carrée positive (construction spectrale)                                    | 191 |
 | `QuantumFoundations/Naimark/DilSpace.lean`  | Espace de dilatation `K`, `singleL`/`coordL`/`dilProj`                             | 194 |
-| `QuantumFoundations/Naimark/Main.lean`      | `dilV`, isomÃ©trie, thÃ©orÃ¨me de Naimark, corollaire de Born                         | 157 |
+| `QuantumFoundations/Naimark/Main.lean`      | `dilV`, isométrie, théorème de Naimark, corollaire de Born                         | 157 |
 | `QuantumFoundations/Naimark/Unitary.lean`   | N5 (optionnel) : extension unitaire, forme ancilla                                 | 210 |
 | `QuantumFoundations/Wigner/Defs.lean`       | `e`, `eImg`, `InPerp`, `V`, `refVec`, `chidir`, `chi`, `U`, `IsWignerMap`          | 119 |
-| `QuantumFoundations/Wigner/Scalar.lean`     | Kit scalaire â„‚ (rigiditÃ©, dichotomie `id`/`conj`)                                  | 117 |
-| `QuantumFoundations/Wigner/Bessel.lean`     | IdentitÃ© de Bessel (Ã©galitÃ©) ; images orthonormÃ©es                                 | 126 |
-| `QuantumFoundations/Wigner/VConstruction.lean` | Construction B de Bargmann : `V`, colinÃ©aritÃ©, (11)-(12a)                       | 449 |
-| `QuantumFoundations/Wigner/Core.lean`       | CÅ“ur : dichotomie de `chi`, additivitÃ©/homogÃ©nÃ©itÃ© de `V`                          | 833 |
-| `QuantumFoundations/Wigner/Main.lean`       | `U`, bijectivitÃ©, compatibilitÃ© avec `T`, thÃ©orÃ¨me `wigner`                        | 399 |
-| `QuantumFoundations/Wigner/Uniqueness.lean` | W6 (optionnel) : exclusivitÃ© (A), unicitÃ© restreinte (B)                           | 439 |
-| `QuantumFoundations/Wigner/Nonvacuity.lean` | TÃ©moins Wigner : `id` (branche unitaire), `conjCoords` (branche antiunitaire)      | 112 |
+| `QuantumFoundations/Wigner/Scalar.lean`     | Kit scalaire ℂ (rigidité, dichotomie `id`/`conj`)                                  | 117 |
+| `QuantumFoundations/Wigner/Bessel.lean`     | Identité de Bessel (égalité) ; images orthonormées                                 | 126 |
+| `QuantumFoundations/Wigner/VConstruction.lean` | Construction B de Bargmann : `V`, colinéarité, (11)-(12a)                       | 449 |
+| `QuantumFoundations/Wigner/Core.lean`       | Cœur : dichotomie de `chi`, additivité/homogénéité de `V`                          | 833 |
+| `QuantumFoundations/Wigner/Main.lean`       | `U`, bijectivité, compatibilité avec `T`, théorème `wigner`                        | 399 |
+| `QuantumFoundations/Wigner/Uniqueness.lean` | W6 (optionnel) : exclusivité (A), unicité restreinte (B)                           | 439 |
+| `QuantumFoundations/Wigner/Nonvacuity.lean` | Témoins Wigner : `id` (branche unitaire), `conjCoords` (branche antiunitaire)      | 112 |
 | `QuantumFoundations/Uhlhorn/Defs.lean` | `Proj1`, `TraceProd`, `PreservesOrthogonality`, `IsWignerSymmetryProj`, `IsFrameFunctionOnLines`, `SendsONBToONB` | 278 |
 | `QuantumFoundations/Uhlhorn/WignerProjectionForm.lean` | U1 : corollaire (B) de Wigner en langage de projections                 | 117 |
-| `QuantumFoundations/Uhlhorn/Spectral.lean`  | U2 : lemme spectral Ã©lÃ©mentaire                                                     | 131 |
+| `QuantumFoundations/Uhlhorn/Spectral.lean`  | U2 : lemme spectral élémentaire                                                     | 131 |
 | `QuantumFoundations/Uhlhorn/GleasonExtend.lean` | U3a : extension d'une fonction-cadre sur les droites en `ProjMeasure` complet  | 268 |
-| `QuantumFoundations/Uhlhorn/GleasonTwice.lean` | U3b : Â« Gleason appliquÃ© deux fois Â»                                            | 175 |
-| `QuantumFoundations/Uhlhorn/Assembly.lean`  | U4 (assemblage) + U5 (rÃ©duction fini-dimensionnelle), thÃ©orÃ¨me `uhlhorn_finite_dim` | 111 |
-| `QuantumFoundations/Uhlhorn/Nonvacuity.lean` | TÃ©moin Uhlhorn : `Ï† := id`                                                        | 53 |
+| `QuantumFoundations/Uhlhorn/GleasonTwice.lean` | U3b : « Gleason appliqué deux fois »                                            | 175 |
+| `QuantumFoundations/Uhlhorn/Assembly.lean`  | U4 (assemblage) + U5 (réduction fini-dimensionnelle), théorème `uhlhorn_finite_dim` | 111 |
+| `QuantumFoundations/Uhlhorn/Nonvacuity.lean` | Témoin Uhlhorn : `φ := id`                                                        | 53 |
 | `QuantumFoundations/BornRule/Perspective.lean` | B1 : `Perspective`, `Refines`, `AxGrain`/`AxNorm`/`AxPos`/`AxNul`, `lemma4_noncontextual`, `basisPerspective`, `cellLines`, `refinePerspective` | 555 |
 | `QuantumFoundations/BornRule/GleasonBridge.lean` | B2 : `g`, `g_isFrameFunctionOnLines`, `exists_rho` (remplace `axiom gleason`) | 115 |
-| `QuantumFoundations/BornRule/Pinning.lean`   | B3 : `eq_projL_of_vanishes_on_orthogonal` (identification de `Ï` via U2)          | 83 |
-| `QuantumFoundations/BornRule/Assembly.lean`  | B4 (assemblage), thÃ©orÃ¨me final `grainCoherenceTheorem`                          | 215 |
-| `QuantumFoundations/BornRule/Nonvacuity.lean` | TÃ©moin BornRule : `Eâ‚€ v` (rÃ¨gle de Born) satisfait Grain+Norm+Pos+Null simultanÃ©ment | 177 |
-| `QuantumFoundations/Nonvacuity.lean`         | TÃ©moin Naimark : POVM uniforme `n=2, m=2`                                         | 65 |
+| `QuantumFoundations/BornRule/Pinning.lean`   | B3 : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)          | 83 |
+| `QuantumFoundations/BornRule/Assembly.lean`  | B4 (assemblage), théorème final `grainCoherenceTheorem`                          | 215 |
+| `QuantumFoundations/BornRule/Nonvacuity.lean` | Témoin BornRule : `E₀ v` (règle de Born) satisfait Grain+Norm+Pos+Null simultanément | 177 |
+| `QuantumFoundations/Nonvacuity.lean`         | Témoin Naimark : POVM uniforme `n=2, m=2`                                         | 65 |
 | `QuantumFoundations/HistoriesKent/Defs.lean`     | `History`, `IsHistoryOf`, `chainOp`, `decFunctional`, `IsConsistent`, `histProb`   | 162 |
-| `QuantumFoundations/HistoriesKent/Nonvacuity.lean` | TÃ©moin HistoriesKent : toute `Perspective`, famille Ã  un Ã©tage, est cohÃ©rente        | 85 |
+| `QuantumFoundations/HistoriesKent/Nonvacuity.lean` | Témoin HistoriesKent : toute `Perspective`, famille à un étage, est cohérente        | 85 |
 | `QuantumFoundations/HistoriesKent/Basic.lean`    | K1 : `decFunctional_last_stage_orthogonal`, `histProb_additivity_two_stage`       | 121 |
-| `QuantumFoundations/HistoriesKent/Witness.lean`  | K2 : tÃ©moin explicite de Kent en `H 3`, `S_consistent`                            | 490 |
-| `QuantumFoundations/HistoriesKent/ContraryInferences.lean` | K3 : `inference`, thÃ©orÃ¨me final `contrary_inferences`                  | 162 |
-| `QuantumFoundations/BranchesRiedel/Defs.lean` | R0 : rÃ©solutions Ã©tiquetÃ©es, branches et records redondants | 234 |
-| `QuantumFoundations/BranchesRiedel/Nonvacuity.lean` | R0 : tÃ©moin GHZ Ã  trois records | 210 |
-| `QuantumFoundations/BranchesRiedel/Basic.lean` | R1 : identitÃ©s gÃ©nÃ©rales des projecteurs de records | 133 |
-| `QuantumFoundations/BranchesRiedel/TwoObs.lean` | R2 : deux observables enregistrÃ©s | 207 |
+| `QuantumFoundations/HistoriesKent/Witness.lean`  | K2 : témoin explicite de Kent en `H 3`, `S_consistent`                            | 490 |
+| `QuantumFoundations/HistoriesKent/ContraryInferences.lean` | K3 : `inference`, théorème final `contrary_inferences`                  | 162 |
+| `QuantumFoundations/BranchesRiedel/Defs.lean` | R0 : résolutions étiquetées, branches et records redondants | 234 |
+| `QuantumFoundations/BranchesRiedel/Nonvacuity.lean` | R0 : témoin GHZ à trois records | 210 |
+| `QuantumFoundations/BranchesRiedel/Basic.lean` | R1 : identités générales des projecteurs de records | 133 |
+| `QuantumFoundations/BranchesRiedel/TwoObs.lean` | R2 : deux observables enregistrés | 207 |
 | `QuantumFoundations/BranchesRiedel/Induction.lean` | R3 : induction multi-observables | 559 |
-| `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localitÃ© spatiale et comptage `PairCovers` | 469 |
+| `QuantumFoundations/BranchesRiedel/Local.lean` | R4 : localité spatiale et comptage `PairCovers` | 469 |
 | `QuantumFoundations/BranchesRiedel/BornBridge/RecordChoice.lean` | C14a : invariance de choix de record redondant | 203 |
 | `QuantumFoundations/BranchesRiedel/BornBridge/ActiveBranches.lean` | C14b : indice de branche active | 76 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/BranchCells.lean` | C14b/c : cellules de branche, identitÃ© de projection | 134 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/BranchPerspective.lean` | C14d/e : support, cellule rÃ©siduelle, perspective formelle | 218 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/BranchCells.lean` | C14b/c : cellules de branche, identité de projection | 134 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/BranchPerspective.lean` | C14d/e : support, cellule résiduelle, perspective formelle | 218 |
 | `QuantumFoundations/BranchesRiedel/BornBridge/BornWeights.lean` | C14f : poids de Born des branches induites par records | 151 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/Synthesis.lean` | C14g : thÃ©orÃ¨me de synthÃ¨se abstrait | 92 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Synthesis.lean` | C14g : théorème de synthèse abstrait | 92 |
 | `QuantumFoundations/BranchesRiedel/BornBridge/LocalRecords.lean` | C14h : corollaire local multi-sites | 49 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/GeneratedBranches.lean` | C14i/j : modÃ¨le unitaire exact C11, frontiÃ¨re du modÃ¨le bruitÃ© | 199 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/Evolution.lean` | C14k : prÃ©servation des poids sous Ã©volution norm-prÃ©servante | 129 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/ConcreteModel.lean` | C14l : instance concrÃ¨te (poids 9/25, 16/25) | 86 |
-| `QuantumFoundations/BranchesRiedel/BornBridge/Nonvacuity.lean` | C14 : tÃ©moins de non-vacuitÃ© | 101 |
-| `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, Ã©valuation et support | 129 |
-| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12/C13 : tÃ©moins Ã©lÃ©mentaires et modÃ¨les concrets | 389 |
-| `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une rÃ©gion disjointe | 45 |
-| `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchÃ©s et amplitude croisÃ©e nulle | 122 |
-| `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage gÃ©nÃ©rique des rÃ©gions disjointes touchÃ©es | 35 |
-| `QuantumFoundations/Complexity/Main.lean` | C2 : borne principale `R â‰¤ 2 * C.length` | 63 |
-| `QuantumFoundations/Complexity/ProxyDefs.lean` | C3 : proxies exacts de distinguabilitÃ© et dâ€™interfÃ©rence | 82 |
-| `QuantumFoundations/Complexity/NormalizedBranches.lean` | C3 : normalisation des branches enregistrÃ©es non nulles | 83 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/GeneratedBranches.lean` | C14i/j : modèle unitaire exact C11, frontière du modèle bruité | 199 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Evolution.lean` | C14k : préservation des poids sous évolution norm-préservante | 129 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/ConcreteModel.lean` | C14l : instance concrète (poids 9/25, 16/25) | 86 |
+| `QuantumFoundations/BranchesRiedel/BornBridge/Nonvacuity.lean` | C14 : témoins de non-vacuité | 101 |
+| `QuantumFoundations/Complexity/Defs.lean` | C0 : portes et circuits 2-locaux, évaluation et support | 129 |
+| `QuantumFoundations/Complexity/Nonvacuity.lean` | C0/C6/C7/C8/C9/C10/C11/C12/C13 : témoins élémentaires et modèles concrets | 389 |
+| `QuantumFoundations/Complexity/CircuitLocality.lean` | C1 : commutation d'un circuit avec une région disjointe | 45 |
+| `QuantumFoundations/Complexity/RecordInterference.lean` | C1 : records non touchés et amplitude croisée nulle | 122 |
+| `QuantumFoundations/Complexity/Counting.lean` | C2 : comptage générique des régions disjointes touchées | 35 |
+| `QuantumFoundations/Complexity/Main.lean` | C2 : borne principale `R ≤ 2 * C.length` | 63 |
+| `QuantumFoundations/Complexity/ProxyDefs.lean` | C3 : proxies exacts de distinguabilité et d’interférence | 82 |
+| `QuantumFoundations/Complexity/NormalizedBranches.lean` | C3 : normalisation des branches enregistrées non nulles | 83 |
 | `QuantumFoundations/Complexity/ProxyCertificates.lean` | C3 : certificats relationnels et `ceilHalf` | 96 |
-| `QuantumFoundations/Complexity/RecordInterferenceBound.lean` | C4 : borne dâ€™interfÃ©rence Ã  deux orientations | 96 |
+| `QuantumFoundations/Complexity/RecordInterferenceBound.lean` | C4 : borne d’interférence à deux orientations | 96 |
 | `QuantumFoundations/Complexity/RecordDistinguishability.lean` | C5 : lecture par phase flip exact | 114 |
 | `QuantumFoundations/Complexity/BranchGap.lean` | C6 : certificat de gap sans soustraction | 50 |
-| `QuantumFoundations/Complexity/MinComplexity.lean` | C6 : minima `WithTop â„•` et gap effectif | 180 |
-| `QuantumFoundations/Complexity/CircuitConjugation.lean` | C7a : Ã©volution rÃ©versible et circuits sandwich | 157 |
+| `QuantumFoundations/Complexity/MinComplexity.lean` | C6 : minima `WithTop ℕ` et gap effectif | 180 |
+| `QuantumFoundations/Complexity/CircuitConjugation.lean` | C7a : évolution réversible et circuits sandwich | 157 |
 | `QuantumFoundations/Complexity/CircuitInverse.lean` | C7a : inverses locaux de portes et circuits | 207 |
-| `QuantumFoundations/Complexity/ProxyTransport.lean` | C7b : transport exact des Ã©lÃ©ments de matrice et proxies | 180 |
+| `QuantumFoundations/Complexity/ProxyTransport.lean` | C7b : transport exact des éléments de matrice et proxies | 180 |
 | `QuantumFoundations/Complexity/Persistence.lean` | C7c : transport des certificats relationnels | 111 |
 | `QuantumFoundations/Complexity/RecordPersistence.lean` | C7d : bornes de persistance par records | 104 |
-| `QuantumFoundations/Complexity/PersistenceMinima.lean` | C7e : transport `WithTop â„•` sans atteinte du minimum | 117 |
-| `QuantumFoundations/Complexity/ApproxRecordDefs.lean` | C8a : record approximatif Ã  erreur agrÃ©gÃ©e | 78 |
-| `QuantumFoundations/Complexity/ApproxRecordBasic.lean` | C8a : paire enregistrÃ©e et pont exact | 64 |
-| `QuantumFoundations/Complexity/ApproxRecordInterference.lean` | C8b : borne nette dâ€™amplitude croisÃ©e hors support | 132 |
-| `QuantumFoundations/Complexity/ApproxRecordInterferenceBound.lean` | C8c : borne dâ€™interfÃ©rence robuste et minima | 123 |
+| `QuantumFoundations/Complexity/PersistenceMinima.lean` | C7e : transport `WithTop ℕ` sans atteinte du minimum | 117 |
+| `QuantumFoundations/Complexity/ApproxRecordDefs.lean` | C8a : record approximatif à erreur agrégée | 78 |
+| `QuantumFoundations/Complexity/ApproxRecordBasic.lean` | C8a : paire enregistrée et pont exact | 64 |
+| `QuantumFoundations/Complexity/ApproxRecordInterference.lean` | C8b : borne nette d’amplitude croisée hors support | 132 |
+| `QuantumFoundations/Complexity/ApproxRecordInterferenceBound.lean` | C8c : borne d’interférence robuste et minima | 123 |
 | `QuantumFoundations/Complexity/ApproxRecordDistinguishability.lean` | C8d : lecture de phase approximative | 203 |
-| `QuantumFoundations/Complexity/ApproxBranchGap.lean` | C8e : gap proxy robuste et rÃ©gression exacte | 152 |
+| `QuantumFoundations/Complexity/ApproxBranchGap.lean` | C8e : gap proxy robuste et régression exacte | 152 |
 | `QuantumFoundations/Complexity/ApproxRecordPersistence.lean` | C8f : persistance conditionnelle du gap robuste | 160 |
-| `QuantumFoundations/Complexity/Models/Repetition/States.lean` | C9a : branches computationnelles zÃ©ro/un et Ã©tat cohÃ©rent | 106 |
-| `QuantumFoundations/Complexity/Models/Repetition/Records.lean` | C9b : rÃ©solutions mono-site et records exacts | 278 |
-| `QuantumFoundations/Complexity/Models/Repetition/Readout.lean` | C9c : rÃ©flexion de lecture en une porte | 161 |
-| `QuantumFoundations/Complexity/Models/Repetition/Distinguishability.lean` | C9d : complexitÃ© de distinguabilitÃ© exactement un | 82 |
+| `QuantumFoundations/Complexity/Models/Repetition/States.lean` | C9a : branches computationnelles zéro/un et état cohérent | 106 |
+| `QuantumFoundations/Complexity/Models/Repetition/Records.lean` | C9b : résolutions mono-site et records exacts | 278 |
+| `QuantumFoundations/Complexity/Models/Repetition/Readout.lean` | C9c : réflexion de lecture en une porte | 161 |
+| `QuantumFoundations/Complexity/Models/Repetition/Distinguishability.lean` | C9d : complexité de distinguabilité exactement un | 82 |
 | `QuantumFoundations/Complexity/Models/Repetition/Interference.lean` | C9e : circuit fini de flips de tous les bits | 205 |
-| `QuantumFoundations/Complexity/Models/Repetition/Complexities.lean` | C9f : bornes linÃ©aires et gap concret | 105 |
+| `QuantumFoundations/Complexity/Models/Repetition/Complexities.lean` | C9f : bornes linéaires et gap concret | 105 |
 | `QuantumFoundations/Complexity/Models/Repetition/Persistence.lean` | C9g : budget concret de persistance par circuit | 57 |
-| `QuantumFoundations/Complexity/Models/NoisyRepetition/Profiles.lean` | C10a : profils de bruit `keep`/`leak` normalisÃ©s | 76 |
-| `QuantumFoundations/Complexity/Models/NoisyRepetition/States.lean` | C10b : quatre configurations et branches bruitÃ©es | 215 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Profiles.lean` | C10a : profils de bruit `keep`/`leak` normalisés | 76 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/States.lean` | C10b : quatre configurations et branches bruitées | 215 |
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/Records.lean` | C10c : erreurs de record exactes et paire approximative | 182 |
-| `QuantumFoundations/Complexity/Models/NoisyRepetition/Readout.lean` | C10d : lecture exacte Ã  site de record arbitraire | 59 |
-| `QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean` | C10e : sÃ©paration de complexitÃ© robuste Ã  `Î´ = 1/2` | 89 |
-| `QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean` | C10f : tÃ©moin fini d'interfÃ©rence bruitÃ©e | 151 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Readout.lean` | C10d : lecture exacte à site de record arbitraire | 59 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean` | C10e : séparation de complexité robuste à `δ = 1/2` | 89 |
+| `QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean` | C10f : témoin fini d'interférence bruitée | 151 |
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean` | C10g : gap robuste et persistance conditionnelle | 123 |
 | `QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean` | C10h : profil rationnel concret `(99/101, 20/101)` | 95 |
-| `QuantumFoundations/Complexity/Gates/ControlledBitFlip.lean` | C11a : portes de bit-flip contrÃ´lÃ©, 2-locales | 229 |
-| `QuantumFoundations/Complexity/Gates/AmplitudeRotation.lean` | C11e : rotation unitaire de mÃ©lange d'amplitude sur `N` sites | 415 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/IdealFanout.lean` | C11b : fanout unitaire d'Ã©tiquette en base de calcul | 219 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/Amplitudes.lean` | C11c : profil d'amplitude source normalisÃ© | 89 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/BranchWeights.lean` | C11d/h : projecteurs source et prÃ©servation des poids de branche | 231 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ProfilePreparation.lean` | C11e : porte de prÃ©paration canonique par profil | 95 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean` | C11f/g : prÃ©paration corrÃ©lÃ©e des records et gÃ©nÃ©ration bruitÃ©e complÃ¨te | 493 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean` | C11i : connexion gÃ©nÃ©ration unitaire / persistance du gap | 70 |
-| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean` | C11j : tÃ©moin concret de gÃ©nÃ©ration unitaire | 89 |
-| `QuantumFoundations/Complexity/OperatorNorm/FiniteDimensional.lean` | C12a : vue en application linÃ©aire continue, dimension finie | 115 |
-| `QuantumFoundations/Complexity/OperatorNorm/Approximation.lean` | C12b : approximation gÃ©nÃ©rique en norme d'opÃ©rateur | 106 |
-| `QuantumFoundations/Complexity/OperatorNorm/RecordReadout.lean` | C12c : pont erreur d'opÃ©rateur / erreur ponctuelle de lecture | 113 |
-| `QuantumFoundations/Complexity/OperatorNorm/RecordGap.lean` | C12d/e : distinguabilitÃ© et gap proxy en norme d'opÃ©rateur | 207 |
-| `QuantumFoundations/Complexity/OperatorNorm/NoisyRepetition.lean` | C12f : instanciation bruitÃ©e concrÃ¨te, budget `1/20` | 165 |
-| `QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean` | C12g : connexion Ã  la gÃ©nÃ©ration unitaire C11 | 87 |
+| `QuantumFoundations/Complexity/Gates/ControlledBitFlip.lean` | C11a : portes de bit-flip contrôlé, 2-locales | 229 |
+| `QuantumFoundations/Complexity/Gates/AmplitudeRotation.lean` | C11e : rotation unitaire de mélange d'amplitude sur `N` sites | 415 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/IdealFanout.lean` | C11b : fanout unitaire d'étiquette en base de calcul | 219 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/Amplitudes.lean` | C11c : profil d'amplitude source normalisé | 89 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/BranchWeights.lean` | C11d/h : projecteurs source et préservation des poids de branche | 231 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ProfilePreparation.lean` | C11e : porte de préparation canonique par profil | 95 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/NoisyGeneration.lean` | C11f/g : préparation corrélée des records et génération bruitée complète | 493 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/GeneratedComplexity.lean` | C11i : connexion génération unitaire / persistance du gap | 70 |
+| `QuantumFoundations/Complexity/Models/MeasurementGeneration/ConcreteGeneration.lean` | C11j : témoin concret de génération unitaire | 89 |
+| `QuantumFoundations/Complexity/OperatorNorm/FiniteDimensional.lean` | C12a : vue en application linéaire continue, dimension finie | 115 |
+| `QuantumFoundations/Complexity/OperatorNorm/Approximation.lean` | C12b : approximation générique en norme d'opérateur | 106 |
+| `QuantumFoundations/Complexity/OperatorNorm/RecordReadout.lean` | C12c : pont erreur d'opérateur / erreur ponctuelle de lecture | 113 |
+| `QuantumFoundations/Complexity/OperatorNorm/RecordGap.lean` | C12d/e : distinguabilité et gap proxy en norme d'opérateur | 207 |
+| `QuantumFoundations/Complexity/OperatorNorm/NoisyRepetition.lean` | C12f : instanciation bruitée concrète, budget `1/20` | 165 |
+| `QuantumFoundations/Complexity/OperatorNorm/GeneratedBranches.lean` | C12g : connexion à la génération unitaire C11 | 87 |
 | `QuantumFoundations/Complexity/OperatorNorm/Composition.lean` | C12h : lois de composition (facultatif, pour C13) | 84 |
-| `QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean` | C12 : non-vacuitÃ© de l'API budget d'erreur | 83 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/NormPreserving.lean` | C13a : opÃ©rateurs prÃ©servant la norme | 92 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/MatrixElementStability.lean` | C13b : bornes de perturbation d'Ã©lÃ©ment de matrice | 132 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/ThresholdTransport.lean` | C13c : transport de seuil sous erreur d'opÃ©rateur | 127 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/MarginCertificate.lean` | C13d : certificat de gap Ã  marge de seuil | 88 |
+| `QuantumFoundations/Complexity/OperatorNorm/Nonvacuity.lean` | C12 : non-vacuité de l'API budget d'erreur | 83 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/NormPreserving.lean` | C13a : opérateurs préservant la norme | 92 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/MatrixElementStability.lean` | C13b : bornes de perturbation d'élément de matrice | 132 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/ThresholdTransport.lean` | C13c : transport de seuil sous erreur d'opérateur | 127 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/MarginCertificate.lean` | C13d : certificat de gap à marge de seuil | 88 |
 | `QuantumFoundations/Complexity/SimulatedEvolution/CircuitPersistence.lean` | C13e : persistance de la marge sous circuit exact | 50 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/SimulationCertificate.lean` | C13f : persistance sous Ã©volution simulÃ©e | 142 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/NoisyRepetition.lean` | C13g : instanciation Ã  marge pour le modÃ¨le bruitÃ© | 92 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/GeneratedBranches.lean` | C13h : connexion aux branches engendrÃ©es C11 | 77 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean` | C13i : instance rationnelle concrÃ¨te `Î´=1/2, Î¼=1/10, Îµ=1/20` | 108 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean` | C13j : coÃ»t de simulation dÃ©pendant du temps | 85 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean` | C13k : Ã©volution certifiÃ©e par gÃ©nÃ©rateur auto-adjoint | 117 |
-| `QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean` | C13 : non-vacuitÃ© de l'API d'Ã©volution simulÃ©e | 114 |
-| `QuantumFoundations.lean`                    | AgrÃ©gateur d'imports racine                                                       | 69 |
-| **Total recalculÃ©**                          | **119 fichiers**                                                                  | **19598** |
+| `QuantumFoundations/Complexity/SimulatedEvolution/SimulationCertificate.lean` | C13f : persistance sous évolution simulée | 142 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/NoisyRepetition.lean` | C13g : instanciation à marge pour le modèle bruité | 92 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/GeneratedBranches.lean` | C13h : connexion aux branches engendrées C11 | 77 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean` | C13i : instance rationnelle concrète `δ=1/2, μ=1/10, ε=1/20` | 108 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean` | C13j : coût de simulation dépendant du temps | 85 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean` | C13k : évolution certifiée par générateur auto-adjoint | 117 |
+| `QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean` | C13 : non-vacuité de l'API d'évolution simulée | 114 |
+| `QuantumFoundations.lean`                    | Agrégateur d'imports racine                                                       | 69 |
+| **Total recalculé**                          | **119 fichiers**                                                                  | **19598** |
 
-Documentation : `AGENTS.md` (rÃ¨gles pour l'agent IA, Ã  lire au dÃ©marrage),
-`MILESTONES.md` (suivi dÃ©taillÃ© jalon par jalon), `ARCHITECTURE_NOTES.md` (mÃ©moire
-consolidÃ©e de tous les Ã©carts vs les plans initiaux).
+Documentation : `AGENTS.md` (règles pour l'agent IA, à lire au démarrage),
+`MILESTONES.md` (suivi détaillé jalon par jalon), `ARCHITECTURE_NOTES.md` (mémoire
+consolidée de tous les écarts vs les plans initiaux).
 
-## Jalons â€” Naimark
+## Jalons — Naimark
 
-| Jalon | Contenu                                                    | Ã‰tat |
+| Jalon | Contenu                                                    | État |
 |-------|------------------------------------------------------------|------|
-| N0    | Squelette (POVM, DilSpace, Nonvacuity)                     | âœ… |
-| N1    | `sqrtOp` (racine carrÃ©e positive spectrale)                | âœ… |
-| N2    | Briques de l'espace dilatÃ© (`singleL`/`coordL`/`dilProj`)  | âœ… |
-| N3    | Dilation (`dilV`, `naimark`, `naimark_born`)               | âœ… |
-| N4    | ClÃ´ture (README, `#print axioms`, tag)                     | âœ… |
-| N5    | *Optionnel* : version unitaire/ancilla (tag `v2.0-naimark`)| âœ… |
+| N0    | Squelette (POVM, DilSpace, Nonvacuity)                     | ✅ |
+| N1    | `sqrtOp` (racine carrée positive spectrale)                | ✅ |
+| N2    | Briques de l'espace dilaté (`singleL`/`coordL`/`dilProj`)  | ✅ |
+| N3    | Dilation (`dilV`, `naimark`, `naimark_born`)               | ✅ |
+| N4    | Clôture (README, `#print axioms`, tag)                     | ✅ |
+| N5    | *Optionnel* : version unitaire/ancilla (tag `v2.0-naimark`)| ✅ |
 
-## Jalons â€” Wigner
+## Jalons — Wigner
 
-| Jalon | Contenu                                                                    | Ã‰tat |
+| Jalon | Contenu                                                                    | État |
 |-------|----------------------------------------------------------------------------|------|
-| W0    | Squelette (Defs, Nonvacuity, 24 sorry)                                     | âœ… |
-| W1    | Kit scalaire (`Scalar.lean` : rigiditÃ©, `scalar_dichotomy`)                | âœ… |
-| W2    | IdentitÃ© de Bessel (Ã©galitÃ©), images orthonormÃ©es                          | âœ… |
-| W3    | Construction `V` (colinÃ©aritÃ©, eqs 11â€“12a)                                 | âœ… |
-| W4    | CÅ“ur : dichotomie de `chi`, additivitÃ©/homogÃ©nÃ©itÃ© de `V`                  | âœ… |
-| W5    | Assemblage (`U`, bijectivitÃ©, compatibilitÃ©, `wigner`)                     | âœ… |
-| W6    | *Optionnel* : exclusivitÃ© (A) + unicitÃ© restreinte (B) (tag `v2.0-wigner`) | âœ… |
+| W0    | Squelette (Defs, Nonvacuity, 24 sorry)                                     | ✅ |
+| W1    | Kit scalaire (`Scalar.lean` : rigidité, `scalar_dichotomy`)                | ✅ |
+| W2    | Identité de Bessel (égalité), images orthonormées                          | ✅ |
+| W3    | Construction `V` (colinéarité, eqs 11–12a)                                 | ✅ |
+| W4    | Cœur : dichotomie de `chi`, additivité/homogénéité de `V`                  | ✅ |
+| W5    | Assemblage (`U`, bijectivité, compatibilité, `wigner`)                     | ✅ |
+| W6    | *Optionnel* : exclusivité (A) + unicité restreinte (B) (tag `v2.0-wigner`) | ✅ |
 
-## Jalons â€” Uhlhorn
+## Jalons — Uhlhorn
 
-| Jalon | Contenu                                                                        | Ã‰tat |
+| Jalon | Contenu                                                                        | État |
 |-------|--------------------------------------------------------------------------------|------|
-| U0    | Reconnaissance + squelette (`Defs.lean`, 6 sorry)                              | âœ… |
-| U1    | Corollaire (B) de Wigner en langage de projections (`wigner_projection_form`)  | âœ… |
-| U2    | Lemme spectral Ã©lÃ©mentaire (`eq_projL_of_positive_le_one_trace_one_inner_one`) | âœ… |
-| U3a   | Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet        | âœ… |
-| U3b   | Â« Gleason appliquÃ© deux fois Â» (`traceProd_preserved_of_sendsONBToONB`)        | âœ… |
-| U4    | Assemblage direct de U1 et U3b                                                 | âœ… |
-| U5    | RÃ©duction fini-dimensionnelle, thÃ©orÃ¨me final (tag `v1.0-uhlhorn`)             | âœ… |
+| U0    | Reconnaissance + squelette (`Defs.lean`, 6 sorry)                              | ✅ |
+| U1    | Corollaire (B) de Wigner en langage de projections (`wigner_projection_form`)  | ✅ |
+| U2    | Lemme spectral élémentaire (`eq_projL_of_positive_le_one_trace_one_inner_one`) | ✅ |
+| U3a   | Extension d'une fonction-cadre sur les droites en `ProjMeasure` complet        | ✅ |
+| U3b   | « Gleason appliqué deux fois » (`traceProd_preserved_of_sendsONBToONB`)        | ✅ |
+| U4    | Assemblage direct de U1 et U3b                                                 | ✅ |
+| U5    | Réduction fini-dimensionnelle, théorème final (tag `v1.0-uhlhorn`)             | ✅ |
 
-## Jalons â€” BornRule
+## Jalons — BornRule
 
-| Jalon | Contenu                                                                        | Ã‰tat |
+| Jalon | Contenu                                                                        | État |
 |-------|----------------------------------------------------------------------------------|------|
-| B1    | Scaffolding : `Perspective`, axiomes, `lemma4_noncontextual`, `refinePerspective` | âœ… |
-| B2    | Pont vers Gleason : `g`, `IsFrameFunctionOnLines`, `exists_rho`                | âœ… |
-| B3    | Pinning : `eq_projL_of_vanishes_on_orthogonal` (identification de `Ï` via U2)  | âœ… |
-| B4    | Assemblage final, thÃ©orÃ¨me `grainCoherenceTheorem`                             | âœ… |
-| Nonvacuity | `Eâ‚€ v` (rÃ¨gle de Born) habite simultanÃ©ment Grain+Norm+Pos+Null            | âœ… |
+| B1    | Scaffolding : `Perspective`, axiomes, `lemma4_noncontextual`, `refinePerspective` | ✅ |
+| B2    | Pont vers Gleason : `g`, `IsFrameFunctionOnLines`, `exists_rho`                | ✅ |
+| B3    | Pinning : `eq_projL_of_vanishes_on_orthogonal` (identification de `ρ` via U2)  | ✅ |
+| B4    | Assemblage final, théorème `grainCoherenceTheorem`                             | ✅ |
+| Nonvacuity | `E₀ v` (règle de Born) habite simultanément Grain+Norm+Pos+Null            | ✅ |
 
-## Jalons â€” BornRule/EffectPerspectives (extension qubit/Busch)
+## Jalons — BornRule/EffectPerspectives (extension qubit/Busch)
 
 Voir aussi `QuantumFoundations/BornRule/EffectPerspectives/README.md` pour le
-dÃ©tail complet (portÃ©e, dÃ©rivations, non-revendications interprÃ©tatives).
+détail complet (portée, dérivations, non-revendications interprétatives).
 
-| Jalon | Contenu | Ã‰tat |
+| Jalon | Contenu | État |
 |-------|---------|------|
-| QB1 | `Effect` (sous-type de `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | âœ… |
-| QB2 | `EffectPerspective` (POVM finie Ã©tiquetÃ©e), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | âœ… |
-| QB3 | `Refines` (raffinement par `parent` + reconstruction par fibre) ; `Refines.trans` diffÃ©rÃ© (documentÃ©, non bloquant) | âœ… |
-| QB4 | `EstimationRule` (poids/positivitÃ©/normalisation/`grain`), hypothÃ¨se strictement plus large que `AxGrain` projectif | âœ… |
-| QB5 | IndÃ©pendance contextuelle, poids nul/unitÃ© et additivitÃ© binaire **dÃ©rivÃ©s** de `grain` seul (jamais des axiomes) | âœ… |
-| QB6 | Construction de `Gleason.EffectMeasure` ; application directe de `Gleason.busch`/`Gleason.busch_born_rule` | âœ… |
-| QB7 | `ContextualNullSupport` (Ã©tat-relatif) ; pinning de repli `density_bornValue_eq_pure_of_null` | âœ… |
-| QB8 | `projectionEffect_weight_eq_born` : poids de Born pour les effets de projection, en dimension quelconque | âœ… |
-| QB9 | Corollaire explicite en dimension deux (qubit), sans passer par `Gleason.gleason` | âœ… |
-| QB10 | Non-vacuitÃ© : `pureStateEstimationRule` (preuve directe, sans Busch), tÃ©moins qubit exacts | âœ… |
-| QB11 | Pont vers Naimark : `EffectPerspective.toPOVM`, rÃ©alisation projective dilatÃ©e (`naimark`/`naimark_born`/`naimark_projective_form`), simple couche d'intÃ©gration | âœ… |
+| QB1 | `Effect` (sous-type de `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (POVM finie étiquetée), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (raffinement par `parent` + reconstruction par fibre) ; `Refines.trans` différé (documenté, non bloquant) | ✅ |
+| QB4 | `EstimationRule` (poids/positivité/normalisation/`grain`), hypothèse strictement plus large que `AxGrain` projectif | ✅ |
+| QB5 | Indépendance contextuelle, poids nul/unité et additivité binaire **dérivés** de `grain` seul (jamais des axiomes) | ✅ |
+| QB6 | Construction de `Gleason.EffectMeasure` ; application directe de `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (état-relatif) ; pinning de repli `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born` : poids de Born pour les effets de projection, en dimension quelconque | ✅ |
+| QB9 | Corollaire explicite en dimension deux (qubit), sans passer par `Gleason.gleason` | ✅ |
+| QB10 | Non-vacuité : `pureStateEstimationRule` (preuve directe, sans Busch), témoins qubit exacts | ✅ |
+| QB11 | Pont vers Naimark : `EffectPerspective.toPOVM`, réalisation projective dilatée (`naimark`/`naimark_born`/`naimark_projective_form`), simple couche d'intégration | ✅ |
 
-## Jalons â€” HistoriesKent
+## Jalons — HistoriesKent
 
-| Jalon | Contenu                                                                        | Ã‰tat |
+| Jalon | Contenu                                                                        | État |
 |-------|---------------------------------------------------------------------------------|------|
-| K0    | Squelette (`History`, `chainOp`, `decFunctional`, `IsConsistent`, `Nonvacuity`)  | âœ… |
-| K1    | Lemmes gÃ©nÃ©raux : `decFunctional_last_stage_orthogonal`, `histProb_additivity_two_stage` | âœ… |
-| K2    | TÃ©moin explicite de Kent en `H 3` (`Witness.lean`), `S_consistent`               | âœ… |
-| K3    | `inference`, thÃ©orÃ¨me final `contrary_inferences` (tag `v1.0-histories`)         | âœ… |
+| K0    | Squelette (`History`, `chainOp`, `decFunctional`, `IsConsistent`, `Nonvacuity`)  | ✅ |
+| K1    | Lemmes généraux : `decFunctional_last_stage_orthogonal`, `histProb_additivity_two_stage` | ✅ |
+| K2    | Témoin explicite de Kent en `H 3` (`Witness.lean`), `S_consistent`               | ✅ |
+| K3    | `inference`, théorème final `contrary_inferences` (tag `v1.0-histories`)         | ✅ |
 
-## Jalons â€” Complexity
+## Jalons — Complexity
 
-| Jalon | Contenu | Ã‰tat |
+| Jalon | Contenu | État |
 |---|---|---|
-| C0 | Circuits finis de portes unitaires supportÃ©es sur au plus deux sites | âœ… |
-| C1 | Commutation hors support et annulation de lâ€™amplitude croisÃ©e | âœ… |
-| C2 | Comptage indÃ©pendant et borne exacte `R â‰¤ 2 * C.length` | âœ… |
-| C3 | Proxies exacts, branches normalisÃ©es et certificats relationnels | âœ… |
-| C4 | Borne dâ€™interfÃ©rence `ceilHalf R` issue des records redondants | âœ… |
-| C5 | Borne de distinguabilitÃ© issue dâ€™un phase flip de record explicite | âœ… |
-| C6 | Gap sans soustraction et minima dans `WithTop â„•` | âœ… |
-| C7 | Transport exact et persistance conditionnelle sous circuit rÃ©versible fini | âœ… |
-| C8 | Records approximatifs, bornes quantitatives et persistance conditionnelle | âœ… |
-| C9 | ModÃ¨le explicite de rÃ©pÃ©tition, circuits concrets et gap linÃ©aire | âœ… |
-| C10 | ModÃ¨le explicite de rÃ©pÃ©tition **bruitÃ©e** (`leak â‰  0`), sÃ©paration robuste | âœ… |
-| C11 | GÃ©nÃ©ration **unitaire** des branches source-record par circuit local explicite | âœ… |
-| C12 | Pont fini-dimensionnel en **norme d'opÃ©rateur** vers les hypothÃ¨ses de lecture ponctuelles C8â€“C11 | âœ… |
-| C13 | Persistance robuste du gap sous **Ã©volution simulÃ©e** norm-preservante, avec marge de seuil | âœ… |
-| C14 | Pont **records redondants â†’ poids de Born** : dÃ©composition en branches de Riedel + ThÃ©orÃ¨me de CohÃ©rence de Grain | âœ… |
-| C15 | UnicitÃ© `W = c â€–P_R Î¨â€–Â²` sur les situations de record admissibles sous stabilitÃ©, Ã©quivalence interne et saturation binaire | âœ… |
-| C17 | PremiÃ¨re stabilitÃ© quantitative des poids C15 sous perturbation des composantes projetÃ©es, avec bornes ponctuelle, `LÂ¹` et uniforme | âœ… |
-| C17b | Ponts de stabilitÃ© vers les secteurs fixes, la norme dâ€™opÃ©rateur C12, la simulation C13 et les poids de branches C14 explicitement appariÃ©es | âœ… |
+| C0 | Circuits finis de portes unitaires supportées sur au plus deux sites | ✅ |
+| C1 | Commutation hors support et annulation de l’amplitude croisée | ✅ |
+| C2 | Comptage indépendant et borne exacte `R ≤ 2 * C.length` | ✅ |
+| C3 | Proxies exacts, branches normalisées et certificats relationnels | ✅ |
+| C4 | Borne d’interférence `ceilHalf R` issue des records redondants | ✅ |
+| C5 | Borne de distinguabilité issue d’un phase flip de record explicite | ✅ |
+| C6 | Gap sans soustraction et minima dans `WithTop ℕ` | ✅ |
+| C7 | Transport exact et persistance conditionnelle sous circuit réversible fini | ✅ |
+| C8 | Records approximatifs, bornes quantitatives et persistance conditionnelle | ✅ |
+| C9 | Modèle explicite de répétition, circuits concrets et gap linéaire | ✅ |
+| C10 | Modèle explicite de répétition **bruitée** (`leak ≠ 0`), séparation robuste | ✅ |
+| C11 | Génération **unitaire** des branches source-record par circuit local explicite | ✅ |
+| C12 | Pont fini-dimensionnel en **norme d'opérateur** vers les hypothèses de lecture ponctuelles C8–C11 | ✅ |
+| C13 | Persistance robuste du gap sous **évolution simulée** norm-preservante, avec marge de seuil | ✅ |
+| C14 | Pont **records redondants → poids de Born** : décomposition en branches de Riedel + Théorème de Cohérence de Grain | ✅ |
+| C15 | Unicité `W = c ‖P_R Ψ‖²` sur les situations de record admissibles sous stabilité, équivalence interne et saturation binaire | ✅ |
+| C17 | Première stabilité quantitative des poids C15 sous perturbation des composantes projetées, avec bornes ponctuelle, `L¹` et uniforme | ✅ |
+| C17b | Ponts de stabilité vers les secteurs fixes, la norme d’opérateur C12, la simulation C13 et les poids de branches C14 explicitement appariées | ✅ |
 
-## ThÃ©orÃ¨mes principaux â€” table de rÃ©fÃ©rence
+## Théorèmes principaux — table de référence
 
-| ThÃ©orÃ¨me | Ã‰noncÃ© informel | RÃ©fÃ©rence | Fichier (lignes) | Statut | Tag |
+| Théorème | Énoncé informel | Référence | Fichier (lignes) | Statut | Tag |
 |---|---|---|---:|---|---|
-| `naimark` | Toute POVM finie se dilate en une mesure projective sous une isomÃ©trie | Watrous Thm 2.42 | `Naimark/Main.lean` (157) | 0 sorry, 0 axiome | `v2.0-naimark` |
-| `naimark_born` | La formule de Born est prÃ©servÃ©e par cette dilation | Watrous Thm 2.42 | `Naimark/Main.lean` (157) | 0 sorry, 0 axiome | `v2.0-naimark` |
-| `exists_unitary_extension` / `naimark_projective_form` | L'isomÃ©trie de dilatation s'Ã©tend en un unitaire global (forme ancilla) | Paris Â§3.2 Thm 4 / Watrous Cor. 2.43 | `Naimark/Unitary.lean` (210) | 0 sorry, 0 axiome | `v2.0-naimark` |
-| `wigner` | Toute transformation prÃ©servant `\|âŸ¨Ï†\|ÏˆâŸ©\|Â²` est induite par un unitaire ou un antiunitaire, sans hypothÃ¨se de bijectivitÃ© | Bargmann 1964 Â§1â€“Â§5 | `Wigner/Main.lean` (399) | 0 sorry, 0 axiome | `v1.0-wigner` |
-| `exclusivity` | Un mÃªme `T` ne peut Ãªtre compatible Ã  la fois avec une Ã©quivalence unitaire et une antiunitaire (`n â‰¥ 2`) | Bargmann 1964 Â§1.5 | `Wigner/Uniqueness.lean` (439) | 0 sorry, 0 axiome | `v2.0-wigner` |
-| `U_alt_eq_smul` | `U` est unique Ã  phase globale prÃ¨s relativement au choix du reprÃ©sentant de `eImg` (version restreinte) | Bargmann 1964 Â§6 (restreint) | `Wigner/Uniqueness.lean` (439) | 0 sorry, 0 axiome | `v2.0-wigner` |
-| `uhlhorn_finite_dim` | En dimension `n â‰¥ 3`, prÃ©server l'orthogonalitÃ© dans un seul sens (ni injectivitÃ© ni surjectivitÃ©) suffit Ã  Ãªtre une symÃ©trie de Wigner | Å emrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (111) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
-| `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une rÃ¨gle d'estimation sur une cellule est la rÃ¨gle de Born (`âˆ‘áµ¢â€–âŸ¨v,fáµ¢âŸ©â€–Â²`) | Gleason 1957 (thÃ©orÃ¨me sous-jacent) | `BornRule/Assembly.lean` (215) | 0 sorry, 0 axiome | `v2.0-bornrule` |
-| `grainCoherenceTheorem_projector` | Version en notation projecteur du thÃ©orÃ¨me prÃ©cÃ©dent (`Est D c = â€–projL c vâ€–Â²`), sans contenu mathÃ©matique indÃ©pendant supplÃ©mentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | â€” |
-| `EffectPerspectives.projectionEffect_weight_eq_born` | Sous non-vacuitÃ© d'effets et support nul Ã©tat-relatif, le poids d'un effet de projection Ã©gale le poids de Born `â€–A.starProjection Ïˆâ€–Â²`, en dimension quelconque `n â‰¥ 1` | Busch 2003, PRL 91, 120403 | `BornRule/EffectPerspectives/Main.lean` | 0 sorry, 0 axiome | â€” |
-| `EffectPerspectives.qubit_projectionEffect_weight_eq_born` | Corollaire explicite en dimension deux (qubit) du thÃ©orÃ¨me prÃ©cÃ©dent, sans invoquer `Gleason.gleason` | Busch 2003 (spÃ©cialisÃ© `n = 2`) | `BornRule/EffectPerspectives/Qubit.lean` | 0 sorry, 0 axiome | â€” |
-| `contrary_inferences` | Deux ensembles cohÃ©rents d'histoires partageant prÃ©paration et post-sÃ©lection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
-| `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisÃ©e non nulle imposent `R â‰¤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | â€” |
-| `redundant_records_give_interference_lower_bound` | Tout circuit satisfaisant le proxy exact a longueur au moins `ceilHalf R` | Proxy exact + C2 dans les deux orientations | `Complexity/RecordInterferenceBound.lean` (96) | 0 sorry, 0 axiome | â€” |
-| `record_phase_flip_gives_distinguishability_upper_bound` | Un circuit implÃ©mentant `2 P_j - I` distingue les branches normalisÃ©es Ã  seuil `Î´ â‰¤ 1` | Lecture exacte dâ€™un record | `Complexity/RecordDistinguishability.lean` (114) | 0 sorry, 0 axiome | â€” |
-| `redundant_records_give_proxy_gap_certificate` | `D.length + g â‰¤ ceilHalf R` certifie un gap proxy dâ€™au moins `g` | Composition des certificats C4/C5 | `Complexity/BranchGap.lean` (50) | 0 sorry, 0 axiome | â€” |
-| `redundant_records_complexity_gap` | Le mÃªme gap vaut pour les minima exacts dans `WithTop â„•` | Infimum des longueurs de circuits | `Complexity/MinComplexity.lean` (180) | 0 sorry, 0 axiome | â€” |
-| `redundant_records_gap_persists_under_reversible_evolution` | Le gap de records persiste sous `D.length + 2 * overhead + g â‰¤ ceilHalf R` | Transport exact par paire de circuits inverses | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | â€” |
-| `redundant_records_gap_persists_under_circuit_evolution` | Pour l'inverse canonique, le budget devient `D.length + 4 * E.length + g â‰¤ ceilHalf R` | Inverse local canonique + thÃ©orÃ¨me prÃ©cÃ©dent | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | â€” |
-| `norm_cross_amplitude_le_of_untouched_approx_record` | Une rÃ©gion approximativement enregistrÃ©e et non touchÃ©e borne lâ€™amplitude croisÃ©e par `Î·` | DÃ©composition projecteur/dÃ©faut + Cauchyâ€“Schwarz | `Complexity/ApproxRecordInterference.lean` (132) | 0 sorry, 0 axiome | â€” |
-| `approximate_records_give_interference_lower_bound` | `Î·i + Î·j < 2Î´` impose une longueur au moins `ceilHalf R` | Borne robuste + comptage C2 | `Complexity/ApproxRecordInterferenceBound.lean` (123) | 0 sorry, 0 axiome | â€” |
-| `approx_record_phase_flip_gives_upper_bound` | `2Î´ + 2Î·j + Î¾ â‰¤ 2` fournit le tÃ©moin de distinguabilitÃ© | Lecture de phase approximative explicite | `Complexity/ApproxRecordDistinguishability.lean` (203) | 0 sorry, 0 axiome | â€” |
-| `approximate_records_give_proxy_gap_certificate` | Les deux seuils robustes et `D.length + g â‰¤ ceilHalf R` certifient le gap | Composition C8c/C8d | `Complexity/ApproxBranchGap.lean` (152) | 0 sorry, 0 axiome | â€” |
-| `approximate_records_gap_persists_under_circuit_evolution` | Le gap robuste persiste sous `D.length + 4 * E.length + g â‰¤ ceilHalf R` | Transport exact C7 du certificat C8 | `Complexity/ApproxRecordPersistence.lean` (160) | 0 sorry, 0 axiome | â€” |
-| `repetition_distinguishabilityComplexity` | Le modÃ¨le explicite a `C_D = 1` | RÃ©flexion mono-site + exclusion du circuit vide | `Models/Repetition/Distinguishability.lean` (82) | 0 sorry, 0 axiome | â€” |
-| `repetition_interferenceComplexity_bounds` | `ceilHalf R â‰¤ C_I â‰¤ R` et donc `C_I â‰  âŠ¤` | Records singletons + circuit de `R` flips | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | â€” |
-| `repetition_has_proxy_gap` | `1 + g â‰¤ ceilHalf R` certifie le gap explicite | Instanciation directe de C4â€“C6 | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | â€” |
-| `repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g â‰¤ ceilHalf R` conserve le gap | Instanciation directe de C7 | `Models/Repetition/Persistence.lean` (57) | 0 sorry, 0 axiome | â€” |
-| `noisy_repetition_approxRecordedPairOn` | Les records bruitÃ©s habitent `ApproxRecordedPairOn` avec erreur agrÃ©gÃ©e exacte `2 * â€–leakâ€–` | Actions exactes des projecteurs sur les quatre configurations | `Models/NoisyRepetition/Records.lean` (182) | 0 sorry, 0 axiome | â€” |
-| `noisy_repetition_distinguishabilityComplexity` | Sous bruit robuste (`4â€–leakâ€– < 1`), `C_D = 1` Ã  `Î´ = 1/2` | Lecture exacte Ã  un site + seuil C8d | `Models/NoisyRepetition/Complexities.lean` (89) | 0 sorry, 0 axiome | â€” |
-| `noisy_repetition_interference_bounds` | Sous bruit robuste, `ceilHalf R â‰¤ C_I â‰¤ R + 1` Ã  `Î´ = 1/2` | Records approximatifs C8c + tÃ©moin flip-tous-les-bits | `Models/NoisyRepetition/Interference.lean` (151) | 0 sorry, 0 axiome | â€” |
-| `noisy_repetition_has_proxy_gap` | `1 + g â‰¤ ceilHalf R` certifie le gap robuste | Instanciation directe de C8e | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | â€” |
-| `noisy_repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g â‰¤ ceilHalf R` conserve le gap robuste | Instanciation directe de C8f | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | â€” |
-| `rationalNoiseProfile_isRobust` | Le profil rationnel `(99/101, 20/101)` est robuste (`80/101 < 1`) | Triplet pythagoricien `99Â² + 20Â² = 101Â²` | `Models/NoisyRepetition/ConcreteNoise.lean` (95) | 0 sorry, 0 axiome | â€” |
+| `naimark` | Toute POVM finie se dilate en une mesure projective sous une isométrie | Watrous Thm 2.42 | `Naimark/Main.lean` (157) | 0 sorry, 0 axiome | `v2.0-naimark` |
+| `naimark_born` | La formule de Born est préservée par cette dilation | Watrous Thm 2.42 | `Naimark/Main.lean` (157) | 0 sorry, 0 axiome | `v2.0-naimark` |
+| `exists_unitary_extension` / `naimark_projective_form` | L'isométrie de dilatation s'étend en un unitaire global (forme ancilla) | Paris §3.2 Thm 4 / Watrous Cor. 2.43 | `Naimark/Unitary.lean` (210) | 0 sorry, 0 axiome | `v2.0-naimark` |
+| `wigner` | Toute transformation préservant `\|⟨φ\|ψ⟩\|²` est induite par un unitaire ou un antiunitaire, sans hypothèse de bijectivité | Bargmann 1964 §1–§5 | `Wigner/Main.lean` (399) | 0 sorry, 0 axiome | `v1.0-wigner` |
+| `exclusivity` | Un même `T` ne peut être compatible à la fois avec une équivalence unitaire et une antiunitaire (`n ≥ 2`) | Bargmann 1964 §1.5 | `Wigner/Uniqueness.lean` (439) | 0 sorry, 0 axiome | `v2.0-wigner` |
+| `U_alt_eq_smul` | `U` est unique à phase globale près relativement au choix du représentant de `eImg` (version restreinte) | Bargmann 1964 §6 (restreint) | `Wigner/Uniqueness.lean` (439) | 0 sorry, 0 axiome | `v2.0-wigner` |
+| `uhlhorn_finite_dim` | En dimension `n ≥ 3`, préserver l'orthogonalité dans un seul sens (ni injectivité ni surjectivité) suffit à être une symétrie de Wigner | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | `Uhlhorn/Assembly.lean` (111) | 0 sorry, 0 axiome | `v1.0-uhlhorn` |
+| `grainCoherenceTheorem` | Sous (Grain)+(Norm)+(Pos)+(Null), la valeur d'une règle d'estimation sur une cellule est la règle de Born (`∑ᵢ‖⟨v,fᵢ⟩‖²`) | Gleason 1957 (théorème sous-jacent) | `BornRule/Assembly.lean` (215) | 0 sorry, 0 axiome | `v2.0-bornrule` |
+| `grainCoherenceTheorem_projector` | Version en notation projecteur du théorème précédent (`Est D c = ‖projL c v‖²`), sans contenu mathématique indépendant supplémentaire | Corollaire de `grainCoherenceTheorem` | `BornRule/Assembly.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.projectionEffect_weight_eq_born` | Sous non-vacuité d'effets et support nul état-relatif, le poids d'un effet de projection égale le poids de Born `‖A.starProjection ψ‖²`, en dimension quelconque `n ≥ 1` | Busch 2003, PRL 91, 120403 | `BornRule/EffectPerspectives/Main.lean` | 0 sorry, 0 axiome | — |
+| `EffectPerspectives.qubit_projectionEffect_weight_eq_born` | Corollaire explicite en dimension deux (qubit) du théorème précédent, sans invoquer `Gleason.gleason` | Busch 2003 (spécialisé `n = 2`) | `BornRule/EffectPerspectives/Qubit.lean` | 0 sorry, 0 axiome | — |
+| `contrary_inferences` | Deux ensembles cohérents d'histoires partageant préparation et post-sélection peuvent impliquer avec certitude deux propositions orthogonales | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | `HistoriesKent/ContraryInferences.lean` (162) | 0 sorry, 0 axiome | `v1.0-histories` |
+| `regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero` | `R` records exacts disjoints et une amplitude croisée non nulle imposent `R ≤ 2 * C.length` | Comptage fini + records de Riedel | `Complexity/Main.lean` (63) | 0 sorry, 0 axiome | — |
+| `redundant_records_give_interference_lower_bound` | Tout circuit satisfaisant le proxy exact a longueur au moins `ceilHalf R` | Proxy exact + C2 dans les deux orientations | `Complexity/RecordInterferenceBound.lean` (96) | 0 sorry, 0 axiome | — |
+| `record_phase_flip_gives_distinguishability_upper_bound` | Un circuit implémentant `2 P_j - I` distingue les branches normalisées à seuil `δ ≤ 1` | Lecture exacte d’un record | `Complexity/RecordDistinguishability.lean` (114) | 0 sorry, 0 axiome | — |
+| `redundant_records_give_proxy_gap_certificate` | `D.length + g ≤ ceilHalf R` certifie un gap proxy d’au moins `g` | Composition des certificats C4/C5 | `Complexity/BranchGap.lean` (50) | 0 sorry, 0 axiome | — |
+| `redundant_records_complexity_gap` | Le même gap vaut pour les minima exacts dans `WithTop ℕ` | Infimum des longueurs de circuits | `Complexity/MinComplexity.lean` (180) | 0 sorry, 0 axiome | — |
+| `redundant_records_gap_persists_under_reversible_evolution` | Le gap de records persiste sous `D.length + 2 * overhead + g ≤ ceilHalf R` | Transport exact par paire de circuits inverses | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
+| `redundant_records_gap_persists_under_circuit_evolution` | Pour l'inverse canonique, le budget devient `D.length + 4 * E.length + g ≤ ceilHalf R` | Inverse local canonique + théorème précédent | `Complexity/RecordPersistence.lean` (104) | 0 sorry, 0 axiome | — |
+| `norm_cross_amplitude_le_of_untouched_approx_record` | Une région approximativement enregistrée et non touchée borne l’amplitude croisée par `η` | Décomposition projecteur/défaut + Cauchy–Schwarz | `Complexity/ApproxRecordInterference.lean` (132) | 0 sorry, 0 axiome | — |
+| `approximate_records_give_interference_lower_bound` | `ηi + ηj < 2δ` impose une longueur au moins `ceilHalf R` | Borne robuste + comptage C2 | `Complexity/ApproxRecordInterferenceBound.lean` (123) | 0 sorry, 0 axiome | — |
+| `approx_record_phase_flip_gives_upper_bound` | `2δ + 2ηj + ξ ≤ 2` fournit le témoin de distinguabilité | Lecture de phase approximative explicite | `Complexity/ApproxRecordDistinguishability.lean` (203) | 0 sorry, 0 axiome | — |
+| `approximate_records_give_proxy_gap_certificate` | Les deux seuils robustes et `D.length + g ≤ ceilHalf R` certifient le gap | Composition C8c/C8d | `Complexity/ApproxBranchGap.lean` (152) | 0 sorry, 0 axiome | — |
+| `approximate_records_gap_persists_under_circuit_evolution` | Le gap robuste persiste sous `D.length + 4 * E.length + g ≤ ceilHalf R` | Transport exact C7 du certificat C8 | `Complexity/ApproxRecordPersistence.lean` (160) | 0 sorry, 0 axiome | — |
+| `repetition_distinguishabilityComplexity` | Le modèle explicite a `C_D = 1` | Réflexion mono-site + exclusion du circuit vide | `Models/Repetition/Distinguishability.lean` (82) | 0 sorry, 0 axiome | — |
+| `repetition_interferenceComplexity_bounds` | `ceilHalf R ≤ C_I ≤ R` et donc `C_I ≠ ⊤` | Records singletons + circuit de `R` flips | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | — |
+| `repetition_has_proxy_gap` | `1 + g ≤ ceilHalf R` certifie le gap explicite | Instanciation directe de C4–C6 | `Models/Repetition/Complexities.lean` (105) | 0 sorry, 0 axiome | — |
+| `repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g ≤ ceilHalf R` conserve le gap | Instanciation directe de C7 | `Models/Repetition/Persistence.lean` (57) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_approxRecordedPairOn` | Les records bruités habitent `ApproxRecordedPairOn` avec erreur agrégée exacte `2 * ‖leak‖` | Actions exactes des projecteurs sur les quatre configurations | `Models/NoisyRepetition/Records.lean` (182) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_distinguishabilityComplexity` | Sous bruit robuste (`4‖leak‖ < 1`), `C_D = 1` à `δ = 1/2` | Lecture exacte à un site + seuil C8d | `Models/NoisyRepetition/Complexities.lean` (89) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_interference_bounds` | Sous bruit robuste, `ceilHalf R ≤ C_I ≤ R + 1` à `δ = 1/2` | Records approximatifs C8c + témoin flip-tous-les-bits | `Models/NoisyRepetition/Interference.lean` (151) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_has_proxy_gap` | `1 + g ≤ ceilHalf R` certifie le gap robuste | Instanciation directe de C8e | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | — |
+| `noisy_repetition_gap_persists_under_circuit` | `1 + 4 * E.length + g ≤ ceilHalf R` conserve le gap robuste | Instanciation directe de C8f | `Models/NoisyRepetition/Persistence.lean` (123) | 0 sorry, 0 axiome | — |
+| `rationalNoiseProfile_isRobust` | Le profil rationnel `(99/101, 20/101)` est robuste (`80/101 < 1`) | Triplet pythagoricien `99² + 20² = 101²` | `Models/NoisyRepetition/ConcreteNoise.lean` (95) | 0 sorry, 0 axiome | — |
 
-Statut Â« 0 axiome Â» signifie : dÃ©pend uniquement de
-`[propext, Classical.choice, Quot.sound]` (vÃ©rifiÃ© par `#print axioms` sur
-chacun des thÃ©orÃ¨mes principaux, voir section prÃ©cÃ©dente et les sorties
-`#print axioms` conservÃ©es dans les fichiers dâ€™assemblage).
+Statut « 0 axiome » signifie : dépend uniquement de
+`[propext, Classical.choice, Quot.sound]` (vérifié par `#print axioms` sur
+chacun des théorèmes principaux, voir section précédente et les sorties
+`#print axioms` conservées dans les fichiers d’assemblage).
 
-## DÃ©pendances
+## Dépendances
 
-Ce dÃ©pÃ´t Ã©pingle deux dÃ©pendances Lake sur des rÃ©visions fixes et rÃ©solvables
+Ce dépôt épingle deux dépendances Lake sur des révisions fixes et résolvables
 (`lakefile.toml`/`lake-manifest.json`), jamais sur une branche flottante :
 
 - [`gleason-theorem-lean`](https://github.com/Bobart0/gleason-theorem-lean),
-  `rev = "v1.0-gleason"` (rÃ©solu en `876aa7390b5d831cd81415d55493a1c0c3bae31e`,
-  rÃ©vision fixe inchangÃ©e depuis Naimark). **Usage Ã©tendu depuis Uhlhorn, repris
-  par BornRule** (contrairement Ã  Naimark, qui ne rÃ©utilise que
+  `rev = "v1.0-gleason"` (résolu en `876aa7390b5d831cd81415d55493a1c0c3bae31e`,
+  révision fixe inchangée depuis Naimark). **Usage étendu depuis Uhlhorn, repris
+  par BornRule** (contrairement à Naimark, qui ne réutilise que
   `Gleason.IsPositiveOp`, un simple `Prop`) : Uhlhorn ET BornRule invoquent
-  `Gleason.gleason` lui-mÃªme â€” le thÃ©orÃ¨me de Gleason complet, pas seulement
-  une dÃ©finition â€” ainsi qu'une partie de sa machinerie interne
+  `Gleason.gleason` lui-même — le théorème de Gleason complet, pas seulement
+  une définition — ainsi qu'une partie de sa machinerie interne
   (`Gleason.positive_inner_self_eq_zero`, `Gleason.cframe_sum_invariant`,
   `Gleason.ProjMeasure`/`bornValue`/`projL`,
   `Gleason.exists_orthonormalBasis_extension_complex`,
   `Submodule.starProjection_isSymmetric`/`re_inner_starProjection_nonneg`).
-  C'est dÃ©libÃ©rÃ© et attendu : Uhlhorn (Corollaire 1.2 de Å emrl) et BornRule
+  C'est délibéré et attendu : Uhlhorn (Corollaire 1.2 de Šemrl) et BornRule
   (`grainCoherenceTheorem`) **composent** Gleason (et, pour Uhlhorn, Wigner)
-  par construction â€” ce ne sont pas des rÃ©sultats autonomes, voir les sections
-  dÃ©diÃ©es plus haut. MalgrÃ© cette dÃ©pendance substantiellement plus large,
-  **aucune fuite d'axiome par transitivitÃ©** : confirmÃ© directement par
-  `#print axioms` sur chaque thÃ©orÃ¨me du prÃ©sent dÃ©pÃ´t, y compris
-  `uhlhorn_finite_dim` (dÃ©pend Ã  la fois de `Gleason.gleason` externe et de
+  par construction — ce ne sont pas des résultats autonomes, voir les sections
+  dédiées plus haut. Malgré cette dépendance substantiellement plus large,
+  **aucune fuite d'axiome par transitivité** : confirmé directement par
+  `#print axioms` sur chaque théorème du présent dépôt, y compris
+  `uhlhorn_finite_dim` (dépend à la fois de `Gleason.gleason` externe et de
   `QuantumFoundations.Wigner.wigner` interne) et `grainCoherenceTheorem`
-  (dÃ©pend Ã  la fois de `Gleason.gleason` externe et de l'infrastructure
-  Uhlhorn interne U2/U3a) â€” dans les deux cas sans faire apparaÃ®tre un axiome
-  supplÃ©mentaire. BornRule rÃ©utilise en outre directement, depuis Uhlhorn,
+  (dépend à la fois de `Gleason.gleason` externe et de l'infrastructure
+  Uhlhorn interne U2/U3a) — dans les deux cas sans faire apparaître un axiome
+  supplémentaire. BornRule réutilise en outre directement, depuis Uhlhorn,
   `eq_projL_of_positive_le_one_trace_one_inner_one` (U2),
   `exists_projMeasure_of_frameFunctionOnLines` (U3a) et
-  `isEffect_of_isDensityOperator` (relocalisÃ© de U3b vers `Uhlhorn/Defs.lean`
-  lors de B3) â€” aucun contenu Gleason/Uhlhorn n'est reprouvÃ©. **HistoriesKent**
+  `isEffect_of_isDensityOperator` (relocalisé de U3b vers `Uhlhorn/Defs.lean`
+  lors de B3) — aucun contenu Gleason/Uhlhorn n'est reprouvé. **HistoriesKent**
   n'invoque `Gleason.gleason` ni `Gleason.projL`/`Submodule.starProjection`
-  directement, mais en hÃ©rite par transitivitÃ© via `BornRule.Perspective`
-  (chaÃ®ne Ã  trois niveaux HistoriesKent â†’ BornRule â†’ Uhlhorn/Gleason externe) â€”
-  mÃªme absence de fuite d'axiome, confirmÃ©e sur `contrary_inferences` et les
-  35 autres dÃ©clarations publiques du bloc. **`BornRule/EffectPerspectives`**
-  (extension qubit/Busch) rÃ©utilise, dans la mÃªme rÃ©vision Ã©pinglÃ©e dÃ©jÃ  en
+  directement, mais en hérite par transitivité via `BornRule.Perspective`
+  (chaîne à trois niveaux HistoriesKent → BornRule → Uhlhorn/Gleason externe) —
+  même absence de fuite d'axiome, confirmée sur `contrary_inferences` et les
+  35 autres déclarations publiques du bloc. **`BornRule/EffectPerspectives`**
+  (extension qubit/Busch) réutilise, dans la même révision épinglée déjà en
   place, `Gleason.Busch.Effects`/`Gleason.Busch.Main` : `Gleason.IsEffect`,
   `Gleason.EffectMeasure`, et surtout `Gleason.busch`/`Gleason.busch_born_rule`
-  (le thÃ©orÃ¨me de Busch complet, appliquÃ© directement en un seul point,
-  `EffectMeasure.lean`, jamais reprouvÃ©). Contrairement Ã  `Gleason.gleason`
-  (dimension `â‰¥ 3`), Busch s'applique dÃ¨s la dimension `1`, ce qui permet
+  (le théorème de Busch complet, appliqué directement en un seul point,
+  `EffectMeasure.lean`, jamais reprouvé). Contrairement à `Gleason.gleason`
+  (dimension `≥ 3`), Busch s'applique dès la dimension `1`, ce qui permet
   d'atteindre le qubit (`n = 2`) sans emprunter la voie projective. Aucune
-  dÃ©claration de dÃ©pendance n'a Ã©tÃ© ajoutÃ©e ou modifiÃ©e : toutes ces
-  dÃ©clarations existaient dÃ©jÃ  dans la rÃ©vision Ã©pinglÃ©e.
+  déclaration de dépendance n'a été ajoutée ou modifiée : toutes ces
+  déclarations existaient déjà dans la révision épinglée.
 - `mathlib`, `rev = "8bba4200986270d3b30be2bb2f8840af47a7854f"`.
 
-`./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'Ã©tat exact
-du dÃ©pÃ´t sur un clone frais, sans intervention manuelle â€” testÃ© lors de
-chaque passe de clÃ´ture (`lake clean` + `lake exe cache get` + `lake build`),
-la plus rÃ©cente incluant `HistoriesKent` (2026-07-16).
+`./setup.sh` (`lake exe cache get` puis `lake build`) reproduit l'état exact
+du dépôt sur un clone frais, sans intervention manuelle — testé lors de
+chaque passe de clôture (`lake clean` + `lake exe cache get` + `lake build`),
+la plus récente incluant `HistoriesKent` (2026-07-16).
 
-## RÃ¨gles
+## Règles
 
 Aucun `axiom`, aucun `native_decide` (CI bloquante, `scripts/guard.sh`). Toute nouvelle
-structure d'hypothÃ¨ses reÃ§oit un habitant concret dans `Nonvacuity.lean`, dans le mÃªme
-commit. Un `sorry` honnÃªte plutÃ´t qu'un Ã©noncÃ© affaibli en silence â€” voir `AGENTS.md`
-pour l'ensemble des rÃ¨gles.
+structure d'hypothèses reçoit un habitant concret dans `Nonvacuity.lean`, dans le même
+commit. Un `sorry` honnête plutôt qu'un énoncé affaibli en silence — voir `AGENTS.md`
+pour l'ensemble des règles.
 
 ## Licence
 
@@ -1445,17 +1445,17 @@ pour l'ensemble des rÃ¨gles.
 
 ## English translation
 
-# quantum-foundations-lean â€” Lean 4 formalizations: Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel, and Complexity
+# quantum-foundations-lean — Lean 4 formalizations: Naimark, Wigner, Uhlhorn, BornRule, HistoriesKent, BranchesRiedel, and Complexity
 
 Status: Naimark v2 COMPLETE (v2.0-naimark, 2026-07-11), Wigner COMPLETE
 with optional uniqueness/exclusivity (v2.0-wigner, 2026-07-13), Uhlhorn
 COMPLETE (v1.0-uhlhorn, 2026-07-14), BornRule COMPLETE with Nonvacuity
 (v2.0-bornrule, 2026-07-15), AND HistoriesKent COMPLETE
-(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0â€“C13
+(v1.0-histories, 2026-07-16), plus the BranchesRiedel and Complexity C0–C13
 blocks, and now the **C14 records-to-Born-weight bridge**. Seven mechanized
 blocks,
 without axioms in the sense of the project rules, apart from the three
-standard Lean kernel axioms described below, in finite dimension over â„‚.
+standard Lean kernel axioms described below, in finite dimension over ℂ.
 
 By the numbers (recomputed on 2026-07-23, project files excluding scratch):
 119 `.lean` files, 19,598 lines, 663 public declarations (`theorem`), 0
@@ -1477,20 +1477,20 @@ and namespaces are no longer exposed.
 
 The Naimark dilation theorem for finite POVMs
 (Watrous, The Theory of Quantum Information, Theorem 2.42): every POVM
-E : Fin m â†’ (H n â†’â‚—[â„‚] H n) is realized as a projection-valued measure
+E : Fin m → (H n →ₗ[ℂ] H n) is realized as a projection-valued measure
 (dilProj) under an isometry dilV, with preservation of the Born formula.
 
 Wigner's theorem (Bargmann 1964, Note on Wigner's Theorem on Symmetry
 Operations): every transformation on pure states preserving transition
-probabilities |âŸ¨Ï†|ÏˆâŸ©|Â² is induced by a unitary or antiunitary operatorâ€”
+probabilities |⟨φ|ψ⟩|² is induced by a unitary or antiunitary operator—
 formulation (A), without a bijectivity hypothesis on the initial
-transformation (strictly stronger than Simonâ€“Mukundaâ€“Chaturvediâ€“Srinivasan
+transformation (strictly stronger than Simon–Mukunda–Chaturvedi–Srinivasan
 2008, Eq. 2.8, which assumes it). It is supplemented in optional W6 by
 unitary/antiunitary exclusivity and uniqueness up to a global phase
-in a restricted form, following Bargmann Â§1.5 and Â§6.
+in a restricted form, following Bargmann §1.5 and §6.
 
-Å emrl's Corollary 1.2 (Å emrl 2021, Wigner symmetries and Gleason's
-theorem, arXiv:2106.06182): in finite dimension n â‰¥ 3, every map on
+Šemrl's Corollary 1.2 (Šemrl 2021, Wigner symmetries and Gleason's
+theorem, arXiv:2106.06182): in finite dimension n ≥ 3, every map on
 rank-one projections that preserves orthogonality in one direction only
 (with neither injectivity nor surjectivity assumed) is automatically a Wigner
 symmetry. Unlike Naimark and Wigner, this is NOT a self-contained result: it
@@ -1501,10 +1501,10 @@ audit.
 
 The Grain Coherence Theorem (with Gleason 1957, Measures on the closed
 subspaces of a Hilbert space, as the underlying theorem): for a
-â€œperspective,â€ an orthogonal partition of H n into cells, and an estimation
+“perspective,” an orthogonal partition of H n into cells, and an estimation
 rule satisfying four purely combinatorial axioms (Grain, Norm, Pos, Null),
 the rule's value on every cell is EXACTLY the Born rule
-(âˆ‘áµ¢ â€–âŸ¨v,fáµ¢âŸ©â€–Â² over an orthonormal basis of the cell), without ever assuming
+(∑ᵢ ‖⟨v,fᵢ⟩‖² over an orthonormal basis of the cell), without ever assuming
 a priori that the rule has trace form. Like Uhlhorn, this result composes
 an internal block (Uhlhorn infrastructure U2 and U3a) with an external
 dependency (Gleason.gleason, imported as an actual theorem rather than as
@@ -1518,8 +1518,8 @@ implying with CERTAINTY a different proposition, the two propositions being
 mutually orthogonal. A temporal stage of a history set directly reuses
 BornRule.Perspective, with no redefinition. As Uhlhorn and BornRule already
 do for other components, HistoriesKent composes the repository's internal
-infrastructure (BornRule â†’ Uhlhorn/Gleason) rather than starting over.
-The generic profusion theorem of Dowkerâ€“Kent (1996), which would show that the
+infrastructure (BornRule → Uhlhorn/Gleason) rather than starting over.
+The generic profusion theorem of Dowker–Kent (1996), which would show that the
 witness is not an isolated contrary-inference example, is explicitly outside
 the scope of this block.
 
@@ -1529,53 +1529,53 @@ gleason-theorem-lean
 (Gleason.Busch.Effects); Uhlhorn and BornRule, by contrast, invoke
 Gleason.gleason itself as well as part of its internal machinery. HistoriesKent
 does not invoke Gleason.gleason directly but inherits it transitively
-through BornRule.Perspective/projL. See â€œDependenciesâ€ below for details
+through BornRule.Perspective/projL. See “Dependencies” below for details
 and verification that no additional axioms leak through the dependency
 chain.
 
 ## Statements
 
 lean
-structure POVM (n m : â„•) where
- E : Fin m â†’ (H n â†’â‚—[â„‚] H n)
- pos : âˆ€ i, IsPositiveOp (E i)
- sum_eq_one : âˆ‘ i, E i = 1
+structure POVM (n m : ℕ) where
+ E : Fin m → (H n →ₗ[ℂ] H n)
+ pos : ∀ i, IsPositiveOp (E i)
+ sum_eq_one : ∑ i, E i = 1
 
 theorem naimark (P : POVM n m) :
- âˆƒ V : H n â†’â‚—[â„‚] DilSpace n m, LinearMap.adjoint V âˆ˜â‚— V = LinearMap.id âˆ§
- âˆ€ i, LinearMap.adjoint V âˆ˜â‚— dilProj n m i âˆ˜â‚— V = P.E i
+ ∃ V : H n →ₗ[ℂ] DilSpace n m, LinearMap.adjoint V ∘ₗ V = LinearMap.id ∧
+ ∀ i, LinearMap.adjoint V ∘ₗ dilProj n m i ∘ₗ V = P.E i
 
 theorem naimark_born (P : POVM n m) (i : Fin m) (x : H n) :
- âŸªx, P.E i xâŸ«_â„‚ = âŸªdilV P x, dilProj n m i (dilV P x)âŸ«_â„‚
+ ⟪x, P.E i x⟫_ℂ = ⟪dilV P x, dilProj n m i (dilV P x)⟫_ℂ
 
 
-DilSpace n m := EuclideanSpace â„‚ (Fin m Ã— Fin n), and dilProj i is the
+DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n), and dilProj i is the
 orthogonal projection onto the ith block.
 
 N5 (optional, closed): dilV extends to a genuine unitary on
-DilSpace n m, not merely an isometry, for every fixed ancilla index iâ‚€
-(Watrous Cor. 2.43 / Paris Â§3.2 Thm 4):
+DilSpace n m, not merely an isometry, for every fixed ancilla index i₀
+(Watrous Cor. 2.43 / Paris §3.2 Thm 4):
 
 lean
-theorem exists_unitary_extension (P : POVM n m) (iâ‚€ : Fin m) :
- âˆƒ U : DilSpace n m â‰ƒâ‚—áµ¢[â„‚] DilSpace n m, U.toLinearMap âˆ˜â‚— singleL n m iâ‚€ = dilV P
+theorem exists_unitary_extension (P : POVM n m) (i₀ : Fin m) :
+ ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, U.toLinearMap ∘ₗ singleL n m i₀ = dilV P
 
-theorem naimark_projective_form (P : POVM n m) (iâ‚€ : Fin m) :
- âˆƒ U : DilSpace n m â‰ƒâ‚—áµ¢[â„‚] DilSpace n m, âˆ€ (i : Fin m) (x : H n),
- âŸªx, P.E i xâŸ«_â„‚ = âŸªU (singleL n m iâ‚€ x), dilProj n m i (U (singleL n m iâ‚€ x))âŸ«_â„‚
+theorem naimark_projective_form (P : POVM n m) (i₀ : Fin m) :
+ ∃ U : DilSpace n m ≃ₗᵢ[ℂ] DilSpace n m, ∀ (i : Fin m) (x : H n),
+ ⟪x, P.E i x⟫_ℂ = ⟪U (singleL n m i₀ x), dilProj n m i (U (singleL n m i₀ x))⟫_ℂ
 
 
 ## Documented deviation from Watrous
 
-Watrous dilates in a tensor product X âŠ— â„‚^Î£. We dilate in the
-Hilbert direct sum K := âŠ•_{i<m} H n, which is canonically isomorphic
+Watrous dilates in a tensor product X ⊗ ℂ^Σ. We dilate in the
+Hilbert direct sum K := ⊕_{i<m} H n, which is canonically isomorphic
 (the Mathlib API for PiLp/EuclideanSpace was more mature at the time than
 the Hilbert tensor-product API). Correspondence:
-1_X âŠ— E_{a,a} becomes dilProj a; âˆšÎ¼(a) âŠ— e_a becomes
-singleL a âˆ˜â‚— sqrtOp (E a). The mathematical content (isometry + Born formula) is identical; only the concrete realization of the dilation
+1_X ⊗ E_{a,a} becomes dilProj a; √μ(a) ⊗ e_a becomes
+singleL a ∘ₗ sqrtOp (E a). The mathematical content (isometry + Born formula) is identical; only the concrete realization of the dilation
 space differs.
 
-DilSpace n m := EuclideanSpace â„‚ (Fin m Ã— Fin n) was selected in step 0,
+DilSpace n m := EuclideanSpace ℂ (Fin m × Fin n) was selected in step 0,
 milestone N0, over PiLp 2 (fun _ : Fin m => H n) at equal proof-engineering
 cost, because of its single flat index. See MILESTONES.md for details of the
 two tested routes.
@@ -1583,143 +1583,143 @@ two tested routes.
 ## Wigner's theorem
 
 lean
-def IsWignerMap (T : H n â†’ H n) : Prop :=
- âˆ€ x y : H n, â€–xâ€– = 1 â†’ â€–yâ€– = 1 â†’ â€–âŸªT x, T yâŸ«_â„‚â€– = â€–âŸªx, yâŸ«_â„‚â€–
+def IsWignerMap (T : H n → H n) : Prop :=
+ ∀ x y : H n, ‖x‖ = 1 → ‖y‖ = 1 → ‖⟪T x, T y⟫_ℂ‖ = ‖⟪x, y⟫_ℂ‖
 
-theorem wigner (n : â„•) (T : H n â†’ H n) (hT : IsWignerMap T) :
- (âˆƒ U' : H n â‰ƒâ‚—áµ¢[â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x)
- âˆ¨ (âˆƒ U' : H n â‰ƒâ‚›â‚—áµ¢[starRingEnd â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x)
+theorem wigner (n : ℕ) (T : H n → H n) (hT : IsWignerMap T) :
+ (∃ U' : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
+ ∨ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x)
 
 
 There is no bijectivity hypothesis on T: in finite dimension, the
 constructed isometry U' is automatically bijective (U_bijective), and
 injectivity at the ray level follows from hT alone. Mathematical blueprint:
-Bargmann 1964, Â§1â€“Â§5, followed almost verbatim; Simonâ€“Mukundaâ€“Chaturvediâ€“
+Bargmann 1964, §1–§5, followed almost verbatim; Simon–Mukunda–Chaturvedi–
 Srinivasan 2008 is used only as a cross-check and rejected as the primary
 blueprint because of its trigonometric/Real.Angle approach.
 
-Construction (Bargmann Â§3â€“Â§5): first Vâ€”definitional collinearity on
-ð’« := eâŠ¥, W3â€”then Ï‡â€”the id/conj dichotomy established independently
+Construction (Bargmann §3–§5): first V—definitional collinearity on
+𝒫 := e⊥, W3—then χ—the id/conj dichotomy established independently
 on EACH direction and then globalized without an orthogonal-frame
-hypothesis, W4â€”and finally
-U := Ï‡âŸ¨e,Â·âŸ©â€¢e' + V(Â· âˆ’ âŸ¨e,Â·âŸ©â€¢e), extending V/Ï‡ to the whole space,
+hypothesis, W4—and finally
+U := χ⟨e,·⟩•e' + V(· − ⟨e,·⟩•e), extending V/χ to the whole space,
 W5. No coordinates, no extension of an orthonormal basis, and no Submodule
-for ð’«, which is represented by the simple Prop InPerp.
+for 𝒫, which is represented by the simple Prop InPerp.
 
 Documented deviations from the initial plan (see MILESTONES.md, sections
-W3â€“W5, for full details):
-- W3 (V_colinear): the initial skeleton asserted â€–Î´â€– = 1 for the
- collinearity coefficientâ€”FALSE in general, as refuted by T = id; corrected
- to â€–Î´â€– = â€–zâ€–.
-- W4 (chi_eq_chidir): Bargmann's argument in Â§4.3â€“Â§4.5
- (w = fâ‚+fâ‚‚, orthogonal case only) is insufficient when n â‰¥ 3 and the
+W3–W5, for full details):
+- W3 (V_colinear): the initial skeleton asserted ‖δ‖ = 1 for the
+ collinearity coefficient—FALSE in general, as refuted by T = id; corrected
+ to ‖δ‖ = ‖z‖.
+- W4 (chi_eq_chidir): Bargmann's argument in §4.3–§4.5
+ (w = f₁+f₂, orthogonal case only) is insufficient when n ≥ 3 and the
  second vector is neither collinear nor orthogonal to refVec. This was
  resolved by reduction to a single comparison point (i, where id and
  conj differ) rather than by proving the full functional identity.
 - W5 (U_bijective): there is no direct Mathlib lemma for semilinear
  bijectivity in the antiunitary branch. The result was obtained by
- restriction to the real scalars (starRingEnd â„‚ is â„-linear), where
+ restriction to the real scalars (starRingEnd ℂ is ℝ-linear), where
  LinearMap.injective_iff_surjective applies unchanged.
 
 See ARCHITECTURE_NOTES.md for the consolidated list of all documented
-deviations from N0â€“N5 and W0â€“W6.
+deviations from N0–N5 and W0–W6.
 
-## W6 (optional) â€” Exclusivity and uniqueness (Bargmann Â§1.5, restricted Â§6)
+## W6 (optional) — Exclusivity and uniqueness (Bargmann §1.5, restricted §6)
 
 lean
-def Delta (a b c : H n) : â„‚ := âŸªa, bâŸ«_â„‚ * âŸªb, câŸ«_â„‚ * âŸªc, aâŸ«_â„‚
+def Delta (a b c : H n) : ℂ := ⟪a, b⟫_ℂ * ⟪b, c⟫_ℂ * ⟪c, a⟫_ℂ
 
-theorem exclusivity (hT : IsWignerMap T) (hn : 2 â‰¤ n) :
- Â¬ ((âˆƒ U : H n â‰ƒâ‚—áµ¢[â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U x)
- âˆ§ (âˆƒ U' : H n â‰ƒâ‚›â‚—áµ¢[starRingEnd â„‚] H n, âˆ€ x, â€–xâ€– = 1 â†’ âˆƒ c : â„‚, â€–câ€– = 1 âˆ§ T x = c â€¢ U' x))
+theorem exclusivity (hT : IsWignerMap T) (hn : 2 ≤ n) :
+ ¬ ((∃ U : H n ≃ₗᵢ[ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U x)
+ ∧ (∃ U' : H n ≃ₛₗᵢ[starRingEnd ℂ] H n, ∀ x, ‖x‖ = 1 → ∃ c : ℂ, ‖c‖ = 1 ∧ T x = c • U' x))
 
-theorem U_alt_eq_smul (T : H n â†’ H n) (lam : â„‚) (hlam : â€–lamâ€– = 1) (a : H n) :
- Up T (lam â€¢ eImg T) a = lam â€¢ U T a
+theorem U_alt_eq_smul (T : H n → H n) (lam : ℂ) (hlam : ‖lam‖ = 1) (a : H n) :
+ Up T (lam • eImg T) a = lam • U T a
 
 
-**(A) Exclusivity** (Bargmann Â§1.5): the same T can never be compatible with
-both a unitary and an antiunitary equivalence when n â‰¥ 2. The proof uses an
+**(A) Exclusivity** (Bargmann §1.5): the same T can never be compatible with
+both a unitary and an antiunitary equivalence when n ≥ 2. The proof uses an
 explicit witness: the triple
-e, eâ‚‚ := (eâˆ’refVec)/âˆš2,
-eâ‚ƒ := (e+refVec(1âˆ’i))/âˆš3 gives
-Delta(e,eâ‚‚,eâ‚ƒ) = i/6 âˆ‰ â„
+e, e₂ := (e−refVec)/√2,
+e₃ := (e+refVec(1−i))/√3 gives
+Delta(e,e₂,e₃) = i/6 ∉ ℝ
 (bargmann_delta_witness, confirmed exactly by Lean). But Delta is
 invariant in the unitary branch and conjugated in the antiunitary branch
 (delta_transform_lin/delta_transform_conj), which would force
 i/6 = -i/6.
 
-**(B) Uniqueness up to a global phaseâ€”RESTRICTED version**: reconstructing
+**(B) Uniqueness up to a global phase—RESTRICTED version**: reconstructing
 U after replacing, in the formulas of Defs.lean, the unit representative
-eImg T := T(e n) with another unit representative Î» â€¢ eImg T of the same
-class (â€–Î»â€– = 1) produces a new U exactly equal to Î» â€¢ U (U_alt_eq_smul). This is
-strictly weaker than the full Bargmann Â§6 Theorem 2, which would cover a
+eImg T := T(e n) with another unit representative λ • eImg T of the same
+class (‖λ‖ = 1) produces a new U exactly equal to λ • U (U_alt_eq_smul). This is
+strictly weaker than the full Bargmann §6 Theorem 2, which would cover a
 completely arbitrary U', not merely freedom in the representative of
 eImg, but it is sufficient for the repository's actual use case.
 Defs.lean is unchanged: the parameterized reconstruction
 (Vp, chidirp, chip, Up) is local to Uniqueness.lean and is connected
 to V/chi/U by bridge lemmas proved by rfl.
 
-## Å emrl's Corollary 1.2 (Uhlhorn)
+## Šemrl's Corollary 1.2 (Uhlhorn)
 
 lean
-def PreservesOrthogonality (Ï† : Proj1 n â†’ Proj1 n) : Prop :=
- âˆ€ P Q : Proj1 n, (P : Submodule â„‚ (H n)) âŸ‚ (Q : Submodule â„‚ (H n)) â†’
- (Ï† P : Submodule â„‚ (H n)) âŸ‚ (Ï† Q : Submodule â„‚ (H n))
+def PreservesOrthogonality (φ : Proj1 n → Proj1 n) : Prop :=
+ ∀ P Q : Proj1 n, (P : Submodule ℂ (H n)) ⟂ (Q : Submodule ℂ (H n)) →
+ (φ P : Submodule ℂ (H n)) ⟂ (φ Q : Submodule ℂ (H n))
 
-theorem uhlhorn_finite_dim (hn : 3 â‰¤ n) (Ï† : Proj1 n â†’ Proj1 n)
- (hÏ† : PreservesOrthogonality Ï†) : IsWignerSymmetryProj Ï†
+theorem uhlhorn_finite_dim (hn : 3 ≤ n) (φ : Proj1 n → Proj1 n)
+ (hφ : PreservesOrthogonality φ) : IsWignerSymmetryProj φ
 
 
-Proj1 n := {A : Submodule â„‚ (H n) // Module.finrank â„‚ A = 1} represents a
+Proj1 n := {A : Submodule ℂ (H n) // Module.finrank ℂ A = 1} represents a
 rank-one projection, with no dedicated rankOne wrapper, in accordance with
 gleason-theorem-lean. Every map on rank-one projections that preserves
 orthogonality in one direction only
-(PQ = 0 âŸ¹ Ï†(P)Ï†(Q) = 0, with neither injectivity nor surjectivity assumed)
-is, in finite dimension n â‰¥ 3, a Wigner symmetryâ€”Å emrl 2021,
+(PQ = 0 ⟹ φ(P)φ(Q) = 0, with neither injectivity nor surjectivity assumed)
+is, in finite dimension n ≥ 3, a Wigner symmetry—Šemrl 2021,
 Wigner symmetries and Gleason's theorem (arXiv:2106.06182),
 Corollary 1.2.
 
 This result COMPOSES two theorems rather than introducing self-contained
 mathematical content: the core proof applies Gleason.gleason, an external
-dependency, TWICEâ€”first to construct, from a test density D and the
+dependency, TWICE—first to construct, from a test density D and the
 preservation hypothesis, a second density E; and a second time implicitly
-by specializing D := projL(Ï†Q) to identify E = projL Q through the
+by specializing D := projL(φQ) to identify E = projL Q through the
 elementary spectral lemma U2. It then concludes with wigner, the internal
 block above, through Wigner's Corollary (B) in projection language (U1), which
 had never been constructed before this milestone. The full decomposition
 has six submilestones: U1, Wigner's corollary in projection language; U2,
 the spectral lemma; U3a, extension of a frame function on lines to a full
 ProjMeasure, absent from gleason-theorem-lean and therefore derived in
-this repository; U3b, â€œGleason applied twiceâ€; U4, assembly; and U5, the
+this repository; U3b, “Gleason applied twice”; U4, assembly; and U5, the
 finite-dimensional cardinality-counting reduction. Full details are in
 MILESTONES.md.
 
 ## Grain Coherence Theorem (BornRule)
 
 lean
-structure Perspective (n : â„•) where
- cells : Finset (Submodule â„‚ (H n))
- nz : âˆ€ c âˆˆ cells, c â‰  âŠ¥
- ortho : âˆ€ c âˆˆ cells, âˆ€ c' âˆˆ cells, c â‰  c' â†’ c â‰¤ c'á—®
- span : sSup (cells : Set (Submodule â„‚ (H n))) = âŠ¤
+structure Perspective (n : ℕ) where
+ cells : Finset (Submodule ℂ (H n))
+ nz : ∀ c ∈ cells, c ≠ ⊥
+ ortho : ∀ c ∈ cells, ∀ c' ∈ cells, c ≠ c' → c ≤ c'ᗮ
+ span : sSup (cells : Set (Submodule ℂ (H n))) = ⊤
 
-theorem grainCoherenceTheorem (hn3 : 3 â‰¤ n) (hA : AxGrain Est) (hN : AxNorm Est)
- (hPos : AxPos Est) {v : H n} (hv : â€–vâ€– = 1) (hNul : AxNul Est v)
- (D : Perspective n) {c : Submodule â„‚ (H n)} (hc : c âˆˆ D.cells) :
- Est D c = âˆ‘ i : Fin (Module.finrank â„‚ c),
- â€–âŸªv, ((stdOrthonormalBasis â„‚ c i : c) : H n)âŸ«_â„‚â€– ^ 2
+theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Est)
+ (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1) (hNul : AxNul Est v)
+ (D : Perspective n) {c : Submodule ℂ (H n)} (hc : c ∈ D.cells) :
+ Est D c = ∑ i : Fin (Module.finrank ℂ c),
+ ‖⟪v, ((stdOrthonormalBasis ℂ c i : c) : H n)⟫_ℂ‖ ^ 2
 
-theorem grainCoherenceTheorem_projector (hn3 : 3 â‰¤ n) (hA : AxGrain Est)
- (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : â€–vâ€– = 1)
- (hNul : AxNul Est v) (D : Perspective n) {c : Submodule â„‚ (H n)}
- (hc : c âˆˆ D.cells) :
- Est D c = â€–projL c vâ€– ^ 2
+theorem grainCoherenceTheorem_projector (hn3 : 3 ≤ n) (hA : AxGrain Est)
+ (hN : AxNorm Est) (hPos : AxPos Est) {v : H n} (hv : ‖v‖ = 1)
+ (hNul : AxNul Est v) (D : Perspective n) {c : Submodule ℂ (H n)}
+ (hc : c ∈ D.cells) :
+ Est D c = ‖projL c v‖ ^ 2
 
 
 For a perspective D, an orthogonal partition of H n into nonzero cells,
 and a cell c of D, every estimation rule Est satisfying (Grain), (Norm),
 (Pos), and, for a fixed unit vector v, (Null), satisfies
-Est D c = âˆ‘áµ¢ â€–âŸ¨v,fáµ¢âŸ©â€–Â² over every orthonormal basis (fáµ¢) of c: the Born
+Est D c = ∑ᵢ ‖⟨v,fᵢ⟩‖² over every orthonormal basis (fᵢ) of c: the Born
 rule in full generality, derived from the four coherence axioms alone, without
 assuming a priori that Est has trace form. This covers the descriptive
 route through Gleason's theorem. A second independent derivation route, using
@@ -1732,12 +1732,12 @@ This result COMPOSES Gleason with the Uhlhorn infrastructure rather than
 introducing self-contained mathematical content: B2 constructs a frame
 function on lines directly from the estimation rule through
 Perspective.binary, then invokes U3a + Gleason.gleason, an actual theorem
-rather than an axiom, to obtain a density Ï; B3 reuses U2 to show that a
+rather than an axiom, to obtain a density ρ; B3 reuses U2 to show that a
 density operator vanishing on the orthogonal complement of a unit vector v
-is exactly projL (â„‚âˆ™v); and B4 connects (Null) to this vanishing hypothesis
+is exactly projL (ℂ∙v); and B4 connects (Null) to this vanishing hypothesis
 and assembles the result through
 refinePerspective/refine_filter_eq_cellLines, already proved in B1. The
-full decomposition has four milestones: B1, scaffoldingâ€”perspectives, axioms,
+full decomposition has four milestones: B1, scaffolding—perspectives, axioms,
 non-contextuality; B2, bridge to Gleason; B3, pinning; and B4, final assembly.
 Full details and favorable deviations are in MILESTONES.md.
 
@@ -1748,51 +1748,51 @@ actual theorem (Gleason.gleason), never postulated.
 
 grainCoherenceTheorem_projector is only the projector-notation version of
 the preceding theorem: Parseval's identity identifies its orthonormal-basis
-sum with â€–projL c vâ€–Â². It is not a new independent mathematical result.
+sum with ‖projL c v‖². It is not a new independent mathematical result.
 
 ## Kent's contrary-inferences theorem (HistoriesKent)
 
 lean
-abbrev History (n L : â„•) := Fin L â†’ Submodule â„‚ (H n)
+abbrev History (n L : ℕ) := Fin L → Submodule ℂ (H n)
 
-def IsConsistent (Ïˆ : H n) (Ps : Fin L â†’ Perspective n) : Prop :=
- âˆ€ h k : History n L, IsHistoryOf Ps h â†’ IsHistoryOf Ps k â†’ h â‰  k â†’
- decFunctional Ïˆ h k = 0
+def IsConsistent (ψ : H n) (Ps : Fin L → Perspective n) : Prop :=
+ ∀ h k : History n L, IsHistoryOf Ps h → IsHistoryOf Ps k → h ≠ k →
+ decFunctional ψ h k = 0
 
-def histProb (Ïˆ : H n) (h : History n L) : â„ := â€–chainOp h Ïˆâ€– ^ 2
+def histProb (ψ : H n) (h : History n L) : ℝ := ‖chainOp h ψ‖ ^ 2
 
 theorem contrary_inferences :
- âˆƒ (Ps Ps' : Fin 2 â†’ Perspective 3) (Ïˆ : H 3),
- P 0 âŸ‚ P 1 âˆ§
- IsConsistent Ïˆ Ps âˆ§ IsConsistent Ïˆ Ps' âˆ§
- (histProb Ïˆ (![(P 0)á—®, F] : History 3 2) = 0 âˆ§ histProb Ïˆ (![P 0, F] : History 3 2) â‰  0) âˆ§
- (histProb Ïˆ (![(P 1)á—®, F] : History 3 2) = 0 âˆ§ histProb Ïˆ (![P 1, F] : History 3 2) â‰  0)
+ ∃ (Ps Ps' : Fin 2 → Perspective 3) (ψ : H 3),
+ P 0 ⟂ P 1 ∧
+ IsConsistent ψ Ps ∧ IsConsistent ψ Ps' ∧
+ (histProb ψ (![(P 0)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 0, F] : History 3 2) ≠ 0) ∧
+ (histProb ψ (![(P 1)ᗮ, F] : History 3 2) = 0 ∧ histProb ψ (![P 1, F] : History 3 2) ≠ 0)
 
 
 In words: there exist two consistent families of two-stage histories on
-H 3, sharing the same preparation Ïˆ and the same final postselection
+H 3, sharing the same preparation ψ and the same final postselection
 stage F, such that the first implies proposition P 0 with certainty, the
-second implies P 1 with certainty, and P 0 is orthogonal to P 1â€”Kent
+second implies P 1 with certainty, and P 0 is orthogonal to P 1—Kent
 1997, PRL 78, 2874, arXiv:gr-qc/9604012. A temporal stage of a history set
 is a BornRule.Perspective, reused unchanged. The consistency notion is
-Kent's â€œmedium/strongâ€ version (decFunctional Ïˆ h k = 0 for every pair of
+Kent's “medium/strong” version (decFunctional ψ h k = 0 for every pair of
 distinct histories in the family, not merely vanishing of its real part).
 The explicit witness is constructed in dimension 3:
-Ïˆâ‚€ := eâ‚€+eâ‚+eâ‚‚, Ï†â‚€ := eâ‚€+eâ‚âˆ’eâ‚‚ (not normalized),
+ψ₀ := e₀+e₁+e₂, φ₀ := e₀+e₁−e₂ (not normalized),
 P i :=
-â„‚âˆ™(e i), and F := â„‚âˆ™Ï†â‚€. The key cancellation is
-âŸªÏ†â‚€, e iâŸ« = 1 for i âˆˆ {0,1} (= -1 for i = 2, outside the witness).
+ℂ∙(e i), and F := ℂ∙φ₀. The key cancellation is
+⟪φ₀, e i⟫ = 1 for i ∈ {0,1} (= -1 for i = 2, outside the witness).
 
-Neutrality note. The mathematical content aboveâ€”two consistent sets each
+Neutrality note. The mathematical content above—two consistent sets each
 implying with certainty a proposition, with the two propositions
-orthogonalâ€”is undisputed. Its interpretation as an objection to the
+orthogonal—is undisputed. Its interpretation as an objection to the
 predictability of consistent histories is debated: the standard response
-(Griffiths) invokes the â€œsingle-framework rule,â€ under which the two
+(Griffiths) invokes the “single-framework rule,” under which the two
 inferences are valid only within their respective frameworks and may never
 be combined in one argument. This repository fixes the mathematical
 statement without adjudicating the interpretive debate.
 
-The generic profusion theorem of Dowkerâ€“Kent
+The generic profusion theorem of Dowker–Kent
 (J. Stat. Phys. 82, 1575 (1996), using parameter/dimension counting on
 manifolds to show that contrary inferences are not isolated) is explicitly
 outside the scope of this block. It remains a possible future extension; see
@@ -1803,36 +1803,36 @@ MILESTONES.md.
 `QuantumFoundations.Complexity` connects Riedel's exact or approximate spatial records to
 exact 2-local quantum circuits. A circuit is a finite list of unitary gates,
 each local to a `Finset (Fin N)` of cardinality at most two. The evaluation
-convention is chronological: for `[Gâ‚, Gâ‚‚, Gâ‚ƒ]`,
-`eval C x = Gâ‚ƒ (Gâ‚‚ (Gâ‚ x))`.
+convention is chronological: for `[G₁, G₂, G₃]`,
+`eval C x = G₃ (G₂ (G₁ x))`.
 
 Its main theorem has the exact type:
 
 ```lean
 theorem regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero
-    {N d K R : â„•} [NeZero R]
-    (e : H (d ^ N) â‰ƒâ‚—áµ¢[â„‚] Sites N d) (C : Circuit N d)
-    (regions : Fin R â†’ Finset (Fin N))
-    (recs : Fin R â†’ LabeledResolution (d ^ N) K) (Ïˆ : H (d ^ N))
-    (hrec : IsRecordedOn Ïˆ recs) (i j : Fin K) (hij : i â‰  j)
-    (hlocal : âˆ€ r, IsLocalTo (transportedRecordProj e (recs r) j) (regions r))
-    (hpairwise : âˆ€ r r', r â‰  r' â†’ Disjoint (regions r) (regions r'))
-    (hcross : âŸªbranch recs Ïˆ j, Circuit.evalOnH C e (branch recs Ïˆ i)âŸ«_â„‚ â‰  0) :
-    R â‰¤ 2 * Circuit.length C
+    {N d K R : ℕ} [NeZero R]
+    (e : H (d ^ N) ≃ₗᵢ[ℂ] Sites N d) (C : Circuit N d)
+    (regions : Fin R → Finset (Fin N))
+    (recs : Fin R → LabeledResolution (d ^ N) K) (ψ : H (d ^ N))
+    (hrec : IsRecordedOn ψ recs) (i j : Fin K) (hij : i ≠ j)
+    (hlocal : ∀ r, IsLocalTo (transportedRecordProj e (recs r) j) (regions r))
+    (hpairwise : ∀ r r', r ≠ r' → Disjoint (regions r) (regions r'))
+    (hcross : ⟪branch recs ψ j, Circuit.evalOnH C e (branch recs ψ i)⟫_ℂ ≠ 0) :
+    R ≤ 2 * Circuit.length C
 ```
 
 Thus an exact nonzero cross amplitude between distinct recorded branches
 forces the circuit to touch every record region. Pairwise disjointness and
-the two-site support bound then give `R â‰¤ 2 * C.length`.
+the two-site support bound then give `R ≤ 2 * C.length`.
 
-C3â€“C6 add the exact division-free `DistinguishesAt` and `InterferesAt`
+C3–C6 add the exact division-free `DistinguishesAt` and `InterferesAt`
 predicates displayed in the French section above. For distinct nonzero
-normalized recorded branches and `0 < Î´ â‰¤ 1`, redundant pairwise-disjoint
-records imply the per-circuit interference bound `ceilHalf R â‰¤ C.length`.
+normalized recorded branches and `0 < δ ≤ 1`, redundant pairwise-disjoint
+records imply the per-circuit interference bound `ceilHalf R ≤ C.length`.
 An explicitly supplied circuit implementing `2 P_j - I` provides the
 distinguishability upper bound. These combine first as a relational,
 subtraction-free proxy-gap certificate and then as
-`distinguishabilityComplexity + g â‰¤ interferenceComplexity` in `WithTop â„•`.
+`distinguishabilityComplexity + g ≤ interferenceComplexity` in `WithTop ℕ`.
 Both target-label locality hypotheses are required because either orientation
 of the two-term interference proxy may be nonzero.
 
@@ -1840,7 +1840,7 @@ C7 proves conditional persistence under an explicit finite reversible
 circuit evolution. A `ReversibleCircuitEvolution` stores forward and backward
 circuits whose evaluations are mutual inverses, with overhead
 `forward.length + backward.length`. The append convention implies that
-`backward ++ C ++ forward` implements `forward âˆ˜ C âˆ˜ backward`, while
+`backward ++ C ++ forward` implements `forward ∘ C ∘ backward`, while
 `forward ++ C ++ backward` implements the pullback. Exact matrix elements and
 both proxies are invariant under these conjugations. Distinguishability can
 gain one overhead, interference can lose one, and the certified gap can
@@ -1849,19 +1849,19 @@ therefore lose at most twice the overhead.
 A canonical inverse circuit was constructed by reversing the gate list and
 inverting every gate while preserving its local support. Consequently
 `ofCircuit E` has overhead `2 * E.length`, and the record theorem derives the
-budget `D.length + 4 * E.length + g â‰¤ ceilHalf R`. The `WithTop â„•` transport
-theorems work directly under the infimum, including `âŠ¤`, without attainment
+budget `D.length + 4 * E.length + g ≤ ceilHalf R`. The `WithTop ℕ` transport
+theorems work directly under the infimum, including `⊤`, without attainment
 or subtraction.
 
 C8 replaces the exact record identities by the aggregated predicate
-`â€–P target - targetâ€– + â€–P otherâ€– â‰¤ Î·`. The projector/defect decomposition
-gives the sharp untouched cross-amplitude bound `Î·`; the two proxy
-orientations therefore require `Î·i + Î·j < 2 * Î´`. A supplied readout circuit
-may have aggregate pointwise error `Î¾`; its diagonal separation loses exactly
-`2 * Î·j + Î¾`, giving the sufficient threshold
-`2 * Î´ + 2 * Î·j + Î¾ â‰¤ 2`. The robust certificates and `WithTop â„•` bounds then
+`‖P target - target‖ + ‖P other‖ ≤ η`. The projector/defect decomposition
+gives the sharp untouched cross-amplitude bound `η`; the two proxy
+orientations therefore require `ηi + ηj < 2 * δ`. A supplied readout circuit
+may have aggregate pointwise error `ξ`; its diagonal separation loses exactly
+`2 * ηj + ξ`, giving the sufficient threshold
+`2 * δ + 2 * ηj + ξ ≤ 2`. The robust certificates and `WithTop ℕ` bounds then
 reuse C6. Exact C7 conjugation adds no analytic error, only the existing
-twice-overhead circuit budget. Setting all errors to zero recovers C4â€“C7.
+twice-overhead circuit budget. Setting all errors to zero recovers C4–C7.
 
 C9 instantiates this architecture in the explicit binary repetition model.
 `zeroBranch R` and `oneBranch R` are the transported constant-zero and
@@ -1870,38 +1870,38 @@ constant-one computational basis vectors; their coherent sum
 independent exact binary record. Reflection in the bit-one cell at the first
 site gives an exact one-gate readout, while an ordered list of `R` Pauli-X
 gates exchanges the two branches. Consequently
-`C_D = 1`, `ceilHalf R â‰¤ C_I â‰¤ R`, the interference minimum is finite,
-every `1 + g â‰¤ ceilHalf R` gives a proxy gap, and the concrete persistence
-budget is `1 + 4 * E.length + g â‰¤ ceilHalf R`. Paired-flip sharpness is not
+`C_D = 1`, `ceilHalf R ≤ C_I ≤ R`, the interference minimum is finite,
+every `1 + g ≤ ceilHalf R` gives a proxy gap, and the concrete persistence
+budget is `1 + 4 * E.length + g ≤ ceilHalf R`. Paired-flip sharpness is not
 claimed; the closed interference result is the stated pair of linear bounds.
 
 C10 finally shows this robust C8 theory is inhabited by a genuinely
 **nonzero-noise** explicit family, on `R + 1` sites: one source qubit (site
 `0`) plus `R` record qubits (`recordSite r := Fin.succ r`). A normalized
-`NoiseProfile` (`keep`, `leak`, with `â€–keepâ€–Â² + â€–leakâ€–Â² = 1`) mixes two
+`NoiseProfile` (`keep`, `leak`, with `‖keep‖² + ‖leak‖² = 1`) mixes two
 same-source-bit configurations,
-`noisyZeroBranch := keep â€¢ basis00 + leak â€¢ basis01` and
-`noisyOneBranch := leak â€¢ basis10 + keep â€¢ basis11`, which stay **exactly
+`noisyZeroBranch := keep • basis00 + leak • basis01` and
+`noisyOneBranch := leak • basis10 + keep • basis11`, which stay **exactly
 orthogonal for every `leak`** because their source qubits differ. Every
-record projector has an exact computed error â€” it fixes the aligned
-configuration exactly and leaks exactly `â€–leakâ€–` into the other one â€” giving
-the exact aggregate `ApproxRecordedPairOn` budget `2 * â€–leakâ€–` per label, a
+record projector has an exact computed error — it fixes the aligned
+configuration exactly and leaks exactly `‖leak‖` into the other one — giving
+the exact aggregate `ApproxRecordedPairOn` budget `2 * ‖leak‖` per label, a
 genuine (not merely zero-error) inhabitant of the C8 approximate-record
-predicate. At threshold `Î´ = 1/2` the robust condition
-`NoiseProfile.IsRobust p := 4 * â€–p.leakâ€– < 1` gives exactly the same
+predicate. At threshold `δ = 1/2` the robust condition
+`NoiseProfile.IsRobust p := 4 * ‖p.leak‖ < 1` gives exactly the same
 qualitative bounds as C9:
 
 ```lean
 distinguishabilityComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) = 1
-ceilHalf R â‰¤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
-interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) â‰¤ R + 1
+ceilHalf R ≤ interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2)
+interferenceComplexity (sitesEquivR (R+1)) (noisyZeroBranch p R) (noisyOneBranch p R) (1/2) ≤ R + 1
 ```
 
 together with the robust proxy gap and its conditional persistence under the
-same budget `1 + 4 * E.length + g â‰¤ ceilHalf R`. The Pythagorean triple
-`99Â² + 20Â² = 101Â²` gives a fully concrete rational witness
+same budget `1 + 4 * E.length + g ≤ ceilHalf R`. The Pythagorean triple
+`99² + 20² = 101²` gives a fully concrete rational witness
 `(keep, leak) = (99/101, 20/101)` with `4 * (20/101) = 80/101 < 1`, to which
-every C10aâ€“C10g theorem applies unconditionally. Three generalizations were
+every C10a–C10g theorem applies unconditionally. Three generalizations were
 added additively to C9 (at a generality C9 itself never needed, and without
 changing any existing public type): a basis vector at an arbitrary
 configuration (`configurationBranch`), a reflection readout at an arbitrary
@@ -1911,114 +1911,114 @@ action on an arbitrary configuration
 
 C11 closes precisely the gap noted at the end of C10: an explicit finite
 circuit of 1- and 2-local unitary gates **dynamically generates** the
-source-record branching from an uncorrelated source qubit `Î±|0âŸ© + Î²|1âŸ©` and
+source-record branching from an uncorrelated source qubit `α|0⟩ + β|1⟩` and
 `R` blank record qubits, rather than assuming the branched state as given.
 `controlledBitFlipGate` (C11a) is a genuine 2-local permutation gate;
 `idealFanoutCircuit R` (C11b) copies the source qubit's classical label onto
-every record â€” computational-basis label fanout, never cloning of an
+every record — computational-basis label fanout, never cloning of an
 arbitrary quantum state (no-cloning is not violated: only the classical
 `0`/`1` label is fanned out, never the source qubit's own amplitudes). The
 hardest construction (C11e) is a genuine single-qubit amplitude-mixing
 unitary lifted to all `N` sites through the flat `Sites N d` representation
 (no tensor-factor infrastructure existed in the repository for this):
-`prepLinearMap p t := keep â€¢ Pâ‚€ + leak â€¢ (F âˆ˜ Pâ‚€) - conj(leak) â€¢ (F âˆ˜ Pâ‚) +
-conj(keep) â€¢ Pâ‚`, proved unitary by a direct 16-term inner-product
+`prepLinearMap p t := keep • P₀ + leak • (F ∘ P₀) - conj(leak) • (F ∘ P₁) +
+conj(keep) • P₁`, proved unitary by a direct 16-term inner-product
 expansion. This construction succeeds **unconditionally** for every
-`NoiseProfile` â€” no supplied-gate fallback was needed. `noisyMeasurementCircuit
-p R` (C11fâ€“g, length `2R`) turns `Î± â€¢ basis00 + Î² â€¢ basis10` into exactly
-`Î± â€¢ noisyZeroBranch p R + Î² â€¢ noisyOneBranch p R` â€” the *same* states as
+`NoiseProfile` — no supplied-gate fallback was needed. `noisyMeasurementCircuit
+p R` (C11f–g, length `2R`) turns `α • basis00 + β • basis10` into exactly
+`α • noisyZeroBranch p R + β • noisyOneBranch p R` — the *same* states as
 C10's, so C10's robust proxy gap and its conditional persistence under any
 further circuit transport immediately (C11i), with no new distinguishability
-argument. The Pythagorean triple `3Â² + 4Â² = 5Â²` gives a fully concrete
+argument. The Pythagorean triple `3² + 4² = 5²` gives a fully concrete
 rational source-amplitude witness `(amp0, amp1) = (3/5, 4/5)` (C11j), to
-which â€” paired with C10h's rational noise profile `(99/101, 20/101)` â€” the
+which — paired with C10h's rational noise profile `(99/101, 20/101)` — the
 full C11 chain applies unconditionally.
 
 C12 closes the optional operator-norm bridge left open since C8:
 `toContinuousLinearMapFD` (C12a) is the canonical continuous-linear-map view
 of a linear map out of a finite-dimensional complex normed space
-(Mathlib's `LinearMap.toContinuousLinearMap`) â€” `Circuit.evalOnH`,
+(Mathlib's `LinearMap.toContinuousLinearMap`) — `Circuit.evalOnH`,
 `recordPhaseFlip`, and every existing `LinearMap` API are left entirely
 unchanged; this is an additional view, not a replacement.
-`ApproximatesOperator A B Îµ := â€–A - Bâ€– â‰¤ Îµ` (C12b) is a generic operator-norm
+`ApproximatesOperator A B ε := ‖A - B‖ ≤ ε` (C12b) is a generic operator-norm
 error budget mentioning no records or circuits; the central estimate
-`â€–A x - B xâ€– â‰¤ Îµâ€–xâ€–` gives, on two unit states `a, b`, the accumulation
-`â€–A a - B aâ€– + â€–A b - B bâ€– â‰¤ 2Îµ` â€” the factor `2` derived by plain
+`‖A x - B x‖ ≤ ε‖x‖` gives, on two unit states `a, b`, the accumulation
+`‖A a - B a‖ + ‖A b - B b‖ ≤ 2ε` — the factor `2` derived by plain
 arithmetic, never postulated. `ApproximatesRecordPhaseFlipOp` (C12c)
 specializes this bridge to `recordPhaseFlip`: an operator-norm error budget
-`Îµ` implies the C8 pointwise budget `Î¾ = 2Îµ`, which directly recovers
-(C12d) the readout threshold `2Î´ + 2Î·j + 2Îµ â‰¤ 2` and (C12e) the robust
+`ε` implies the C8 pointwise budget `ξ = 2ε`, which directly recovers
+(C12d) the readout threshold `2δ + 2ηj + 2ε ≤ 2` and (C12e) the robust
 proxy gap and its conditional persistence, reusing C8's own analytic
-estimate unchanged â€” no new estimate is introduced. At C10's noisy model
-(C12f) this threshold becomes exactly `4â€–leakâ€– + 2Îµ â‰¤ 1`; the hypothesis
-`p.IsRobust` (`4â€–leakâ€– < 1`, strict) is still required alongside it â€” not
-redundant, since `hreadout` alone (with `Îµ â‰¥ 0`) gives only the non-strict
-`4â€–leakâ€– â‰¤ 1`, insufficient for the strict interference argument. At C11's
+estimate unchanged — no new estimate is introduced. At C10's noisy model
+(C12f) this threshold becomes exactly `4‖leak‖ + 2ε ≤ 1`; the hypothesis
+`p.IsRobust` (`4‖leak‖ < 1`, strict) is still required alongside it — not
+redundant, since `hreadout` alone (with `ε ≥ 0`) gives only the non-strict
+`4‖leak‖ ≤ 1`, insufficient for the strict interference argument. At C11's
 dynamically generated branches (C12g), the same threshold applies directly
-to the generated branch pair. The concrete rational witness `Îµ = 1/20`
-checks exactly `80/101 + 2Â·(1/20) â‰¤ 1` by exact rational arithmetic.
+to the generated branch pair. The concrete rational witness `ε = 1/20`
+checks exactly `80/101 + 2·(1/20) ≤ 1` by exact rational arithmetic.
 Generic composition laws (C12h, optional) prepare C13's simulation-error
 accumulation.
 
 C13 establishes robust gap persistence under an actual norm-preserving
 evolution `U` (not necessarily a circuit), as long as an exact circuit `E`
-approximates it in operator norm to error `Îµ`. The central mathematical
-point is that same-threshold persistence at `Î´` with **no** margin is
-generally **not** justified: perturbing two unit states by `Îµ` each moves
-the diagonal difference by at most `4Îµ` and the cross sum by at most `4Îµ`
-(C13b), shifting the proxy threshold by `2Îµ` (since the definitions use
-`2 Â· threshold`). C13 therefore introduces a margin `Î¼`: a certificate at
-the widened thresholds `Î´ - Î¼` (interference) and `Î´ + Î¼`
-(distinguishability) â€” `HasProxyGapMarginAtLeast` (C13d) â€” persists under an
-exact circuit (C13e) and then transports to the central threshold `Î´` for
-the `U`-evolved states, whenever `2Îµ â‰¤ Î¼` (C13f, the main theorem). The
+approximates it in operator norm to error `ε`. The central mathematical
+point is that same-threshold persistence at `δ` with **no** margin is
+generally **not** justified: perturbing two unit states by `ε` each moves
+the diagonal difference by at most `4ε` and the cross sum by at most `4ε`
+(C13b), shifting the proxy threshold by `2ε` (since the definitions use
+`2 · threshold`). C13 therefore introduces a margin `μ`: a certificate at
+the widened thresholds `δ - μ` (interference) and `δ + μ`
+(distinguishability) — `HasProxyGapMarginAtLeast` (C13d) — persists under an
+exact circuit (C13e) and then transports to the central threshold `δ` for
+the `U`-evolved states, whenever `2ε ≤ μ` (C13f, the main theorem). The
 simulation certificates `CircuitSimulatesEvolutionAt`/`HasCircuitSimulationAt`
 (C13f) and their time-dependent extension `HasCircuitSimulationBound` (C13j)
 make this directly reusable. Instantiated at C10's noisy model (C13g) and
 then at C11's generated branches (C13h), with the concrete rational witness
-`Î´=1/2, Î¼=1/10, Îµ=1/20` (C13i, `80/101 < 4/5`, `6/5+80/101 â‰¤ 2`,
-`2Â·(1/20) â‰¤ 1/10`). An optional layer (C13k) constructs an evolution
-*genuinely* generated by a self-adjoint generator `H` â€” `evolve t :=
-exp(-itH)`, via Mathlib's existing operator exponential for bounded Câ‹†-
-algebras, with no extra assumption â€” leaving only the additive group law
+`δ=1/2, μ=1/10, ε=1/20` (C13i, `80/101 < 4/5`, `6/5+80/101 ≤ 2`,
+`2·(1/20) ≤ 1/10`). An optional layer (C13k) constructs an evolution
+*genuinely* generated by a self-adjoint generator `H` — `evolve t :=
+exp(-itH)`, via Mathlib's existing operator exponential for bounded C⋆-
+algebras, with no extra assumption — leaving only the additive group law
 unproved (a precisely documented Mathlib instance-resolution obstruction,
 not a mathematical gap).
 
 **C14** connects two already-established theorems rather than deriving one
 from the other: Riedel's unique orthogonal joint-branch decomposition
 (`Induction.riedel`, BranchesRiedel) and the Born weight
-`grainCoherenceTheorem_projector` (BornRule), which assigns `â€–projL c vâ€–Â²`
+`grainCoherenceTheorem_projector` (BornRule), which assigns `‖projL c v‖²`
 to any cell `c` of a perspective under (Pos), (Norm), (Grain), (Null).
 `BranchesRiedel/BornBridge/` distinguishes four objects: a branch vector
-`B f`, its active cell `span â„‚ {B f}` (defined only when `B f â‰  0` â€” a
+`B f`, its active cell `span ℂ {B f}` (defined only when `B f ≠ 0` — a
 zero vector has no formal cell), the support `branchSupport` (the supremum
 of the active cells, not necessarily the whole space), and the residual
-orthogonal cell `residualCell` (which may be `âŠ¥`). The central projection
+orthogonal cell `residualCell` (which may be `⊥`). The central projection
 identity, `starProjection_branchCell_apply_state : (branchCell B
-f).starProjection Ïˆ = activeBranchVector B f` (C14c), is a pure
-linear-algebra fact â€” via `Submodule.eq_starProjection_of_mem_orthogonal'`
-â€” independent of any weighting. `BranchPerspectivePackage` (C14e) builds a
+f).starProjection ψ = activeBranchVector B f` (C14c), is a pure
+linear-algebra fact — via `Submodule.eq_starProjection_of_mem_orthogonal'`
+— independent of any weighting. `BranchPerspectivePackage` (C14e) builds a
 genuine `Perspective` from the active cells, adding the residual cell only
-when it is nonzero (`Perspective` forbids `âŠ¥` cells).
+when it is nonzero (`Perspective` forbids `⊥` cells).
 `recordBranch_weight_eq_norm_sq` (C14f) then chains
 `grainCoherenceTheorem_projector` with the projection identity: the Born
-weight of each active cell is exactly `â€–B fâ€–Â²`, the residual weight is
-zero, and the active weights sum to `1`. Record-choice invariance (C14a) â€”
+weight of each active cell is exactly `‖B f‖²`, the residual weight is
+zero, and the active weights sum to `1`. Record-choice invariance (C14a) —
 `chainProj_choice_invariant`, proved by replacing one observable's record
 at a time via `Induction.tunneling`, never composing two different records
-of the same observable â€” gives weight invariance under the chosen record
+of the same observable — gives weight invariance under the chosen record
 (C14f.5) at the vector level, not merely the norm level.
 `record_induced_Born_decomposition` (C14g) assembles all of this into one
 abstract theorem, specialized to the local multisite model (C14h) and then
-to C11's exact unitary generation (C14i) â€” two branches `q.amp0 â€¢ basis00
-R`/`q.amp1 â€¢ basis11 R`, weights `â€–amp0â€–Â²`/`â€–amp1â€–Â²` â€” concretely at
+to C11's exact unitary generation (C14i) — two branches `q.amp0 • basis00
+R`/`q.amp1 • basis11 R`, weights `‖amp0‖²`/`‖amp1‖²` — concretely at
 `(3/5, 4/5)` giving the exact rational weights `9/25` and `16/25` (C14l).
 C10's noisy model satisfies only approximate redundancy
 (`ApproxRecordedPairOn`), not exact `IsRecordedOn`: exact branch uniqueness
 is therefore not concluded for it, only exact source-component extraction
 (C14j). Finally, the Born weights of evolved branches under a
-norm-preserving evolution (C13) retain their squared norm â€” via the
-norm-based polarization identity `inner_eq_sum_norm_sq_div_four` â€” without
+norm-preserving evolution (C13) retain their squared norm — via the
+norm-based polarization identity `inner_eq_sum_norm_sq_div_four` — without
 the evolved branch still being selected by the original record projectors
 (C14k).
 
@@ -2031,27 +2031,27 @@ address generic formation of approximate records from decoherence (distinct
 from C11's explicit unitary construction), establish efficient synthesis of
 arbitrary local record projectors, complete the operator-norm view of every
 repository API (C12 covers only the record-readout bridge), the full
-physical Taylorâ€“McCulloch
-criterion, a Trotter/product-formula or Liebâ€“Robinson simulation bound,
+physical Taylor–McCulloch
+criterion, a Trotter/product-formula or Lieb–Robinson simulation bound,
 linear or polynomial simulation-cost growth in time (C13 formalizes no
 `O(t)` notation), generic or
-Brownâ€“Susskind complexity growth, macroscopic irreversibility, equivalence
+Brown–Susskind complexity growth, macroscopic irreversibility, equivalence
 with Weingarten, or any interpretive claim about quantum mechanics. C14
 connects redundant records to Born weights for a given model, under (Pos),
-(Norm), (Grain), (Null) â€” it does not claim that records alone imply the
+(Norm), (Grain), (Null) — it does not claim that records alone imply the
 Born rule, that (Grain) need only hold on physically realized
 perspectives, or approximate/generic many-body branch-decomposition
 uniqueness.
 
 **C15** is the Lean formalization and repository integration of Theorem 3
-and Corollary 2 of Marko Lela, â€œThe Born Rule as the Unique
-Refinement-Stable Induced Weight on Robust Record Sectorsâ€
+and Corollary 2 of Marko Lela, “The Born Rule as the Unique
+Refinement-Stable Induced Weight on Robust Record Sectors”
 (arXiv:2603.24619v1). It concerns induced weights on admissible record
 situations, not a measure on the full projector lattice. Internal
 equivalence initially means equality of binary refinement profiles; exact
 binary saturation then proves that projected magnitude classifies those
 profiles. The resulting functional equation forces
-`W = c â€–P_R Î¨â€–Â²`, and finite normalization fixes `c = 1`. Additivity may be
+`W = c ‖P_R Ψ‖²`, and finite normalization fixes `c = 1`. Additivity may be
 inherited from an extensive valuation on disjoint continuation bundles. No
 Gleason, Busch, decision-theoretic, or envariance theorem is used. Binary
 saturation is assumed rather than derived from C14 dynamics; dense
@@ -2061,18 +2061,18 @@ explicitly deferred.
 **C17** is the first quantitative stability theorem within this
 development. It assumes that both weights already obey the exact quadratic
 law supplied by C15 and measures perturbations by the distance between
-projected components `u = P_(Râ‚)x Î¨â‚x` and `v = P_(Râ‚‚)x Î¨â‚‚x`. It proves
-`|Wâ‚-Wâ‚‚| â‰¤ (â€–uâ€–+â€–vâ€–)â€–u-vâ€–`, the unit-ball estimate
-`|Wâ‚-Wâ‚‚| â‰¤ 2â€–u-vâ€–`, and explicit finite-`LÂ¹`, `2Â·card(s)Â·Îµ`, and half-`LÂ¹`
+projected components `u = P_(R₁)x Ψ₁x` and `v = P_(R₂)x Ψ₂x`. It proves
+`|W₁-W₂| ≤ (‖u‖+‖v‖)‖u-v‖`, the unit-ball estimate
+`|W₁-W₂| ≤ 2‖u-v‖`, and explicit finite-`L¹`, `2·card(s)·ε`, and half-`L¹`
 bounds. It does not address approximate C15 hypotheses, approximate branch
 uniqueness, or a dynamical derivation of component proximity. No historical
 priority claim is made.
 
 **C17b** is an integration milestone, not a strengthening of the already
 completed reduced C17 core. On the unit ball, a fixed sector satisfies
-`|w_R(Ïˆ)-w_R(Ï†)| â‰¤ 2â€–Ïˆ-Ï†â€–`; projectors within operator-norm error `Îµ` satisfy
-`|w_R(Ïˆ)-w_S(Ïˆ)| â‰¤ 2Îµ`. A C13 simulation certificate therefore gives
-`|w_R(U(t)Ïˆ)-w_R(CÏˆ)| â‰¤ 2Îµ` for every fixed sector. C14 branch weights also
+`|w_R(ψ)-w_R(φ)| ≤ 2‖ψ-φ‖`; projectors within operator-norm error `ε` satisfy
+`|w_R(ψ)-w_S(ψ)| ≤ 2ε`. A C13 simulation certificate therefore gives
+`|w_R(U(t)ψ)-w_R(Cψ)| ≤ 2ε` for every fixed sector. C14 branch weights also
 inherit the generic branch-vector bound when the caller supplies an explicit
 branch correspondence. These bridges do not establish approximate branch
 matching or uniqueness, approximate saturation, or physical persistence of
@@ -2080,7 +2080,7 @@ record selection.
 
 ## AI assistance
 
-This developmentâ€”skeleton, proofs, and architectural choicesâ€”was carried out
+This development—skeleton, proofs, and architectural choices—was carried out
 with assistance from Claude (Anthropic), under human supervision at every
 stage: every uncertain Mathlib API was checked through stdin before use
 (lake env lean --stdin), every milestone began with a validated skeleton
@@ -2126,7 +2126,7 @@ report; all depend on the same trio):
 'QuantumFoundations.BornRule.hker_derivation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.exists_rho' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
-'QuantumFoundations.BornRule.Eâ‚€_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuantumFoundations.BornRule.E₀_satisfies_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.BornRule.refine_filter_sup_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.HistoriesKent.contrary_inferences' depends on axioms: [propext, Classical.choice, Quot.sound]
 'QuantumFoundations.HistoriesKent.inference' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2144,13 +2144,13 @@ grainCoherenceTheorem depends both on Gleason.gleason AND on the internal
 Uhlhorn infrastructure U2/U3a. In both cases, the dual dependency chain leaks
 no additional axioms, as confirmed above. contrary_inferences depends
 transitively on a THREE-level chain
-(HistoriesKent â†’ BornRule.Perspective â†’ external Uhlhorn/Gleason); the
+(HistoriesKent → BornRule.Perspective → external Uhlhorn/Gleason); the
 same trio was confirmed when HistoriesKent was closed on 2026-07-16, as was the
 absence of any BornRule axiom regression following the relocation of
 norm_sq_sum_of_pairwise_orthogonal/sum_sq_projL_of_pairwise_isOrtho
 (from private in Nonvacuity.lean to public declarations in
-Perspective.lean). The 34 PUBLIC BornRule declarationsâ€”the previous 32 +
-the two relocated, now public lemmasâ€”were rechecked individually; none
+Perspective.lean). The 34 PUBLIC BornRule declarations—the previous 32 +
+the two relocated, now public lemmas—were rechecked individually; none
 was affected.
 
 ## Repository map
@@ -2163,9 +2163,9 @@ was affected.
 | QuantumFoundations/Naimark/Main.lean | dilV, isometry, Naimark theorem, Born corollary | 157 |
 | QuantumFoundations/Naimark/Unitary.lean | N5 (optional): unitary extension, ancilla form | 210 |
 | QuantumFoundations/Wigner/Defs.lean | e, eImg, InPerp, V, refVec, chidir, chi, U, IsWignerMap | 119 |
-| QuantumFoundations/Wigner/Scalar.lean | Scalar toolkit over â„‚ (rigidity, id/conj dichotomy) | 117 |
+| QuantumFoundations/Wigner/Scalar.lean | Scalar toolkit over ℂ (rigidity, id/conj dichotomy) | 117 |
 | QuantumFoundations/Wigner/Bessel.lean | Bessel identity (equality); orthonormal images | 126 |
-| QuantumFoundations/Wigner/VConstruction.lean | Bargmann's Construction B: V, collinearity, (11)â€“(12a) | 449 |
+| QuantumFoundations/Wigner/VConstruction.lean | Bargmann's Construction B: V, collinearity, (11)–(12a) | 449 |
 | QuantumFoundations/Wigner/Core.lean | Core: dichotomy of chi, additivity/homogeneity of V | 833 |
 | QuantumFoundations/Wigner/Main.lean | U, bijectivity, compatibility with T, theorem wigner | 399 |
 | QuantumFoundations/Wigner/Uniqueness.lean | W6 (optional): exclusivity (A), restricted uniqueness (B) | 439 |
@@ -2174,14 +2174,14 @@ was affected.
 | QuantumFoundations/Uhlhorn/WignerProjectionForm.lean | U1: Wigner's Corollary (B) in projection language | 117 |
 | QuantumFoundations/Uhlhorn/Spectral.lean | U2: elementary spectral lemma | 131 |
 | QuantumFoundations/Uhlhorn/GleasonExtend.lean | U3a: extension of a frame function on lines to a full ProjMeasure | 268 |
-| QuantumFoundations/Uhlhorn/GleasonTwice.lean | U3b: â€œGleason applied twiceâ€ | 175 |
+| QuantumFoundations/Uhlhorn/GleasonTwice.lean | U3b: “Gleason applied twice” | 175 |
 | QuantumFoundations/Uhlhorn/Assembly.lean | U4 (assembly) + U5 (finite-dimensional reduction), theorem uhlhorn_finite_dim | 111 |
-| QuantumFoundations/Uhlhorn/Nonvacuity.lean | Uhlhorn witness: Ï† := id | 53 |
+| QuantumFoundations/Uhlhorn/Nonvacuity.lean | Uhlhorn witness: φ := id | 53 |
 | QuantumFoundations/BornRule/Perspective.lean | B1: Perspective, Refines, AxGrain/AxNorm/AxPos/AxNul, lemma4_noncontextual, basisPerspective, cellLines, refinePerspective | 555 |
 | QuantumFoundations/BornRule/GleasonBridge.lean | B2: g, g_isFrameFunctionOnLines, exists_rho (replaces axiom gleason) | 115 |
-| QuantumFoundations/BornRule/Pinning.lean | B3: eq_projL_of_vanishes_on_orthogonal (identification of Ï via U2) | 83 |
+| QuantumFoundations/BornRule/Pinning.lean | B3: eq_projL_of_vanishes_on_orthogonal (identification of ρ via U2) | 83 |
 | QuantumFoundations/BornRule/Assembly.lean | B4 (assembly), final theorem grainCoherenceTheorem | 215 |
-| QuantumFoundations/BornRule/Nonvacuity.lean | BornRule witness: Eâ‚€ v (Born rule) satisfies Grain+Norm+Pos+Null simultaneously | 177 |
+| QuantumFoundations/BornRule/Nonvacuity.lean | BornRule witness: E₀ v (Born rule) satisfies Grain+Norm+Pos+Null simultaneously | 177 |
 | QuantumFoundations/Nonvacuity.lean | Naimark witness: uniform POVM with n=2, m=2 | 65 |
 | QuantumFoundations/HistoriesKent/Defs.lean | History, IsHistoryOf, chainOp, decFunctional, IsConsistent, histProb | 162 |
 | QuantumFoundations/HistoriesKent/Nonvacuity.lean | HistoriesKent witness: every one-stage Perspective is consistent | 85 |
@@ -2210,20 +2210,20 @@ was affected.
 | QuantumFoundations/Complexity/CircuitLocality.lean | C1: circuit commutation away from its support | 45 |
 | QuantumFoundations/Complexity/RecordInterference.lean | C1: untouched records force zero cross amplitude | 122 |
 | QuantumFoundations/Complexity/Counting.lean | C2: generic counting of touched disjoint regions | 35 |
-| QuantumFoundations/Complexity/Main.lean | C2: main bound `R â‰¤ 2 * C.length` | 63 |
+| QuantumFoundations/Complexity/Main.lean | C2: main bound `R ≤ 2 * C.length` | 63 |
 | QuantumFoundations/Complexity/ProxyDefs.lean | C3: exact distinguishability and interference proxies | 82 |
 | QuantumFoundations/Complexity/NormalizedBranches.lean | C3: normalization of nonzero recorded branches | 83 |
 | QuantumFoundations/Complexity/ProxyCertificates.lean | C3: relational certificates and `ceilHalf` | 96 |
 | QuantumFoundations/Complexity/RecordInterferenceBound.lean | C4: two-orientation interference bound | 96 |
 | QuantumFoundations/Complexity/RecordDistinguishability.lean | C5: exact phase-flip readout | 114 |
 | QuantumFoundations/Complexity/BranchGap.lean | C6: subtraction-free gap certificate | 50 |
-| QuantumFoundations/Complexity/MinComplexity.lean | C6: `WithTop â„•` minima and actual gap | 180 |
+| QuantumFoundations/Complexity/MinComplexity.lean | C6: `WithTop ℕ` minima and actual gap | 180 |
 | QuantumFoundations/Complexity/CircuitConjugation.lean | C7a: reversible evolution certificates and sandwich circuits | 157 |
 | QuantumFoundations/Complexity/CircuitInverse.lean | C7a: local gate inverses and canonical inverse circuits | 207 |
 | QuantumFoundations/Complexity/ProxyTransport.lean | C7b: exact matrix-element and proxy transport | 180 |
 | QuantumFoundations/Complexity/Persistence.lean | C7c: relational certificate transport | 111 |
 | QuantumFoundations/Complexity/RecordPersistence.lean | C7d: redundant-record persistence bounds | 104 |
-| QuantumFoundations/Complexity/PersistenceMinima.lean | C7e: `WithTop â„•` transport without attainment | 117 |
+| QuantumFoundations/Complexity/PersistenceMinima.lean | C7e: `WithTop ℕ` transport without attainment | 117 |
 | QuantumFoundations/Complexity/ApproxRecordDefs.lean | C8a: aggregated approximate-record predicate | 78 |
 | QuantumFoundations/Complexity/ApproxRecordBasic.lean | C8a: recorded pairs and exact bridge | 64 |
 | QuantumFoundations/Complexity/ApproxRecordInterference.lean | C8b: sharp untouched cross-amplitude bound | 132 |
@@ -2242,7 +2242,7 @@ was affected.
 | QuantumFoundations/Complexity/Models/NoisyRepetition/States.lean | C10b: four configurations and noisy branches | 215 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Records.lean | C10c: exact record errors and approximate pair | 182 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Readout.lean | C10d: exact readout at an arbitrary record site | 59 |
-| QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean | C10e: robust complexity separation at `Î´ = 1/2` | 89 |
+| QuantumFoundations/Complexity/Models/NoisyRepetition/Complexities.lean | C10e: robust complexity separation at `δ = 1/2` | 89 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Interference.lean | C10f: finite noisy interference witness | 151 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/Persistence.lean | C10g: robust gap and conditional persistence | 123 |
 | QuantumFoundations/Complexity/Models/NoisyRepetition/ConcreteNoise.lean | C10h: concrete rational profile `(99/101, 20/101)` | 95 |
@@ -2271,7 +2271,7 @@ was affected.
 | QuantumFoundations/Complexity/SimulatedEvolution/SimulationCertificate.lean | C13f: persistence under simulated evolution | 142 |
 | QuantumFoundations/Complexity/SimulatedEvolution/NoisyRepetition.lean | C13g: margin instantiation for the noisy model | 92 |
 | QuantumFoundations/Complexity/SimulatedEvolution/GeneratedBranches.lean | C13h: connection to C11 generated branches | 77 |
-| QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean | C13i: concrete rational instance `Î´=1/2, Î¼=1/10, Îµ=1/20` | 108 |
+| QuantumFoundations/Complexity/SimulatedEvolution/ConcreteModel.lean | C13i: concrete rational instance `δ=1/2, μ=1/10, ε=1/20` | 108 |
 | QuantumFoundations/Complexity/SimulatedEvolution/TimeEvolution.lean | C13j: time-dependent simulation cost | 85 |
 | QuantumFoundations/Complexity/SimulatedEvolution/HamiltonianEvolution.lean | C13k: certified self-adjoint-generated evolution | 117 |
 | QuantumFoundations/Complexity/SimulatedEvolution/Nonvacuity.lean | C13: non-vacuity of the simulated-evolution API | 114 |
@@ -2283,142 +2283,142 @@ MILESTONES.md (detailed milestone-by-milestone tracking), and
 ARCHITECTURE_NOTES.md (consolidated record of all deviations from the
 initial plans).
 
-## Milestones â€” Naimark
+## Milestones — Naimark
 
 | Milestone | Content | Status |
 |-----------|------------------------------------------------------------|--------|
-| N0 | Skeleton (POVM, DilSpace, Nonvacuity) | âœ… |
-| N1 | sqrtOp (spectral positive square root) | âœ… |
-| N2 | Dilation-space components (singleL/coordL/dilProj) | âœ… |
-| N3 | Dilation (dilV, naimark, naimark_born) | âœ… |
-| N4 | Closure (README, #print axioms, tag) | âœ… |
-| N5 | Optional: unitary/ancilla version (tag v2.0-naimark) | âœ… |
+| N0 | Skeleton (POVM, DilSpace, Nonvacuity) | ✅ |
+| N1 | sqrtOp (spectral positive square root) | ✅ |
+| N2 | Dilation-space components (singleL/coordL/dilProj) | ✅ |
+| N3 | Dilation (dilV, naimark, naimark_born) | ✅ |
+| N4 | Closure (README, #print axioms, tag) | ✅ |
+| N5 | Optional: unitary/ancilla version (tag v2.0-naimark) | ✅ |
 
-## Milestones â€” Wigner
+## Milestones — Wigner
 
 | Milestone | Content | Status |
 |-----------|----------------------------------------------------------------------------|--------|
-| W0 | Skeleton (Defs, Nonvacuity, 24 sorry) | âœ… |
-| W1 | Scalar toolkit (Scalar.lean: rigidity, scalar_dichotomy) | âœ… |
-| W2 | Bessel identity (equality), orthonormal images | âœ… |
-| W3 | Construction of V (collinearity, Eqs. 11â€“12a) | âœ… |
-| W4 | Core: dichotomy of chi, additivity/homogeneity of V | âœ… |
-| W5 | Assembly (U, bijectivity, compatibility, wigner) | âœ… |
-| W6 | Optional: exclusivity (A) + restricted uniqueness (B) (tag v2.0-wigner) | âœ… |
+| W0 | Skeleton (Defs, Nonvacuity, 24 sorry) | ✅ |
+| W1 | Scalar toolkit (Scalar.lean: rigidity, scalar_dichotomy) | ✅ |
+| W2 | Bessel identity (equality), orthonormal images | ✅ |
+| W3 | Construction of V (collinearity, Eqs. 11–12a) | ✅ |
+| W4 | Core: dichotomy of chi, additivity/homogeneity of V | ✅ |
+| W5 | Assembly (U, bijectivity, compatibility, wigner) | ✅ |
+| W6 | Optional: exclusivity (A) + restricted uniqueness (B) (tag v2.0-wigner) | ✅ |
 
-## Milestones â€” Uhlhorn
+## Milestones — Uhlhorn
 
 | Milestone | Content | Status |
 |-----------|--------------------------------------------------------------------------------|--------|
-| U0 | Reconnaissance + skeleton (Defs.lean, 6 sorry) | âœ… |
-| U1 | Wigner's Corollary (B) in projection language (wigner_projection_form) | âœ… |
-| U2 | Elementary spectral lemma (eq_projL_of_positive_le_one_trace_one_inner_one) | âœ… |
-| U3a | Extension of a frame function on lines to a full ProjMeasure | âœ… |
-| U3b | â€œGleason applied twiceâ€ (traceProd_preserved_of_sendsONBToONB) | âœ… |
-| U4 | Direct assembly of U1 and U3b | âœ… |
-| U5 | Finite-dimensional reduction, final theorem (tag v1.0-uhlhorn) | âœ… |
+| U0 | Reconnaissance + skeleton (Defs.lean, 6 sorry) | ✅ |
+| U1 | Wigner's Corollary (B) in projection language (wigner_projection_form) | ✅ |
+| U2 | Elementary spectral lemma (eq_projL_of_positive_le_one_trace_one_inner_one) | ✅ |
+| U3a | Extension of a frame function on lines to a full ProjMeasure | ✅ |
+| U3b | “Gleason applied twice” (traceProd_preserved_of_sendsONBToONB) | ✅ |
+| U4 | Direct assembly of U1 and U3b | ✅ |
+| U5 | Finite-dimensional reduction, final theorem (tag v1.0-uhlhorn) | ✅ |
 
-## Milestones â€” BornRule
+## Milestones — BornRule
 
 | Milestone | Content | Status |
 |-----------|----------------------------------------------------------------------------------|--------|
-| B1 | Scaffolding: Perspective, axioms, lemma4_noncontextual, refinePerspective | âœ… |
-| B2 | Bridge to Gleason: g, IsFrameFunctionOnLines, exists_rho | âœ… |
-| B3 | Pinning: eq_projL_of_vanishes_on_orthogonal (identification of Ï via U2) | âœ… |
-| B4 | Final assembly, theorem grainCoherenceTheorem | âœ… |
-| Nonvacuity | Eâ‚€ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | âœ… |
+| B1 | Scaffolding: Perspective, axioms, lemma4_noncontextual, refinePerspective | ✅ |
+| B2 | Bridge to Gleason: g, IsFrameFunctionOnLines, exists_rho | ✅ |
+| B3 | Pinning: eq_projL_of_vanishes_on_orthogonal (identification of ρ via U2) | ✅ |
+| B4 | Final assembly, theorem grainCoherenceTheorem | ✅ |
+| Nonvacuity | E₀ v (Born rule) simultaneously inhabits Grain+Norm+Pos+Null | ✅ |
 
-## Milestones â€” BornRule/EffectPerspectives (qubit/Busch extension)
+## Milestones — BornRule/EffectPerspectives (qubit/Busch extension)
 
 See also `QuantumFoundations/BornRule/EffectPerspectives/README.md` for the
 full detail (scope, derivations, interpretive non-claims).
 
 | Milestone | Content | Status |
 |-----------|---------|--------|
-| QB1 | `Effect` (subtype of `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | âœ… |
-| QB2 | `EffectPerspective` (finite labelled POVM-like family), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | âœ… |
-| QB3 | `Refines` (refinement via `parent` + fiber-sum reconstruction); `Refines.trans` deferred (documented, non-blocking) | âœ… |
-| QB4 | `EstimationRule` (weight/non-negativity/normalization/`grain`), a strictly larger hypothesis domain than the projective `AxGrain` | âœ… |
-| QB5 | Context independence, zero/unit-effect weight, and binary additivity **derived** from `grain` alone (never axioms) | âœ… |
-| QB6 | Construction of `Gleason.EffectMeasure`; direct application of `Gleason.busch`/`Gleason.busch_born_rule` | âœ… |
-| QB7 | `ContextualNullSupport` (state-relative); fallback pinning theorem `density_bornValue_eq_pure_of_null` | âœ… |
-| QB8 | `projectionEffect_weight_eq_born`: Born weight for projection effects, in arbitrary finite dimension | âœ… |
-| QB9 | Explicit dimension-two (qubit) corollary, without invoking `Gleason.gleason` | âœ… |
-| QB10 | Nonvacuity: `pureStateEstimationRule` (proved directly, without Busch), exact qubit witnesses | âœ… |
-| QB11 | Bridge to Naimark: `EffectPerspective.toPOVM`, dilated projective realization (`naimark`/`naimark_born`/`naimark_projective_form`), a pure integration layer | âœ… |
+| QB1 | `Effect` (subtype of `Gleason.IsEffect`), `zeroEffect`/`oneEffect`/`complementEffect`/`projectionEffect` | ✅ |
+| QB2 | `EffectPerspective` (finite labelled POVM-like family), `binaryPerspective`/`splitPerspective`/`duplicateZeroPerspective` | ✅ |
+| QB3 | `Refines` (refinement via `parent` + fiber-sum reconstruction); `Refines.trans` deferred (documented, non-blocking) | ✅ |
+| QB4 | `EstimationRule` (weight/non-negativity/normalization/`grain`), a strictly larger hypothesis domain than the projective `AxGrain` | ✅ |
+| QB5 | Context independence, zero/unit-effect weight, and binary additivity **derived** from `grain` alone (never axioms) | ✅ |
+| QB6 | Construction of `Gleason.EffectMeasure`; direct application of `Gleason.busch`/`Gleason.busch_born_rule` | ✅ |
+| QB7 | `ContextualNullSupport` (state-relative); fallback pinning theorem `density_bornValue_eq_pure_of_null` | ✅ |
+| QB8 | `projectionEffect_weight_eq_born`: Born weight for projection effects, in arbitrary finite dimension | ✅ |
+| QB9 | Explicit dimension-two (qubit) corollary, without invoking `Gleason.gleason` | ✅ |
+| QB10 | Nonvacuity: `pureStateEstimationRule` (proved directly, without Busch), exact qubit witnesses | ✅ |
+| QB11 | Bridge to Naimark: `EffectPerspective.toPOVM`, dilated projective realization (`naimark`/`naimark_born`/`naimark_projective_form`), a pure integration layer | ✅ |
 
-## Milestones â€” HistoriesKent
+## Milestones — HistoriesKent
 
 | Milestone | Content | Status |
 |-----------|--------------------------------------------------------------------------------------------------|--------|
-| K0 | Skeleton (History, chainOp, decFunctional, IsConsistent, Nonvacuity) | âœ… |
-| K1 | General lemmas: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | âœ… |
-| K2 | Explicit Kent witness in H 3 (Witness.lean), S_consistent | âœ… |
-| K3 | inference, final theorem contrary_inferences (tag v1.0-histories) | âœ… |
+| K0 | Skeleton (History, chainOp, decFunctional, IsConsistent, Nonvacuity) | ✅ |
+| K1 | General lemmas: decFunctional_last_stage_orthogonal, histProb_additivity_two_stage | ✅ |
+| K2 | Explicit Kent witness in H 3 (Witness.lean), S_consistent | ✅ |
+| K3 | inference, final theorem contrary_inferences (tag v1.0-histories) | ✅ |
 
-## Milestones â€” Complexity
+## Milestones — Complexity
 
 | Milestone | Content | Status |
 |---|---|---|
-| C0 | Finite circuits of unitary gates supported on at most two sites | âœ… |
-| C1 | Commutation away from the support and zero cross amplitude | âœ… |
-| C2 | Independent counting and exact bound `R â‰¤ 2 * C.length` | âœ… |
-| C3 | Exact proxy predicates, normalized branches, and relational certificates | âœ… |
-| C4 | Interference lower bound `ceilHalf R` from redundant records | âœ… |
-| C5 | Distinguishability upper bound from a supplied exact record phase flip | âœ… |
-| C6 | Subtraction-free proxy gap and `WithTop â„•` minima | âœ… |
-| C7 | Exact transport and conditional persistence under finite reversible circuits | âœ… |
-| C8 | Approximate records, quantitative bounds, and conditional persistence | âœ… |
-| C9 | Explicit repetition model, concrete circuits, and linear proxy gap | âœ… |
-| C10 | Explicit **noisy** repetition model (`leak â‰  0`), robust separation | âœ… |
-| C11 | **Unitary** local-circuit generation of source-record branches | âœ… |
-| C12 | Finite-dimensional **operator-norm** bridge to the C8â€“C11 pointwise readout hypotheses | âœ… |
-| C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | âœ… |
-| C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | âœ… |
-| C15 | Uniqueness `W = c â€–P_R Î¨â€–Â²` on admissible record situations under stability, internal equivalence, and binary saturation | âœ… |
-| C17 | First quantitative stability theorem for C15 weights under projected-component perturbations, with pointwise, `LÂ¹`, and uniform bounds | âœ… |
-| C17b | Stability bridges to fixed sectors, C12 operator norm, C13 simulation, and explicitly matched C14 branch weights | âœ… |
+| C0 | Finite circuits of unitary gates supported on at most two sites | ✅ |
+| C1 | Commutation away from the support and zero cross amplitude | ✅ |
+| C2 | Independent counting and exact bound `R ≤ 2 * C.length` | ✅ |
+| C3 | Exact proxy predicates, normalized branches, and relational certificates | ✅ |
+| C4 | Interference lower bound `ceilHalf R` from redundant records | ✅ |
+| C5 | Distinguishability upper bound from a supplied exact record phase flip | ✅ |
+| C6 | Subtraction-free proxy gap and `WithTop ℕ` minima | ✅ |
+| C7 | Exact transport and conditional persistence under finite reversible circuits | ✅ |
+| C8 | Approximate records, quantitative bounds, and conditional persistence | ✅ |
+| C9 | Explicit repetition model, concrete circuits, and linear proxy gap | ✅ |
+| C10 | Explicit **noisy** repetition model (`leak ≠ 0`), robust separation | ✅ |
+| C11 | **Unitary** local-circuit generation of source-record branches | ✅ |
+| C12 | Finite-dimensional **operator-norm** bridge to the C8–C11 pointwise readout hypotheses | ✅ |
+| C13 | Robust gap persistence under **simulated evolution**, with a mandatory threshold margin | ✅ |
+| C14 | **Record-induced Born bridge**: Riedel's branch decomposition + the Grain Coherence Theorem | ✅ |
+| C15 | Uniqueness `W = c ‖P_R Ψ‖²` on admissible record situations under stability, internal equivalence, and binary saturation | ✅ |
+| C17 | First quantitative stability theorem for C15 weights under projected-component perturbations, with pointwise, `L¹`, and uniform bounds | ✅ |
+| C17b | Stability bridges to fixed sectors, C12 operator norm, C13 simulation, and explicitly matched C14 branch weights | ✅ |
 
-## Main theorems â€” reference table
+## Main theorems — reference table
 
 | Theorem | Informal statement | Reference | File (lines) | Status | Tag |
 |---|---|---|---:|---|---|
 | naimark | Every finite POVM dilates to a projection-valued measure under an isometry | Watrous Thm 2.42 | Naimark/Main.lean (157) | 0 sorry, 0 axioms | v2.0-naimark |
 | naimark_born | The Born formula is preserved by this dilation | Watrous Thm 2.42 | Naimark/Main.lean (157) | 0 sorry, 0 axioms | v2.0-naimark |
-| exists_unitary_extension / naimark_projective_form | The dilation isometry extends to a global unitary (ancilla form) | Paris Â§3.2 Thm 4 / Watrous Cor. 2.43 | Naimark/Unitary.lean (210) | 0 sorry, 0 axioms | v2.0-naimark |
-| wigner | Every transformation preserving \|âŸ¨Ï†\|ÏˆâŸ©\|Â² is induced by a unitary or antiunitary, without a bijectivity hypothesis | Bargmann 1964 Â§1â€“Â§5 | Wigner/Main.lean (399) | 0 sorry, 0 axioms | v1.0-wigner |
-| exclusivity | The same T cannot be compatible with both a unitary and an antiunitary equivalence (n â‰¥ 2) | Bargmann 1964 Â§1.5 | Wigner/Uniqueness.lean (439) | 0 sorry, 0 axioms | v2.0-wigner |
-| U_alt_eq_smul | U is unique up to a global phase relative to the choice of representative of eImg (restricted version) | Bargmann 1964 Â§6 (restricted) | Wigner/Uniqueness.lean (439) | 0 sorry, 0 axioms | v2.0-wigner |
-| uhlhorn_finite_dim | In dimension n â‰¥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Å emrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (111) | 0 sorry, 0 axioms | v1.0-uhlhorn |
-| grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (âˆ‘áµ¢â€–âŸ¨v,fáµ¢âŸ©â€–Â²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (215) | 0 sorry, 0 axioms | v2.0-bornrule |
-| grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = â€–projL c vâ€–Â²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | â€” |
-| EffectPerspectives.projectionEffect_weight_eq_born | Under effect nonvacuity and state-relative null support, the weight of a projection effect equals the Born weight â€–A.starProjection Ïˆâ€–Â², in arbitrary finite dimension n â‰¥ 1 | Busch 2003, PRL 91, 120403 | BornRule/EffectPerspectives/Main.lean | 0 sorry, 0 axioms | â€” |
-| EffectPerspectives.qubit_projectionEffect_weight_eq_born | Explicit dimension-two (qubit) corollary of the preceding theorem, without invoking Gleason.gleason | Busch 2003 (specialized n = 2) | BornRule/EffectPerspectives/Qubit.lean | 0 sorry, 0 axioms | â€” |
+| exists_unitary_extension / naimark_projective_form | The dilation isometry extends to a global unitary (ancilla form) | Paris §3.2 Thm 4 / Watrous Cor. 2.43 | Naimark/Unitary.lean (210) | 0 sorry, 0 axioms | v2.0-naimark |
+| wigner | Every transformation preserving \|⟨φ\|ψ⟩\|² is induced by a unitary or antiunitary, without a bijectivity hypothesis | Bargmann 1964 §1–§5 | Wigner/Main.lean (399) | 0 sorry, 0 axioms | v1.0-wigner |
+| exclusivity | The same T cannot be compatible with both a unitary and an antiunitary equivalence (n ≥ 2) | Bargmann 1964 §1.5 | Wigner/Uniqueness.lean (439) | 0 sorry, 0 axioms | v2.0-wigner |
+| U_alt_eq_smul | U is unique up to a global phase relative to the choice of representative of eImg (restricted version) | Bargmann 1964 §6 (restricted) | Wigner/Uniqueness.lean (439) | 0 sorry, 0 axioms | v2.0-wigner |
+| uhlhorn_finite_dim | In dimension n ≥ 3, preserving orthogonality in one direction only (neither injectivity nor surjectivity) suffices to be a Wigner symmetry | Šemrl 2021, arXiv:2106.06182, Cor. 1.2 | Uhlhorn/Assembly.lean (111) | 0 sorry, 0 axioms | v1.0-uhlhorn |
+| grainCoherenceTheorem | Under (Grain)+(Norm)+(Pos)+(Null), the value of an estimation rule on a cell is the Born rule (∑ᵢ‖⟨v,fᵢ⟩‖²) | Gleason 1957 (underlying theorem) | BornRule/Assembly.lean (215) | 0 sorry, 0 axioms | v2.0-bornrule |
+| grainCoherenceTheorem_projector | Projector-notation version of the preceding theorem (Est D c = ‖projL c v‖²), with no additional independent mathematical content | Corollary of grainCoherenceTheorem | BornRule/Assembly.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.projectionEffect_weight_eq_born | Under effect nonvacuity and state-relative null support, the weight of a projection effect equals the Born weight ‖A.starProjection ψ‖², in arbitrary finite dimension n ≥ 1 | Busch 2003, PRL 91, 120403 | BornRule/EffectPerspectives/Main.lean | 0 sorry, 0 axioms | — |
+| EffectPerspectives.qubit_projectionEffect_weight_eq_born | Explicit dimension-two (qubit) corollary of the preceding theorem, without invoking Gleason.gleason | Busch 2003 (specialized n = 2) | BornRule/EffectPerspectives/Qubit.lean | 0 sorry, 0 axioms | — |
 | contrary_inferences | Two consistent history sets sharing preparation and postselection can imply two orthogonal propositions with certainty | Kent 1997, PRL 78, 2874, arXiv:gr-qc/9604012 | HistoriesKent/ContraryInferences.lean (162) | 0 sorry, 0 axioms | v1.0-histories |
-| regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R â‰¤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | â€” |
-| redundant_records_give_interference_lower_bound | Every circuit satisfying the exact proxy has length at least `ceilHalf R` | Exact proxy + C2 in both orientations | Complexity/RecordInterferenceBound.lean (96) | 0 sorry, 0 axioms | â€” |
-| record_phase_flip_gives_distinguishability_upper_bound | A circuit implementing `2 P_j - I` distinguishes normalized branches at threshold `Î´ â‰¤ 1` | Exact record readout | Complexity/RecordDistinguishability.lean (114) | 0 sorry, 0 axioms | â€” |
-| redundant_records_give_proxy_gap_certificate | `D.length + g â‰¤ ceilHalf R` certifies a proxy gap of at least `g` | Composition of C4/C5 certificates | Complexity/BranchGap.lean (50) | 0 sorry, 0 axioms | â€” |
-| redundant_records_complexity_gap | The same gap holds for exact `WithTop â„•` minima | Infimum of circuit lengths | Complexity/MinComplexity.lean (180) | 0 sorry, 0 axioms | â€” |
-| redundant_records_gap_persists_under_reversible_evolution | The record gap persists under `D.length + 2 * overhead + g â‰¤ ceilHalf R` | Exact transport by an inverse circuit pair | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | â€” |
-| redundant_records_gap_persists_under_circuit_evolution | The canonical inverse specializes the budget to `D.length + 4 * E.length + g â‰¤ ceilHalf R` | Canonical local inverse + preceding theorem | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | â€” |
-| norm_cross_amplitude_le_of_untouched_approx_record | An untouched approximate record bounds its cross amplitude by `Î·` | Projector/defect split + Cauchyâ€“Schwarz | Complexity/ApproxRecordInterference.lean (132) | 0 sorry, 0 axioms | â€” |
-| approximate_records_give_interference_lower_bound | `Î·i + Î·j < 2Î´` forces length at least `ceilHalf R` | Robust bound + C2 counting | Complexity/ApproxRecordInterferenceBound.lean (123) | 0 sorry, 0 axioms | â€” |
-| approx_record_phase_flip_gives_upper_bound | `2Î´ + 2Î·j + Î¾ â‰¤ 2` supplies a distinguishability witness | Explicit approximate phase readout | Complexity/ApproxRecordDistinguishability.lean (203) | 0 sorry, 0 axioms | â€” |
-| approximate_records_give_proxy_gap_certificate | The robust thresholds and `D.length + g â‰¤ ceilHalf R` certify the proxy gap | C8c/C8d composition | Complexity/ApproxBranchGap.lean (152) | 0 sorry, 0 axioms | â€” |
-| approximate_records_gap_persists_under_circuit_evolution | The robust gap persists under `D.length + 4 * E.length + g â‰¤ ceilHalf R` | Exact C7 transport of the C8 certificate | Complexity/ApproxRecordPersistence.lean (160) | 0 sorry, 0 axioms | â€” |
-| repetition_distinguishabilityComplexity | The explicit model has `C_D = 1` | One-site reflection + exclusion of the empty circuit | Models/Repetition/Distinguishability.lean (82) | 0 sorry, 0 axioms | â€” |
-| repetition_interferenceComplexity_bounds | `ceilHalf R â‰¤ C_I â‰¤ R`, hence `C_I â‰  âŠ¤` | Singleton records + explicit `R`-flip circuit | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | â€” |
-| repetition_has_proxy_gap | `1 + g â‰¤ ceilHalf R` certifies the explicit gap | Direct C4â€“C6 instantiation | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | â€” |
-| repetition_gap_persists_under_circuit | `1 + 4 * E.length + g â‰¤ ceilHalf R` preserves the gap | Direct C7 instantiation | Models/Repetition/Persistence.lean (57) | 0 sorry, 0 axioms | â€” |
-| noisy_repetition_approxRecordedPairOn | Noisy records inhabit `ApproxRecordedPairOn` with exact aggregate error `2 * â€–leakâ€–` | Exact projector actions on the four configurations | Models/NoisyRepetition/Records.lean (182) | 0 sorry, 0 axioms | â€” |
-| noisy_repetition_distinguishabilityComplexity | Under robust noise (`4â€–leakâ€– < 1`), `C_D = 1` at `Î´ = 1/2` | One-site exact readout + C8d threshold | Models/NoisyRepetition/Complexities.lean (89) | 0 sorry, 0 axioms | â€” |
-| noisy_repetition_interference_bounds | Under robust noise, `ceilHalf R â‰¤ C_I â‰¤ R + 1` at `Î´ = 1/2` | C8c approximate records + all-bit-flip witness | Models/NoisyRepetition/Interference.lean (151) | 0 sorry, 0 axioms | â€” |
-| noisy_repetition_has_proxy_gap | `1 + g â‰¤ ceilHalf R` certifies the robust gap | Direct C8e instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | â€” |
-| noisy_repetition_gap_persists_under_circuit | `1 + 4 * E.length + g â‰¤ ceilHalf R` preserves the robust gap | Direct C8f instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | â€” |
-| rationalNoiseProfile_isRobust | The rational profile `(99/101, 20/101)` is robust (`80/101 < 1`) | Pythagorean triple `99Â² + 20Â² = 101Â²` | Models/NoisyRepetition/ConcreteNoise.lean (95) | 0 sorry, 0 axioms | â€” |
+| regions_card_le_two_mul_circuit_length_of_cross_amplitude_ne_zero | `R` exact disjoint records and a nonzero cross amplitude imply `R ≤ 2 * C.length` | Finite counting + Riedel records | Complexity/Main.lean (63) | 0 sorry, 0 axioms | — |
+| redundant_records_give_interference_lower_bound | Every circuit satisfying the exact proxy has length at least `ceilHalf R` | Exact proxy + C2 in both orientations | Complexity/RecordInterferenceBound.lean (96) | 0 sorry, 0 axioms | — |
+| record_phase_flip_gives_distinguishability_upper_bound | A circuit implementing `2 P_j - I` distinguishes normalized branches at threshold `δ ≤ 1` | Exact record readout | Complexity/RecordDistinguishability.lean (114) | 0 sorry, 0 axioms | — |
+| redundant_records_give_proxy_gap_certificate | `D.length + g ≤ ceilHalf R` certifies a proxy gap of at least `g` | Composition of C4/C5 certificates | Complexity/BranchGap.lean (50) | 0 sorry, 0 axioms | — |
+| redundant_records_complexity_gap | The same gap holds for exact `WithTop ℕ` minima | Infimum of circuit lengths | Complexity/MinComplexity.lean (180) | 0 sorry, 0 axioms | — |
+| redundant_records_gap_persists_under_reversible_evolution | The record gap persists under `D.length + 2 * overhead + g ≤ ceilHalf R` | Exact transport by an inverse circuit pair | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
+| redundant_records_gap_persists_under_circuit_evolution | The canonical inverse specializes the budget to `D.length + 4 * E.length + g ≤ ceilHalf R` | Canonical local inverse + preceding theorem | Complexity/RecordPersistence.lean (104) | 0 sorry, 0 axioms | — |
+| norm_cross_amplitude_le_of_untouched_approx_record | An untouched approximate record bounds its cross amplitude by `η` | Projector/defect split + Cauchy–Schwarz | Complexity/ApproxRecordInterference.lean (132) | 0 sorry, 0 axioms | — |
+| approximate_records_give_interference_lower_bound | `ηi + ηj < 2δ` forces length at least `ceilHalf R` | Robust bound + C2 counting | Complexity/ApproxRecordInterferenceBound.lean (123) | 0 sorry, 0 axioms | — |
+| approx_record_phase_flip_gives_upper_bound | `2δ + 2ηj + ξ ≤ 2` supplies a distinguishability witness | Explicit approximate phase readout | Complexity/ApproxRecordDistinguishability.lean (203) | 0 sorry, 0 axioms | — |
+| approximate_records_give_proxy_gap_certificate | The robust thresholds and `D.length + g ≤ ceilHalf R` certify the proxy gap | C8c/C8d composition | Complexity/ApproxBranchGap.lean (152) | 0 sorry, 0 axioms | — |
+| approximate_records_gap_persists_under_circuit_evolution | The robust gap persists under `D.length + 4 * E.length + g ≤ ceilHalf R` | Exact C7 transport of the C8 certificate | Complexity/ApproxRecordPersistence.lean (160) | 0 sorry, 0 axioms | — |
+| repetition_distinguishabilityComplexity | The explicit model has `C_D = 1` | One-site reflection + exclusion of the empty circuit | Models/Repetition/Distinguishability.lean (82) | 0 sorry, 0 axioms | — |
+| repetition_interferenceComplexity_bounds | `ceilHalf R ≤ C_I ≤ R`, hence `C_I ≠ ⊤` | Singleton records + explicit `R`-flip circuit | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | — |
+| repetition_has_proxy_gap | `1 + g ≤ ceilHalf R` certifies the explicit gap | Direct C4–C6 instantiation | Models/Repetition/Complexities.lean (105) | 0 sorry, 0 axioms | — |
+| repetition_gap_persists_under_circuit | `1 + 4 * E.length + g ≤ ceilHalf R` preserves the gap | Direct C7 instantiation | Models/Repetition/Persistence.lean (57) | 0 sorry, 0 axioms | — |
+| noisy_repetition_approxRecordedPairOn | Noisy records inhabit `ApproxRecordedPairOn` with exact aggregate error `2 * ‖leak‖` | Exact projector actions on the four configurations | Models/NoisyRepetition/Records.lean (182) | 0 sorry, 0 axioms | — |
+| noisy_repetition_distinguishabilityComplexity | Under robust noise (`4‖leak‖ < 1`), `C_D = 1` at `δ = 1/2` | One-site exact readout + C8d threshold | Models/NoisyRepetition/Complexities.lean (89) | 0 sorry, 0 axioms | — |
+| noisy_repetition_interference_bounds | Under robust noise, `ceilHalf R ≤ C_I ≤ R + 1` at `δ = 1/2` | C8c approximate records + all-bit-flip witness | Models/NoisyRepetition/Interference.lean (151) | 0 sorry, 0 axioms | — |
+| noisy_repetition_has_proxy_gap | `1 + g ≤ ceilHalf R` certifies the robust gap | Direct C8e instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | — |
+| noisy_repetition_gap_persists_under_circuit | `1 + 4 * E.length + g ≤ ceilHalf R` preserves the robust gap | Direct C8f instantiation | Models/NoisyRepetition/Persistence.lean (123) | 0 sorry, 0 axioms | — |
+| rationalNoiseProfile_isRobust | The rational profile `(99/101, 20/101)` is robust (`80/101 < 1`) | Pythagorean triple `99² + 20² = 101²` | Models/NoisyRepetition/ConcreteNoise.lean (95) | 0 sorry, 0 axioms | — |
 
-â€œ0 axiomsâ€ means dependence only on
+“0 axioms” means dependence only on
 [propext, Classical.choice, Quot.sound], verified by #print axioms for
 each main theorem; see the preceding section and the `#print axioms` output
 kept in the assembly files.
@@ -2433,15 +2433,15 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  876aa7390b5d831cd81415d55493a1c0c3bae31e, a fixed revision unchanged
  since Naimark). Usage expanded from Uhlhorn and reused by BornRule
  (unlike Naimark, which reuses only Gleason.IsPositiveOp, a simple Prop):
- Uhlhorn AND BornRule invoke Gleason.gleason itselfâ€”the full Gleason
- theorem, not merely a definitionâ€”as well as part of its internal machinery
+ Uhlhorn AND BornRule invoke Gleason.gleason itself—the full Gleason
+ theorem, not merely a definition—as well as part of its internal machinery
  (Gleason.positive_inner_self_eq_zero, Gleason.cframe_sum_invariant,
  Gleason.ProjMeasure/bornValue/projL,
  Gleason.exists_orthonormalBasis_extension_complex,
  Submodule.starProjection_isSymmetric/re_inner_starProjection_nonneg).
- This is deliberate and expected: Uhlhorn (Å emrl's Corollary 1.2) and
- BornRule (grainCoherenceTheorem) compose Gleasonâ€”and, for Uhlhorn,
- Wignerâ€”by construction; they are not self-contained results, as explained
+ This is deliberate and expected: Uhlhorn (Šemrl's Corollary 1.2) and
+ BornRule (grainCoherenceTheorem) compose Gleason—and, for Uhlhorn,
+ Wigner—by construction; they are not self-contained results, as explained
  in the dedicated sections above. Despite this substantially broader
  dependency, there is no transitive axiom leakage: this was confirmed
  directly by #print axioms for every theorem in this repository, including
@@ -2457,7 +2457,7 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  invoke Gleason.gleason or
  Gleason.projL/Submodule.starProjection directly, but inherits them
  transitively through BornRule.Perspective (the three-level chain
- HistoriesKent â†’ BornRule â†’ external Uhlhorn/Gleason). The same absence of axiom
+ HistoriesKent → BornRule → external Uhlhorn/Gleason). The same absence of axiom
  leakage was confirmed for contrary_inferences and the other 35 public
  declarations in the block. **BornRule/EffectPerspectives** (the qubit/Busch
  extension) reuses, within the same already-pinned revision,
@@ -2465,7 +2465,7 @@ This repository pins two Lake dependencies to fixed, resolvable revisions
  Gleason.EffectMeasure, and above all Gleason.busch/Gleason.busch_born_rule
  (the full Busch theorem, applied directly at a single point,
  EffectMeasure.lean, never reproved). Unlike Gleason.gleason (dimension
- â‰¥ 3), Busch applies from dimension 1 onward, which is what makes the qubit
+ ≥ 3), Busch applies from dimension 1 onward, which is what makes the qubit
  case (n = 2) reachable without the projective route. No dependency
  declaration was added or changed: every one of these declarations already
  existed in the pinned revision.
@@ -2487,7 +2487,7 @@ statement; see AGENTS.md for the complete rules.
 
 Apache License 2.0.
 
-## Module D â€” selector bridges with explicit costs
+## Module D — selector bridges with explicit costs
 
 Module D formalizes bridges between the selector family and a supplied finite
 tensor decomposition `D : TensorDecomposition n a`. Generic coordinate
