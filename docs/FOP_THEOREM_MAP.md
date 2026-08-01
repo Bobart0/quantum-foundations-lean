@@ -391,3 +391,55 @@ Every declaration in `Selectors/` depends only on the standard trio
 module for this interpretively neutral subsystem, matching its exclusion
 from `Audit/FoP.lean`; `Audit/SelectorStructure.lean` runs the same
 `#check`/`#print axioms` sweep specifically over Module B's public API).
+
+## Naimark/BinaryImpl (interpretively neutral, no manuscript role)
+
+`QuantumFoundations/Naimark/BinaryImpl/` is an independent, interpretively
+neutral development — nothing Everettian enters it, and no
+manuscript-facing theorem elsewhere in this repository depends on it. It
+is not part of the manuscript's argument chain and is not audited by
+`Audit/FoP.lean`; see `Naimark/README.md` for the full architecture. It
+classifies the exact structure of concrete binary implementations of a
+fixed effect, on top of the auxiliary Naimark dilation theorem above,
+without ever re-proving it.
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.minimal_strictIso` |
+| Module | `Naimark/BinaryImpl/MinimalUniqueness.lean` |
+| Status | original result (this development's central theorem: two minimal implementations of the same effect are always strictly isomorphic) |
+| Dependencies | `BinaryImpl`, `StrictIso` (`Defs.lean`); `IsMinimal`, `minimalSubspace` (`Minimal.lean`); `exists_isometryEquiv_of_adjoint_comp_self_eq_of_surjective` (`GramRange.lean`, a general Gram-equality-implies-canonical-isometry lemma proved here) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `StrictIso` is deliberately stronger than mere equality of induced effects (automatic by construction); the theorem says nothing about non-minimal implementations, which `Residual.lean`/`StrictClassification.lean` address separately (necessity direction only — see next entry) |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.StrictIso.{excessEventDim_eq, excessComplementDim_eq}` |
+| Module | `Naimark/BinaryImpl/StrictClassification.lean` |
+| Status | original result (necessity direction only): a strict isomorphism forces equality of the two residual dilation multiplicities `excessEventDim`/`excessComplementDim` (`Residual.lean`) |
+| Dependencies | `StrictIso.projectorRange_finrank_eq`/`projectorKernel_finrank_eq` (`Defs.lean`); the additive decompositions `projectorRank_decomposition`/`projectorNullity_decomposition` (`Residual.lean`) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | **the converse (sufficient) direction, and hence the full equivalence `strictIso_iff_residualDims_eq` envisioned for this module, is NOT proved.** Its construction would require gluing three orthogonal isometries (the minimal part plus two residual sectors with no natural common domain) into one ambient isometry; no statement here uses it, weakens it to a single implication, or otherwise substitutes for it. `ResidualExtension`/`minimalCore` and the residual-neutral valuation equivalence (`Valuation.lean`) are correspondingly not built — see `Naimark/README.md`, "What is not claimed" |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.canonicalBinaryImpl_canonicalTernaryImpl_not_strictIso_replicatedAncilla` |
+| Module | `Naimark/BinaryImpl/TernaryFusion.lean` |
+| Status | original result: the canonical binary and ternary implementations of the same effect (ambient rank ratios `1/2` vs `1/3`) are never strictly isomorphic, even after adjoining an arbitrarily large replicated ancilla on either side |
+| Dependencies | `rankRatio`, `rankRatio_replicatedAncilla`, `replicatedAncillaImpl` (`ReplicatedAncilla.lean`); `StrictIso.rankRatio_eq` (a strict isomorphism forces equal rank ratio, since it forces equal `ambientDim` and equal `projectorRank` separately) |
+| Dimension | `n ≥ 1` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `rankRatio` is a computable numeric invariant, not a claim about physical distinguishability of ancilla-augmented implementations; `Valuation.lean`'s `ambientDimValuation` shows `StrictIsoInvariant` does not by itself entail `ReplicatedAncillaNeutral` |
+
+Every declaration in `Naimark/BinaryImpl/` depends only on the standard
+trio `[propext, Classical.choice, Quot.sound]`, verified by
+`QuantumFoundations/Audit/NaimarkOmega.lean` (not imported by the
+repository root, run separately in CI, mirroring `Audit/SelectorStructure.lean`).

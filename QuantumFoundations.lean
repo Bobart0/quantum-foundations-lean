@@ -115,6 +115,7 @@ import QuantumFoundations.Naimark.BinaryImpl.TernaryFusion
 import QuantumFoundations.Naimark.BinaryImpl.Valuation
 import QuantumFoundations.Naimark.BinaryImpl.Nonvacuity
 import QuantumFoundations.Naimark.BinaryImpl.Nontriviality
+import QuantumFoundations.Naimark.BinaryImpl.Main
 
 namespace QuantumFoundations
 
