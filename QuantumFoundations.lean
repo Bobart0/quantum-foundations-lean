@@ -98,6 +98,7 @@ import QuantumFoundations.Selectors.SubgroupCovariance
 import QuantumFoundations.Selectors.BasisStabilizer
 import QuantumFoundations.Selectors.PerspectiveDephasing
 import QuantumFoundations.Selectors.PerspectiveStabilizer
+import QuantumFoundations.Selectors.PerspectiveClassification
 
 namespace QuantumFoundations
 
