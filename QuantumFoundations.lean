@@ -116,6 +116,8 @@ import QuantumFoundations.Naimark.BinaryImpl.Valuation
 import QuantumFoundations.Naimark.BinaryImpl.Nonvacuity
 import QuantumFoundations.Naimark.BinaryImpl.Nontriviality
 import QuantumFoundations.Naimark.BinaryImpl.Main
+import QuantumFoundations.FiniteTensor.Main
+import QuantumFoundations.Selectors.BridgeMain
 
 namespace QuantumFoundations
 
