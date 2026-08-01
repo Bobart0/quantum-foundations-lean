@@ -108,6 +108,8 @@ import QuantumFoundations.Naimark.BinaryImpl.Canonical
 import QuantumFoundations.Naimark.BinaryImpl.Minimal
 import QuantumFoundations.Naimark.BinaryImpl.GramRange
 import QuantumFoundations.Naimark.BinaryImpl.MinimalUniqueness
+import QuantumFoundations.Naimark.BinaryImpl.Residual
+import QuantumFoundations.Naimark.BinaryImpl.StrictClassification
 
 namespace QuantumFoundations
 
