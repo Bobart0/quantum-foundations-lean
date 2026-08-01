@@ -99,6 +99,7 @@ import QuantumFoundations.Selectors.BasisStabilizer
 import QuantumFoundations.Selectors.PerspectiveDephasing
 import QuantumFoundations.Selectors.PerspectiveStabilizer
 import QuantumFoundations.Selectors.PerspectiveClassification
+import QuantumFoundations.Selectors.Monotonicity
 
 namespace QuantumFoundations
 
