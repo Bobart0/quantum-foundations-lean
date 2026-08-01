@@ -73,14 +73,14 @@ contrary to what one might hope from a "purely structural" invariant.
 stronger than `ReplicatedAncillaNeutral`), together with
 `MinimalImplValuation`, the "residually neutral valuations ≃ minimal
 valuations" equivalence, and
-`implementationIndependent_of_residualNeutral`, are NOT formalized here:
+`implementationIndependent_of_residualNeutral`, are formalized in the residual valuation module below:
 their precise definition requires the `residualExtension` construction
 (direct-sum extension of a minimal implementation by residual sectors),
 itself omitted (`ReplicatedAncilla.lean`) because its intended use --
 decomposing ANY implementation into a minimal core plus a residual
 extension -- depends on the sufficiency direction of
 `strictIso_iff_residualDims_eq`, already documented as blocked in
-`StrictClassification.lean`. No statement mentioning them appears here.
+`StrictClassification.lean`. The corresponding public statements are checked by the regression audit.
 -/
 
 namespace QuantumFoundations.Naimark.BinaryImpl
@@ -102,22 +102,27 @@ theorem one_isEffect (n : ℕ) : Gleason.IsEffect (1 : H n →ₗ[ℂ] H n) := b
   · rw [sub_self]
     exact zero_isPositiveOp
 
-/-- A valuation of implementations of `E`: assigns a rational number to
-every implementation, in every ambient space. -/
-def ImplValuation (n : ℕ) (E : H n →ₗ[ℂ] H n) : Type 1 :=
-  ∀ {ι : Type} [Fintype ι] [DecidableEq ι], BinaryImpl n E ι → ℚ
+/-- A valuation over implementations with values in an arbitrary codomain. -/
+def ImplValuationR (R : Type u) (n : ℕ) (E : H n →ₗ[ℂ] H n) : Type (max u 1) :=
+  ∀ {ι : Type} [Fintype ι] [DecidableEq ι], BinaryImpl n E ι → R
+
+abbrev ImplValuation (n : ℕ) (E : H n →ₗ[ℂ] H n) : Type 1 :=
+  ImplValuationR ℚ n E
 
 variable {n : ℕ} {E : H n →ₗ[ℂ] H n}
 
-/-- `v` does not distinguish strictly isomorphic implementations. -/
-def StrictIsoInvariant (v : ImplValuation n E) : Prop :=
+def StrictIsoInvariantR {R : Type u} (v : ImplValuationR R n E) : Prop :=
   ∀ {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
-    {I : BinaryImpl n E ι} {J : BinaryImpl n E κ}, BinaryImpl.StrictIso I J → v I = v J
+    (I : BinaryImpl n E ι) (J : BinaryImpl n E κ),
+    BinaryImpl.StrictIso I J → v I = v J
 
-/-- `v` is unchanged by adjoining a replicated ancilla. -/
-def ReplicatedAncillaNeutral (v : ImplValuation n E) : Prop :=
-  ∀ {ι : Type} [Fintype ι] [DecidableEq ι] (I : BinaryImpl n E ι) {a : ℕ} (a₀ : Fin a),
-    v (replicatedAncillaImpl I a₀) = v I
+abbrev StrictIsoInvariant (v : ImplValuation n E) : Prop := StrictIsoInvariantR v
+
+def ReplicatedAncillaNeutralR {R : Type u} (v : ImplValuationR R n E) : Prop :=
+  ∀ {ι : Type} [Fintype ι] [DecidableEq ι] (I : BinaryImpl n E ι)
+    {a : ℕ} (a₀ : Fin a), v (replicatedAncillaImpl I a₀) = v I
+
+abbrev ReplicatedAncillaNeutral (v : ImplValuation n E) : Prop := ReplicatedAncillaNeutralR v
 
 /-- `rankRatio`, packaged as an `ImplValuation`. -/
 def rankRatioValuation : ImplValuation n E := fun {_} _ _ I => rankRatio I

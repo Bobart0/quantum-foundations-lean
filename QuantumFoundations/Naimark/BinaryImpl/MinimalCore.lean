@@ -8,7 +8,7 @@ open scoped InnerProductSpace
 noncomputable section
 
 variable {n : ℕ} {E : H n →ₗ[ℂ] H n}
-variable {ι : Type} [Fintype ι] [DecidableEq ι]
+variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
 
 noncomputable def minimalCoordinates (I : BinaryImpl n E ι) :
     SubspaceCoordinates (minimalSubspace I) :=
@@ -140,9 +140,47 @@ theorem minimalCore_isMinimal (I : BinaryImpl n E ι) :
   rw [hw]
   exact (minimalCoordinates I).coord_apply_embed y
 
+
+theorem minimalCore_strictIso_of_strictIso
+    {I : BinaryImpl n E ι} {J : BinaryImpl n E κ}
+    (h : BinaryImpl.StrictIso I J) :
+    BinaryImpl.StrictIso (minimalCore I) (minimalCore J) :=
+  minimal_strictIso (minimalCore_isMinimal I) (minimalCore_isMinimal J)
+
+theorem minimalCore_unique_up_to_strictIso
+    (I : BinaryImpl n E ι) (J : BinaryImpl n E κ) :
+    BinaryImpl.StrictIso (minimalCore I) (minimalCore J) :=
+  minimal_strictIso (minimalCore_isMinimal I) (minimalCore_isMinimal J)
+
+noncomputable def normalForm (I : BinaryImpl n E ι) :=
+  twoSidedResidualExtension (minimalCore I)
+    (excessEventDim I) (excessComplementDim I)
+
+theorem normalForm_excessEventDim (I : BinaryImpl n E ι) :
+    excessEventDim (normalForm I) = excessEventDim I := by
+  unfold normalForm
+  exact excessEventDim_twoSidedResidualExtension (minimalCore I)
+    (excessEventDim I) (excessComplementDim I) (minimalCore_isMinimal I)
+
+theorem normalForm_excessComplementDim (I : BinaryImpl n E ι) :
+    excessComplementDim (normalForm I) = excessComplementDim I := by
+  unfold normalForm
+  exact excessComplementDim_twoSidedResidualExtension (minimalCore I)
+    (excessEventDim I) (excessComplementDim I) (minimalCore_isMinimal I)
+
+theorem strictIso_normalForm (I : BinaryImpl n E ι) :
+    BinaryImpl.StrictIso I (normalForm I) := by
+  apply strictIso_of_residualDims_eq
+  · rw [normalForm_excessEventDim]
+  · rw [normalForm_excessComplementDim]
+
+theorem minimalImpl_nonempty (hE : Gleason.IsEffect E) :
+    ∃ I : BinaryImpl n E
+      (Fin ((minimalCoordinates (canonicalBinaryImpl E hE)).dim)), IsMinimal I :=
+  ⟨minimalCore (canonicalBinaryImpl E hE),
+    minimalCore_isMinimal (canonicalBinaryImpl E hE)⟩
+
 end
 
 end QuantumFoundations.Naimark.BinaryImpl
-
-
 
