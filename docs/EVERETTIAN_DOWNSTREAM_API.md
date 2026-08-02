@@ -76,3 +76,32 @@ Downstream code can migrate incrementally:
 Each contract file under `QuantumFoundations/Audit/` imports only the facade it
 tests (or only the aggregate facade for the aggregate contract), and includes
 the relevant `#print axioms` checks. No new dependency is required.
+
+## Packaging and CI contract
+
+The four public facades are declared explicitly in the `globs` of the Lake
+library: `FiniteTensorAPI`, `SelectorBridgeAPI`,
+`NaimarkImplementationAPI`, and `EverettianAPI`. The root
+`QuantumFoundations.lean` imports the aggregate facade additively; no facade
+imports the root.
+
+The four leaf contracts are compiled individually in CI, and
+`QuantumFoundations/Audit/EverettianDownstreamContracts.lean` provides one
+aggregate audit target. An external Lake consumer smoke test compiles each
+facade separately, once through a local path dependency and once through the
+pushed Git SHA on push events. These checks validate package exposure without
+changing the historical `ProbabilityAPI` contract.
+
+Local commands:
+
+```sh
+python scripts/check_downstream_api_consumer.py --source-path .
+```
+
+For a published revision, the equivalent Git dependency check is:
+
+```sh
+python scripts/check_downstream_api_consumer.py \
+  --git-url https://github.com/Bobart0/quantum-foundations-lean.git \
+  --rev <published-sha>
+```

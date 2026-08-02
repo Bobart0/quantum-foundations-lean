@@ -118,6 +118,7 @@ import QuantumFoundations.Naimark.BinaryImpl.Nontriviality
 import QuantumFoundations.Naimark.BinaryImpl.Main
 import QuantumFoundations.FiniteTensor.Main
 import QuantumFoundations.Selectors.BridgeMain
+import QuantumFoundations.EverettianAPI
 
 namespace QuantumFoundations
 

@@ -20,3 +20,22 @@ jobs:
       # (lake exe cache get) et lance `lake build` — aucune option supplémentaire
       # nécessaire pour ce projet (config par défaut vérifiée).
       - uses: leanprover/lean-action@v1
+      - name: Downstream API contracts
+        run: |
+          lake env lean QuantumFoundations/Audit/FiniteTensorAPIContract.lean
+          lake env lean QuantumFoundations/Audit/SelectorBridgeAPIContract.lean
+          lake env lean QuantumFoundations/Audit/NaimarkImplementationAPIContract.lean
+          lake env lean QuantumFoundations/Audit/EverettianAPIContract.lean
+          lake env lean QuantumFoundations/Audit/EverettianDownstreamContracts.lean
+
+      - name: External downstream consumer - local path
+        run: |
+          python3 scripts/check_downstream_api_consumer.py \
+            --source-path "$GITHUB_WORKSPACE"
+
+      - name: External downstream consumer - pushed Git SHA
+        if: github.event_name == 'push'
+        run: |
+          python3 scripts/check_downstream_api_consumer.py \
+            --git-url "https://github.com/${GITHUB_REPOSITORY}.git" \
+            --rev "${GITHUB_SHA}"
