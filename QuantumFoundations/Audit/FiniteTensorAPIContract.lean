@@ -59,3 +59,6 @@ example : QuantumFoundations.FiniteTensor.SuppliedBipartiteFactorization.toCoord
 
 end
 end QuantumFoundations.FiniteTensorAPIContract
+
+#check QuantumFoundations.FiniteTensorAPI.tDensity
+#check QuantumFoundations.FiniteTensorAPI.tensorOperator_smul_id_smul_id

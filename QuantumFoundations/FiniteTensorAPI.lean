@@ -68,3 +68,35 @@ export QuantumFoundations.FiniteTensor.SystemEnvironmentFactorization
 end SystemEnvironmentFactorization
 
 end QuantumFoundations.FiniteTensorAPI
+
+namespace QuantumFoundations.FiniteTensorAPI
+
+open QuantumFoundations
+open QuantumFoundations.FiniteTensor
+open Gleason
+open scoped InnerProductSpace
+
+noncomputable section
+
+export QuantumFoundations.Selector (tDensity)
+
+/-- Scalar tensor products transport to scalar multiplication of the identity. -/
+theorem tensorOperator_smul_id_smul_id {n a : ℕ} (c d : ℂ) :
+    tensorOperator (c • (LinearMap.id : H n →ₗ[ℂ] H n))
+        (d • (LinearMap.id : H a →ₗ[ℂ] H a)) =
+      (c * d) • (LinearMap.id : BipartiteSpace n a →ₗ[ℂ] BipartiteSpace n a) := by
+  apply linearMap_ext_productStdKet
+  intro j i
+  change tensorOperator (c • (LinearMap.id : H n →ₗ[ℂ] H n))
+      (d • (LinearMap.id : H a →ₗ[ℂ] H a))
+      (productStateCoordinates (stdKet i) (stdKet j)) = _
+  rw [tensorOperator_apply_productState]
+  simp only [LinearMap.smul_apply, LinearMap.id_apply]
+  rw [productStateCoordinates_smul_left,
+    productStateCoordinates_smul_right, smul_smul]
+  change (c * d) • productStateCoordinates (stdKet i) (stdKet j) =
+    (c * d) • productStateCoordinates (stdKet i) (stdKet j)
+  rfl
+
+end
+end QuantumFoundations.FiniteTensorAPI
