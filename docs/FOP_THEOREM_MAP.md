@@ -420,12 +420,12 @@ without ever re-proving it.
 | Manuscript role | none — interpretively neutral, independent development |
 | Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.StrictIso.{excessEventDim_eq, excessComplementDim_eq}` |
 | Module | `Naimark/BinaryImpl/StrictClassification.lean` |
-| Status | original result (necessity direction only): a strict isomorphism forces equality of the two residual dilation multiplicities `excessEventDim`/`excessComplementDim` (`Residual.lean`) |
+| Status | complete strict classification: `strictIso_of_residualDims_eq` and `strictIso_iff_residualDims_eq`, with residual dimensions as the exact invariant (`Residual.lean`, `StrictClassification.lean`) |
 | Dependencies | `StrictIso.projectorRange_finrank_eq`/`projectorKernel_finrank_eq` (`Defs.lean`); the additive decompositions `projectorRank_decomposition`/`projectorNullity_decomposition` (`Residual.lean`) |
 | Dimension | generic `n` |
 | Exactness | exact |
 | Axiom audit | standard trio |
-| Scope limitation | **the converse (sufficient) direction, and hence the full equivalence `strictIso_iff_residualDims_eq` envisioned for this module, is NOT proved.** Its construction would require gluing three orthogonal isometries (the minimal part plus two residual sectors with no natural common domain) into one ambient isometry; no statement here uses it, weakens it to a single implication, or otherwise substitutes for it. `ResidualExtension`/`minimalCore` and the residual-neutral valuation equivalence (`Valuation.lean`) are correspondingly not built — see `Naimark/README.md`, "What is not claimed" |
+| Scope limitation | finite-dimensional and interpretively neutral; no additional physical or infinite-dimensional claim is made |
 
 | Field | Value |
 |---|---|

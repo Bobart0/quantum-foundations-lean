@@ -26,12 +26,12 @@ that theorem, without ever re-proving it.
 | `GramRange.lean` | Gram identities; the general lemma `exists_range_isometryEquiv_of_adjoint_comp_self_eq` (same Gram ⟹ canonically isometric ranges) and its ambient-to-ambient surjective variant; `eventGeneratedEquiv`/`complementGeneratedEquiv` |
 | `MinimalUniqueness.lean` | **`minimal_strictIso`** — two MINIMAL implementations of the same effect are ALWAYS strictly isomorphic (the module's central theorem) |
 | `Residual.lean` | `excessEventDim`/`excessComplementDim` (the two residual multiplicities), additive decompositions of every global quantity into a minimal part (depends only on `E`) plus a residual part (depends on `I`) |
-| `StrictClassification.lean` | The NECESSARY direction only: `StrictIso.excessEventDim_eq`/`StrictIso.excessComplementDim_eq`. The sufficient direction, and hence `strictIso_iff_residualDims_eq`, is deliberately not attempted — see "What is not claimed" below |
+| `StrictClassification.lean` | Complete strict classification: `strictIso_of_residualDims_eq` and `strictIso_iff_residualDims_eq` for the two residual dimensions |
 | `ReplicatedAncilla.lean` | `replicatedAncillaImpl` (identical replicas in `a` orthogonal blocks); `rankRatio := projectorRank / ambientDim` and its exact invariance under replication |
 | `TernaryFusion.lean` | The canonical binary/ternary counterexample: ratios `1/2` vs `1/3`, non-isomorphism surviving arbitrary ancilla replication on both sides |
 | `Valuation.lean` | `ImplValuation`, `StrictIsoInvariant`, `ReplicatedAncillaNeutral`; `rankRatio` satisfies both, `ambientDim` separates them |
 | `Nonvacuity.lean` / `Nontriviality.lean` | Concrete witnesses that the structures above are satisfiable and genuinely distinguishing |
-| `Main.lean` | Synthesis, capstone (`rankRatio_eq_of_isMinimal`), and an explicit accounting of what is and is not established |
+| `Main.lean` | Complete synthesis, capstone `rankRatio_eq_of_isMinimal`, and an explicit scope statement |
 
 ## The central theorem in one paragraph
 
@@ -63,31 +63,21 @@ diamond between `EuclideanSpace`/`WithLp`'s own `Module` path and the
 generic one expected by `LinearIsometryEquiv.inner_map_map` at an
 explicit `Submodule` type.
 
-## What is not claimed
+## Status and scope
 
-- **The sufficient direction of strict classification.** `excessEventDim
-  I = excessEventDim J ∧ excessComplementDim I = excessComplementDim J →
-  StrictIso I J`, and hence the full equivalence
-  `strictIso_iff_residualDims_eq`, are NOT proved. Their construction
-  requires gluing THREE orthogonal isometries (the minimal part, plus two
-  residual sectors of equal dimension but with no natural common domain)
-  into a single ambient isometry — unlike the minimal case, which has
-  `DilSpace n 2` as a ready-made common domain. No statement in this
-  module uses the sufficient direction, replaces it with a single
-  implication, or otherwise substitutes for it.
-- **`ResidualExtension`/`minimalCore`.** The direct-sum construction
-  extending a minimal core by residual sectors, and the theorem that
-  every implementation decomposes this way, are not built: their
-  intended use depends on the point above.
-- **`ResidualExtensionNeutral`/`MinimalImplValuation`.** The strictly
-  stronger third neutrality notion, the "residually neutral valuations ≃
-  minimal valuations" equivalence, and
-  `implementationIndependent_of_residualNeutral` are not formalized, for
-  the same reason.
-- **Nonvacuity of `IsMinimal`.** No concrete implementation is exhibited
-  with `IsMinimal` proved; `canonicalBinaryImpl E hE` is minimal only
-  when both `E` and `1-E` are injective, and this has not been formally
-  verified for any concrete witness.
-- Nothing here is stated or proved in infinite dimension. Nothing here
-  re-proves `naimark`/`naimark_dilation`; every canonical implementation
-  is built directly from them.
+All finite-dimensional Module C constructions listed in this document are
+implemented and audited. This includes the residual extensions and normal
+form (`residualExtension`, `eventResidualExtension`,
+`complementResidualExtension`, `twoSidedResidualExtension`, `minimalCore`,
+`normalForm`, and `strictIso_normalForm`), the exact strict classification
+`strictIso_iff_residualDims_eq`, and the residual-neutral valuation
+classification through `implementationIndependent_of_residualNeutral`.
+
+The public counter-models and nonvacuity results are included as well. The
+complete surface is checked by `QuantumFoundations/Audit/NaimarkOmega.lean`,
+whose declarations use only `[propext, Classical.choice, Quot.sound]` and no
+`sorryAx`.
+
+The scope remains finite-dimensional and interpretively neutral. Nothing here
+reproves the Naimark dilation theorem, and no infinite-dimensional or physical
+claim is made.
