@@ -1,0 +1,41 @@
+import QuantumFoundations.SelectorBridgeAPI
+
+namespace QuantumFoundations.SelectorBridgeAPIContract
+
+open QuantumFoundations.SelectorBridgeAPI
+
+#check Selector
+#check IsCovariant
+#check NSNC1
+#check tDensity
+#check tSelector
+#check bornSelector
+#check AncillaNeutralUnder
+#check TensorMultiplicativeUnder
+#check TensorDecomposition
+#check BipartiteSpace
+#check partialTraceAncilla
+#check tensorOperator
+#check tDensity_at_one
+#check tDensity_at_inv_dim
+#check reduced_tDensity_apply_self
+#check reduced_tDensity_selfValue
+#check tSelector_ancillaNeutral_iff_t_eq_one
+#check tensorMultiplicative_parameter_equations
+#check isotropic_tensor_parameter_classification
+#check tSelectors_tensorMultiplicative_iff
+#check tSelector_tensorMult_iff_t_eq_one_or_inv_dim
+#check tSelector_tensorMult_iff_t_mem
+#check tSelector_sameParameterComposite_tensorMult_iff_t_eq_one
+#check bornSelector_ancillaNeutral
+#check bornSelector_tensorMultiplicative
+#check maximallyMixed_tSelector_not_nsnc1
+#check tensorMultiplicative_not_implies_nsnc1
+#check covariance_without_nsnc1
+#check covariant_and_tensorMultiplicative_not_implies_nsnc1
+#check tSelector_half_not_ancillaNeutral
+
+#print axioms QuantumFoundations.Selector.tSelector_ancillaNeutral_iff_t_eq_one
+#print axioms QuantumFoundations.Selector.tSelectors_tensorMultiplicative_iff
+
+end QuantumFoundations.SelectorBridgeAPIContract

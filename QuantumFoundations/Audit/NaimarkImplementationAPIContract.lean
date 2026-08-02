@@ -1,0 +1,45 @@
+import QuantumFoundations.NaimarkImplementationAPI
+
+namespace QuantumFoundations.NaimarkImplementationAPIContract
+
+open QuantumFoundations.NaimarkImplementationAPI
+
+#check BinaryImpl
+#check StrictIso
+#check IsMinimal
+#check minimalSubspace
+#check residualSubspace
+#check residualEvent
+#check residualComplement
+#check excessEventDim
+#check excessComplementDim
+#check strictIso_of_residualDims_eq
+#check strictIso_iff_residualDims_eq
+#check minimalCore
+#check minimalCore_isMinimal
+#check normalForm
+#check strictIso_normalForm
+#check residualExtension
+#check eventResidualExtension
+#check complementResidualExtension
+#check twoSidedResidualExtension
+#check ImplValuationR
+#check StrictIsoInvariantR
+#check ReplicatedAncillaNeutralR
+#check EventResidualNeutral
+#check ComplementResidualNeutral
+#check ResidualExtensionNeutral
+#check MinimalImplValuation
+#check ResidualNeutralImplValuation
+#check valuation_eq_minimalCore_of_residualNeutral
+#check residualNeutralValuationsEquivMinimalValuations
+#check implementationIndependent_of_residualNeutral
+#check rankRatio
+#check rankRatioValuation
+#check rankRatioValuation_not_residualNeutral
+#check replicatedAncillaNeutral_not_implies_residualNeutral
+#check totalResidualDim_not_complete_invariant
+
+#print axioms QuantumFoundations.Naimark.BinaryImpl.implementationIndependent_of_residualNeutral
+
+end QuantumFoundations.NaimarkImplementationAPIContract

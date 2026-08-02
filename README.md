@@ -2512,3 +2512,16 @@ so multiplicativity does not by itself select Born. Ancilla neutrality of
 the isotropic family pins `t=1`, relative to the supplied decomposition
 `D`. It is not identified with Module C residual neutrality, no preferred
 factorization is derived, and no unproved equivalence with NSNC1 is claimed.
+
+## Everettian downstream API
+
+Recommended imports for downstream repositories:
+
+```lean
+import QuantumFoundations.ProbabilityAPI
+import QuantumFoundations.FiniteTensorAPI
+import QuantumFoundations.SelectorBridgeAPI
+import QuantumFoundations.NaimarkImplementationAPI
+```
+
+The additive facades are documented in `docs/EVERETTIAN_DOWNSTREAM_API.md`.
