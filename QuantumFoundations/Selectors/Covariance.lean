@@ -1,0 +1,100 @@
+import QuantumFoundations.Selectors.Unitaries
+
+/-!
+**FR.** # Selectors — S2 : le témoin et la non-vacuité qui compte
+
+Deux témoins de covariance : le sélecteur de Born, et toute la famille
+candidate `tSelector`. Le second énoncé est le point mathématique du jalon :
+il prouve que **la covariance ne suffit pas** à isoler le sélecteur de Born,
+puisque toute la famille à un paramètre la satisfait.
+
+Route (`Submodule.starProjection_map_apply`, `Submodule.map_orthogonal_equiv`) :
+pour une isométrie `U`, `U P_A U† = P_{A.map U}`, et `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`,
+`(Aᗮ).map U = (A.map U)ᗮ`.
+
+**EN.** # Selectors — S2: the witness and the nonvacuity that matters
+
+Two covariance witnesses: the Born selector, and the whole candidate family
+`tSelector`. The second statement is the mathematical point of the milestone:
+it proves that **covariance alone is not enough** to isolate the Born
+selector, since the entire one-parameter family satisfies it.
+
+Route (`Submodule.starProjection_map_apply`, `Submodule.map_orthogonal_equiv`):
+for an isometry `U`, `U P_A U† = P_{A.map U}`, and `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`,
+`(Aᗮ).map U = (A.map U)ᗮ`.
+-/
+
+namespace QuantumFoundations.Selector
+
+open scoped InnerProductSpace
+open Gleason
+
+noncomputable section
+
+variable {n : ℕ}
+
+/-- **FR.** `U (P_A) U† = P_{A.map U}`, comme opérateurs (pas seulement
+ponctuellement) : `LinearMap.ext` + `Submodule.starProjection_map_apply`.
+
+**EN.** `U (P_A) U† = P_{A.map U}`, as operators (not merely pointwise):
+`LinearMap.ext` + `Submodule.starProjection_map_apply`. -/
+private theorem conj_projL (U : H n ≃ₗᵢ[ℂ] H n) (A : Submodule ℂ (H n)) :
+    U.toLinearMap ∘ₗ projL A ∘ₗ U.symm.toLinearMap = projL (A.map U.toLinearMap) := by
+  apply LinearMap.ext
+  intro x
+  exact (Submodule.starProjection_map_apply U A x).symm
+
+/-- **FR.** `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`.
+
+**EN.** `(ℂ ∙ ψ).map U = ℂ ∙ (U ψ)`. -/
+private theorem map_span_singleton (U : H n ≃ₗᵢ[ℂ] H n) (ψ : H n) :
+    (ℂ ∙ ψ).map U.toLinearMap = ℂ ∙ (U ψ) := by
+  rw [Submodule.map_span, Set.image_singleton]; rfl
+
+/--
+**FR.** Le sélecteur de Born est unitairement covariant.
+
+**EN.** The Born selector is unitarily covariant.
+-/
+theorem bornSelector_isCovariant : IsCovariant (bornSelector n) := by
+  intro U ψ _hψ
+  show projL (ℂ ∙ (U ψ)) = U.toLinearMap ∘ₗ projL (ℂ ∙ ψ) ∘ₗ U.symm.toLinearMap
+  rw [conj_projL, map_span_singleton]
+
+/--
+**FR.** Conjugaison de `tDensity` par une isométrie : `ρ_t(Uψ) = U ρ_t(ψ) U†`.
+Non `private` : réutilisé tel quel par `Classification.lean` (`t_indep_of_psi`),
+qui a besoin exactement de ce fait sur `tDensity`, indépendamment de tout
+`Selector`.
+
+**EN.** Conjugation of `tDensity` by an isometry: `ρ_t(Uψ) = U ρ_t(ψ) U†`.
+Not `private`: reused as-is by `Classification.lean` (`t_indep_of_psi`),
+which needs exactly this fact about `tDensity`, independently of any
+`Selector`.
+-/
+theorem tDensity_conj (U : H n ≃ₗᵢ[ℂ] H n) (t : ℝ) (ψ : H n) :
+    tDensity n t (U ψ) = U.toLinearMap ∘ₗ tDensity n t ψ ∘ₗ U.symm.toLinearMap := by
+  have hmap := map_span_singleton U ψ
+  have hmapc : ((ℂ ∙ ψ)ᗮ).map U.toLinearMap = (ℂ ∙ (U ψ))ᗮ := by
+    rw [← hmap]; exact Submodule.map_orthogonal_equiv (ℂ ∙ ψ) U
+  show tDensity n t (U ψ)
+    = U.toLinearMap ∘ₗ ((t : ℂ) • projL (ℂ ∙ ψ) + (((1 - t) / ((n : ℝ) - 1) : ℝ) : ℂ) • projL (ℂ ∙ ψ)ᗮ)
+      ∘ₗ U.symm.toLinearMap
+  rw [LinearMap.add_comp, LinearMap.comp_add, LinearMap.smul_comp, LinearMap.comp_smul,
+    LinearMap.smul_comp, LinearMap.comp_smul, conj_projL, conj_projL, hmap, hmapc]
+  rfl
+
+/--
+**FR.** Toute la famille candidate `tSelector` est unitairement covariante :
+la covariance seule ne fixe donc pas le paramètre `t`.
+
+**EN.** The entire candidate family `tSelector` is unitarily covariant:
+covariance alone therefore does not fix the parameter `t`.
+-/
+theorem tSelector_isCovariant (hn : 2 ≤ n) {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    IsCovariant (tSelector n hn t ht0 ht1) := by
+  intro U ψ _hψ
+  exact tDensity_conj U t ψ
+
+end
+end QuantumFoundations.Selector

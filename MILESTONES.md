@@ -3613,3 +3613,184 @@ no `lakefile.toml` changes.
 **Sorry count: 0 introduced, 0 remaining.** No theorem statement,
 definition, proof body, `axiom`, or `native_decide` was introduced; only
 re-exports, one audit module extension, and documentation changed.
+
+## Selectors Module B — additional structure, relative covariance, and monotonicity (B1–B16) — ✅ CLOSED
+
+**Interpretively neutral, independent of Module A's S1–S6** (unitary
+covariance / NSNC1 / single-effect classification). Where Module A studies
+covariance of a *selector* (a rule `ψ ↦ ρ ψ`) under the full unitary group,
+Module B studies the invariance of a *fixed density operator* under
+subgroups tied to additional structure: an orthonormal basis, or an
+arbitrary `QuantumFoundations.BornRule.Perspective` (cells of arbitrary
+dimension, not just lines). Nothing Everettian enters either module.
+
+**B1–B9 (`Dephasing.lean`, `SubgroupCovariance.lean`,
+`BasisStabilizer.lean`).** `dephasedDensity` (basis-pinching selector) is
+covariant under the full unitary group but not under a smaller phase-only
+subgroup by default; `IsInvariantUnder G ρ` is introduced as the relevant
+notion for a *fixed* operator; `BasisPhaseStabilizer b` and
+`BasisMonomialStabilizer b` classify exactly the diagonal
+(`phaseInvariant_density_iff_diagonal`) and maximally mixed
+(`monomialInvariant_density_iff_maximallyMixed`) densities respectively,
+with `BasisPhaseStabilizer < BasisMonomialStabilizer` strict.
+
+**B10–B11 (`PerspectiveDephasing.lean`, `PerspectiveStabilizer.lean`).**
+The pinching construction and its stabilizers generalize from a single
+basis to an arbitrary perspective `D`: `perspectiveDephasedDensity D ψ`,
+`PerspectiveCellwiseStabilizer D` (fixes every cell setwise) and
+`PerspectiveSetwiseStabilizer D` (permits cell permutations), with the
+pinching selector proved covariant under both.
+
+**B12–B13 (`PerspectiveClassification.lean`).** The headline classification
+theorems: `cellwiseInvariant_density_iff_blockScalar` and
+`setwiseInvariant_density_iff_blockScalar_orbitConstant` show that density
+operators invariant under a perspective's cellwise/setwise stabilizer are
+exactly the "block-scalar" operators (`blockScalarOperator`, acting as a
+real scalar times identity on each cell), with weights constant across
+each setwise orbit for the setwise case. Deliberately **no Schur's
+lemma**: the proof reuses the pre-existing `reflIso`/`swapIso` witnesses
+from `Unitaries.lean` as-is (a chosen basis vector merely needs to land in
+the target cell — no adapted-basis or block-reflection construction was
+built), combined with a Gram-Schmidt decomposition (rather than a full
+orthonormal basis of each cell) to extend a scalar-eigenvalue fact from
+unit vectors to the whole cell.
+
+**B14 (`Monotonicity.lean`).** `PerspectiveCellwiseStabilizer_mono_of_refines`:
+refining a perspective only shrinks its cellwise stabilizer (fixing more,
+smaller cells setwise is a strictly stronger constraint), proved via the
+resolution of the identity plus vanishing of off-cell projections — no
+setwise analogue is claimed, since a setwise permutation of fine cells has
+no reason to respect a coarser grouping. The two extreme cases close the
+picture: the trivial subgroup trivially leaves every operator invariant,
+and the single-cell (whole space) perspective has full cellwise
+stabilizer.
+
+**B15 (`StructureNonvacuity.lean`, `StructureNontriviality.lean`).** The
+maximally mixed state `(1/n) • id` witnesses that both classifications are
+nonvacuous for every perspective (it is trivially invariant under any
+subgroup). `PerspectiveCellwiseStabilizer_lt_PerspectiveSetwiseStabilizer_of_basisPerspective`
+witnesses strictness of the subgroup hierarchy via an explicit `swapIso`
+that permutes two cells without fixing either.
+
+**B16 (`StructureMain.lean`).** Synthesis module: documents the four
+notions not to confuse (`Selector`/`IsCovariantUnder` vs `IsInvariantUnder`
+vs the basis-level vs perspective-level stabilizers), and a capstone
+theorem combining B12 and B14 with no further proof.
+
+**Method note.** Following an explicit "lighter-weight finish" directive
+from the author partway through B12–B16 (given the remaining scope was
+comparable to everything already completed), later proofs favor direct,
+computational arguments (e.g. Gram-Schmidt over a full adapted basis,
+concrete `swapIso`/`reflIso` witnesses over a general representation-theory
+argument) over maximal generality, while keeping every stated theorem
+exactly as strong as claimed — no statement was weakened to ease its proof.
+
+**Sorry count: 0 introduced, 0 remaining. No `axiom`, no `native_decide`.**
+`Audit/SelectorStructure.lean` `#check`s the full Module B public API and
+`#print axioms` on the headline theorems reports exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+## Naimark Module C — Porte Ω, strict classification of Naimark implementations (partial) — 🟡 PARTIAL
+
+**Interpretively neutral, independent development on top of the existing
+Naimark dilation theorem** (`Naimark/Main.lean`, never reproved). Studies
+the exact structure of concrete binary implementations of a fixed effect
+`E`: an isometric encoding into an ambient space plus a measurement cell
+whose pullback recovers `E`, and when two such implementations are
+strictly isomorphic (an ambient isometry transporting the encoding AND
+intertwining the cells — strictly stronger than mere equality of induced
+effects, which is automatic).
+
+**Established.** `BinaryImpl`/`StrictIso` (`Defs.lean`); canonical
+implementations from `naimark_dilation` (`Canonical.lean`); the minimal
+generated subspace and Gram identities showing any implementation's
+generated subspaces are canonically isometric regardless of ambient
+dimension (`Minimal.lean`, `GramRange.lean`); the central theorem
+**`minimal_strictIso`** — two minimal implementations of the same effect
+are always strictly isomorphic (`MinimalUniqueness.lean`), built by
+routing through a single combined map with a common domain rather than
+gluing two separately-built isometries, which sidesteps a persistent Lean
+instance diamond between `EuclideanSpace`/`WithLp`'s `Module` path and the
+generic one `LinearIsometryEquiv.inner_map_map` expects at an explicit
+`Submodule` type; the two residual dilation multiplicities
+`excessEventDim`/`excessComplementDim` and the additive decomposition of
+every global quantity into a minimal part (depending only on `E`) plus a
+residual part (depending on `I`) (`Residual.lean`); the NECESSARY
+direction of strict classification, `StrictIso.excessEventDim_eq`/
+`excessComplementDim_eq` (`StrictClassification.lean`);
+`replicatedAncillaImpl` and the exact invariance of `rankRatio :=
+projectorRank / ambientDim` under ancilla replication
+(`ReplicatedAncilla.lean`); the canonical binary/ternary counterexample —
+ratios `1/2` vs `1/3`, non-isomorphism surviving arbitrary ancilla
+replication on both sides (`TernaryFusion.lean`); the two neutrality
+notions `StrictIsoInvariant`/`ReplicatedAncillaNeutral`, with `rankRatio`
+satisfying both and `ambientDim` separating them (`Valuation.lean`);
+concrete nonvacuity/nontriviality witnesses (`Nonvacuity.lean`,
+`Nontriviality.lean`); a synthesis with an explicit accounting of scope
+(`Main.lean`).
+
+**Not established, and why.** The SUFFICIENT direction of strict
+classification (equal residual dimensions ⟹ strict isomorphism), and
+hence the full equivalence `strictIso_iff_residualDims_eq`, is not proved:
+it would require gluing three orthogonal isometries (the minimal part
+plus two residual sectors of equal dimension but no natural common
+domain) into a single ambient isometry, unlike the minimal case, which has
+a ready-made common domain (`DilSpace n 2`). No statement uses the
+sufficient direction, weakens it to a single implication, or otherwise
+substitutes for it. Consequently, `ResidualExtension`/`minimalCore` (the
+direct-sum construction and decomposition theorem their intended use
+depends on), `ResidualExtensionNeutral`/`MinimalImplValuation` and the
+"residually neutral valuations ≃ minimal valuations" equivalence
+(`Valuation.lean`), and a concrete witness that `IsMinimal` is inhabited
+(`Nonvacuity.lean`) are all deliberately omitted rather than rushed or
+weakened, per this project's blocking-and-reporting protocol: a late-phase
+block does not license documenting the corresponding theorem as finished.
+
+**Sorry count: 0 introduced, 0 remaining. No `axiom`, no `native_decide`.**
+`Audit/NaimarkOmega.lean` `#check`s the full public API of
+`Naimark/BinaryImpl/{Defs,Canonical,Minimal,GramRange,MinimalUniqueness,
+Residual,StrictClassification,ReplicatedAncilla,TernaryFusion,Valuation,
+Nonvacuity,Nontriviality,Main}.lean` and `#print axioms` on the headline
+theorems reports exactly `[propext, Classical.choice, Quot.sound]`.
+## Module D — explicit selector bridges — CLOSED (2026-08-02)
+
+Module D closes the tensor bridge layer without changing Modules A-C.
+
+- The import cycle is removed by placing the generic
+  `partialTrace_isotropicDensity_product` and
+  `partialTrace_tDensity_product` results in
+  `FiniteTensor/Transport.lean`. `Selectors/ReducedIsotropic.lean`
+  contains only selector-side corollaries. `FiniteTensor/Main.lean`
+  remains finite-tensor-only, while `Selectors/BridgeMain.lean` is the
+  aggregate public selector surface.
+- The reduced state is
+  `Tr_A[rho_t^(na)(psi tensor eta)] =
+  t P_psi + (1-t)/(na-1) (a I - P_psi)`.
+  Its self-value is
+  `t + (a-1)(1-t)/(na-1)`, and the isotropic ancilla-neutrality
+  classification is exactly `t=1`, relative to the supplied
+  `TensorDecomposition`.
+- Tensor multiplicativity with composite parameter `t*u` yields three
+  scalar equations. Their real classification is exactly
+  `(t,u)=(1,1)` or `(t,u)=(1/n,1/a)`. In equal dimensions the
+  composite-parameter-`t^2` diagnostic is `t in {1,1/d}`; with the
+  same parameter `t` on the composite it is iff `t=1`.
+- The maximally mixed branch is a positive countermodel: it is tensor
+  multiplicative and covariant, but it violates NSNC1. The concrete
+  dimension-two selector with `t=1/2` is not ancilla-neutral.
+- No preferred tensor factorization is derived. Ancilla neutrality is not
+  declared equivalent to NSNC1 and is explicitly kept distinct from Module C
+  residual neutrality.
+
+The public declarations and their standard-kernel axiom outputs are audited
+in `QuantumFoundations/Audit/SelectorBridges.lean`; the audit reports only
+`[propext, Classical.choice, Quot.sound]` and no `sorryAx`. See also the
+module-specific and theorem-map documentation for the exact signatures.
+
+## Downstream API packaging closure — CLOSED (2026-08-02)
+
+- **Facades:** closed; the four public facades and additive aggregate import are exposed.
+- **Lake packaging:** closed; the facades are explicit library globs.
+- **CI contracts:** closed; leaf audits and the aggregate audit are compiled.
+- **External consumer:** closed; local-path and pushed Git-SHA smoke modes compile the five-file consumer package.
+- **Downstream migrations:** still open; no downstream repository is presented as migrated by this milestone.

@@ -324,3 +324,149 @@ Every declaration above depends only on the standard trio
 `[propext, Classical.choice, Quot.sound]`, verified by
 `QuantumFoundations/Audit/DownstreamAPI.lean` (not imported by the
 repository root, run separately in CI, mirroring `Audit/FoP.lean`).
+
+## Selectors (interpretively neutral, no manuscript role)
+
+`QuantumFoundations/Selectors/` is an independent, interpretively neutral
+development — nothing Everettian enters it, and no manuscript-facing
+theorem elsewhere in this repository depends on it. It is not part of the
+manuscript's argument chain and is not audited by `Audit/FoP.lean` (see
+that module's own scope note); see `Selectors/README.md` for the full
+architecture. It studies **selectors** (pure-state ↦ density-operator
+maps) from two independent angles: unitary covariance plus a bridge
+premise (`NSNC1`), and a general classification of single-effect
+constraints (Proposition 2).
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.covariant_iff_tSelector` |
+| Module | `Selectors/Classification.lean` |
+| Status | original result (this development's classification, via an elementary vector-stabilizer argument; no Schur's lemma or representation theory) |
+| Dependencies | `Selector`, `IsCovariant`, `tDensity`; the sign-reflection/transposition toolbox in `Selectors/Unitaries.lean` |
+| Dimension | `n ≥ 2` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | the `tDensity` family itself is the well-known isotropic/depolarizing family in quantum information, not original; the classification (this theorem) shows covariance alone cannot select the Born member of that family |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.covariant_and_nsnc1_iff_born` (assembling `nsnc1_iff_born`, `tSelector_nsnc1_iff_t_eq_one`) |
+| Module | `Selectors/Pinning.lean` |
+| Status | original result (this development's assembly); `nsnc1_iff_born` itself does not use covariance and reuses the existing `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal` for the operator identification |
+| Dependencies | `covariant_iff_tSelector`, `NSNC1`, `apply_eq_zero_of_quadratic_eq_zero` (a positive-operator quadratic-vanishing lemma proved here via `sqrtOp`, not reused from elsewhere) |
+| Dimension | `n ≥ 2` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `NSNC1` ("no successor, no chance") is a bridge premise studied as a hypothesis, not derived from anything more primitive; no claim is made that it must be accepted as a principle of chance |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.single_effect_selector_iff` (Proposition 2) |
+| Module | `Selectors/SingleEffect.lean` |
+| Status | original result (this development's convex/spectral classification) |
+| Dependencies | `density_supported_on_kernel_of_extremal_trace` (a general spectral-support lemma via `LinearMap.IsSymmetric.eigenvectorBasis`, proved here); `apply_eq_zero_of_quadratic_eq_zero` (reused from `Selectors/Pinning.lean`, not reproved); `QuantumFoundations.BornRule.eq_projL_of_vanishes_on_orthogonal` (reused, not reproved) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | a convex/spectral geometry statement about which single-effect constraints *would* select a pure state; it takes no position on whether any specific effect/value pair is physically realized or should be adopted as a probability postulate. `NSNC1` (above) is recovered as the special case `E₀ = P_{ψ⊥}`, `c = 0` (`nsnc1_iff_born_from_proposition_two`) — a proved corollary, not a re-derivation of one classification from the other |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Selector.{cellwiseInvariant_density_iff_blockScalar, setwiseInvariant_density_iff_blockScalar_orbitConstant}` |
+| Module | `Selectors/PerspectiveClassification.lean` |
+| Status | original result (this development's classification of density operators invariant under a perspective's cellwise/setwise stabilizer; no Schur's lemma or representation theory) |
+| Dependencies | `PerspectiveCellwiseStabilizer`/`PerspectiveSetwiseStabilizer` (`Selectors/PerspectiveStabilizer.lean`); `reflIso`/`swapIso` (`Selectors/Unitaries.lean`, reused as-is, not extended); `sum_projL_cells_eq_id` (resolution of the identity, proved here from `Gleason.projL_sup_of_pairwise_isOrtho`) |
+| Dimension | generic `n` (setwise orbit-constancy witness needs `n ≥ 2` inside a two-cell orbit) |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | a pure classification of a FIXED operator's invariance under a subgroup (`IsInvariantUnder`, `Selectors/SubgroupCovariance.lean`); distinct from selector covariance (`IsCovariantUnder`) — `Selectors/StructureMain.lean` documents the distinction. `PerspectiveCellwiseStabilizer_mono_of_refines` (`Selectors/Monotonicity.lean`) shows the classification is monotone under perspective refinement; nonvacuity and strict-hierarchy witnesses are in `Selectors/StructureNonvacuity.lean`/`StructureNontriviality.lean` |
+
+Every declaration in `Selectors/` depends only on the standard trio
+`[propext, Classical.choice, Quot.sound]` (verified individually via
+`#print axioms` on each public declaration; there is no dedicated audit
+module for this interpretively neutral subsystem, matching its exclusion
+from `Audit/FoP.lean`; `Audit/SelectorStructure.lean` runs the same
+`#check`/`#print axioms` sweep specifically over Module B's public API).
+
+## Naimark/BinaryImpl (interpretively neutral, no manuscript role)
+
+`QuantumFoundations/Naimark/BinaryImpl/` is an independent, interpretively
+neutral development — nothing Everettian enters it, and no
+manuscript-facing theorem elsewhere in this repository depends on it. It
+is not part of the manuscript's argument chain and is not audited by
+`Audit/FoP.lean`; see `Naimark/README.md` for the full architecture. It
+classifies the exact structure of concrete binary implementations of a
+fixed effect, on top of the auxiliary Naimark dilation theorem above,
+without ever re-proving it.
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.minimal_strictIso` |
+| Module | `Naimark/BinaryImpl/MinimalUniqueness.lean` |
+| Status | original result (this development's central theorem: two minimal implementations of the same effect are always strictly isomorphic) |
+| Dependencies | `BinaryImpl`, `StrictIso` (`Defs.lean`); `IsMinimal`, `minimalSubspace` (`Minimal.lean`); `exists_isometryEquiv_of_adjoint_comp_self_eq_of_surjective` (`GramRange.lean`, a general Gram-equality-implies-canonical-isometry lemma proved here) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `StrictIso` is deliberately stronger than mere equality of induced effects (automatic by construction); the theorem says nothing about non-minimal implementations, which `Residual.lean`/`StrictClassification.lean` address separately (necessity direction only — see next entry) |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.StrictIso.{excessEventDim_eq, excessComplementDim_eq}` |
+| Module | `Naimark/BinaryImpl/StrictClassification.lean` |
+| Status | original result (necessity direction only): a strict isomorphism forces equality of the two residual dilation multiplicities `excessEventDim`/`excessComplementDim` (`Residual.lean`) |
+| Dependencies | `StrictIso.projectorRange_finrank_eq`/`projectorKernel_finrank_eq` (`Defs.lean`); the additive decompositions `projectorRank_decomposition`/`projectorNullity_decomposition` (`Residual.lean`) |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | **the converse (sufficient) direction, and hence the full equivalence `strictIso_iff_residualDims_eq` envisioned for this module, is NOT proved.** Its construction would require gluing three orthogonal isometries (the minimal part plus two residual sectors with no natural common domain) into one ambient isometry; no statement here uses it, weakens it to a single implication, or otherwise substitutes for it. `ResidualExtension`/`minimalCore` and the residual-neutral valuation equivalence (`Valuation.lean`) are correspondingly not built — see `Naimark/README.md`, "What is not claimed" |
+
+| Field | Value |
+|---|---|
+| Manuscript role | none — interpretively neutral, independent development |
+| Lean declaration | `QuantumFoundations.Naimark.BinaryImpl.canonicalBinaryImpl_canonicalTernaryImpl_not_strictIso_replicatedAncilla` |
+| Module | `Naimark/BinaryImpl/TernaryFusion.lean` |
+| Status | original result: the canonical binary and ternary implementations of the same effect (ambient rank ratios `1/2` vs `1/3`) are never strictly isomorphic, even after adjoining an arbitrarily large replicated ancilla on either side |
+| Dependencies | `rankRatio`, `rankRatio_replicatedAncilla`, `replicatedAncillaImpl` (`ReplicatedAncilla.lean`); `StrictIso.rankRatio_eq` (a strict isomorphism forces equal rank ratio, since it forces equal `ambientDim` and equal `projectorRank` separately) |
+| Dimension | `n ≥ 1` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | `rankRatio` is a computable numeric invariant, not a claim about physical distinguishability of ancilla-augmented implementations; `Valuation.lean`'s `ambientDimValuation` shows `StrictIsoInvariant` does not by itself entail `ReplicatedAncillaNeutral` |
+
+Every declaration in `Naimark/BinaryImpl/` depends only on the standard
+trio `[propext, Classical.choice, Quot.sound]`, verified by
+`QuantumFoundations/Audit/NaimarkOmega.lean` (not imported by the
+repository root, run separately in CI, mirroring `Audit/SelectorStructure.lean`).
+## Module D — selector/tensor bridge results
+
+Module D is a finite-dimensional bridge layer, not a new physical postulate.
+The tensor factorization is supplied explicitly by
+`TensorDecomposition n a`; no preferred factorization is derived.
+
+| Declaration | Informal content | File |
+|---|---|---|
+| `partialTrace_tDensity_product` | Generic transport formula for the reduced isotropic state | `FiniteTensor/Transport.lean` |
+| `reduced_tDensity_apply_self` / `reduced_tDensity_selfValue` | Reduced action and self-value (t+(a-1)(1-t)/(na-1)) | `Selectors/ReducedIsotropic.lean` |
+| `tSelector_ancillaNeutral_iff_t_eq_one` | Ancilla neutrality in the isotropic family iff (t=1) | `Selectors/AncillaNeutrality.lean` |
+| `tSelectors_tensorMultiplicative_iff` | With composite parameter (tu), exactly ((1,1)) or ((1/n,1/a)) | `Selectors/TensorMultiplicativityTheorems.lean` |
+| `tSelector_tensorMult_iff_t_mem` | Equal dimensions: (tin{1,1/d}) for composite parameter (t^2) | `Selectors/TensorDiagnostics.lean` |
+| `tSelector_sameParameterComposite_tensorMult_iff_t_eq_one` | Same parameter on the composite: iff (t=1) | `Selectors/TensorDiagnostics.lean` |
+| `tensorMultiplicative_not_implies_nsnc1` | Maximally mixed multiplicative countermodel to NSNC1 | `Selectors/TensorDiagnostics.lean` |
+| `covariant_and_tensorMultiplicative_not_implies_nsnc1` | The countermodel also remains covariant | `Selectors/BridgeNontriviality.lean` |
+
+The maximally mixed point (t=1/n) is multiplicative but does not satisfy
+NSNC1. Consequently tensor multiplicativity, even combined with covariance,
+does not select the Born point. Ancilla neutrality and NSNC1 both select
+(t=1) in their respective stated domains, but no general equivalence is
+asserted; the former is decomposition-relative and is distinct from Module C
+residual neutrality.
+
+All declarations in this table are audited by
+`QuantumFoundations/Audit/SelectorBridges.lean`; their outputs use only the
+standard kernel trio `[propext, Classical.choice, Quot.sound]`.

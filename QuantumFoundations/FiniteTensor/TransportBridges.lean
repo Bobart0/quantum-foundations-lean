@@ -1,0 +1,9 @@
+import QuantumFoundations.FiniteTensor.Transport
+namespace QuantumFoundations.FiniteTensor
+open QuantumFoundations
+open QuantumFoundations.Selector
+open Gleason
+open scoped InnerProductSpace
+noncomputable section
+end
+end QuantumFoundations.FiniteTensor

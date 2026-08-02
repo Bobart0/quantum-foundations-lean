@@ -1,0 +1,25 @@
+import QuantumFoundations.Selectors.BridgeMain
+
+/-! Public additive facade for selector/tensor bridge results. -/
+namespace QuantumFoundations.SelectorBridgeAPI
+
+export Gleason (H)
+
+export QuantumFoundations.FiniteTensor
+  (BipartiteSpace TensorDecomposition partialTraceAncilla tensorOperator)
+
+export QuantumFoundations.Selector
+  (Selector IsCovariant NSNC1 tDensity tSelector bornSelector
+   AncillaNeutralUnder TensorMultiplicativeUnder tDensity_at_one
+   tDensity_at_inv_dim reduced_tDensity_apply_self reduced_tDensity_selfValue
+   tSelector_ancillaNeutral_iff_t_eq_one tensorMultiplicative_parameter_equations
+   isotropic_tensor_parameter_classification tSelectors_tensorMultiplicative_iff
+   tSelector_tensorMult_iff_t_eq_one_or_inv_dim tSelector_tensorMult_iff_t_mem
+   tSelector_sameParameterComposite_tensorMult_iff_t_eq_one
+   bornSelector_ancillaNeutral bornSelector_tensorMultiplicative
+   maximallyMixed_tSelector_not_nsnc1 tensorMultiplicative_not_implies_nsnc1
+   covariance_without_nsnc1
+   covariant_and_tensorMultiplicative_not_implies_nsnc1
+   tSelector_half_not_ancillaNeutral)
+
+end QuantumFoundations.SelectorBridgeAPI

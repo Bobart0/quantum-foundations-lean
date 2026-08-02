@@ -1,0 +1,10 @@
+import QuantumFoundations.EverettianAPI
+
+namespace QuantumFoundations.EverettianAPIContract
+
+#check QuantumFoundations.ProbabilityAPI.Perspective
+#check QuantumFoundations.SelectorBridgeAPI.AncillaNeutralUnder
+#check QuantumFoundations.NaimarkImplementationAPI.implementationIndependent_of_residualNeutral
+#check QuantumFoundations.FiniteTensorAPI.SuppliedBipartiteFactorization
+
+end QuantumFoundations.EverettianAPIContract

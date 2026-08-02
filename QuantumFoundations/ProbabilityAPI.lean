@@ -288,3 +288,6 @@ export QuantumFoundations.Complexity.RepetitionModel
 end Repetition
 
 end QuantumFoundations.ProbabilityAPI
+
+/-! The historical conditional API remains unchanged; new tensor, selector-bridge,
+and implementation results live in separate facades. -/

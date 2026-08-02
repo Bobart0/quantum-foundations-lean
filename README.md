@@ -2486,3 +2486,50 @@ statement; see AGENTS.md for the complete rules.
 ## License
 
 Apache License 2.0.
+
+## Module D — selector bridges with explicit costs
+
+Module D formalizes bridges between the selector family and a supplied finite
+tensor decomposition `D : TensorDecomposition n a`. Generic coordinate
+transport remains in `QuantumFoundations.FiniteTensor.Transport`; the
+selector corollaries are layered above it, so `FiniteTensor/Main.lean`
+does not import selector bridges.
+
+For the isotropic selector, the reduced system state is
+
+`Tr_A[rho_t^(na)(psi tensor eta)] =
+  t P_psi + (1-t)/(na-1) (a I - P_psi)`.
+
+Tensor multiplicativity is tested with the composite parameter `t*u`.
+Its three scalar equations classify all admissible pairs as either
+`(t,u)=(1,1)` (Born/pure) or `(t,u)=(1/n,1/a)` (maximally mixed).
+For equal dimensions this gives `t in {1,1/d}`. If the composite uses
+the same parameter `t`, the diagnostic theorem strengthens this to
+`t=1`.
+
+The maximally mixed branch is multiplicative and covariant but fails NSNC1,
+so multiplicativity does not by itself select Born. Ancilla neutrality of
+the isotropic family pins `t=1`, relative to the supplied decomposition
+`D`. It is not identified with Module C residual neutrality, no preferred
+factorization is derived, and no unproved equivalence with NSNC1 is claimed.
+
+## Everettian downstream API
+
+Recommended imports for downstream repositories:
+
+```lean
+import QuantumFoundations.ProbabilityAPI
+import QuantumFoundations.FiniteTensorAPI
+import QuantumFoundations.SelectorBridgeAPI
+import QuantumFoundations.NaimarkImplementationAPI
+```
+
+The additive facades are documented in `docs/EVERETTIAN_DOWNSTREAM_API.md`.
+
+### Downstream API validation
+
+The root aggregate import `QuantumFoundations.EverettianAPI` is additive and
+keeps the four facade imports available individually. The external consumer
+smoke test compiles five Lean files against both a local path and a pushed Git
+SHA. See `docs/EVERETTIAN_DOWNSTREAM_API.md` for the commands and contract
+details. No downstream repository has been migrated in this pass.

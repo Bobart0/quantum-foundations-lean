@@ -1,0 +1,14 @@
+import QuantumFoundations.Selectors.BridgeDefs
+import QuantumFoundations.Selectors.ReducedIsotropic
+import QuantumFoundations.Selectors.AncillaNeutrality
+import QuantumFoundations.Selectors.TensorMultiplicativity
+import QuantumFoundations.Selectors.TensorClassification
+import QuantumFoundations.Selectors.TensorMultiplicativityTheorems
+import QuantumFoundations.Selectors.TensorDiagnostics
+import QuantumFoundations.Selectors.BridgeNonvacuity
+import QuantumFoundations.Selectors.BridgeNontriviality
+
+/-! Public import surface for all Module D selector bridges. -/
+
+namespace QuantumFoundations.Selector
+end QuantumFoundations.Selector
