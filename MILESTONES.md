@@ -3690,68 +3690,39 @@ exactly as strong as claimed — no statement was weakened to ease its proof.
 `#print axioms` on the headline theorems reports exactly
 `[propext, Classical.choice, Quot.sound]`.
 
-## Naimark Module C — Porte Ω, strict classification of Naimark implementations (partial) — 🟡 PARTIAL
+## Naimark Module C — Porte Ω, strict classification of Naimark implementations — ✅ CLOSED (2026-08-02)
 
-**Interpretively neutral, independent development on top of the existing
-Naimark dilation theorem** (`Naimark/Main.lean`, never reproved). Studies
-the exact structure of concrete binary implementations of a fixed effect
-`E`: an isometric encoding into an ambient space plus a measurement cell
-whose pullback recovers `E`, and when two such implementations are
-strictly isomorphic (an ambient isometry transporting the encoding AND
-intertwining the cells — strictly stronger than mere equality of induced
-effects, which is automatic).
+Module C is a complete, interpretively neutral classification of concrete
+binary implementations of a fixed effect, on top of the existing Naimark
+dilation theorem. It includes the minimal core, residual extensions, strict
+normal forms, and the residual-neutral valuation result; no theorem of the
+Naimark dilation layer is reproved.
 
-**Established.** `BinaryImpl`/`StrictIso` (`Defs.lean`); canonical
-implementations from `naimark_dilation` (`Canonical.lean`); the minimal
-generated subspace and Gram identities showing any implementation's
-generated subspaces are canonically isometric regardless of ambient
-dimension (`Minimal.lean`, `GramRange.lean`); the central theorem
-**`minimal_strictIso`** — two minimal implementations of the same effect
-are always strictly isomorphic (`MinimalUniqueness.lean`), built by
-routing through a single combined map with a common domain rather than
-gluing two separately-built isometries, which sidesteps a persistent Lean
-instance diamond between `EuclideanSpace`/`WithLp`'s `Module` path and the
-generic one `LinearIsometryEquiv.inner_map_map` expects at an explicit
-`Submodule` type; the two residual dilation multiplicities
-`excessEventDim`/`excessComplementDim` and the additive decomposition of
-every global quantity into a minimal part (depending only on `E`) plus a
-residual part (depending on `I`) (`Residual.lean`); the NECESSARY
-direction of strict classification, `StrictIso.excessEventDim_eq`/
-`excessComplementDim_eq` (`StrictClassification.lean`);
-`replicatedAncillaImpl` and the exact invariance of `rankRatio :=
-projectorRank / ambientDim` under ancilla replication
-(`ReplicatedAncilla.lean`); the canonical binary/ternary counterexample —
-ratios `1/2` vs `1/3`, non-isomorphism surviving arbitrary ancilla
-replication on both sides (`TernaryFusion.lean`); the two neutrality
-notions `StrictIsoInvariant`/`ReplicatedAncillaNeutral`, with `rankRatio`
-satisfying both and `ambientDim` separating them (`Valuation.lean`);
-concrete nonvacuity/nontriviality witnesses (`Nonvacuity.lean`,
-`Nontriviality.lean`); a synthesis with an explicit accounting of scope
-(`Main.lean`).
+**Closed public surface.** The audited declarations include
+`strictIso_of_residualDims_eq`, `strictIso_iff_residualDims_eq`,
+`residualExtension`, `eventResidualExtension`,
+`complementResidualExtension`, `twoSidedResidualExtension`, `minimalCore`,
+`minimalCore_isMinimal`, `normalForm`, `strictIso_normalForm`,
+`EventResidualNeutral`, `ComplementResidualNeutral`,
+`ResidualExtensionNeutral`, `MinimalImplValuation`,
+`ResidualNeutralImplValuation`,
+`valuation_eq_minimalCore_of_residualNeutral`,
+`residualNeutralValuationsEquivMinimalValuations`, and
+`implementationIndependent_of_residualNeutral`.
 
-**Not established, and why.** The SUFFICIENT direction of strict
-classification (equal residual dimensions ⟹ strict isomorphism), and
-hence the full equivalence `strictIso_iff_residualDims_eq`, is not proved:
-it would require gluing three orthogonal isometries (the minimal part
-plus two residual sectors of equal dimension but no natural common
-domain) into a single ambient isometry, unlike the minimal case, which has
-a ready-made common domain (`DilSpace n 2`). No statement uses the
-sufficient direction, weakens it to a single implication, or otherwise
-substitutes for it. Consequently, `ResidualExtension`/`minimalCore` (the
-direct-sum construction and decomposition theorem their intended use
-depends on), `ResidualExtensionNeutral`/`MinimalImplValuation` and the
-"residually neutral valuations ≃ minimal valuations" equivalence
-(`Valuation.lean`), and a concrete witness that `IsMinimal` is inhabited
-(`Nonvacuity.lean`) are all deliberately omitted rather than rushed or
-weakened, per this project's blocking-and-reporting protocol: a late-phase
-block does not license documenting the corresponding theorem as finished.
+The explicit counter-models are also present and audited:
+`rankRatioValuation_not_residualNeutral`,
+`replicatedAncillaNeutral_not_implies_residualNeutral`, and
+`totalResidualDim_not_complete_invariant`.
 
-**Sorry count: 0 introduced, 0 remaining. No `axiom`, no `native_decide`.**
-`Audit/NaimarkOmega.lean` `#check`s the full public API of
-`Naimark/BinaryImpl/{Defs,Canonical,Minimal,GramRange,MinimalUniqueness,
-Residual,StrictClassification,ReplicatedAncilla,TernaryFusion,Valuation,
-Nonvacuity,Nontriviality,Main}.lean` and `#print axioms` on the headline
-theorems reports exactly `[propext, Classical.choice, Quot.sound]`.
+**Audit.** `QuantumFoundations/Audit/NaimarkOmega.lean` checks the complete
+public Module C surface. The reported trust base is exactly
+`[propext, Classical.choice, Quot.sound]`; there is no `sorryAx`, `axiom`, or
+`native_decide`.
+
+**Scope.** This is a finite-dimensional formal classification of the stated
+implementation structures. It makes no additional physical or
+infinite-dimensional claim.
 ## Module D — explicit selector bridges — CLOSED (2026-08-02)
 
 Module D closes the tensor bridge layer without changing Modules A-C.

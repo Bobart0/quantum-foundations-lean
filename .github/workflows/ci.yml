@@ -20,6 +20,7 @@ jobs:
       # (lake exe cache get) et lance `lake build` — aucune option supplémentaire
       # nécessaire pour ce projet (config par défaut vérifiée).
       - uses: leanprover/lean-action@v1
+      # Leaf audits run independently; the aggregate imports only public facades.
       - name: Downstream API contracts
         run: |
           lake env lean QuantumFoundations/Audit/FiniteTensorAPIContract.lean
