@@ -3786,3 +3786,11 @@ The public declarations and their standard-kernel axiom outputs are audited
 in `QuantumFoundations/Audit/SelectorBridges.lean`; the audit reports only
 `[propext, Classical.choice, Quot.sound]` and no `sorryAx`. See also the
 module-specific and theorem-map documentation for the exact signatures.
+
+## Downstream API packaging closure — CLOSED (2026-08-02)
+
+- **Facades:** closed; the four public facades and additive aggregate import are exposed.
+- **Lake packaging:** closed; the facades are explicit library globs.
+- **CI contracts:** closed; leaf audits and the aggregate audit are compiled.
+- **External consumer:** closed; local-path and pushed Git-SHA smoke modes compile the five-file consumer package.
+- **Downstream migrations:** still open; no downstream repository is presented as migrated by this milestone.

@@ -98,6 +98,10 @@ Local commands:
 python scripts/check_downstream_api_consumer.py --source-path .
 ```
 
+The temporary consumer package is deleted by default. Pass `--keep-temp` to
+retain it for diagnosis after a failure. This packaging pass migrates no
+downstream repository; downstream migrations remain open.
+
 For a published revision, the equivalent Git dependency check is:
 
 ```sh

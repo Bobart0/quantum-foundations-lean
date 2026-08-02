@@ -2525,3 +2525,11 @@ import QuantumFoundations.NaimarkImplementationAPI
 ```
 
 The additive facades are documented in `docs/EVERETTIAN_DOWNSTREAM_API.md`.
+
+### Downstream API validation
+
+The root aggregate import `QuantumFoundations.EverettianAPI` is additive and
+keeps the four facade imports available individually. The external consumer
+smoke test compiles five Lean files against both a local path and a pushed Git
+SHA. See `docs/EVERETTIAN_DOWNSTREAM_API.md` for the commands and contract
+details. No downstream repository has been migrated in this pass.
