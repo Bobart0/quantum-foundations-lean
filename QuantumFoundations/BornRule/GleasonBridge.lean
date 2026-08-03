@@ -83,7 +83,7 @@ theorem g_isFrameFunctionOnLines (hn2 : 2 ≤ n) (hA : AxGrain Est) (hN : AxNorm
     have hterm : ∀ i, g Est hn2 (Proj1.mk_unit (b i) (b.norm_eq_one i))
         = Est (basisPerspective b) (ℂ ∙ (b i : H n)) := by
       intro i
-      apply lemma4_noncontextual Est hA hN (Finset.mem_insert_self _ _)
+      apply lemma4_noncontextual_grain_only Est hA (Finset.mem_insert_self _ _)
       exact Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩
     rw [Finset.sum_congr rfl (fun i _ => hterm i)]
     have hsum := hN (basisPerspective b)

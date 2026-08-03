@@ -77,6 +77,16 @@ def Refines (D' D : Perspective n) : Prop :=
 
 namespace Perspective
 
+/-- Equality of the cell sets determines a perspective. The remaining
+    structure fields are propositions, so proof irrelevance closes the
+    structure equality after the data field is identified. -/
+theorem eq_of_cells {D1 D2 : Perspective n}
+    (h : D1.cells = D2.cells) : D1 = D2 := by
+  cases D1
+  cases D2
+  cases h
+  rfl
+
 /-- Unique parent (Lemme 1) : a non-zero subspace cannot be contained
     in two distinct cells of the same perspective. -/
 theorem unique_parent (D : Perspective n) {c₁ c₂ K : Submodule ℂ (H n)}
@@ -219,33 +229,53 @@ theorem lemma4_noncontextual_of_ne_top (hA : AxGrain Est)
   rw [← key1, key2]
 
 /--
-**FR.** **Lemme 4** : la cohérence de grain (Grain) seule donne
-    l'indépendance de contexte pour les cellules propres. L'indépendance de
-    contexte complète, y compris la cellule dégénérée `⊤`, découle de
-    (Grain) conjointe à la normalisation (Norm). Le cas `c ≠ ⊤` est
-    entièrement délégué à `lemma4_noncontextual_of_ne_top` (Grain seul) ;
-    seul le cas dégénéré `c = ⊤` utilise `hN`.
+**FR.** La cohérence de grain seule donne l'indépendance de contexte complète,
+ y compris pour la cellule de tout l'espace. La branche `c = ⊤` utilise
+ l'égalité des perspectives singletonnes, obtenue par `Perspective.eq_of_cells`.
+La normalisation reste nécessaire en aval pour les poids projectifs normalisés
+ et la condition `μ ⊤ = 1`.
 
-**EN.** Lemma 4: Grain coherence alone yields context independence for
- proper cells. Full context independence, including the degenerate
- whole-space cell, follows from Grain together with normalization. The
- `c ≠ ⊤` case is entirely delegated to `lemma4_noncontextual_of_ne_top`
- (Grain alone); only the degenerate `c = ⊤` case uses `hN`.
+**EN.** Grain coherence alone yields full context independence, including the
+whole-space cell. The `c = ⊤` branch identifies the two singleton perspectives
+using `Perspective.eq_of_cells`. Normalization is not required for context
+independence, but remains required downstream to obtain normalized projective
+weights and the condition `μ ⊤ = 1`.
 -/
-theorem lemma4_noncontextual (hA : AxGrain Est) (hN : AxNorm Est)
-    {D₁ D₂ : Perspective n} {c : Submodule ℂ (H n)}
-    (h₁ : c ∈ D₁.cells) (h₂ : c ∈ D₂.cells) :
-    Est D₁ c = Est D₂ c := by
+theorem lemma4_noncontextual_grain_only (hA : AxGrain Est)
+    {D1 D2 : Perspective n} {c : Submodule ℂ (H n)}
+    (h1 : c ∈ D1.cells) (h2 : c ∈ D2.cells) :
+    Est D1 c = Est D2 c := by
   by_cases htop : c = ⊤
-  · subst htop
-    have e1 : D₁.cells = {⊤} := D₁.singleton_of_mem_top h₁
-    have e2 : D₂.cells = {⊤} := D₂.singleton_of_mem_top h₂
-    have s1 := hN D₁
-    have s2 := hN D₂
-    rw [e1, Finset.sum_singleton] at s1
-    rw [e2, Finset.sum_singleton] at s2
-    rw [s1, s2]
-  · exact lemma4_noncontextual_of_ne_top Est hA htop h₁ h₂
+  · subst c
+    have hD : D1 = D2 := Perspective.eq_of_cells
+      ((D1.singleton_of_mem_top h1).trans
+        (D2.singleton_of_mem_top h2).symm)
+    cases hD
+    rfl
+  · exact lemma4_noncontextual_of_ne_top Est hA htop h1 h2
+
+/--
+Compatibility wrapper retaining the historical `AxNorm` argument for source
+compatibility. Normalization is not used by the full context-independence
+proof; it remains relevant to downstream normalized probability results.
+-/
+theorem lemma4_noncontextual (hA : AxGrain Est) (_hN : AxNorm Est)
+    {D1 D2 : Perspective n} {c : Submodule ℂ (H n)}
+    (h1 : c ∈ D1.cells) (h2 : c ∈ D2.cells) :
+    Est D1 c = Est D2 c :=
+  lemma4_noncontextual_grain_only Est hA h1 h2
+/-- Grain alone is strictly weaker than normalization: the zero estimation
+    rule is grain-coherent but cannot satisfy normalization on any perspective. -/
+theorem axGrain_not_imply_axNorm (D : Perspective n) :
+    ∃ Est : Perspective n → Submodule ℂ (H n) → ℝ,
+      AxGrain Est ∧ ¬ AxNorm Est := by
+  let Est₀ : Perspective n → Submodule ℂ (H n) → ℝ := fun _ _ => 0
+  refine ⟨Est₀, ?_, ?_⟩
+  · intro D' D hRef c hc
+    simp [Est₀]
+  · intro hN
+    have h := hN D
+    simp [Est₀] at h
 
 /-- The line spanned by a vector of an orthonormal basis of `H n` is
     never zero. -/

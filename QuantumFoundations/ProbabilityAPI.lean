@@ -85,10 +85,14 @@ export QuantumFoundations.BornRule
   (Perspective
    Perspective.unique_parent
    Perspective.binary
+   Perspective.eq_of_cells
    AxGrain
    AxNorm
    AxPos
    AxNul
+   lemma4_noncontextual_of_ne_top
+   axGrain_not_imply_axNorm
+   lemma4_noncontextual_grain_only
    lemma4_noncontextual
    refinePerspective
    refinePerspective_refines

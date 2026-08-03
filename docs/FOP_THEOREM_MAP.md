@@ -48,15 +48,27 @@ audit module.
 
 | Field | Value |
 |---|---|
-| Manuscript role | Full context independence (including the degenerate whole-space cell); Born-rule weight representation |
-| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual` |
+| Manuscript role | Full context independence (including the degenerate whole-space cell) |
+| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual_grain_only` |
 | Module | `QuantumFoundations/BornRule/Perspective.lean` |
-| Status | original result. Grain coherence alone yields context independence for proper cells (`lemma4_noncontextual_of_ne_top`); full context independence, including the degenerate whole-space cell, follows from Grain together with normalization |
-| Dependencies | `BornRule.Perspective`, `lemma4_noncontextual_of_ne_top`, `AxGrain`/`AxNorm` |
+| Status | Grain coherence alone yields full context independence, including the whole-space cell; the `c = ⊤` branch uses equality of singleton perspectives via `Perspective.eq_of_cells` |
+| Dependencies | `BornRule.Perspective`, `Perspective.eq_of_cells`, `AxGrain` |
 | Dimension | generic `n` |
 | Exactness | exact |
 | Axiom audit | standard trio |
-| Scope limitation | establishes non-contextuality of the estimation rule under (Grain)+(Norm); does not by itself derive the numerical Born weight |
+| Scope limitation | establishes context independence of the estimation rule under (Grain) alone; normalization remains required downstream for normalized projective weights and `μ ⊤ = 1` |
+
+| Field | Value |
+|---|---|
+| Manuscript role | Compatibility surface for callers retaining the historical normalization premise |
+| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual` |
+| Module | `QuantumFoundations/BornRule/Perspective.lean` |
+| Status | compatibility wrapper around `lemma4_noncontextual_grain_only`; its `AxNorm` argument is retained for source compatibility and is not used |
+| Dependencies | `BornRule.Perspective`, `lemma4_noncontextual_grain_only`, `AxGrain` |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | preserves the historical declaration type while exposing the premise-minimal theorem separately |
 
 | Field | Value |
 |---|---|
