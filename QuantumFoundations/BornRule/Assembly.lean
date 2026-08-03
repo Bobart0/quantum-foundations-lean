@@ -179,7 +179,7 @@ theorem grainCoherenceTheorem (hn3 : 3 ≤ n) (hA : AxGrain Est) (hN : AxNorm Es
     exact ⟨c, hc, Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩⟩
   have hEeq : Est (refinePerspective D) (ℂ ∙ f) = g Est (by omega) (Proj1.mk_unit f hf_unit) := by
     unfold g
-    exact lemma4_noncontextual Est hA hN hmem (Finset.mem_insert_self _ _)
+    exact lemma4_noncontextual_grain_only Est hA hmem (Finset.mem_insert_self _ _)
   rw [hEeq, hgleason f hf_unit, hρeq, projL_singleton_unit v f hv, inner_smul_left]
   rw [mul_comm, Complex.mul_conj, Complex.ofReal_re]
   exact Complex.normSq_eq_norm_sq _

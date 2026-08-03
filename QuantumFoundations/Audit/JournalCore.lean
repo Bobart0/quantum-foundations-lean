@@ -12,9 +12,10 @@ base of the corrected non-contextuality scope:
 
 - `lemma4_noncontextual_of_ne_top` — context independence of a **proper**
   cell (`c ≠ ⊤`), derived from `(Grain)` **alone**, without `AxNorm`;
-- `lemma4_noncontextual` — **full** context independence, including the
-  degenerate whole-space cell `⊤`, derived from `(Grain)` together with
-  `(Norm)`;
+- `lemma4_noncontextual_grain_only` — **full** context independence, including the
+  degenerate whole-space cell `⊤`, derived from `(Grain)` alone;
+- `lemma4_noncontextual` — compatibility wrapper retaining the historical
+  `AxNorm` argument;
 - `E₀_satisfies_axioms` — the nonvacuity witness showing the Born rule for a
   fixed unit vector simultaneously satisfies all four coherence axioms;
 - `grainCoherenceTheorem` / `grainCoherenceTheorem_projector` — the Grain
@@ -34,8 +35,10 @@ base de confiance de la portée corrigée de la non-contextualité :
 
 - `lemma4_noncontextual_of_ne_top` — indépendance de contexte d'une cellule
   **propre** (`c ≠ ⊤`), dérivée de `(Grain)` **seul**, sans `AxNorm` ;
-- `lemma4_noncontextual` — indépendance de contexte **complète**, y compris
-  la cellule dégénérée `⊤`, dérivée de `(Grain)` conjointe à `(Norm)` ;
+- `lemma4_noncontextual_grain_only` — indépendance de contexte **complète**, y compris
+  la cellule dégénérée `⊤`, dérivée de `(Grain)` seul ;
+- `lemma4_noncontextual` — wrapper de compatibilité conservant l'argument
+  historique `AxNorm` ;
 - `E₀_satisfies_axioms` — le témoin de non-vacuité montrant que la règle de
   Born pour un vecteur unitaire fixé satisfait simultanément les quatre
   axiomes de cohérence ;
@@ -53,7 +56,10 @@ open QuantumFoundations.BornRule
 
 -- ── Public-contract visibility ──────────────────────────────────────
 
+#check @Perspective.eq_of_cells
 #check @lemma4_noncontextual_of_ne_top
+#check @axGrain_not_imply_axNorm
+#check @lemma4_noncontextual_grain_only
 #check @lemma4_noncontextual
 #check @E₀_satisfies_axioms
 #check @grainCoherenceTheorem
@@ -61,7 +67,10 @@ open QuantumFoundations.BornRule
 
 -- ── Trust-base audit ─────────────────────────────────────────────────
 
+#print axioms QuantumFoundations.BornRule.Perspective.eq_of_cells
 #print axioms QuantumFoundations.BornRule.lemma4_noncontextual_of_ne_top
+#print axioms QuantumFoundations.BornRule.axGrain_not_imply_axNorm
+#print axioms QuantumFoundations.BornRule.lemma4_noncontextual_grain_only
 #print axioms QuantumFoundations.BornRule.lemma4_noncontextual
 #print axioms QuantumFoundations.BornRule.E₀_satisfies_axioms
 #print axioms QuantumFoundations.BornRule.grainCoherenceTheorem
