@@ -36,15 +36,27 @@ audit module.
 
 | Field | Value |
 |---|---|
-| Manuscript role | Context independence derived from refinement coherence; Born-rule weight representation |
-| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual` |
+| Manuscript role | Context independence of proper cells, derived from refinement coherence alone |
+| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual_of_ne_top` |
 | Module | `QuantumFoundations/BornRule/Perspective.lean` |
-| Status | original result (context independence derived from `AxGrain` alone, not assumed) |
-| Dependencies | `BornRule.Perspective`, `AxGrain`/`AxNorm`/`AxPos`/`AxNul` |
+| Status | original result (context independence of a proper cell `c ≠ ⊤` derived from `AxGrain` alone, not assumed; does not take `AxNorm`) |
+| Dependencies | `BornRule.Perspective`, `AxGrain` |
 | Dimension | generic `n` |
 | Exactness | exact |
 | Axiom audit | standard trio |
-| Scope limitation | establishes non-contextuality of the estimation rule under (Grain); does not by itself derive the numerical Born weight |
+| Scope limitation | establishes non-contextuality of the estimation rule on proper cells (`c ≠ ⊤`) under (Grain) alone; does not by itself derive the numerical Born weight |
+
+| Field | Value |
+|---|---|
+| Manuscript role | Full context independence (including the degenerate whole-space cell); Born-rule weight representation |
+| Lean declaration | `QuantumFoundations.BornRule.lemma4_noncontextual` |
+| Module | `QuantumFoundations/BornRule/Perspective.lean` |
+| Status | original result. Grain coherence alone yields context independence for proper cells (`lemma4_noncontextual_of_ne_top`); full context independence, including the degenerate whole-space cell, follows from Grain together with normalization |
+| Dependencies | `BornRule.Perspective`, `lemma4_noncontextual_of_ne_top`, `AxGrain`/`AxNorm` |
+| Dimension | generic `n` |
+| Exactness | exact |
+| Axiom audit | standard trio |
+| Scope limitation | establishes non-contextuality of the estimation rule under (Grain)+(Norm); does not by itself derive the numerical Born weight |
 
 | Field | Value |
 |---|---|

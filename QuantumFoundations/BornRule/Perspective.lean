@@ -162,16 +162,75 @@ def AxPos : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, 0 ≤ Est D c
 def AxNul (v : H n) : Prop := ∀ D : Perspective n, ∀ c ∈ D.cells, v ∈ cᗮ → Est D c = 0
 
 /--
-**FR.** **Lemme 4** : under (Grain) alone, the weight of a cell shared by
-    two perspectives does not depend on which perspective it is
-    evaluated in. Non-contextuality, usually postulated in
-    Gleason-type derivations, is here a consequence of grain coherence
-    alone.
+**FR.** **Lemme 4, cellules propres** : sous (Grain) SEUL (sans (Norm)), le
+    poids d'une cellule PROPRE (`c ≠ ⊤`) partagée par deux perspectives ne
+    dépend pas de la perspective dans laquelle elle est évaluée. C'est la
+    partie de la non-contextualité qui ne requiert pas la normalisation :
+    elle se démontre en raffinant les deux perspectives `D₁`, `D₂` vers la
+    perspective binaire commune `{c, cᗮ}` et en comparant les deux valeurs
+    obtenues via (Grain) seul.
 
-**EN.** Lemma 4: under (Grain) alone, the weight of a cell shared by
- two perspectives does not depend on the perspective in which it is
- evaluated. Non-contextuality, usually postulated in Gleason-type
- derivations, is here a consequence of grain coherence alone.
+**EN.** **Lemma 4, proper cells**: under (Grain) ALONE (without (Norm)), the
+ weight of a PROPER cell (`c ≠ ⊤`) shared by two perspectives does not
+ depend on which perspective it is evaluated in. This is the part of
+ non-contextuality that does not require normalization: it is proved by
+ refining both `D₁` and `D₂` toward the common binary perspective
+ `{c, cᗮ}` and comparing the two resulting values via (Grain) alone.
+-/
+theorem lemma4_noncontextual_of_ne_top (hA : AxGrain Est)
+    {D₁ D₂ : Perspective n} {c : Submodule ℂ (H n)} (hc_top : c ≠ ⊤)
+    (h₁ : c ∈ D₁.cells) (h₂ : c ∈ D₂.cells) :
+    Est D₁ c = Est D₂ c := by
+  have hcne : c ≠ ⊥ := fun hbot => D₁.nz c h₁ hbot
+  let D₀ := Perspective.binary c hcne hc_top
+  have hcellsD0 : D₀.cells = insert c {cᗮ} := rfl
+  have hmem0 : c ∈ D₀.cells := by
+    rw [hcellsD0]; exact Finset.mem_insert_self _ _
+  have hraf1 : Refines D₁ D₀ := by
+    intro c' hc'
+    by_cases heq : c' = c
+    · exact ⟨c, hmem0, heq ▸ le_refl c⟩
+    · refine ⟨cᗮ, ?_, D₁.ortho c' hc' c h₁ heq⟩
+      rw [hcellsD0]; exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
+  have hraf2 : Refines D₂ D₀ := by
+    intro c' hc'
+    by_cases heq : c' = c
+    · exact ⟨c, hmem0, heq ▸ le_refl c⟩
+    · refine ⟨cᗮ, ?_, D₂.ortho c' hc' c h₂ heq⟩
+      rw [hcellsD0]; exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
+  have key1 : Est D₀ c = Est D₁ c := by
+    have heq := hA D₁ D₀ hraf1 c hmem0
+    rw [heq]
+    have hfilter : D₁.cells.filter (· ≤ c) = {c} := by
+      apply Finset.eq_singleton_iff_unique_mem.mpr
+      refine ⟨Finset.mem_filter.mpr ⟨h₁, le_refl c⟩, fun c' hc' => ?_⟩
+      obtain ⟨hc'mem, hc'le⟩ := Finset.mem_filter.mp hc'
+      exact D₁.unique_parent hc'mem h₁ (D₁.nz c' hc'mem) (le_refl c') hc'le
+    rw [hfilter, Finset.sum_singleton]
+  have key2 : Est D₀ c = Est D₂ c := by
+    have heq := hA D₂ D₀ hraf2 c hmem0
+    rw [heq]
+    have hfilter : D₂.cells.filter (· ≤ c) = {c} := by
+      apply Finset.eq_singleton_iff_unique_mem.mpr
+      refine ⟨Finset.mem_filter.mpr ⟨h₂, le_refl c⟩, fun c' hc' => ?_⟩
+      obtain ⟨hc'mem, hc'le⟩ := Finset.mem_filter.mp hc'
+      exact D₂.unique_parent hc'mem h₂ (D₂.nz c' hc'mem) (le_refl c') hc'le
+    rw [hfilter, Finset.sum_singleton]
+  rw [← key1, key2]
+
+/--
+**FR.** **Lemme 4** : la cohérence de grain (Grain) seule donne
+    l'indépendance de contexte pour les cellules propres. L'indépendance de
+    contexte complète, y compris la cellule dégénérée `⊤`, découle de
+    (Grain) conjointe à la normalisation (Norm). Le cas `c ≠ ⊤` est
+    entièrement délégué à `lemma4_noncontextual_of_ne_top` (Grain seul) ;
+    seul le cas dégénéré `c = ⊤` utilise `hN`.
+
+**EN.** Lemma 4: Grain coherence alone yields context independence for
+ proper cells. Full context independence, including the degenerate
+ whole-space cell, follows from Grain together with normalization. The
+ `c ≠ ⊤` case is entirely delegated to `lemma4_noncontextual_of_ne_top`
+ (Grain alone); only the degenerate `c = ⊤` case uses `hN`.
 -/
 theorem lemma4_noncontextual (hA : AxGrain Est) (hN : AxNorm Est)
     {D₁ D₂ : Perspective n} {c : Submodule ℂ (H n)}
@@ -186,42 +245,7 @@ theorem lemma4_noncontextual (hA : AxGrain Est) (hN : AxNorm Est)
     rw [e1, Finset.sum_singleton] at s1
     rw [e2, Finset.sum_singleton] at s2
     rw [s1, s2]
-  · have hcne : c ≠ ⊥ := fun hbot => D₁.nz c h₁ hbot
-    let D₀ := Perspective.binary c hcne htop
-    have hcellsD0 : D₀.cells = insert c {cᗮ} := rfl
-    have hmem0 : c ∈ D₀.cells := by
-      rw [hcellsD0]; exact Finset.mem_insert_self _ _
-    have hraf1 : Refines D₁ D₀ := by
-      intro c' hc'
-      by_cases heq : c' = c
-      · exact ⟨c, hmem0, heq ▸ le_refl c⟩
-      · refine ⟨cᗮ, ?_, D₁.ortho c' hc' c h₁ heq⟩
-        rw [hcellsD0]; exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
-    have hraf2 : Refines D₂ D₀ := by
-      intro c' hc'
-      by_cases heq : c' = c
-      · exact ⟨c, hmem0, heq ▸ le_refl c⟩
-      · refine ⟨cᗮ, ?_, D₂.ortho c' hc' c h₂ heq⟩
-        rw [hcellsD0]; exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
-    have key1 : Est D₀ c = Est D₁ c := by
-      have heq := hA D₁ D₀ hraf1 c hmem0
-      rw [heq]
-      have hfilter : D₁.cells.filter (· ≤ c) = {c} := by
-        apply Finset.eq_singleton_iff_unique_mem.mpr
-        refine ⟨Finset.mem_filter.mpr ⟨h₁, le_refl c⟩, fun c' hc' => ?_⟩
-        obtain ⟨hc'mem, hc'le⟩ := Finset.mem_filter.mp hc'
-        exact D₁.unique_parent hc'mem h₁ (D₁.nz c' hc'mem) (le_refl c') hc'le
-      rw [hfilter, Finset.sum_singleton]
-    have key2 : Est D₀ c = Est D₂ c := by
-      have heq := hA D₂ D₀ hraf2 c hmem0
-      rw [heq]
-      have hfilter : D₂.cells.filter (· ≤ c) = {c} := by
-        apply Finset.eq_singleton_iff_unique_mem.mpr
-        refine ⟨Finset.mem_filter.mpr ⟨h₂, le_refl c⟩, fun c' hc' => ?_⟩
-        obtain ⟨hc'mem, hc'le⟩ := Finset.mem_filter.mp hc'
-        exact D₂.unique_parent hc'mem h₂ (D₂.nz c' hc'mem) (le_refl c') hc'le
-      rw [hfilter, Finset.sum_singleton]
-    rw [← key1, key2]
+  · exact lemma4_noncontextual_of_ne_top Est hA htop h₁ h₂
 
 /-- The line spanned by a vector of an orthonormal basis of `H n` is
     never zero. -/

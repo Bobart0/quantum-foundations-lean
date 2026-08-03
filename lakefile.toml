@@ -4,7 +4,7 @@ defaultTargets = ["QuantumFoundations"]
 [[require]]
 name = "gleason"
 git = "https://github.com/Bobart0/gleason-theorem-lean.git"
-rev = "v1.0-gleason"
+rev = "v1.1.0-journal-audit"
 
 [[require]]
 name = "mathlib"

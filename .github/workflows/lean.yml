@@ -37,6 +37,9 @@ jobs:
       - name: Downstream API regression audit
         run: lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
 
+      - name: Journal audit (proper-cell vs. full non-contextuality)
+        run: lake env lean QuantumFoundations/Audit/JournalCore.lean
+
       - name: Source guard (no project-specific axiom, no native_decide, no sorry)
         run: bash scripts/guard.sh
 

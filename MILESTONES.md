@@ -982,8 +982,10 @@ l'axiome par une vraie application de `Gleason.gleason` (dépendance épinglée
 
 **Découpage de la preuve** (B1–B4) :
 - **B1** — scaffolding : `Perspective`, `Refines`, `AxGrain`/`AxNorm`/`AxPos`/
-  `AxNul`, `lemma4_noncontextual` (non-contextualité, conséquence de (Grain)
-  seule), `basisPerspective`, `cellLines`, `refinePerspective`.
+  `AxNul`, `lemma4_noncontextual_of_ne_top` (non-contextualité des cellules
+  propres, conséquence de (Grain) seule) et `lemma4_noncontextual`
+  (non-contextualité complète, y compris la cellule dégénérée `⊤`, via
+  (Grain) + (Norm)), `basisPerspective`, `cellLines`, `refinePerspective`.
 - **B2** — pont vers Gleason : `g : Proj1 n → ℝ` construit directement via
   `Perspective.binary`, `IsFrameFunctionOnLines g`, puis U3a
   (`exists_projMeasure_of_frameFunctionOnLines`) et la vraie `Gleason.gleason`.

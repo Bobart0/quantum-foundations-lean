@@ -18,7 +18,7 @@ recreated.
 - Lean toolchain (from `lean-toolchain`): `leanprover/lean4:v4.32.0-rc1`
 - `mathlib` (from `lake-manifest.json`): `8bba4200986270d3b30be2bb2f8840af47a7854f`
 - `gleason` (`gleason-theorem-lean`, from `lake-manifest.json`):
-  `876aa7390b5d831cd81415d55493a1c0c3bae31e` (tag `v1.0-gleason`)
+  `5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5` (tag `v1.1.0-journal-audit`)
 
 Transitive dependencies (`plausible`, `LeanSearchClient`, `importGraph`,
 `proofwidgets`, `aesop`, `Qq`, `batteries`, and others) are pinned in full
