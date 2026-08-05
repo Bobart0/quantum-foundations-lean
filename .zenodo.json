@@ -1,5 +1,5 @@
 {
-  "title": "Quantum Foundations in Lean: Formal Companion to One State, Many Perspectives",
+  "title": "Quantum Foundations in Lean: Finite-Dimensional Formalizations and Typed Premise Audits",
   "description": "A Lean 4 and Mathlib formalization of finite-dimensional quantum foundations. The archived release includes machine-checked developments on Naimark dilation, Wigner and Uhlhorn-type results, Grain-coherence and Born-weight representation, effect-perspective formulations, and typed premise audits. This record archives GitHub tag v1.3.1-journal-audit at commit f773ed5694c610af055b82427da27a69d528b776. Its direct Gleason dependency is pinned to tag v1.1.0-journal-audit at commit 5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5.",
   "creators": [
     {
