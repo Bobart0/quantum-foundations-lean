@@ -1,6 +1,6 @@
 {
   "title": "Quantum Foundations in Lean: Formal Companion to One State, Many Perspectives",
-  "description": "A Lean 4 and Mathlib formal companion to the manuscript \"One State, Many Perspectives: Branch Structure and Born Weights in Everettian Quantum Mechanics\". Contains machine-checked formalizations of Naimark dilation, Wigner's theorem, Uhlhorn-type uniqueness, the grain-coherence-to-Born representation theorem, an effect-perspective route to the Born rule via Busch's theorem (including its Naimark realization), Kent's contrary-inferences construction, Riedel's branch-decomposition theorem with its record-induced Born-weight connection, redundant-record interference-complexity lower bounds with robust and dynamical persistence extensions, and restricted record-sector uniqueness (C15) with its quantitative weight-stability extensions (C17/C17b). A minimal, strictly additive downstream-facing API (QuantumFoundations.ProbabilityAPI) is also provided for external developments building a decision-theoretic layer on top of this repository's Born-weight results; it plays no role in the manuscript.",
+  "description": "A Lean 4 and Mathlib formalization of finite-dimensional quantum foundations. The archived release includes machine-checked developments on Naimark dilation, Wigner and Uhlhorn-type results, Grain-coherence and Born-weight representation, effect-perspective formulations, and typed premise audits. This record archives GitHub tag v1.3.1-journal-audit at commit f773ed5694c610af055b82427da27a69d528b776. Its direct Gleason dependency is pinned to tag v1.1.0-journal-audit at commit 5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5.",
   "creators": [
     {
       "name": "Dalimier, Bertrand",
@@ -10,7 +10,7 @@
   ],
   "license": "Apache-2.0",
   "upload_type": "software",
-  "version": "1.1.2",
+  "version": "1.3.1",
   "keywords": [
     "quantum foundations",
     "Born rule",
@@ -24,6 +24,11 @@
     {
       "identifier": "https://github.com/Bobart0/quantum-foundations-lean",
       "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/Bobart0/quantum-foundations-lean/releases/tag/v1.3.1-journal-audit",
+      "relation": "isSourceOf",
       "scheme": "url"
     }
   ]
