@@ -28,7 +28,7 @@
     },
     {
       "identifier": "https://github.com/Bobart0/quantum-foundations-lean/releases/tag/v1.3.1-journal-audit",
-      "relation": "isSourceOf",
+      "relation": "isDerivedFrom",
       "scheme": "url"
     }
   ]
