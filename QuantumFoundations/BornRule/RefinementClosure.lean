@@ -46,10 +46,10 @@ noncomputable def refineOneCell
       have hc'le : c' ≤ q := (Finset.mem_filter.mp hcFine').2
       have hcoarse : c ≤ qᗮ := D.ortho c hcD q hq hcq
       exact hcoarse.trans (Submodule.orthogonal_le hc'le)
-    · have hc' Dmem : c' ∈ D.cells := Finset.mem_of_mem_erase hcOld'
+    · have hc'D : c' ∈ D.cells := Finset.mem_of_mem_erase hcOld'
       have hc'q : c' ≠ q := (Finset.mem_erase.mp hcOld').1
       have hcle : c ≤ q := (Finset.mem_filter.mp hcFine).2
-      have hcoarse : q ≤ c'ᗮ := D.ortho q hq c' hc' Dmem (Ne.symm hc'q)
+      have hcoarse : q ≤ c'ᗮ := D.ortho q hq c' hc'D (Ne.symm hc'q)
       exact hcle.trans hcoarse
     · exact D'.ortho c (Finset.mem_filter.mp hcFine).1
         c' (Finset.mem_filter.mp hcFine').1 hne
