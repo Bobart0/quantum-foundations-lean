@@ -39,6 +39,15 @@ inductive BinaryGenerated : Perspective n → Perspective n → Prop
       BinaryGenerated mid coarse →
       BinaryGenerated fine coarse
 
+/-- Concatenate two finite chains of binary splits. -/
+theorem BinaryGenerated.trans {fine mid coarse : Perspective n}
+    (hfm : BinaryGenerated fine mid) (hmc : BinaryGenerated mid coarse) :
+    BinaryGenerated fine coarse := by
+  induction hfm with
+  | refl D => exact hmc
+  | @step fine next mid hSplit hRest ih =>
+      exact BinaryGenerated.step hSplit ih
+
 /-- Every split-generated chain is, in particular, a refinement. -/
 theorem BinaryGenerated.refines {fine coarse : Perspective n}
     (h : BinaryGenerated fine coarse) : Refines fine coarse := by
