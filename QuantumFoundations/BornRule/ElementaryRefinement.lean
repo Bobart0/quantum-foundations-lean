@@ -72,6 +72,69 @@ theorem binarySplit_children_cover
   refine ⟨q, hqD, hqD', hcard, ?_⟩
   exact refine_filter_sup_eq D' D hSplit.1 q hqD
 
+/-- Outside the split cell, the fine perspective consists exactly of the
+unchanged coarse cells. -/
+theorem binarySplit_outside_eq_erase
+    {D' D : Perspective n} (hSplit : IsBinarySplit D' D)
+    {q : Submodule ℂ (H n)}
+    (hqD : q ∈ D.cells)
+    (hkeep : ∀ c ∈ D.cells, c ≠ q → c ∈ D'.cells) :
+    D'.cells.filter (fun c => ¬ c ≤ q) = D.cells.erase q := by
+  ext c
+  simp only [Finset.mem_filter, Finset.mem_erase]
+  constructor
+  · rintro ⟨hcD', hcle⟩
+    obtain ⟨p, hpD, hcp⟩ := hSplit.1 c hcD'
+    have hpq : p ≠ q := by
+      intro hpq
+      subst p
+      exact hcle hcp
+    have hpD' : p ∈ D'.cells := hkeep p hpD hpq
+    have hcp_eq : c = p :=
+      D'.unique_parent hcD' hpD' (D'.nz c hcD') (le_refl c) hcp
+    subst c
+    exact ⟨hpq, hpD⟩
+  · rintro ⟨hcq, hcD⟩
+    have hcD' : c ∈ D'.cells := hkeep c hcD hcq
+    refine ⟨hcD', ?_⟩
+    intro hc_le_q
+    have hc_eq_q : c = q :=
+      D.unique_parent hcD hqD (D.nz c hcD) (le_refl c) hc_le_q
+    exact hcq hc_eq_q
+
+/-- On a single binary split, refinement consistency plus normalization forces
+additivity on the split cell.  RC alone only controls the cells that remain
+unchanged; normalization is the ingredient that converts that lateral
+stability into conservation of the split cell's total weight. -/
+theorem binarySplit_additivity_of_rc_norm
+    (Est : Perspective n → Submodule ℂ (H n) → ℝ)
+    (hRC : AxSplitRC Est) (hNorm : AxNorm Est)
+    {D' D : Perspective n} (hSplit : IsBinarySplit D' D) :
+    ∃ q : Submodule ℂ (H n), q ∈ D.cells ∧
+      Est D q = ∑ c ∈ D'.cells.filter (· ≤ q), Est D' c := by
+  rcases hSplit.2 with ⟨q, hqD, hqD', hkeep, hcard⟩
+  refine ⟨q, hqD, ?_⟩
+  have hout := binarySplit_outside_eq_erase hSplit hqD hkeep
+  have hsame :
+      (∑ c ∈ D.cells.erase q, Est D c) =
+        ∑ c ∈ D.cells.erase q, Est D' c := by
+    apply Finset.sum_congr rfl
+    intro c hc
+    have hcD : c ∈ D.cells := (Finset.mem_erase.mp hc).2
+    have hcq : c ≠ q := (Finset.mem_erase.mp hc).1
+    have hcD' : c ∈ D'.cells := hkeep c hcD hcq
+    exact hRC D' D hSplit c hcD hcD'
+  have hcoarse := hNorm D
+  have hfine := hNorm D'
+  rw [← Finset.sum_erase_add _ hqD] at hcoarse
+  have hpartition :
+      (∑ c ∈ D'.cells, Est D' c) =
+        (∑ c ∈ D'.cells.filter (· ≤ q), Est D' c) +
+          ∑ c ∈ D'.cells.filter (fun c => ¬ c ≤ q), Est D' c := by
+    rw [← Finset.sum_filter_add_sum_filter_not]
+  rw [hpartition, hout, ← hsame] at hfine
+  linarith
+
 end
 
 end QuantumFoundations.BornRule
