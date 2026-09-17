@@ -48,7 +48,7 @@ theorem refinement_binaryGenerated
       have hcCoarse : c ∈ coarse.cells := hFineSub c hcFine
       have hcne : c ≠ ⊥ := fine.nz c hcFine
       have hceq : c = q :=
-        coarse.unique_parent c hcCoarse q hq hcne (le_refl c) hcLe
+        coarse.unique_parent hcCoarse hq hcne (le_refl c) hcLe
       simpa [← hceq] using hcFine
     have hcells : fine.cells = coarse.cells := by
       apply Finset.Subset.antisymm
@@ -66,7 +66,7 @@ theorem refinement_binaryGenerated
       intro hqFine
       have haNe : a ≠ ⊥ := fine.nz a haFine
       have haq : a = q :=
-        fine.unique_parent a haFine q hqFine haNe (le_refl a) haQ
+        fine.unique_parent haFine hqFine haNe (le_refl a) haQ
       apply haNotCoarse
       simpa [haq] using hqCoarse
     let S : Finset (Submodule ℂ (H n)) := fine.cells.filter (· ≤ q)
@@ -91,7 +91,8 @@ theorem refinement_binaryGenerated
             rw [hTempty] at hcT
             simp at hcT
         · intro hc
-          simpa using hc
+          have hca : c = a := Finset.mem_singleton.mp hc
+          simpa [hca] using haS
       rw [hSsingle] at hsupS
       simp at hsupS
       apply haNotCoarse
@@ -182,9 +183,8 @@ theorem refinement_binaryGenerated
         ⟨hca, Finset.mem_sdiff.mpr ⟨hcFine, hcNotCoarse⟩⟩
     have hMeasure :
         (fine.cells \ mid.cells).card < (fine.cells \ coarse.cells).card := by
-      have hle := Finset.card_le_card hNewSubset
-      have herase := Finset.card_erase_of_mem haMissing
-      omega
+      exact (Finset.card_le_card hNewSubset).trans_lt
+        (Finset.card_erase_lt_of_mem haMissing)
     have hRec : BinaryGenerated fine mid :=
       refinement_binaryGenerated fine mid hFineMid
     have hFirst : BinaryGenerated mid coarse :=
