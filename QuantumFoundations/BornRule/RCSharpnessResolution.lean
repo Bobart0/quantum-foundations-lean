@@ -136,7 +136,7 @@ private theorem rcLine1_ne_rcLine2 : rcLine1 ≠ rcLine2 := by
     exact h
   have hi : (1 : Fin 3) = (2 : Fin 3) :=
     hinj (by simp) (by simp) h12
-  norm_num at hi
+  exact (by decide : (1 : Fin 3) ≠ (2 : Fin 3)) hi
 
 private theorem not_rcLine0_le_orthogonal : ¬ rcLine0 ≤ rcLine0ᗮ := by
   intro hle
