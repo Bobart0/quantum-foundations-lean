@@ -13,6 +13,7 @@ remainder is the supremum of the other target children of that parent.
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
