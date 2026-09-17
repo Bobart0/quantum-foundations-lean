@@ -16,6 +16,7 @@ This permits their roles to be tested independently.
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
