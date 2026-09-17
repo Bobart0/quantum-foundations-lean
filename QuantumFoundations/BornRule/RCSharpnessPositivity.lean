@@ -213,7 +213,9 @@ private theorem rcRho_quadratic_x :
 
 private theorem projL_rcX_rcE0 :
     projL (ℂ ∙ rcX) rcE0 = (3 / 5 : ℂ) • rcX := by
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit rcX rcE0 rcX_norm,
+  unfold projL
+  rw [ContinuousLinearMap.coe_coe,
+    Submodule.starProjection_unit_singleton ℂ rcX_norm rcE0,
     inner_rcX_rcE0]
 
 private theorem born_rcX_for_rcE0 :
