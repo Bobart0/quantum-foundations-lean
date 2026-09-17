@@ -25,7 +25,7 @@ The release also contains four explicit dimension-three witnesses establishing r
 
 `QuantumFoundations/BornRule/RCNote.lean` is the compact facade and `QuantumFoundations/Audit/RCNote.lean` audits the six publication-facing declarations with `#check` and `#print axioms`.
 
-The release was promoted only after both hosted workflows passed on the feature head: integrated Lean build, consolidated axiom audit, downstream API checks, journal audit, source guard, external downstream-consumer tests, and diff hygiene.
+The release is published only after validation of the exact tagged commit: integrated Lean build, consolidated axiom audit, downstream API checks, journal audit, source guard, both external downstream-consumer tests, and diff hygiene.
 
 No project-specific `axiom`, unresolved `sorry`, or `native_decide` is introduced by this release.
 
@@ -38,4 +38,4 @@ No project-specific `axiom`, unresolved `sorry`, or `native_decide` is introduce
 Starting QF release: `v1.3.1-journal-audit`.
 Release date: 2026-09-17.
 
-The release tag is created only after the release-metadata commit has passed hosted validation on `master`.
+Release publication is automated by `.github/workflows/release.yml`; the workflow derives the tag from a commit subject `Release v…`, validates the tagged commit, then creates the GitHub release/tag.
