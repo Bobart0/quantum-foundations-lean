@@ -24,6 +24,7 @@ import QuantumFoundations.BornRule.GleasonBridge
 import QuantumFoundations.BornRule.Pinning
 import QuantumFoundations.BornRule.Assembly
 import QuantumFoundations.BornRule.Nonvacuity
+import QuantumFoundations.BornRule.RCNote
 import QuantumFoundations.BornRule.EffectPerspectives.Basic
 import QuantumFoundations.BornRule.EffectPerspectives.Perspective
 import QuantumFoundations.BornRule.EffectPerspectives.Refinement
