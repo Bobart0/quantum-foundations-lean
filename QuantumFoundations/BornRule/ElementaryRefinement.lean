@@ -112,6 +112,7 @@ theorem binarySplit_additivity_of_rc_norm
     {D' D : Perspective n} (hSplit : IsBinarySplit D' D) :
     ∃ q : Submodule ℂ (H n), q ∈ D.cells ∧
       Est D q = ∑ c ∈ D'.cells.filter (· ≤ q), Est D' c := by
+  classical
   rcases hSplit.2 with ⟨q, hqD, hqD', hkeep, hcard⟩
   refine ⟨q, hqD, ?_⟩
   have hout := binarySplit_outside_eq_erase hSplit hqD hkeep
