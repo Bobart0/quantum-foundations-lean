@@ -62,19 +62,31 @@ noncomputable def refineOneCell
     simp only [Finset.mem_coe] at hc
     by_cases hcq : c = q
     · subst c
-      rw [← refine_filter_sup_eq D' D hRef q hq]
-      rw [Finset.sup_id_eq_sSup]
-      apply sSup_le_sSup
-      intro x hx
-      simp only [Finset.mem_coe] at hx ⊢
-      exact Finset.mem_union_right _ hx
-    · rw [← sSup_singleton]
-      apply sSup_le_sSup
-      intro x hx
-      simp only [Set.mem_singleton_iff] at hx
-      subst x
-      simp only [Finset.mem_coe]
-      exact Finset.mem_union_left _ (Finset.mem_erase.mpr ⟨hcq, hc⟩)
+      have hchildren :
+          sSup ((D'.cells.filter (· ≤ q) : Finset (Submodule ℂ (H n))) :
+            Set (Submodule ℂ (H n))) = q := by
+        rw [← Finset.sup_id_eq_sSup]
+        exact refine_filter_sup_eq D' D hRef q hq
+      calc
+        q = sSup ((D'.cells.filter (· ≤ q) : Finset (Submodule ℂ (H n))) :
+              Set (Submodule ℂ (H n))) := hchildren.symm
+        _ ≤ sSup ((D.cells.erase q ∪ D'.cells.filter (· ≤ q) :
+              Finset (Submodule ℂ (H n))) : Set (Submodule ℂ (H n))) := by
+          apply sSup_le_sSup
+          intro x hx
+          simp only [Finset.mem_coe] at hx ⊢
+          exact Finset.mem_union_right _ hx
+    · calc
+        c = sSup ({c} : Set (Submodule ℂ (H n))) := by
+          rw [sSup_singleton]
+        _ ≤ sSup ((D.cells.erase q ∪ D'.cells.filter (· ≤ q) :
+              Finset (Submodule ℂ (H n))) : Set (Submodule ℂ (H n))) := by
+          apply sSup_le_sSup
+          intro x hx
+          simp only [Set.mem_singleton_iff] at hx
+          subst x
+          simp only [Finset.mem_coe]
+          exact Finset.mem_union_left _ (Finset.mem_erase.mpr ⟨hcq, hc⟩)
 
 /-- The hybrid perspective still refines the original coarse perspective. -/
 theorem refineOneCell_refines_coarse
