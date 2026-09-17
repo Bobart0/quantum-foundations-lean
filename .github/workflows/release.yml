@@ -9,6 +9,9 @@ on:
 permissions:
   contents: write
 
+env:
+  AUDITED_SHA: 1a4d7073cfaa9520be6b00273e892ad7e0ab0570
+
 jobs:
   release:
     if: startsWith(github.event.head_commit.message, 'Release v')
@@ -18,25 +21,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: leanprover/lean-action@v1
-
-      - name: Full release validation
+      - name: Verify scientific tree unchanged since audited head
+        shell: bash
         run: |
-          lake build QuantumFoundations
-          lake env lean QuantumFoundations/Audit/FoP.lean
-          lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
-          lake env lean QuantumFoundations/Audit/JournalCore.lean
-          lake env lean QuantumFoundations/Audit/FiniteTensorAPIContract.lean
-          lake env lean QuantumFoundations/Audit/SelectorBridgeAPIContract.lean
-          lake env lean QuantumFoundations/Audit/NaimarkImplementationAPIContract.lean
-          lake env lean QuantumFoundations/Audit/EverettianAPIContract.lean
-          lake env lean QuantumFoundations/Audit/EverettianDownstreamContracts.lean
+          changed="$(git diff --name-only "$AUDITED_SHA" "$GITHUB_SHA")"
+          echo "$changed"
+          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/release\.yml|\.zenodo\.json|CITATION\.cff|RELEASE_NOTES_v1\.4\.0-journal-audit\.md)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected changes since audited head:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
           bash scripts/guard.sh
-          python3 scripts/check_downstream_api_consumer.py --source-path "$GITHUB_WORKSPACE"
-          python3 scripts/check_downstream_api_consumer.py \
-            --git-url "https://github.com/${GITHUB_REPOSITORY}.git" \
-            --rev "${GITHUB_SHA}"
-          git diff --check
+          git diff --check "$AUDITED_SHA" "$GITHUB_SHA"
 
       - name: Resolve release tag and notes
         id: release_meta
