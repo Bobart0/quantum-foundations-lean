@@ -78,28 +78,16 @@ noncomputable def splitCell
       · subst c
         rw [← hsup]
         apply sup_le
-        · rw [← sSup_singleton]
-          apply sSup_le_sSup
-          intro x hx
-          simp only [Set.mem_singleton_iff] at hx
-          subst x
+        · exact le_sSup (by
+            simp only [Finset.mem_coe]
+            exact Finset.mem_union_right _ (Finset.mem_insert_self _ _))
+        · exact le_sSup (by
+            simp only [Finset.mem_coe]
+            exact Finset.mem_union_right _
+              (Finset.mem_insert_of_mem (Finset.mem_singleton_self _)))
+      · exact le_sSup (by
           simp only [Finset.mem_coe]
-          exact Finset.mem_union_right _ (Finset.mem_insert_self _ _)
-        · rw [← sSup_singleton]
-          apply sSup_le_sSup
-          intro x hx
-          simp only [Set.mem_singleton_iff] at hx
-          subst x
-          simp only [Finset.mem_coe]
-          exact Finset.mem_union_right _
-            (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))
-      · rw [← sSup_singleton]
-        apply sSup_le_sSup
-        intro x hx
-        simp only [Set.mem_singleton_iff] at hx
-        subst x
-        simp only [Finset.mem_coe]
-        exact Finset.mem_union_left _ (Finset.mem_erase.mpr ⟨hcq, hcD⟩) }
+          exact Finset.mem_union_left _ (Finset.mem_erase.mpr ⟨hcq, hcD⟩)) }
 
 private theorem splitCell_aux
     (D : Perspective n)
