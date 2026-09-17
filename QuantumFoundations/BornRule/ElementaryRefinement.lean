@@ -67,8 +67,7 @@ theorem binarySplit_children_cover
       q ∈ D.cells ∧
       q ∉ D'.cells ∧
       (D'.cells.filter (· ≤ q)).card = 2 ∧
-      sSup (((D'.cells.filter (· ≤ q) : Finset (Submodule ℂ (H n))) :
-        Set (Submodule ℂ (H n)))) = q := by
+      (D'.cells.filter (· ≤ q)).sup id = q := by
   rcases hSplit.2 with ⟨q, hqD, hqD', hkeep, hcard⟩
   refine ⟨q, hqD, hqD', hcard, ?_⟩
   exact refine_filter_sup_eq D' D hSplit.1 q hqD
@@ -125,9 +124,14 @@ theorem binarySplit_additivity_of_rc_norm
     have hcq : c ≠ q := (Finset.mem_erase.mp hc).1
     have hcD' : c ∈ D'.cells := hkeep c hcD hcq
     exact hRC D' D hSplit c hcD hcD'
-  have hcoarse := hNorm D
+  have hcoarse_split :
+      (∑ c ∈ D.cells.erase q, Est D c) + Est D q = 1 := by
+    calc
+      (∑ c ∈ D.cells.erase q, Est D c) + Est D q =
+          ∑ c ∈ D.cells, Est D c :=
+        Finset.sum_erase_add D.cells (fun c => Est D c) hqD
+      _ = 1 := hNorm D
   have hfine := hNorm D'
-  rw [← Finset.sum_erase_add _ hqD] at hcoarse
   have hpartition :
       (∑ c ∈ D'.cells, Est D' c) =
         (∑ c ∈ D'.cells.filter (· ≤ q), Est D' c) +
