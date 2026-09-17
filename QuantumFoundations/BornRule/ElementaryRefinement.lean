@@ -137,7 +137,9 @@ theorem binarySplit_additivity_of_rc_norm
       (∑ c ∈ D'.cells, Est D' c) =
         (∑ c ∈ D'.cells.filter (· ≤ q), Est D' c) +
           ∑ c ∈ D'.cells.filter (fun c => ¬ c ≤ q), Est D' c := by
-    rw [← Finset.sum_filter_add_sum_filter_not]
+    rw [← Finset.sum_filter_add_sum_filter_not
+      (s := D'.cells) (p := fun c : Submodule ℂ (H n) => c ≤ q)
+      (f := fun c => Est D' c)]
   rw [hpartition, hout, ← hsame] at hfine
   linarith
 
