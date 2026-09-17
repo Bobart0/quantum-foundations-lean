@@ -11,6 +11,7 @@ Given a cell `q = a ⊔ b` with nonzero orthogonal children, replace `q` by
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
