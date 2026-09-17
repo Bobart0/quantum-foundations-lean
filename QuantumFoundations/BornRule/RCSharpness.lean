@@ -50,22 +50,20 @@ private theorem inner_rcE0_rcE1 : ⟪rcE0, rcE1⟫_ℂ = 0 := by
   rw [EuclideanSpace.inner_single_left]
   norm_num
 
-private theorem projL_rcLine0_rcE0 : projL rcLine0 rcE0 = rcE0 := by
+private theorem rcE1_mem_rcLine0_orthogonal : rcE1 ∈ rcLine0ᗮ := by
   unfold rcLine0
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit _ _ rcE0_norm]
-  simp [rcE0]
+  exact Submodule.mem_orthogonal_singleton_iff_inner_right.mpr inner_rcE0_rcE1
+
+private theorem projL_rcLine0_rcE0 : projL rcLine0 rcE0 = rcE0 := by
+  unfold projL rcLine0
+  rw [ContinuousLinearMap.coe_coe]
+  exact Submodule.starProjection_eq_self_iff.mpr
+    (Submodule.mem_span_singleton_self rcE0)
 
 private theorem projL_rcLine0_rcE1 : projL rcLine0 rcE1 = 0 := by
-  unfold rcLine0
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit _ _ rcE0_norm,
-    inner_rcE0_rcE1]
-  simp
-
-private theorem rcE1_mem_rcLine0_orthogonal : rcE1 ∈ rcLine0ᗮ := by
-  have hzero := projL_rcLine0_rcE1
-  unfold projL at hzero
-  rw [ContinuousLinearMap.coe_coe] at hzero
-  exact (Submodule.starProjection_apply_eq_zero_iff rcLine0).mp hzero
+  unfold projL
+  rw [ContinuousLinearMap.coe_coe,
+    (Submodule.starProjection_apply_eq_zero_iff rcLine0).mpr rcE1_mem_rcLine0_orthogonal]
 
 /-! ## W1 — removing normalization restores a global scale -/
 
@@ -92,7 +90,7 @@ theorem doubleBornWeight3_axNul : AxNul doubleBornWeight3 rcE0 := by
 
 theorem doubleBornWeight3_not_axNorm : ¬ AxNorm doubleBornWeight3 := by
   intro hNorm
-  let D := Perspective.basisPerspective (EuclideanSpace.basisFun (Fin 3) ℂ)
+  let D := basisPerspective (EuclideanSpace.basisFun (Fin 3) ℂ)
   have h := hNorm D
   have hBorn := E₀_isNorm rcE0 rcE0_norm D
   change ∑ c ∈ D.cells, 2 * ‖projL c rcE0‖ ^ 2 = 1 at h
