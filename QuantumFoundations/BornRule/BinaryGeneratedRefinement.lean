@@ -47,7 +47,7 @@ theorem BinaryGenerated.trans {fine mid coarse : Perspective n}
   induction hfm with
   | refl D => exact hmc
   | @step fine next mid hSplit hRest ih =>
-      exact BinaryGenerated.step hSplit ih
+      exact BinaryGenerated.step hSplit (ih hmc)
 
 /-- Every split-generated chain is, in particular, a refinement. -/
 theorem BinaryGenerated.refines {fine coarse : Perspective n}
@@ -71,7 +71,7 @@ private theorem shared_cell_present_at_mid
   obtain ⟨q, hqCoarse, hpq⟩ := hGen.refines p hpMid
   have hcne : c ≠ ⊥ := coarse.nz c hcCoarse
   have hqeq : q = c :=
-    coarse.unique_parent q hqCoarse c hcCoarse hcne
+    coarse.unique_parent hqCoarse hcCoarse hcne
       (hcp.trans hpq) (le_refl c)
   subst q
   have hp_eq : p = c := le_antisymm hpq hcp
