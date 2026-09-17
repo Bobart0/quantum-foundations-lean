@@ -63,11 +63,12 @@ noncomputable def refineOneCell
     by_cases hcq : c = q
     · subst c
       rw [← refine_filter_sup_eq D' D hRef q hq]
+      rw [Finset.sup_id_eq_sSup]
       apply sSup_le_sSup
       intro x hx
       simp only [Finset.mem_coe] at hx ⊢
       exact Finset.mem_union_right _ hx
-    · rw [← sSup_singleton c]
+    · rw [← sSup_singleton]
       apply sSup_le_sSup
       intro x hx
       simp only [Set.mem_singleton_iff] at hx
@@ -148,9 +149,14 @@ theorem axRC_norm_implies_axGrain
       rw [hMcells]
       exact Finset.mem_union_right _ hc
     exact hRC D' M hD'M c hcM hcD'
-  have hcoarse := hNorm D
+  have hcoarse_split :
+      (∑ c ∈ D.cells.erase q, Est D c) + Est D q = 1 := by
+    calc
+      (∑ c ∈ D.cells.erase q, Est D c) + Est D q =
+          ∑ c ∈ D.cells, Est D c :=
+        Finset.sum_erase_add D.cells (fun c => Est D c) hq
+      _ = 1 := hNorm D
   have hmid := hNorm M
-  rw [← Finset.sum_erase_add _ hq] at hcoarse
   rw [hMcells, Finset.sum_union hdisj] at hmid
   rw [← hsameOld, hsameChildren] at hmid
   linarith
