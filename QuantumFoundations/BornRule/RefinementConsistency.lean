@@ -17,6 +17,7 @@ Grain coherence implies this stability without any normalization assumption.
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
