@@ -60,14 +60,14 @@ noncomputable def splitCell
         have hc'D : c' ∈ D.cells := Finset.mem_of_mem_erase hcOld'
         have hc'q : c' ≠ q := (Finset.mem_erase.mp hcOld').1
         exact haQ.trans (D.ortho q hq c' hc'D (Ne.symm hc'q))
-      · exact absurd rfl hne
+      · exact (hne (hca.trans hca'.symm)).elim
       · subst c; subst c'; exact hab
       · subst c
         have hc'D : c' ∈ D.cells := Finset.mem_of_mem_erase hcOld'
         have hc'q : c' ≠ q := (Finset.mem_erase.mp hcOld').1
         exact hbQ.trans (D.ortho q hq c' hc'D (Ne.symm hc'q))
       · subst c; subst c'; exact hba
-      · exact absurd rfl hne
+      · exact (hne (hcb.trans hcb'.symm)).elim
     span := by
       apply le_antisymm le_top
       rw [← D.span]
@@ -78,14 +78,14 @@ noncomputable def splitCell
       · subst c
         rw [← hsup]
         apply sup_le
-        · rw [← sSup_singleton a]
+        · rw [← sSup_singleton]
           apply sSup_le_sSup
           intro x hx
           simp only [Set.mem_singleton_iff] at hx
           subst x
           simp only [Finset.mem_coe]
           exact Finset.mem_union_right _ (Finset.mem_insert_self _ _)
-        · rw [← sSup_singleton b]
+        · rw [← sSup_singleton]
           apply sSup_le_sSup
           intro x hx
           simp only [Set.mem_singleton_iff] at hx
@@ -93,7 +93,7 @@ noncomputable def splitCell
           simp only [Finset.mem_coe]
           exact Finset.mem_union_right _
             (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))
-      · rw [← sSup_singleton c]
+      · rw [← sSup_singleton]
         apply sSup_le_sSup
         intro x hx
         simp only [Set.mem_singleton_iff] at hx
