@@ -325,20 +325,23 @@ private theorem inner_rcE2_rcVResolution :
 
 private theorem projL_rcLine0_rcVResolution :
     projL rcLine0 rcVResolution = (3 / 5 : ℂ) • rcE0 := by
-  unfold rcLine0
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit rcE0 rcVResolution rcE0_norm,
+  unfold projL rcLine0
+  rw [ContinuousLinearMap.coe_coe,
+    Submodule.starProjection_unit_singleton ℂ rcE0_norm rcVResolution,
     inner_rcE0_rcVResolution]
 
 private theorem projL_rcLine1_rcVResolution :
     projL rcLine1 rcVResolution = (12 / 25 : ℂ) • rcE1 := by
-  unfold rcLine1
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit rcE1 rcVResolution rcE1_norm,
+  unfold projL rcLine1
+  rw [ContinuousLinearMap.coe_coe,
+    Submodule.starProjection_unit_singleton ℂ rcE1_norm rcVResolution,
     inner_rcE1_rcVResolution]
 
 private theorem projL_rcLine2_rcVResolution :
     projL rcLine2 rcVResolution = (16 / 25 : ℂ) • rcE2 := by
-  unfold rcLine2
-  rw [QuantumFoundations.Uhlhorn.projL_singleton_unit rcE2 rcVResolution rcE2_norm,
+  unfold projL rcLine2
+  rw [ContinuousLinearMap.coe_coe,
+    Submodule.starProjection_unit_singleton ℂ rcE2_norm rcVResolution,
     inner_rcE2_rcVResolution]
 
 private theorem projL_rcLine0_rcVResolution_norm :
