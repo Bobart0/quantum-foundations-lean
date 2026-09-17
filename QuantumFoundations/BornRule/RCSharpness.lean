@@ -102,8 +102,9 @@ theorem doubleBornWeight3_not_born_on_line0 :
     doubleBornWeight3
         (Perspective.binary rcLine0 rcLine0_ne_bot rcLine0_ne_top) rcLine0 ≠
       ‖projL rcLine0 rcE0‖ ^ 2 := by
+  simp only [doubleBornWeight3]
   rw [projL_rcLine0_rcE0, rcE0_norm]
-  norm_num [doubleBornWeight3]
+  norm_num
 
 /-- Removing normalization leaves the other three publication-facing
 conditions intact while allowing a nontrivial global rescaling of Born. -/
