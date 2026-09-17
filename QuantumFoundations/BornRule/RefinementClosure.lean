@@ -16,6 +16,7 @@ the later binary-split generation argument.
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
