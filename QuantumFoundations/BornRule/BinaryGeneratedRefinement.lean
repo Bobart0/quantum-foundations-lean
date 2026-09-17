@@ -12,6 +12,7 @@ and propagation of unchanged-cell weights along a generated chain.
 namespace QuantumFoundations.BornRule
 
 open scoped Classical InnerProductSpace
+open Gleason
 
 noncomputable section
 
