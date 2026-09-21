@@ -28,9 +28,8 @@ This release adds:
 - `scripts/verify_afm.sh`: one-command build, AFM audit, source guard, and
   diff-hygiene check;
 - CI coverage for the AFM audit;
-- refreshed README and reproducibility documentation that no longer identify
-  the repository as the companion of the abandoned Foundations of Physics
-  manuscript.
+- refreshed README and reproducibility documentation with a dedicated
+  AFM-facing reviewer entry point.
 
 The downstream dimension-two/deletion witnesses remain in the pinned
 `everettian-probability-lean` v2.4.0 artifact and are audited there by
