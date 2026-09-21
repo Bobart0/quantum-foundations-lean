@@ -55,7 +55,7 @@ unresolved `sorry`, and `native_decide`.
 
 ## Release / Zenodo
 
-The GitHub release tag is `v1.4.1-afm-audit`. The repository is connected
-to Zenodo; publishing this GitHub release is intended to create/update the
-corresponding archived software version. The immutable Git commit remains
-the exact source identity used by the manuscript.
+The GitHub release tag is `v1.4.1-afm-audit`, commit
+`99c1ddc0e3f0ad0fffa45b4985d9617097adbd4b`. The archived software release
+is available at DOI `10.5281/zenodo.22874819`. The immutable Git commit remains
+the exact source identity used by the article.
