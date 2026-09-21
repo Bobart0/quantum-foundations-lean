@@ -4,8 +4,7 @@
 
 This repository is a general Lean 4 / Mathlib library for finite-dimensional
 quantum foundations, checked mechanically and free of project-specific
-axioms. It is no longer tied to a single manuscript. The publication-facing
-subset used by the current Annals of Formalized Mathematics manuscript is
+axioms. The publication-facing subset used by the current Annals of Formalized Mathematics article is
 documented in [AFM_ARTIFACT.md](AFM_ARTIFACT.md), with an exact declaration
 map and a dedicated axiom audit.
 
@@ -68,10 +67,9 @@ The broader August 2026 preprint *A Layered Lean 4 Library for
 Finite-Dimensional Quantum Foundations with Typed Premise Auditing* surveys
 the three-repository library as a whole, including material outside the AFM
 article (records, complexity, selectors, decision-theoretic and audit
-clients). The AFM article is a focused successor rather than a second copy
-of that survey. Historical manuscript maps, including
-`docs/FOP_THEOREM_MAP.md`, are retained for provenance but are not the
-reviewer entry point for the AFM submission.
+clients). The AFM article is a focused theorem-centered study rather than a second copy
+of that survey. Legacy theorem maps, including `docs/FOP_THEOREM_MAP.md`, are
+retained for provenance but are not the reviewer entry point for the AFM article.
 
 ### Theorem and module map
 
@@ -128,9 +126,9 @@ separately enforces the absence of project-specific `axiom` declarations,
 The source is available at
 `https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
 dependency revisions recorded in `lake-manifest.json` and
-`docs/REPRODUCIBILITY.md`. For the AFM article, use the immutable
-`v1.4.1-afm-audit` release and the full commit SHA recorded by the
-manuscript. Older tags remain preserved as audit history and are never moved,
+`docs/REPRODUCIBILITY.md`. For the AFM article, use the immutable `v1.4.1-afm-audit` release,
+commit `99c1ddc0e3f0ad0fffa45b4985d9617097adbd4b`, archived at DOI
+`10.5281/zenodo.22874819`. Older tags remain preserved as audit history and are never moved,
 deleted, or recreated.
 
 ### Downstream API
@@ -165,8 +163,7 @@ responsibility for the content.
 
 Ce dépôt est une bibliothèque générale Lean 4 / Mathlib consacrée aux
 fondements quantiques en dimension finie, vérifiée mécaniquement et sans
-axiome propre au projet. Il n'est plus lié à un manuscrit unique. Le
-sous-ensemble destiné au manuscrit actuel soumis aux *Annals of Formalized
+axiome propre au projet. Le sous-ensemble destiné à l'article actuel des *Annals of Formalized
 Mathematics* est documenté dans [AFM_ARTIFACT.md](AFM_ARTIFACT.md), avec
 une table exacte des déclarations et un audit d'axiomes dédié.
 
