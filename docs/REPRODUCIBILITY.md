@@ -1,176 +1,45 @@
 # Reproducibility
 
-This document gives exact, copy-pasteable commands to build the
-repository from a clean clone, run the consolidated axiom audit, and
-reproduce the source guard used to enforce the no-`sorry`,
-no-`native_decide`, no-project-specific-`axiom` discipline of this
-repository.
+Clean-clone build and publication-facing audit for release `v1.4.3`.
 
-For the AFM manuscript, the recommended immutable release is
-`v1.4.2-afm-final`. It adds no new theorem body relative to
-`v1.4.0-journal-audit`; it freezes the exact AFM-facing declaration audit,
-reviewer guide, reproduction entry point, and final publication metadata,
-while preserving all earlier tags as immutable audit history.
+## Pinned environment
 
-## Exact toolchain and dependency revisions
+- Lean: `leanprover/lean4:v4.32.0-rc1`
+- Mathlib: `8bba4200986270d3b30be2bb2f8840af47a7854f`
+- Gleason: `v1.1.2`, commit
+  `6156219f606c6ac22690c84147ba2771d4cb18f3`
 
-- Lean toolchain (from `lean-toolchain`): `leanprover/lean4:v4.32.0-rc1`
-- `mathlib` (from `lake-manifest.json`): `8bba4200986270d3b30be2bb2f8840af47a7854f`
-- `gleason` (`gleason-theorem-lean`, from `lake-manifest.json`):
-  `5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5` (tag `v1.1.0-journal-audit`)
-
-Transitive dependencies (`plausible`, `LeanSearchClient`, `importGraph`,
-`proofwidgets`, `aesop`, `Qq`, `batteries`, and others) are pinned in full
-in `lake-manifest.json`; `lake` resolves them automatically from that file.
-
-## Clean-clone build
-
-POSIX shell:
+## Build
 
 ```sh
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 cd quantum-foundations-lean
-git checkout v1.4.2-afm-final
+git checkout v1.4.3
 lake exe cache get
 lake build QuantumFoundations
 ```
 
-Windows PowerShell:
-
-```powershell
-git clone https://github.com/Bobart0/quantum-foundations-lean.git
-Set-Location quantum-foundations-lean
-git checkout v1.4.2-afm-final
-lake exe cache get
-lake build QuantumFoundations
-```
-
-`lake exe cache get` downloads prebuilt Mathlib `.olean` files, avoiding a
-from-scratch Mathlib build. A full rebuild from a clean state can also be
-reproduced with:
+## Theorem audit
 
 ```sh
-lake clean
-lake exe cache get
-lake build
-lake build QuantumFoundations
+lake env lean QuantumFoundations/Audit/PublicationCore.lean
 ```
 
-## AFM-facing axiom audit
-
-```sh
-lake env lean QuantumFoundations/Audit/AFM.lean
-```
-
-This is the exact audit surface for the AFM manuscript. It runs
-`#print axioms` on the principal Gleason/Busch dependency declarations and
-the QuantumFoundations declarations cited as substantive results in the
-paper, including `projectionEffect_weight_eq_born` and
-`strictIso_iff_residualDims_eq`. Every one is expected to depend only on
-the standard Lean/Mathlib kernel trio:
-
-```text
-[propext, Classical.choice, Quot.sound]
-```
-
-Scattered subsystem-level `#print axioms` commands also remain in several
-`Nonvacuity.lean` and assembly files throughout the repository, where they
-were originally used to audit each milestone at the time it closed; the
-consolidated module above is the single entry point for the release-wide
-audit.
-
-## Downstream-facing API regression audit
-
-```sh
-lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
-```
-
-Not imported by the repository root (mirroring `Audit/FoP.lean`), this
-module exercises every wrapper in `QuantumFoundations.ProbabilityAPI` with
-a `sorry`-free `example`, then runs `#print axioms` on each. It exists so
-that a future refactor breaking a contract consumed by a downstream
-development (currently `Bobart0/everettian-probability-lean`) fails here
-rather than there. Every declaration it audits is expected to depend only
-on the standard trio above; see `docs/FOP_THEOREM_MAP.md`'s
-"Downstream-facing API" section.
+Expected trust base: `[propext, Classical.choice, Quot.sound]`.
 
 ## Source guard
-
-The repository enforces, by construction, that no file under
-`QuantumFoundations/` contains an `axiom` declaration, a `native_decide`
-call, or an unresolved `sorry`.
-
-POSIX shell / Git Bash (`scripts/guard.sh`):
 
 ```sh
 bash scripts/guard.sh
 ```
 
-Expected output: `AXIOM_HITS=0`, `NATIVE_DECIDE_HITS=0`,
-`SORRY_COUNT=0`, `GUARD_RESULT=PASS` (exit code `0`).
-
-PowerShell-equivalent reproduction (used interchangeably with the shell
-script and reporting the same fields; some environments provide a
-WSL-launcher `bash.exe` stub with no functioning Bash, in which case this
-is the reference guard):
-
-```powershell
-$files = Get-ChildItem -Recurse -Path QuantumFoundations -Filter *.lean
-$axiomHits = 0
-$nativeDecideHits = 0
-$sorryCount = 0
-foreach ($f in $files) {
-    $content = Get-Content $f.FullName -Raw
-    $axiomHits += ([regex]::Matches($content, '(^|[^A-Za-z0-9_])axiom\s')).Count
-    $nativeDecideHits += ([regex]::Matches($content, 'native_decide')).Count
-    $sorryCount += ([regex]::Matches($content, '\bsorry\b')).Count
-}
-Write-Output "AXIOM_HITS=$axiomHits"
-Write-Output "NATIVE_DECIDE_HITS=$nativeDecideHits"
-Write-Output "SORRY_COUNT=$sorryCount"
-if ($axiomHits -eq 0 -and $nativeDecideHits -eq 0 -and $sorryCount -eq 0) {
-    Write-Output "GUARD_RESULT=PASS"
-} else {
-    Write-Output "GUARD_RESULT=FAIL"
-}
-```
-
-Expected output: `AXIOM_HITS=0`, `NATIVE_DECIDE_HITS=0`,
+Expected summary: `AXIOM_HITS=0`, `NATIVE_DECIDE_HITS=0`,
 `SORRY_COUNT=0`, `GUARD_RESULT=PASS`.
 
-## Additional editorial and integrity checks
-
-These were run at the release commit and can be reproduced identically:
+## One-command verification
 
 ```sh
-git diff --check
-git status --short
-git grep -n "TODO\|FIXME\|TBD\|PLACEHOLDER"
-git grep -n "native_decide"
-git grep -n -E '(^|[^A-Za-z0-9_])axiom[[:space:]]'
-git grep -n -E '\bsorry\b'
+bash scripts/verify_publication.sh
 ```
 
-Each of these is expected to return no output (the `axiom`/`sorry` greps
-may legitimately match prose discussing the audit itself, e.g. in
-`docs/FOP_THEOREM_MAP.md` or this file; they must never match inside a
-`.lean` source file's actual declarations).
-
-## Expected results
-
-- Zero project-specific `axiom` declarations anywhere in
-  `QuantumFoundations/`.
-- Zero `sorry`.
-- Zero `native_decide`.
-- Every principal manuscript-facing theorem depends only on
-  `[propext, Classical.choice, Quot.sound]`.
-- `lake build QuantumFoundations` completes with no build failure.
-
-## Continuous integration
-
-`.github/workflows/lean.yml` reproduces this same sequence (checkout,
-`leanprover/lean-action@v1`, `lake build QuantumFoundations`, the
-consolidated axiom audit, the source guard, and `git diff --check`) on
-every push and pull request targeting `master`, and on manual dispatch. It
-relies exclusively on the toolchain and dependency revisions already
-pinned in this repository and never updates them.
+Historical audit entry points remain only for compatibility.
