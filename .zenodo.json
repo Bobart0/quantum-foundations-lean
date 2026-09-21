@@ -1,6 +1,6 @@
 {
   "title": "Quantum Foundations in Lean: Finite-Dimensional Formalizations and Typed Premise Audits",
-  "description": "AFM-facing audit and reviewer release of the Lean 4 / Mathlib finite-dimensional quantum-foundations library. Relative to v1.4.0-journal-audit, this release changes no theorem body. It adds QuantumFoundations/Audit/AFM.lean, which #checks and #print axioms the exact principal Gleason/Busch and QuantumFoundations declarations used by the AFM manuscript; AFM_ARTIFACT.md, which maps manuscript results to frozen artifacts; scripts/verify_afm.sh, which builds and runs the audit in one command; and refreshed publication/reproducibility documentation. The mathematical surface includes Wigner and one-directional Uhlhorn--Semrl, projective and effect-perspective Born representation, elementary binary refinements and sharpness witnesses, finite Naimark dilation, and the strict residual-dimension classification of binary implementations. The direct Gleason dependency remains pinned to v1.1.0-journal-audit at commit 5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5.",
+  "description": "Final AFM-facing publication release of the Lean 4 / Mathlib finite-dimensional quantum-foundations library. Relative to v1.4.1-afm-audit, this release changes no Lean theorem body. It freezes the cleaned publication-facing README, AFM_ARTIFACT.md reviewer map, exact QuantumFoundations/Audit/AFM.lean declaration audit, one-command verification entry point, and final citation/reproducibility metadata. The mathematical surface includes Wigner and one-directional Uhlhorn--Semrl, projective and effect-perspective Born representation, elementary binary refinements and sharpness witnesses, finite Naimark dilation, and the strict residual-dimension classification of binary implementations. The direct Gleason code dependency remains pinned to v1.1.0-journal-audit at commit 5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5; the AFM-facing Gleason documentation release is v1.1.1-afm-final at commit cd88c1d658eab2a8c47e950025547ae79c8852ce.",
   "creators": [
     {
       "name": "Dalimier, Bertrand",
@@ -10,7 +10,7 @@
   ],
   "license": "Apache-2.0",
   "upload_type": "software",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "keywords": [
     "quantum foundations",
     "Born rule",
@@ -28,7 +28,7 @@
       "scheme": "url"
     },
     {
-      "identifier": "https://github.com/Bobart0/quantum-foundations-lean/releases/tag/v1.4.1-afm-audit",
+      "identifier": "https://github.com/Bobart0/quantum-foundations-lean/releases/tag/v1.4.2-afm-final",
       "relation": "isDerivedFrom",
       "scheme": "url"
     }

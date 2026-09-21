@@ -7,10 +7,10 @@ no-`native_decide`, no-project-specific-`axiom` discipline of this
 repository.
 
 For the AFM manuscript, the recommended immutable release is
-`v1.4.1-afm-audit`. It adds no new theorem body relative to
-`v1.4.0-journal-audit`; it adds an exact AFM-facing declaration audit,
-reviewer guide, and reproduction entry point, while preserving all earlier
-tags as immutable audit history.
+`v1.4.2-afm-final`. It adds no new theorem body relative to
+`v1.4.0-journal-audit`; it freezes the exact AFM-facing declaration audit,
+reviewer guide, reproduction entry point, and final publication metadata,
+while preserving all earlier tags as immutable audit history.
 
 ## Exact toolchain and dependency revisions
 
@@ -30,7 +30,7 @@ POSIX shell:
 ```sh
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 cd quantum-foundations-lean
-git checkout v1.4.1-afm-audit
+git checkout v1.4.2-afm-final
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -40,7 +40,7 @@ Windows PowerShell:
 ```powershell
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 Set-Location quantum-foundations-lean
-git checkout v1.4.1-afm-audit
+git checkout v1.4.2-afm-final
 lake exe cache get
 lake build QuantumFoundations
 ```

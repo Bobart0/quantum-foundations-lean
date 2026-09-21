@@ -126,10 +126,11 @@ separately enforces the absence of project-specific `axiom` declarations,
 The source is available at
 `https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
 dependency revisions recorded in `lake-manifest.json` and
-`docs/REPRODUCIBILITY.md`. For the AFM article, use the immutable `v1.4.1-afm-audit` release,
-commit `99c1ddc0e3f0ad0fffa45b4985d9617097adbd4b`, archived at DOI
-`10.5281/zenodo.22874819`. Older tags remain preserved as audit history and are never moved,
-deleted, or recreated.
+`docs/REPRODUCIBILITY.md`. For the AFM article, use the immutable `v1.4.2-afm-final` release. This
+release changes no Lean theorem body relative to `v1.4.1-afm-audit`; it
+freezes the final publication-facing documentation and metadata. The article
+records the exact tag target and version-specific Zenodo DOI. Older tags
+remain preserved as audit history and are never moved, deleted, or recreated.
 
 ### Downstream API
 
@@ -150,7 +151,7 @@ downstream-consumed contract fails here rather than downstream.
 ### Citation
 
 See `CITATION.cff` for structured citation metadata. The AFM-facing
-software snapshot is version 1.4.1 (`v1.4.1-afm-audit`).
+software snapshot is version 1.4.2 (`v1.4.2-afm-final`).
 
 ### AI-assisted development
 
@@ -289,13 +290,12 @@ enregistrée au commit de la version.
 
 Les sources sont disponibles à l'adresse
 `https://github.com/Bobart0/quantum-foundations-lean`, épinglées aux
-révisions de dépendances enregistrées dans `lake-manifest.json` et dans
-`docs/REPRODUCIBILITY.md`. La version immuable recommandée est l'étiquette
-annotée `v1.0.1-fop-companion` (version corrective, ne portant que sur la
-documentation et les métadonnées ; voir
-`RELEASE_NOTES_v1.0.1-fop-companion.md`). L'étiquette antérieure
-`v1.0-fop-companion` reste disponible comme trace historique ; elle n'est
-ni déplacée, ni supprimée, ni recréée.
+révisions de dépendances enregistrées dans `lake-manifest.json` et
+`docs/REPRODUCIBILITY.md`. Pour l'article AFM, utiliser la release immuable
+`v1.4.2-afm-final`. Elle ne modifie aucun corps de théorème par rapport à
+`v1.4.1-afm-audit` et fige la documentation ainsi que les métadonnées finales
+destinées à la publication. Les tags antérieurs restent conservés comme
+historique d'audit.
 
 ### API pour développements aval
 
@@ -317,9 +317,9 @@ wrapper, pour qu'un futur refactor cassant un contrat consommé en aval
 
 ### Citation
 
-Voir `CITATION.cff` pour les métadonnées de citation structurées. En bref :
-Bertrand Dalimier, *Quantum Foundations in Lean: Formal Companion to One
-State, Many Perspectives*, version 1.1.0.
+Voir `CITATION.cff` pour les métadonnées de citation structurées. Le
+snapshot logiciel destiné à l'article AFM est la version 1.4.2
+(`v1.4.2-afm-final`).
 
 ### Assistance par intelligence artificielle
 

@@ -17,14 +17,14 @@ outside the AFM manuscript.
 
 | Layer | Release | Commit | Role in the AFM article |
 | --- | --- | --- | --- |
-| `gleason-theorem-lean` | `v1.1.0-journal-audit` | `5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5` | Busch and Gleason representation theorems |
-| `quantum-foundations-lean` | `v1.4.1-afm-audit` | `99c1ddc0e3f0ad0fffa45b4985d9617097adbd4b` | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
+| `gleason-theorem-lean` | `v1.1.1-afm-final` | `cd88c1d658eab2a8c47e950025547ae79c8852ce` | Busch and Gleason representation theorems; documentation-only finalization relative to v1.1.0 |
+| `quantum-foundations-lean` | `v1.4.2-afm-final` | immutable tag target; full SHA recorded in the article | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
 | `everettian-probability-lean` | `v2.4.0-journal-audit` | `b027ee9cd310514ddb33b9c8af8b35a24cbe5d7f` | dimension-two and deletion witnesses |
 
-The QF release changes no theorem body relative to
-`v1.4.0-journal-audit`; it adds this reviewer guide, the exact AFM audit
-surface, and a one-command verification script. The archived software release
-is DOI `10.5281/zenodo.22874819`.
+The QF AFM release line changes no theorem body relative to
+`v1.4.0-journal-audit`. Version `v1.4.2-afm-final` freezes the final reviewer
+guide, exact AFM audit surface, reproduction entry point, and publication
+metadata. The article records the version-specific Zenodo DOI once minted.
 
 ## Exact QF-side audit
 
