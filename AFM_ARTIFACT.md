@@ -18,12 +18,13 @@ outside the AFM manuscript.
 | Layer | Release | Commit | Role in the AFM article |
 | --- | --- | --- | --- |
 | `gleason-theorem-lean` | `v1.1.0-journal-audit` | `5c5bc40d2e4a31a0d1b3112fcc9a3e92b2000ec5` | Busch and Gleason representation theorems |
-| `quantum-foundations-lean` | `v1.4.1-afm-audit` | resolve the immutable release tag; the paper records the full SHA | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
+| `quantum-foundations-lean` | `v1.4.1-afm-audit` | `99c1ddc0e3f0ad0fffa45b4985d9617097adbd4b` | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
 | `everettian-probability-lean` | `v2.4.0-journal-audit` | `b027ee9cd310514ddb33b9c8af8b35a24cbe5d7f` | dimension-two and deletion witnesses |
 
 The QF release changes no theorem body relative to
 `v1.4.0-journal-audit`; it adds this reviewer guide, the exact AFM audit
-surface, and a one-command verification script.
+surface, and a one-command verification script. The archived software release
+is DOI `10.5281/zenodo.22874819`.
 
 ## Exact QF-side audit
 
@@ -92,4 +93,4 @@ This release is publication-facing packaging and audit infrastructure.  It
 does not strengthen or alter the mathematical statements in the v1.4.0
 scientific tree.  In particular, it should not be read as a new priority
 claim for Wigner or Naimark; the AFM manuscript explicitly compares the
-independent Lean developments known at the submission date.
+independent Lean developments known at the article's release date.
