@@ -2,11 +2,12 @@
 
 ## English
 
-This repository is the formal companion to the manuscript *One State, Many
-Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, prepared for *Foundations of Physics*. It contains a Lean 4 /
-Mathlib formalization, checked mechanically and free of project-specific
-axioms, of the theorem chains the manuscript relies on.
+This repository is a general Lean 4 / Mathlib library for finite-dimensional
+quantum foundations, checked mechanically and free of project-specific
+axioms. It is no longer tied to a single manuscript. The publication-facing
+subset used by the current Annals of Formalized Mathematics manuscript is
+documented in [AFM_ARTIFACT.md](AFM_ARTIFACT.md), with an exact declaration
+map and a dedicated axiom audit.
 
 ### Purpose
 
@@ -53,22 +54,24 @@ underlying the C15 development. See `docs/FOP_THEOREM_MAP.md` for the
 per-theorem status of every manuscript-facing declaration, and
 `docs/SCOPE_AND_LIMITATIONS.md` for what is deliberately not claimed.
 
-### Relation to the Foundations of Physics manuscript
+### Publication-facing subsets
 
-The repository's architecture mirrors the manuscript's central chains:
-grain coherence to context independence to Born representation; unitary
-record formation to Riedel branch uniqueness to record-induced branch
-cells to Born weights (C14); redundant records to complexity separation
-to robust and dynamical persistence; restricted record sectors to
-quadratic uniqueness (C15) to quantitative weight stability (C17) to the
-C17b state/operator/simulation/branch bridges; and effect perspectives to
-context independence to effect additivity to the Busch qubit
-representation to its Naimark projective realization. Naimark dilation is
-an auxiliary operational result; HistoriesKent is a conceptual contrast
-with the branch-theoretic development, not a premise of it; Wigner and the
-full Uhlhorn theorem are infrastructural results reused only through
-specific lemmas, not presented as substantive premises of the manuscript's
-argument. See `docs/FOP_THEOREM_MAP.md` for the complete correspondence.
+The current Annals of Formalized Mathematics article uses the
+representation/rigidity/refinement subset of this repository: Wigner,
+one-directional Uhlhorn--Šemrl, projective and effect-perspective Born
+representation, elementary binary refinements, sharpness witnesses, Naimark
+dilation, and the strict classification of binary implementations. The exact
+paper-to-Lean correspondence and reviewer commands are in
+[AFM_ARTIFACT.md](AFM_ARTIFACT.md).
+
+The broader August 2026 preprint *A Layered Lean 4 Library for
+Finite-Dimensional Quantum Foundations with Typed Premise Auditing* surveys
+the three-repository library as a whole, including material outside the AFM
+article (records, complexity, selectors, decision-theoretic and audit
+clients). The AFM article is a focused successor rather than a second copy
+of that survey. Historical manuscript maps, including
+`docs/FOP_THEOREM_MAP.md`, are retained for provenance but are not the
+reviewer entry point for the AFM submission.
 
 ### Theorem and module map
 
@@ -110,24 +113,25 @@ dependency revisions, and the expected outputs.
 
 ### Axiom audit
 
-`QuantumFoundations/Audit/FoP.lean` runs `#print axioms` on the principal
-manuscript-facing declarations. Every one of them depends only on the
-standard Lean/Mathlib kernel trio `[propext, Classical.choice, Quot.sound]`
-— that is, there are no project-specific axioms, no `sorry`, and no
-`native_decide` anywhere in the release. See `docs/REPRODUCIBILITY.md` for
-the exact audit commands and `RELEASE_NOTES_v1.0.1-fop-companion.md` for
-the recorded output at the release commit.
+`QuantumFoundations/Audit/AFM.lean` is the publication-facing audit for the
+AFM manuscript. It `#check`s and `#print axioms` on the exact principal
+Gleason/Busch and QuantumFoundations declarations used by that article,
+including the effect route and the strict Naimark classification. Every
+audited declaration is expected to depend only on the standard Lean/Mathlib
+kernel trio `[propext, Classical.choice, Quot.sound]`. The source guard
+separately enforces the absence of project-specific `axiom` declarations,
+`sorry`, and `native_decide`. See [AFM_ARTIFACT.md](AFM_ARTIFACT.md) and
+`docs/REPRODUCIBILITY.md`.
 
 ### Software and code availability
 
 The source is available at
 `https://github.com/Bobart0/quantum-foundations-lean`, pinned to the
 dependency revisions recorded in `lake-manifest.json` and
-`docs/REPRODUCIBILITY.md`. The recommended immutable release is the
-annotated tag `v1.0.1-fop-companion` (a documentation- and metadata-only
-corrective release; see `RELEASE_NOTES_v1.0.1-fop-companion.md`). The
-earlier `v1.0-fop-companion` tag remains available as historical evidence
-and is not moved, deleted, or recreated.
+`docs/REPRODUCIBILITY.md`. For the AFM article, use the immutable
+`v1.4.1-afm-audit` release and the full commit SHA recorded by the
+manuscript. Older tags remain preserved as audit history and are never moved,
+deleted, or recreated.
 
 ### Downstream API
 
@@ -147,9 +151,8 @@ downstream-consumed contract fails here rather than downstream.
 
 ### Citation
 
-See `CITATION.cff` for structured citation metadata. In brief: Bertrand
-Dalimier, *Quantum Foundations in Lean: Formal Companion to One State, Many
-Perspectives*, version 1.1.0.
+See `CITATION.cff` for structured citation metadata. The AFM-facing
+software snapshot is version 1.4.1 (`v1.4.1-afm-audit`).
 
 ### AI-assisted development
 
@@ -160,12 +163,12 @@ responsibility for the content.
 
 ## Français
 
-Ce dépôt est le compagnon formel du manuscrit *One State, Many
-Perspectives: Branch Structure and Born Weights in Everettian Quantum
-Mechanics*, préparé pour *Foundations of Physics*. Il contient une
-formalisation Lean 4 / Mathlib, vérifiée mécaniquement et sans axiome
-propre au projet, des chaînes de théorèmes sur lesquelles s'appuie le
-manuscrit.
+Ce dépôt est une bibliothèque générale Lean 4 / Mathlib consacrée aux
+fondements quantiques en dimension finie, vérifiée mécaniquement et sans
+axiome propre au projet. Il n'est plus lié à un manuscrit unique. Le
+sous-ensemble destiné au manuscrit actuel soumis aux *Annals of Formalized
+Mathematics* est documenté dans [AFM_ARTIFACT.md](AFM_ARTIFACT.md), avec
+une table exacte des déclarations et un audit d'axiomes dédié.
 
 ### Objet du dépôt
 
@@ -216,25 +219,23 @@ secteurs restreints de Lela, sous-jacent au développement C15. Voir
 pertinente pour le manuscrit, et `docs/SCOPE_AND_LIMITATIONS.md` pour ce
 qui n'est délibérément pas revendiqué.
 
-### Relation avec le manuscrit Foundations of Physics
+### Sous-ensembles destinés aux publications
 
-L'architecture du dépôt reflète les chaînes centrales du manuscrit :
-cohérence de grain vers indépendance du contexte vers représentation de
-Born ; formation unitaire des records vers unicité des branches de Riedel
-vers cellules de branche induites par les records vers poids de Born
-(C14) ; records redondants vers séparation de complexité vers persistance
-robuste et dynamique ; secteurs de records restreints vers unicité
-quadratique (C15) vers stabilité quantitative des poids (C17) vers les
-ponts d'état/opérateur/simulation/branche de C17b ; et perspectives
-d'effets vers indépendance du contexte vers additivité des effets vers la
-représentation qubit de Busch vers sa réalisation projective de Naimark.
-La dilatation de Naimark est un résultat opérationnel auxiliaire ;
-HistoriesKent constitue un contraste conceptuel avec le développement
-fondé sur les branches, non une prémisse de celui-ci ; Wigner et le
-théorème d'Uhlhorn complet sont des résultats infrastructurels réutilisés
-seulement via des lemmes ponctuels, non présentés comme des prémisses
-substantielles de l'argument du manuscrit. Voir `docs/FOP_THEOREM_MAP.md`
-pour la correspondance complète.
+L'article actuel pour les *Annals of Formalized Mathematics* utilise le
+sous-ensemble représentation/rigidité/raffinement du dépôt : Wigner,
+Uhlhorn--Šemrl unidirectionnel, représentation de Born sur perspectives
+projectives et perspectives d'effets, raffinements binaires élémentaires,
+témoins de netteté, dilatation de Naimark et classification stricte des
+implémentations binaires. La correspondance exacte papier--Lean et les
+commandes destinées aux rapporteurs figurent dans
+[AFM_ARTIFACT.md](AFM_ARTIFACT.md).
+
+Le preprint plus large d'août 2026 *A Layered Lean 4 Library for
+Finite-Dimensional Quantum Foundations with Typed Premise Auditing* décrit
+l'ensemble de la chaîne à trois dépôts, y compris des développements hors
+du périmètre de l'article AFM. Les anciennes cartes de manuscrits, notamment
+`docs/FOP_THEOREM_MAP.md`, sont conservées pour la provenance mais ne
+constituent plus le point d'entrée de relecture.
 
 ### Carte des théorèmes et modules
 

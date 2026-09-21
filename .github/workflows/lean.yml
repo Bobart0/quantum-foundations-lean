@@ -34,6 +34,9 @@ jobs:
       - name: Consolidated FoP axiom audit
         run: lake env lean QuantumFoundations/Audit/FoP.lean
 
+      - name: AFM manuscript axiom audit
+        run: lake env lean QuantumFoundations/Audit/AFM.lean
+
       - name: Downstream API regression audit
         run: lake env lean QuantumFoundations/Audit/DownstreamAPI.lean
 

@@ -6,12 +6,11 @@ reproduce the source guard used to enforce the no-`sorry`,
 no-`native_decide`, no-project-specific-`axiom` discipline of this
 repository.
 
-The recommended immutable release to build from is the annotated tag
-`v1.0.1-fop-companion` (a documentation- and metadata-only corrective
-release relative to `v1.0-fop-companion`; see
-`RELEASE_NOTES_v1.0.1-fop-companion.md`). The earlier `v1.0-fop-companion`
-tag is preserved as historical evidence and is never moved, deleted, or
-recreated.
+For the AFM manuscript, the recommended immutable release is
+`v1.4.1-afm-audit`. It adds no new theorem body relative to
+`v1.4.0-journal-audit`; it adds an exact AFM-facing declaration audit,
+reviewer guide, and reproduction entry point, while preserving all earlier
+tags as immutable audit history.
 
 ## Exact toolchain and dependency revisions
 
@@ -31,7 +30,7 @@ POSIX shell:
 ```sh
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 cd quantum-foundations-lean
-git checkout v1.0.1-fop-companion
+git checkout v1.4.1-afm-audit
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -41,7 +40,7 @@ Windows PowerShell:
 ```powershell
 git clone https://github.com/Bobart0/quantum-foundations-lean.git
 Set-Location quantum-foundations-lean
-git checkout v1.0.1-fop-companion
+git checkout v1.4.1-afm-audit
 lake exe cache get
 lake build QuantumFoundations
 ```
@@ -57,15 +56,18 @@ lake build
 lake build QuantumFoundations
 ```
 
-## Consolidated axiom audit
+## AFM-facing axiom audit
 
 ```sh
-lake env lean QuantumFoundations/Audit/FoP.lean
+lake env lean QuantumFoundations/Audit/AFM.lean
 ```
 
-This runs `#print axioms` on the principal manuscript-facing
-declarations listed in `docs/FOP_THEOREM_MAP.md`. Every one is expected to
-depend only on the standard Lean/Mathlib kernel trio:
+This is the exact audit surface for the AFM manuscript. It runs
+`#print axioms` on the principal Gleason/Busch dependency declarations and
+the QuantumFoundations declarations cited as substantive results in the
+paper, including `projectionEffect_weight_eq_born` and
+`strictIso_iff_residualDims_eq`. Every one is expected to depend only on
+the standard Lean/Mathlib kernel trio:
 
 ```text
 [propext, Classical.choice, Quot.sound]
