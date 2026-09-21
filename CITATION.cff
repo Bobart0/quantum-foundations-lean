@@ -32,4 +32,5 @@ keywords:
 license: Apache-2.0
 version: 1.4.1
 date-released: 2026-09-21
+doi: "10.5281/zenodo.22874819"
 repository-code: "https://github.com/Bobart0/quantum-foundations-lean"
