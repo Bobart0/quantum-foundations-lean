@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 env:
-  AUDITED_SHA: 1a4d7073cfaa9520be6b00273e892ad7e0ab0570
+  AUDITED_SHA: 406e248ac3e77d438eaa5cb4c9459b4489f20b0a
 
 jobs:
   release:
@@ -26,7 +26,7 @@ jobs:
         run: |
           changed="$(git diff --name-only "$AUDITED_SHA" "$GITHUB_SHA")"
           echo "$changed"
-          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/release\.yml|\.zenodo\.json|CITATION\.cff|RELEASE_NOTES_v1\.4\.0-journal-audit\.md)$' || true)"
+          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/release\.yml|\.zenodo\.json|CITATION\.cff|RELEASE_NOTES_v1\.4\.1-afm-audit\.md)$' || true)"
           if [ -n "$unexpected" ]; then
             echo "Unexpected changes since audited head:" >&2
             echo "$unexpected" >&2
