@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -26,9 +25,22 @@ jobs:
         run: |
           changed="$(git diff --name-only "$AUDITED_SHA" "$GITHUB_SHA")"
           echo "$changed"
-          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(README\.md|PUBLICATION_ARTIFACT\.md|AFM_ARTIFACT\.md|docs/REPRODUCIBILITY\.md|QuantumFoundations/Audit/PublicationCore\.lean|QuantumFoundations/Audit/AFM\.lean|scripts/verify_publication\.sh|scripts/verify_afm\.sh|lakefile\.toml|lake-manifest\.json|\.github/workflows/lean\.yml|\.github/workflows/release\.yml|\.zenodo\.json|CITATION\.cff|RELEASE_NOTES_v1\.4\.3\.md)$' || true)"
-          test -z "$unexpected" || { echo "$unexpected"; exit 1; }
+          while IFS= read -r f; do
+            case "$f" in
+              README.md|PUBLICATION_ARTIFACT.md|AFM_ARTIFACT.md|docs/REPRODUCIBILITY.md|QuantumFoundations/Audit/PublicationCore.lean|QuantumFoundations/Audit/AFM.lean|scripts/verify_publication.sh|scripts/verify_afm.sh|lakefile.toml|lake-manifest.json|.github/workflows/lean.yml|.github/workflows/release.yml|.zenodo.json|CITATION.cff|RELEASE_NOTES_v1.4.3.md) ;;
+              "") ;;
+              *) echo "Unexpected release change: $f" >&2; exit 1 ;;
+            esac
+          done <<< "$changed"
           git diff --check "$AUDITED_SHA" "$GITHUB_SHA"
+
+      - uses: leanprover/lean-action@v1
+
+      - name: Publication theorem audit
+        run: lake env lean QuantumFoundations/Audit/PublicationCore.lean
+
+      - name: Source guard
+        run: bash scripts/guard.sh
 
       - name: Resolve release metadata
         id: meta
@@ -47,11 +59,7 @@ jobs:
           TAG: ${{ steps.meta.outputs.tag }}
           NOTES: ${{ steps.meta.outputs.notes }}
         run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists; leaving it unchanged."
-          else
-            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file "$NOTES"
-          fi
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file "$NOTES"
 
       - name: Verify release
         env:
