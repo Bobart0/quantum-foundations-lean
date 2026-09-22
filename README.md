@@ -34,7 +34,7 @@ and checks diff hygiene. The headline audit reports only
 
 ## Reproducibility
 
-Publication snapshot: **v1.4.3**.
+Publication snapshot: **v1.4.3**, commit `d632c676770890dc95f45aefa57d3d8655084a0c`, Zenodo DOI `10.5281/zenodo.22883999`.
 
 Pinned environment:
 - Lean `leanprover/lean4:v4.32.0-rc1`
