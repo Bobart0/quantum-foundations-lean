@@ -12,9 +12,9 @@ larger three-repository Lean 4 library.
 
 | Layer | Release | Role |
 | --- | --- | --- |
-| `gleason-theorem-lean` | `v1.1.2` | Busch and Gleason representation theorems |
-| `quantum-foundations-lean` | `v1.4.3` | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
-| `everettian-probability-lean` | `v2.4.1` | dimension-two and deletion witnesses |
+| `gleason-theorem-lean` | `v1.1.2` (`6156219f606c6ac22690c84147ba2771d4cb18f3`; DOI `10.5281/zenodo.22883921`) | Busch and Gleason representation theorems |
+| `quantum-foundations-lean` | `v1.4.3` (`d632c676770890dc95f45aefa57d3d8655084a0c`; DOI `10.5281/zenodo.22883999`) | Wigner, Uhlhorn--Semrl, perspective/effect routes, binary refinements, Naimark |
+| `everettian-probability-lean` | `v2.4.1` (`17dff198ac1ea885594a9dcd9c5d72523f645ed1`; DOI `10.5281/zenodo.22884032`) | dimension-two and deletion witnesses |
 
 The article records the exact tag targets, commit hashes, and Zenodo DOIs.
 
